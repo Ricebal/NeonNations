@@ -33,8 +33,11 @@ public class PlayerController : NetworkBehaviour
 
     void OnDestroy()
     {
-        Camera.main.GetComponent<CameraController>().setInactive();
-        Camera.main.GetComponent<CameraController>().playerTransform = null;
+        if (isLocalPlayer)
+        {
+            Camera.main.GetComponent<CameraController>().setInactive();
+            Camera.main.GetComponent<CameraController>().playerTransform = null;
+        }
     }
 
 }
