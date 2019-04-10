@@ -13,7 +13,7 @@ public class EscapeMenu : MonoBehaviour
     void Start()
     {
         Canvas.gameObject.SetActive(false);
-        ExitButton.onClick.AddListener(() => Application.Quit());
+        ExitButton.onClick.AddListener(Application.Quit);
     }
 
     // Update is called once per frame
