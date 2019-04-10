@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : NetworkBehaviour
 {
     public float Speed;
 
@@ -15,6 +16,9 @@ public class PlayerController : MonoBehaviour
 
     // Update is called once per frame
     public void FixedUpdate() {
+        if(!isLocalPlayer)
+            return;
+
         float moveHorizontal = Input.GetAxis("Horizontal");
         float moveVertical = Input.GetAxis("Vertical");
 
