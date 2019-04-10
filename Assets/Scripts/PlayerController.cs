@@ -1,23 +1,47 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Networking;
 
 public class PlayerController : NetworkBehaviour
 {
     public float Speed;
 
-    private Rigidbody m_rigidBody;
+    public GameObject Shot;
+    public Transform ShotSpawn;
+    // Fire rate in seconds
+    public float FireRate;
 
-    // Start is called before the first frame update
+    private Rigidbody m_rigidBody;
+    // The next time the entity will be able to shoot in seconds
+    private float m_nextFire;
+
     public void Start() {
         m_rigidBody = GetComponent<Rigidbody>();
     }
 
-    // Update is called once per frame
-    public void FixedUpdate() {
-        if(!isLocalPlayer)
+    public void Update() {
+        if(!isLocalPlayer) {
             return;
+        }
+
+        // If the 'ctrl' key is held down and the entity is able to shoot
+        if(Input.GetButton("Fire1") && Time.time > m_nextFire) {
+            m_nextFire = Time.time + FireRate;
+            CmdShoot();
+        }
+    }
+
+    [Command]
+    public void CmdShoot() {
+        GameObject bullet = Instantiate(Shot, ShotSpawn.position, ShotSpawn.rotation) as GameObject;
+
+        // Instanciate the bullet on the network for all players 
+        NetworkServer.Spawn(bullet);
+    }
+
+    public void FixedUpdate() {
+        if (!isLocalPlayer) {
+            return;
+        }
 
         float moveHorizontal = Input.GetAxis("Horizontal");
         float moveVertical = Input.GetAxis("Vertical");
@@ -26,4 +50,18 @@ public class PlayerController : NetworkBehaviour
 
         m_rigidBody.velocity = movement * Speed;
     }
+    public override void OnStartLocalPlayer()
+    {
+        Camera.main.GetComponent<CameraController>().setTarget(gameObject.transform);
+    }
+
+    void OnDestroy()
+    {
+        if (isLocalPlayer)
+        {
+            Camera.main.GetComponent<CameraController>().setInactive();
+            Camera.main.GetComponent<CameraController>().playerTransform = null;
+        }
+    }
+
 }
