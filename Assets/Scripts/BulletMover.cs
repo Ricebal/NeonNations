@@ -27,9 +27,7 @@ public class BulletMover : NetworkBehaviour
 
     public void OnCollisionEnter(Collision collision) {
         // Destroy the bullet when it hits a wall or a player
-        if (collision.gameObject.name == "Wall" || collision.gameObject.name == "PlayerPrefab") {
-            Destroy(this.gameObject);
-        }
+        Destroy(this.gameObject);
     }
 
 }
