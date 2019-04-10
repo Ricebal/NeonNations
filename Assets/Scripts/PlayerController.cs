@@ -7,19 +7,26 @@ public class PlayerController : MonoBehaviour
     public float Speed;
 
     private Rigidbody m_rigidBody;
+    private Vector3 m_movement;
 
-    // Start is called before the first frame update
     public void Start() {
         m_rigidBody = GetComponent<Rigidbody>();
     }
 
-    // Update is called once per frame
     public void FixedUpdate() {
         float moveHorizontal = Input.GetAxis("Horizontal");
         float moveVertical = Input.GetAxis("Vertical");
+        MovePlayer(moveHorizontal, moveVertical);
+    }
 
-        Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
+    public void MovePlayer(float horizontal, float vertical) {
+        m_movement.Set(horizontal, 0, vertical);
 
-        m_rigidBody.velocity = movement * Speed;
+        if (horizontal != 0 || vertical != 0) {
+            m_rigidBody.MoveRotation(Quaternion.LookRotation(m_movement));
+        }
+
+        m_movement = m_movement.normalized * Speed * Time.deltaTime;
+        m_rigidBody.MovePosition(transform.position + m_movement);
     }
 }
