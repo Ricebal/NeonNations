@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Networking;
 
-public class EscapeMenu : MonoBehaviour
+public class EscapeMenu : NetworkBehaviour
 {
     public GameObject Canvas;
     public Button ResumeButton;
+    public Button DisconnectButton;
     public Button ExitButton;
+    public NetworkManager NetworkManager;
     private bool m_paused = false;
 
     // Start is called before the first frame update
@@ -15,6 +18,11 @@ public class EscapeMenu : MonoBehaviour
     {
         Canvas.gameObject.SetActive(false);
         ResumeButton.onClick.AddListener(TogglePause);
+        DisconnectButton.onClick.AddListener(TogglePause);
+        if(isServer)
+            DisconnectButton.onClick.AddListener(NetworkManager.singleton.StopHost);
+        else
+            DisconnectButton.onClick.AddListener(NetworkManager.singleton.StopClient);
         ExitButton.onClick.AddListener(Application.Quit);
     }
 
