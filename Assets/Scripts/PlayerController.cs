@@ -26,4 +26,15 @@ public class PlayerController : NetworkBehaviour
 
         m_rigidBody.velocity = movement * Speed;
     }
+    public override void OnStartLocalPlayer()
+    {
+        Camera.main.GetComponent<CameraController>().setTarget(gameObject.transform);
+    }
+
+    void OnDestroy()
+    {
+        Camera.main.GetComponent<CameraController>().setInactive();
+        Camera.main.GetComponent<CameraController>().playerTransform = null;
+    }
+
 }
