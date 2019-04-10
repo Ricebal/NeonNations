@@ -26,8 +26,10 @@ public class BulletMover : NetworkBehaviour
     }
 
     public void OnCollisionEnter(Collision collision) {
-        // Destroy the bullet when it hits a wall or a player
-        Destroy(this.gameObject);
+        // Destroy the bullet when it hits something else than another bullet
+        if(collision.gameObject.tag != "Bullet") {
+            Destroy(this.gameObject);
+        }
     }
 
 }

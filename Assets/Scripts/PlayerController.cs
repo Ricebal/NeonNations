@@ -28,6 +28,10 @@ public class PlayerController : NetworkBehaviour
             m_nextFire = Time.time + FireRate;
             CmdShoot();
         }
+
+        if(Input.GetButton("Jump") && Time.time > m_nextFire) {
+            CmdSonar();
+        }
     }
 
     [Command]
@@ -36,6 +40,17 @@ public class PlayerController : NetworkBehaviour
 
         // Instanciate the bullet on the network for all players 
         NetworkServer.Spawn(bullet);
+    }
+
+    [Command]
+    public void CmdSonar() {
+        for(int i = 0; i < 360; i += 20) {
+            GameObject bullet = Instantiate(Shot, ShotSpawn.position, ShotSpawn.rotation) as GameObject;
+            bullet.transform.RotateAround(this.gameObject.transform.position, new Vector3(0.0f, 1.0f, 0.0f), i);
+
+            // Instanciate the bullet on the network for all players 
+            NetworkServer.Spawn(bullet);
+        }
     }
 
     public void FixedUpdate() {
