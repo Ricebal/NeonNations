@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Networking;
 
 public class PlayerController : NetworkBehaviour
@@ -21,16 +19,29 @@ public class PlayerController : NetworkBehaviour
     }
 
     public void Update() {
+        if (!isLocalPlayer) {
+            return;
+        }
+
         // If the 'ctrl' key is held down and the entity is able to shoot
         if(Input.GetButton("Fire1") && Time.time > m_nextFire) {
             m_nextFire = Time.time + FireRate;
-            Instantiate(Shot, ShotSpawn.position, ShotSpawn.rotation);
+            CmdShoot();
         }
     }
 
+    [Command]
+    public void CmdShoot() {
+        GameObject bullet = Instantiate(Shot, ShotSpawn.position, ShotSpawn.rotation) as GameObject;
+
+        // Instanciate the bullet on the network for all players 
+        NetworkServer.Spawn(bullet);
+    }
+
     public void FixedUpdate() {
-        if(!isLocalPlayer)
+        if (!isLocalPlayer) {
             return;
+        }
 
         float moveHorizontal = Input.GetAxis("Horizontal");
         float moveVertical = Input.GetAxis("Vertical");

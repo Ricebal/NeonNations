@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 
-public class BulletMover : MonoBehaviour
+public class BulletMover : NetworkBehaviour
 {
 
     public float Speed;
@@ -25,8 +26,8 @@ public class BulletMover : MonoBehaviour
     }
 
     public void OnCollisionEnter(Collision collision) {
-        // Destroy the bullet when it hits a wall
-        if (collision.gameObject.name == "Wall") {
+        // Destroy the bullet when it hits a wall or a player
+        if (collision.gameObject.name == "Wall" || collision.gameObject.name == "PlayerPrefab") {
             Destroy(this.gameObject);
         }
     }
