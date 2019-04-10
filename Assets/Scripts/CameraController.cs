@@ -7,8 +7,9 @@ public class CameraController : MonoBehaviour
 {
     public Transform playerTransform;
     public float distanceFromPlayer = 11;
-    private Vector3 offset;
     public double cameraTilt = 80;
+
+    private Vector3 offset;
 
     private bool active;
 
