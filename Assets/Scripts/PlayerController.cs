@@ -110,7 +110,7 @@ public class PlayerController : NetworkBehaviour
         if (isLocalPlayer)
         {
             Camera.main.GetComponent<CameraController>().setInactive();
-            Camera.main.GetComponent<CameraController>().playerTransform = null;
+            Camera.main.GetComponent<CameraController>().PlayerTransform = null;
         }
     }
 
