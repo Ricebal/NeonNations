@@ -19,16 +19,10 @@ public class PlayerEnergy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown("space")) {
-            AddEnergy(-10);
-        }
-        if(Input.GetKeyDown("return")) {
-            AddEnergy(10);
-        }
         EnergySlider.value = CurrentEnergy;
     }
 
-    void AddEnergy(int value) {
+    public void AddEnergy(int value) {
         CurrentEnergy += value;
         if(CurrentEnergy > 100)
             CurrentEnergy = 100;   
