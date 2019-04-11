@@ -34,12 +34,12 @@ public class PlayerController : NetworkBehaviour
     }
 
     public void Update() {
-        if(!isLocalPlayer) {
+        if(!isLocalPlayer || m_escapeMenu.activeSelf) {
             return;
         }
 
         // If the 'ctrl' key is held down, the entity is able to shoot and has enough energy
-        if(Input.GetButton("Fire1") && Time.time > m_nextFire && m_playerEnergy.CurrentEnergy >= BulletCost && !m_escapeMenu.activeSelf) {
+        if(Input.GetButton("Fire1") && Time.time > m_nextFire && m_playerEnergy.CurrentEnergy >= BulletCost) {
             m_nextFire = Time.time + FireRate;
             m_playerEnergy.AddEnergy(-BulletCost);
             CmdShoot();
