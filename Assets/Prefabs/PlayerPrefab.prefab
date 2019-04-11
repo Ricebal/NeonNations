@@ -144,6 +144,7 @@ GameObject:
   - component: {fileID: 6654271199680664772}
   - component: {fileID: 688729311383921738}
   - component: {fileID: 4770429813479612392}
+  - component: {fileID: 3591000254682190586}
   m_Layer: 0
   m_Name: PlayerPrefab
   m_TagString: Untagged
@@ -312,3 +313,16 @@ MonoBehaviour:
   m_SnapThreshold: 5
   m_InterpolateRotation: 1
   m_InterpolateMovement: 1
+--- !u!114 &3591000254682190586
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6654271199680664771}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be1d7aaa601c2ab4e91aca7b5d582966, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  HealthSlider: {fileID: 0}

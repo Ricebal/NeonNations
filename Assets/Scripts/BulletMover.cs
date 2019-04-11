@@ -10,6 +10,9 @@ public class BulletMover : NetworkBehaviour
 
     private float m_spawnTime;
 
+    private PlayerHealth m_playerHealth;
+    private int m_damage = 10;
+
     public void Start() {
         Rigidbody rigidbody = GetComponent<Rigidbody>();
         // Move the bullet straight ahead with constant speed
@@ -26,6 +29,12 @@ public class BulletMover : NetworkBehaviour
     }
 
     public void OnCollisionEnter(Collision collision) {
+        if (collision.gameObject.name == "PlayerPrefab") {
+            m_playerHealth = collision.gameObject.GetComponent<PlayerHealth>();
+            if (m_playerHealth.m_currentHealth > 0) {
+                m_playerHealth.TakeDamage(m_damage);
+            }
+        }
         // Destroy the bullet when it hits a wall or a player
         Destroy(this.gameObject);
     }
