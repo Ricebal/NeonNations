@@ -10,6 +10,8 @@ public class BulletMover : NetworkBehaviour
     // Damage done to a player on hit
     public float Damage;
 
+    // The player that shot the bullet
+    private GameObject m_shooter;
     private float m_spawnTime;
 
     public void Start() {
@@ -21,15 +23,29 @@ public class BulletMover : NetworkBehaviour
     }
 
     public void Update() {
+        if (!isServer) {
+            return;
+        }
+
         // Destroy the bullet when the LivingTime is elapsed
-        if(Time.time - m_spawnTime > LivingTime) {
+        if (Time.time - m_spawnTime > LivingTime) {
             Destroy(this.gameObject);
         }
     }
 
     public void OnTriggerEnter(Collider collider) {
-        // The bullet is destroyed on collision
-        Destroy(this.gameObject);
+        if(!isServer) {
+            return;
+        }
+
+        if(collider.gameObject != m_shooter) {
+            // The bullet is destroyed on collision
+            Destroy(this.gameObject);
+        }
+    }
+
+    public void SetShooter(GameObject shooter) {
+        m_shooter = shooter;
     }
 
 }

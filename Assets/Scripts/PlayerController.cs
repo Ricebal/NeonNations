@@ -70,6 +70,7 @@ public class PlayerController : NetworkBehaviour
     [Command]
     public void CmdShoot() {
         GameObject bullet = Instantiate(Shot, ShotSpawn.position, ShotSpawn.rotation) as GameObject;
+        bullet.GetComponent<BulletMover>().SetShooter(this.gameObject);
 
         // Instanciate the bullet on the network for all players 
         NetworkServer.Spawn(bullet);
@@ -78,8 +79,8 @@ public class PlayerController : NetworkBehaviour
     [Command]
     public void CmdSonar() {
         for(int i = 0; i < 360; i += 2) {
-            GameObject sonarBullet = Instantiate(Sonar, ShotSpawn.position, ShotSpawn.rotation) as GameObject;
-            sonarBullet.transform.RotateAround(this.gameObject.transform.position, new Vector3(0.0f, 1.0f, 0.0f), i);
+            GameObject sonarBullet = Instantiate(Sonar, this.transform.position, ShotSpawn.rotation * Quaternion.Euler(0.0f, i, 0.0f)) as GameObject;
+            sonarBullet.GetComponent<BulletMover>().SetShooter(this.gameObject);
 
             // Instanciate the bullet on the network for all players 
             NetworkServer.Spawn(sonarBullet);
