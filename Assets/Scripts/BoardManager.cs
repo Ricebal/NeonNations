@@ -20,58 +20,85 @@ public class BoardManager : MonoBehaviour
 
     public int columns = 30;
     public int rows = 22;
+    public int outerWallWidth = 2;
 
+    private bool[,] tileMap;
     private Transform boardHolder;
 
-    void BoardSetup()
+    void GenerateMap()
+    {
+        tileMap = new bool[columns, rows];
+
+        for (int x = 0; x < columns; x++)
+        {
+            for (int y = 0; y < rows; y++)
+            {
+                if (// rooms
+                    x == 0 && y == 0
+                    || x >= 0 && x <= 9 && y >= 16 && y <= 21
+                    || x >= 1 && x <= 7 && y >= 0 && y <= 5
+                    || x >= 11 && x <= 15 && y >= 4 && y <= 10
+                    || x >= 16 && x <= 20 && y >= 13 && y <= 18
+                    || x >= 23 && x <= 29 && y >= 3 && y <= 10
+                    || x >= 24 && x <= 27 && y >= 17 && y <= 21
+                    // corridors
+                    || x >= 1 && x <= 2 && y >= 12 && y <= 15
+                    || x >= 3 && x <= 6 && y >= 12 && y <= 13
+                    || x >= 5 && x <= 6 && y >= 6 && y <= 13
+                    || x >= 7 && x <= 10 && y >= 8 && y <= 9
+                    || x >= 8 && x <= 24 && y >= 0 && y <= 1
+                    || x >= 10 && x <= 15 && y >= 17 && y <= 18
+                    || x >= 13 && x <= 14 && y >= 2 && y <= 3
+                    || x >= 16 && x <= 22 && y >= 8 && y <= 9
+                    || x >= 17 && x <= 18 && y >= 19 && y <= 21
+                    || x >= 17 && x <= 18 && y >= 10 && y <= 12
+                    || x >= 19 && x <= 25 && y >= 20 && y <= 21
+                    || x >= 23 && x <= 24 && y == 2
+                    || x >= 25 && x <= 26 && y >= 11 && y <= 16)
+                {
+                    tileMap[x, y] = true;
+                }
+            }
+        }
+    }
+
+    void LoadMap()
     {
         boardHolder = new GameObject("Board").transform;
-
-        for (int x = -1; x <= columns; x++)
+        for (int i = 0; i < tileMap.GetLength(0); i++)
         {
-            for (int z = -1; z <= rows; z++)
+            for (int j = 0; j < tileMap.GetLength(1); j++)
             {
-                if (x == -1 && z !=0 
-                    || x == columns 
-                    || z == -1 
-                    || z == rows 
-                    || x == 0 && z >= 1 && z <= 15 
-                    || x >= 1 && x <= 4 && z >= 6 && z <= 11 
-                    || x >= 3 && x <= 6 && z >= 14 && z <= 15
-                    || x >= 7 && x <= 15 && z >= 11 && z <= 15
-                    || x >= 10 && x <= 15 && z == 16
-                    || x >= 7 && x <= 10 && z == 10
-                    || x == 16 && z >= 10 && z <= 12
-                    || x >= 10 && x <= 16 && z >= 19 && z <= 21
-                    || x >= 7 && x <= 10 && z >= 6 && z <= 7
-                    || x >= 8 && x <= 10 && z >= 4 && z <= 5
-                    || x >= 8 && x <= 12 && z >= 2 && z <= 3
-                    || x >= 15 && x <= 22 && z >= 2 && z <= 3
-                    || x >= 16 && x <= 22 && z >= 4 && z <= 7
-                    || x >= 25 && x <= 29 && z >= 0 && z <= 2
-                    || x >= 28 && x <= 29 && z >= 11 && z <= 21
-                    || x == 27 && z >= 11 && z <= 16
-                    || x >= 19 && x <= 23 && z == 19
-                    || x >= 21 && x <= 23 && z >= 11 && z <= 18
-                    || x == 24 && z >= 11 && z <= 16
-                    || x >= 19 && x <= 20 && z >= 11 && z <= 13
-                    || x >= 19 && x <= 22 && z == 10)
+                if (!tileMap[i, j]) // if false, build wall;
                 {
                     GameObject instance = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                    instance.transform.position = new Vector3(x, 0f, z);
+                    instance.transform.position = new Vector3(i, 0f, j);
                     instance.transform.SetParent(boardHolder);
                 }
             }
         }
     }
 
-    void LayoutObject()
+    void GenerateOuterWall()
     {
-
+        for (int i = -outerWallWidth; i < tileMap.GetLength(0) + outerWallWidth; i++)
+        {
+            for (int j = -outerWallWidth; j < tileMap.GetLength(1) + outerWallWidth; j++)
+            {
+                if (i < 0 && j != 0 || i >= tileMap.GetLength(0) || j < 0 || j >= tileMap.GetLength(1))
+                {
+                    GameObject instance = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                    instance.transform.position = new Vector3(i, 0f, j);
+                    instance.transform.SetParent(boardHolder);
+                }
+            }
+        }
     }
 
     public void SetupScene()
     {
-        BoardSetup();
+        GenerateMap();
+        LoadMap();
+        GenerateOuterWall();
     }
 }
