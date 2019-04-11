@@ -92,8 +92,8 @@ GameObject:
   - component: {fileID: 5439118275043155726}
   - component: {fileID: 7810844292074717741}
   m_Layer: 9
-  m_Name: BulletPrefab
-  m_TagString: Bullet
+  m_Name: SonarPrefab
+  m_TagString: Sonar
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -127,7 +127,7 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 112
   m_CollisionDetection: 3
 --- !u!136 &2826513337032882244
 CapsuleCollider:
@@ -140,7 +140,7 @@ CapsuleCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   m_Radius: 0.03
-  m_Height: 0.6
+  m_Height: 0.61
   m_Direction: 2
   m_Center: {x: -0.03, y: 0, z: 0.05}
 --- !u!114 &6587786285906454183
@@ -155,9 +155,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cdbdf148558ac9947b63b9afecdb4fbd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Speed: 20
-  LivingTime: 3
-  Damage: 2
+  Speed: 5
+  LivingTime: 1.5
+  Damage: 0
 --- !u!114 &5439118275043155726
 MonoBehaviour:
   m_ObjectHideFlags: 0

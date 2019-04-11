@@ -24,7 +24,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 772149800915772994}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 1.5}
+  m_LocalPosition: {x: 0, y: 0, z: 0.5}
   m_LocalScale: {x: 0, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8638977763130829894}
@@ -257,8 +257,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Speed: 10
   Shot: {fileID: 4647958490886930736, guid: c00706cf39d2dec45acc42ae29296223, type: 3}
+  Sonar: {fileID: 4647958490886930736, guid: be7e8cfbb92a8f44b857f951d2f36f60, type: 3}
   ShotSpawn: {fileID: 8830476281594632761}
   FireRate: 0.5
+  SonarRate: 1
+  BulletCost: 10
+  SonarCost: 50
 --- !u!114 &2656307798546998540
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -342,7 +346,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HealthSlider: {fileID: 0}
-  m_currentHealth: 0
 --- !u!114 &688729311383921738
 MonoBehaviour:
   m_ObjectHideFlags: 0
