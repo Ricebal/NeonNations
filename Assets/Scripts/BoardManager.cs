@@ -20,7 +20,7 @@ public class BoardManager : MonoBehaviour
 
     public int columns = 30;
     public int rows = 22;
-    public int outerWallWidth = 2;
+    public int outerWallWidth = 14;
 
     private bool[,] tileMap;
     private Transform boardHolder;
