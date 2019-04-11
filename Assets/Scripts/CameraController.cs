@@ -5,41 +5,35 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    public Transform playerTransform;
-    public float distanceFromPlayer = 11;
-    public double cameraTilt = 80;
+    public Transform PlayerTransform;
+    public float DistanceFromPlayer = 11;
+    public double CameraTilt = 80;
 
-    private Vector3 offset;
+    private Vector3 m_offset;
+    private bool m_active;
 
-    private bool active;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-    }
-
-    // Update is called once per frame
+    // LateUpdate is called once per frame, after all Update functions have been called
     void LateUpdate()
     {
         // for debugging
-        transform.eulerAngles = new Vector3((float)cameraTilt, 0, 0);
-        offset =  new Vector3(0, 0, 0);
-        offset.y = (float)Math.Cos(Math.PI / 180 * (90 - cameraTilt)) * distanceFromPlayer; // cos(θ) = Adjacent / Hypotenuse
-        offset.z = (float)Math.Sin(Math.PI / 180 * (90 - cameraTilt)) * -distanceFromPlayer; // sin(θ) = Opposite / Hypotenuse
+        transform.eulerAngles = new Vector3((float)CameraTilt, 0, 0);
+        m_offset =  new Vector3(0, 0, 0);
+        m_offset.y = (float)Math.Cos(Math.PI / 180 * (90 - CameraTilt)) * DistanceFromPlayer; // cos(θ) = Adjacent / Hypotenuse
+        m_offset.z = (float)Math.Sin(Math.PI / 180 * (90 - CameraTilt)) * -DistanceFromPlayer; // sin(θ) = Opposite / Hypotenuse
 
-        if (active)
-            transform.position = playerTransform.position + offset;
+        if (m_active)
+            transform.position = PlayerTransform.position + m_offset;
     }
 
     public void setTarget(Transform target)
     {
-        active = true;
-        playerTransform = target;
-        transform.position = playerTransform.position;
+        m_active = true;
+        PlayerTransform = target;
+        transform.position = PlayerTransform.position;
     }
 
     public void setInactive()
     {
-        active = false;
+        m_active = false;
     }
 }
