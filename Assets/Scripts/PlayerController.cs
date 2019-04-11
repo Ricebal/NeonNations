@@ -44,9 +44,8 @@ public class PlayerController : NetworkBehaviour
     }
 
     public void OnCollisionEnter(Collision collision) {
-        Debug.Log("hello piky");
         if (collision.gameObject.tag == "Bullet") {
-            if (m_playerHealth.m_currentHealth > 0) {
+            if (m_playerHealth.GetCurrentHealth() > 0) {
                 m_playerHealth.TakeDamage(m_damage);
             }
         }
