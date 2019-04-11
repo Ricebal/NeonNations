@@ -23,12 +23,14 @@ public class PlayerController : NetworkBehaviour
     // The next time the entity will be able to use the sonar in seconds
     private float m_nextSonar;
     private PlayerEnergy m_playerEnergy;
+    private GameObject m_escapeMenu;
 
     public void Start() {
         m_rigidBody = GetComponent<Rigidbody>();
         if(!isLocalPlayer)
             return;
         m_playerEnergy = GetComponent<PlayerEnergy>();
+        m_escapeMenu = GameObject.Find("MenuCanvas").transform.GetChild(0).gameObject;
     }
 
     public void Update() {
@@ -37,7 +39,7 @@ public class PlayerController : NetworkBehaviour
         }
 
         // If the 'ctrl' key is held down, the entity is able to shoot and has enough energy
-        if(Input.GetButton("Fire1") && Time.time > m_nextFire && m_playerEnergy.CurrentEnergy >= BulletCost) {
+        if(Input.GetButton("Fire1") && Time.time > m_nextFire && m_playerEnergy.CurrentEnergy >= BulletCost && !m_escapeMenu.activeSelf) {
             m_nextFire = Time.time + FireRate;
             m_playerEnergy.AddEnergy(-BulletCost);
             CmdShoot();
