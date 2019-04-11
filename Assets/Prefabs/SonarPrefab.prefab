@@ -92,8 +92,8 @@ GameObject:
   - component: {fileID: 5439118275043155726}
   - component: {fileID: 7810844292074717741}
   m_Layer: 0
-  m_Name: BulletPrefab
-  m_TagString: Bullet
+  m_Name: SonarPrefab
+  m_TagString: Sonar
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -155,9 +155,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cdbdf148558ac9947b63b9afecdb4fbd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Speed: 20
-  LivingTime: 3
-  Damage: 2
+  Speed: 5
+  LivingTime: 1.5
 --- !u!114 &5439118275043155726
 MonoBehaviour:
   m_ObjectHideFlags: 0

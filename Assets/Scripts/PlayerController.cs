@@ -6,6 +6,7 @@ public class PlayerController : NetworkBehaviour
     public float Speed;
 
     public GameObject Shot;
+    public GameObject Sonar;
     public Transform ShotSpawn;
     // Fire rate in seconds
     public float FireRate;
@@ -35,13 +36,14 @@ public class PlayerController : NetworkBehaviour
             return;
         }
 
-        // If the 'ctrl' key is held down and the entity is able to shoot
+        // If the 'ctrl' key is held down, the entity is able to shoot and has enough energy
         if(Input.GetButton("Fire1") && Time.time > m_nextFire && m_playerEnergy.CurrentEnergy >= BulletCost) {
             m_nextFire = Time.time + FireRate;
             m_playerEnergy.AddEnergy(-BulletCost);
             CmdShoot();
         }
 
+        // If the 'space' key is held down, the entity is able to use the sonar and has enough energy
         if(Input.GetButton("Jump") && Time.time > m_nextSonar && m_playerEnergy.CurrentEnergy >= SonarCost) {
             m_nextSonar = Time.time + SonarRate;
             m_playerEnergy.AddEnergy(-SonarCost);
@@ -59,12 +61,12 @@ public class PlayerController : NetworkBehaviour
 
     [Command]
     public void CmdSonar() {
-        for(int i = 0; i < 360; i += 20) {
-            GameObject bullet = Instantiate(Shot, ShotSpawn.position, ShotSpawn.rotation) as GameObject;
-            bullet.transform.RotateAround(this.gameObject.transform.position, new Vector3(0.0f, 1.0f, 0.0f), i);
+        for(int i = 0; i < 360; i += 2) {
+            GameObject sonarBullet = Instantiate(Sonar, ShotSpawn.position, ShotSpawn.rotation) as GameObject;
+            sonarBullet.transform.RotateAround(this.gameObject.transform.position, new Vector3(0.0f, 1.0f, 0.0f), i);
 
             // Instanciate the bullet on the network for all players 
-            NetworkServer.Spawn(bullet);
+            NetworkServer.Spawn(sonarBullet);
         }
     }
 

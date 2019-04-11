@@ -7,6 +7,8 @@ public class BulletMover : NetworkBehaviour
     public float Speed;
     // Time in seconds before the bullet is destroyed
     public float LivingTime;
+    // Damage done to a player on hit
+    public float Damage;
 
     private float m_spawnTime;
 
@@ -27,7 +29,7 @@ public class BulletMover : NetworkBehaviour
 
     public void OnCollisionEnter(Collision collision) {
         // Destroy the bullet when it hits something else than another bullet
-        if(collision.gameObject.tag != "Bullet") {
+        if(collision.gameObject.tag != this.gameObject.tag) {
             Destroy(this.gameObject);
         }
     }
