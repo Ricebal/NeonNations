@@ -17,6 +17,8 @@ public class PlayerController : NetworkBehaviour
 
     public void Start() {
         m_rigidBody = GetComponent<Rigidbody>();
+        if(!isLocalPlayer)
+            return;
         m_playerEnergy = GetComponent<PlayerEnergy>();
     }
 

@@ -1,9 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.UI;
 
-public class PlayerEnergy : MonoBehaviour
+public class PlayerEnergy : NetworkBehaviour
 {
     public int StartingEnergy = 100;
     public int CurrentEnergy;
@@ -19,6 +20,8 @@ public class PlayerEnergy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(!isLocalPlayer)
+            return;
         EnergySlider.value = CurrentEnergy;
     }
 
