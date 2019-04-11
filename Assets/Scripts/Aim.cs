@@ -10,11 +10,15 @@ public class Aim : NetworkBehaviour
     {
         if(!isLocalPlayer)
             return;
-        Vector3 v3T = Input.mousePosition;
-        v3T.z = Mathf.Abs(Camera.main.transform.position.y - transform.position.y);
-        v3T = Camera.main.ScreenToWorldPoint(v3T);
-        v3T -= transform.position;
-        v3T = v3T * 10000.0f + transform.position;
-        transform.LookAt(v3T);    
+
+        Ray ray=Camera.main.ScreenPointToRay(Input.mousePosition);
+        Plane plane = new Plane(Vector3.up, Vector3.zero);
+        float distance;
+        if(plane.Raycast(ray, out distance)) {
+            Vector3 target=ray.GetPoint(distance);
+            Vector3 direction=target-transform.position;
+            float rotation=Mathf.Atan2(direction.x, direction.z)*Mathf.Rad2Deg;
+            transform.rotation=Quaternion.Euler(0, rotation, 0);
+        } 
     }
 }
