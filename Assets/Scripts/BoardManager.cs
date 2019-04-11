@@ -5,33 +5,34 @@ using UnityEngine;
 
 public class BoardManager : MonoBehaviour
 {
-    [Serializable]
-    public class Count
-    {
-        public int minimum;
-        public int maximum;
+    // this can be used with random map generation
+    //[Serializable]
+    //public class Count
+    //{
+    //    public int minimum;
+    //    public int maximum;
 
-        public Count (int min, int max)
-        {
-            minimum = min;
-            maximum = max;
-        }
-    }
+    //    public Count (int min, int max)
+    //    {
+    //        minimum = min;
+    //        maximum = max;
+    //    }
+    //}
 
-    public int columns = 30;
-    public int rows = 22;
-    public int outerWallWidth = 14;
+    public int Columns = 30;
+    public int Rows = 22;
+    public int OuterWallWidth = 14;
 
-    private bool[,] tileMap;
-    private Transform boardHolder;
+    private bool[,] m_tileMap;
+    private Transform m_boardHolder;
 
     void GenerateMap()
     {
-        tileMap = new bool[columns, rows];
+        m_tileMap = new bool[Columns, Rows];
 
-        for (int x = 0; x < columns; x++)
+        for (int x = 0; x < Columns; x++)
         {
-            for (int y = 0; y < rows; y++)
+            for (int y = 0; y < Rows; y++)
             {
                 if (// rooms
                     x == 0 && y == 0
@@ -56,7 +57,7 @@ public class BoardManager : MonoBehaviour
                     || x >= 23 && x <= 24 && y == 2
                     || x >= 25 && x <= 26 && y >= 11 && y <= 16)
                 {
-                    tileMap[x, y] = true;
+                    m_tileMap[x, y] = true;
                 }
             }
         }
@@ -64,16 +65,16 @@ public class BoardManager : MonoBehaviour
 
     void LoadMap()
     {
-        boardHolder = new GameObject("Board").transform;
-        for (int i = 0; i < tileMap.GetLength(0); i++)
+        m_boardHolder = new GameObject("Board").transform;
+        for (int i = 0; i < m_tileMap.GetLength(0); i++)
         {
-            for (int j = 0; j < tileMap.GetLength(1); j++)
+            for (int j = 0; j < m_tileMap.GetLength(1); j++)
             {
-                if (!tileMap[i, j]) // if false, build wall;
+                if (!m_tileMap[i, j]) // if false, build wall;
                 {
                     GameObject instance = GameObject.CreatePrimitive(PrimitiveType.Cube);
                     instance.transform.position = new Vector3(i, 0f, j);
-                    instance.transform.SetParent(boardHolder);
+                    instance.transform.SetParent(m_boardHolder);
                 }
             }
         }
@@ -81,15 +82,15 @@ public class BoardManager : MonoBehaviour
 
     void GenerateOuterWall()
     {
-        for (int i = -outerWallWidth; i < tileMap.GetLength(0) + outerWallWidth; i++)
+        for (int i = -OuterWallWidth; i < m_tileMap.GetLength(0) + OuterWallWidth; i++)
         {
-            for (int j = -outerWallWidth; j < tileMap.GetLength(1) + outerWallWidth; j++)
+            for (int j = -OuterWallWidth; j < m_tileMap.GetLength(1) + OuterWallWidth; j++)
             {
-                if (i < 0 && j != 0 || i >= tileMap.GetLength(0) || j < 0 || j >= tileMap.GetLength(1))
+                if (i < 0 && j != 0 || i >= m_tileMap.GetLength(0) || j < 0 || j >= m_tileMap.GetLength(1))
                 {
                     GameObject instance = GameObject.CreatePrimitive(PrimitiveType.Cube);
                     instance.transform.position = new Vector3(i, 0f, j);
-                    instance.transform.SetParent(boardHolder);
+                    instance.transform.SetParent(m_boardHolder);
                 }
             }
         }
@@ -98,9 +99,9 @@ public class BoardManager : MonoBehaviour
     void GenerateFloor()
     {
         GameObject floor = GameObject.CreatePrimitive(PrimitiveType.Plane);
-        floor.transform.position = new Vector3((float)columns/2 - 0.5f, -0.5f, (float)rows / 2 - 0.5f);
-        floor.transform.localScale = new Vector3((float)(columns + outerWallWidth*2) / 10, 1, (float)(rows + outerWallWidth*2) / 10);
-        floor.transform.SetParent(boardHolder);
+        floor.transform.position = new Vector3((float)Columns/2 - 0.5f, -0.5f, (float)Rows / 2 - 0.5f);
+        floor.transform.localScale = new Vector3((float)(Columns + OuterWallWidth*2) / 10, 1, (float)(Rows + OuterWallWidth*2) / 10);
+        floor.transform.SetParent(m_boardHolder);
     }
 
     public void SetupScene()

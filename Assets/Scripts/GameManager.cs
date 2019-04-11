@@ -6,7 +6,7 @@ public class GameManager : MonoBehaviour
 {
     public BoardManager boardScript;
 
-    // Start is called before the first frame update
+    // Awake is called when the script instance is being loaded
     void Awake()
     {
         boardScript = GetComponent<BoardManager>();
@@ -16,11 +16,5 @@ public class GameManager : MonoBehaviour
     void InitGame()
     {
         boardScript.SetupScene();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }
