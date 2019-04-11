@@ -11,7 +11,7 @@ public class EscapeMenu : NetworkBehaviour
     public Button DisconnectButton;
     public Button ExitButton;
     public NetworkManager NetworkManager;
-    private bool m_paused = false;
+    public bool Paused = false;
 
     // Start is called before the first frame update
     void Start()
@@ -35,7 +35,7 @@ public class EscapeMenu : NetworkBehaviour
     }
 
     void TogglePause() {
-        m_paused = !m_paused;
-        Canvas.gameObject.SetActive(m_paused);
+        Paused = !Paused;
+        Canvas.gameObject.SetActive(Paused);
     }
 }

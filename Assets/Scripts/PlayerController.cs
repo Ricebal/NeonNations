@@ -14,12 +14,14 @@ public class PlayerController : NetworkBehaviour
     // The next time the entity will be able to shoot in seconds
     private float m_nextFire;
     private PlayerEnergy m_playerEnergy;
+    private GameObject m_escapeMenu;
 
     public void Start() {
         m_rigidBody = GetComponent<Rigidbody>();
         if(!isLocalPlayer)
             return;
         m_playerEnergy = GetComponent<PlayerEnergy>();
+        m_escapeMenu = GameObject.Find("MenuCanvas").transform.GetChild(0).gameObject;
     }
 
     public void Update() {
@@ -28,7 +30,7 @@ public class PlayerController : NetworkBehaviour
         }
 
         // If the 'ctrl' key is held down and the entity is able to shoot
-        if(Input.GetButton("Fire1") && Time.time > m_nextFire && m_playerEnergy.CurrentEnergy >= 10) {
+        if(Input.GetButton("Fire1") && Time.time > m_nextFire && m_playerEnergy.CurrentEnergy >= 10 && !m_escapeMenu.activeSelf) {
             m_nextFire = Time.time + FireRate;
             m_playerEnergy.AddEnergy(-10);
             CmdShoot();
