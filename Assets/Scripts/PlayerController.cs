@@ -14,6 +14,10 @@ public class PlayerController : NetworkBehaviour
     // The next time the entity will be able to shoot in seconds
     private float m_nextFire;
     private PlayerEnergy m_playerEnergy;
+
+    private PlayerHealth m_playerHealth;
+    private int m_damage = 10;
+
     private GameObject m_escapeMenu;
 
     public void Start() {
@@ -21,6 +25,7 @@ public class PlayerController : NetworkBehaviour
         if(!isLocalPlayer)
             return;
         m_playerEnergy = GetComponent<PlayerEnergy>();
+        m_playerHealth = GetComponent<PlayerHealth>();
         m_escapeMenu = GameObject.Find("MenuCanvas").transform.GetChild(0).gameObject;
     }
 
@@ -34,6 +39,15 @@ public class PlayerController : NetworkBehaviour
             m_nextFire = Time.time + FireRate;
             m_playerEnergy.AddEnergy(-10);
             CmdShoot();
+        }
+
+    }
+
+    public void OnCollisionEnter(Collision collision) {
+        if (collision.gameObject.tag == "Bullet") {
+            if (m_playerHealth.GetCurrentHealth() > 0) {
+                m_playerHealth.TakeDamage(m_damage);
+            }
         }
     }
 
