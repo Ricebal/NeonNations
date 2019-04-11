@@ -5,85 +5,33 @@ public class PlayerController : NetworkBehaviour
 {
     public float Speed;
 
-    public GameObject Shot;
-    public GameObject Sonar;
-    public Transform ShotSpawn;
-    // Fire rate in seconds
-    public float FireRate;
-    // Sonar rate in seconds
-    public float SonarRate;
-    // Amount of energy a bullet will consume
-    public int BulletCost;
-    // Amount of energy a sonar will consume
-    public int SonarCost;
-
     private Rigidbody m_rigidBody;
-    // The next time the entity will be able to shoot in seconds
-    private float m_nextFire;
-    // The next time the entity will be able to use the sonar in seconds
-    private float m_nextSonar;
-    private PlayerEnergy m_playerEnergy;
-
-    private PlayerHealth m_playerHealth;
-    private int m_damage = 10;
+    private Player m_player;
 
     private GameObject m_escapeMenu;
 
     public void Start() {
         m_rigidBody = GetComponent<Rigidbody>();
-        if(!isLocalPlayer)
+        if (!isLocalPlayer) {
             return;
-        m_playerEnergy = GetComponent<PlayerEnergy>();
-        m_playerHealth = GetComponent<PlayerHealth>();
+        }
+        m_player = GetComponent<Player>();
         m_escapeMenu = GameObject.Find("MenuCanvas").transform.GetChild(0).gameObject;
     }
 
-    public void Update()
-    {
+    public void Update() {
         if (!isLocalPlayer || m_escapeMenu.activeSelf) {
             return;
         }
 
-        // If the 'ctrl' key is held down, the entity is able to shoot and has enough energy
-        if (Input.GetButton("Fire1") && Time.time > m_nextFire && m_playerEnergy.CurrentEnergy >= BulletCost) {
-            m_nextFire = Time.time + FireRate;
-            m_playerEnergy.AddEnergy(-BulletCost);
-            CmdShoot();
+        // If the 'ctrl' key is held down
+        if (Input.GetButton("Fire1")) {
+            m_player.Shoot();
         }
 
-        // If the 'space' key is held down, the entity is able to use the sonar and has enough energy
-        if (Input.GetButton("Jump") && Time.time > m_nextSonar && m_playerEnergy.CurrentEnergy >= SonarCost) {
-            m_nextSonar = Time.time + SonarRate;
-            m_playerEnergy.AddEnergy(-SonarCost);
-            CmdSonar();
-        }
-    }
-
-    public void OnCollisionEnter(Collision collision) {
-        if (collision.gameObject.tag == "Bullet") {
-            if (m_playerHealth.GetCurrentHealth() > 0) {
-                m_playerHealth.TakeDamage(m_damage);
-            }
-        }
-    }
-
-    [Command]
-    public void CmdShoot() {
-        GameObject bullet = Instantiate(Shot, ShotSpawn.position, ShotSpawn.rotation) as GameObject;
-        bullet.GetComponent<BulletMover>().SetShooter(this.gameObject);
-
-        // Instanciate the bullet on the network for all players 
-        NetworkServer.Spawn(bullet);
-    }
-
-    [Command]
-    public void CmdSonar() {
-        for(int i = 0; i < 360; i += 2) {
-            GameObject sonarBullet = Instantiate(Sonar, this.transform.position, ShotSpawn.rotation * Quaternion.Euler(0.0f, i, 0.0f)) as GameObject;
-            sonarBullet.GetComponent<BulletMover>().SetShooter(this.gameObject);
-
-            // Instanciate the bullet on the network for all players 
-            NetworkServer.Spawn(sonarBullet);
+        // If the 'space' key is held down
+        if (Input.GetButton("Jump")) {
+            m_player.Sonar();
         }
     }
 
@@ -98,19 +46,16 @@ public class PlayerController : NetworkBehaviour
         Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
 
         m_rigidBody.velocity = movement * Speed;
-        m_playerEnergy.AddEnergy(1);
     }
-    public override void OnStartLocalPlayer()
-    {
+
+    public override void OnStartLocalPlayer() {
         Camera.main.GetComponent<CameraController>().setTarget(gameObject.transform);
     }
 
-    void OnDestroy()
-    {
-        if (isLocalPlayer)
-        {
+    void OnDestroy() {
+        if (isLocalPlayer) {
             Camera.main.GetComponent<CameraController>().setInactive();
-            Camera.main.GetComponent<CameraController>().playerTransform = null;
+            Camera.main.GetComponent<CameraController>().PlayerTransform = null;
         }
     }
 

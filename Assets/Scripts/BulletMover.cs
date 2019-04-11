@@ -3,12 +3,11 @@ using UnityEngine.Networking;
 
 public class BulletMover : NetworkBehaviour
 {
-
     public float Speed;
     // Time in seconds before the bullet is destroyed
     public float LivingTime;
     // Damage done to a player on hit
-    public float Damage;
+    public int Damage;
 
     // The player that shot the bullet
     private GameObject m_shooter;

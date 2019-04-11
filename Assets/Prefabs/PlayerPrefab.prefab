@@ -143,9 +143,11 @@ GameObject:
   - component: {fileID: 8638977763130829898}
   - component: {fileID: 8638977763130829899}
   - component: {fileID: 2656307798546998540}
+  - component: {fileID: 2189273758118548216}
   - component: {fileID: 2465073526135938245}
   - component: {fileID: 7604486595158206311}
-  - component: {fileID: 2189273758118548216}
+  - component: {fileID: 4592339017705222691}
+  - component: {fileID: 419414580977269258}
   m_Layer: 0
   m_Name: PlayerPrefab
   m_TagString: Player
@@ -256,13 +258,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Speed: 10
-  Shot: {fileID: 4647958490886930736, guid: c00706cf39d2dec45acc42ae29296223, type: 3}
-  Sonar: {fileID: 4647958490886930736, guid: be7e8cfbb92a8f44b857f951d2f36f60, type: 3}
-  ShotSpawn: {fileID: 8830476281594632761}
-  FireRate: 0.5
-  SonarRate: 1
-  BulletCost: 10
-  SonarCost: 50
 --- !u!114 &2656307798546998540
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -278,6 +273,19 @@ MonoBehaviour:
   StartingEnergy: 100
   CurrentEnergy: 0
   EnergySlider: {fileID: 0}
+--- !u!114 &2189273758118548216
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6654271199680664771}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be1d7aaa601c2ab4e91aca7b5d582966, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  HealthSlider: {fileID: 0}
 --- !u!114 &2465073526135938245
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -333,7 +341,7 @@ MonoBehaviour:
   m_SnapThreshold: 5
   m_InterpolateRotation: 1
   m_InterpolateMovement: 1
---- !u!114 &2189273758118548216
+--- !u!114 &4592339017705222691
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -342,10 +350,29 @@ MonoBehaviour:
   m_GameObject: {fileID: 6654271199680664771}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: be1d7aaa601c2ab4e91aca7b5d582966, type: 3}
+  m_Script: {fileID: 11500000, guid: 61e158b863bff404e98072b23a699e6d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HealthSlider: {fileID: 0}
+  Bullet: {fileID: 4647958490886930736, guid: c00706cf39d2dec45acc42ae29296223, type: 3}
+  SonarBullet: {fileID: 4647958490886930736, guid: be7e8cfbb92a8f44b857f951d2f36f60,
+    type: 3}
+  BulletSpawn: {fileID: 8830476281594632761}
+  FireRate: 0.5
+  SonarRate: 1
+--- !u!114 &419414580977269258
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6654271199680664771}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31f847ffbb0308647b962db967ddd401, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BulletCost: 10
+  SonarCost: 50
 --- !u!114 &688729311383921738
 MonoBehaviour:
   m_ObjectHideFlags: 0
