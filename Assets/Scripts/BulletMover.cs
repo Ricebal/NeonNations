@@ -27,7 +27,7 @@ public class BulletMover : NetworkBehaviour
         }
     }
 
-    public void OnCollisionEnter(Collision collision) {
+    public void OnTriggerEnter(Collider collider) {
         // The bullet is destroyed on collision
         Destroy(this.gameObject);
     }

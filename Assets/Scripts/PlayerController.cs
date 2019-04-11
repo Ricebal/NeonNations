@@ -12,7 +12,7 @@ public class PlayerController : NetworkBehaviour
     public float FireRate;
     // Sonar rate in seconds
     public float SonarRate;
-    // Amiunt of energy a bullet will consume
+    // Amount of energy a bullet will consume
     public int BulletCost;
     // Amount of energy a sonar will consume
     public int SonarCost;
@@ -56,8 +56,6 @@ public class PlayerController : NetworkBehaviour
     [Command]
     public void CmdShoot() {
         GameObject bullet = Instantiate(Shot, ShotSpawn.position, ShotSpawn.rotation) as GameObject;
-        // Ignore collisions between the player and the bullet
-        Physics.IgnoreCollision(GetComponent<Collider>(), bullet.GetComponent<Collider>());
 
         // Instanciate the bullet on the network for all players 
         NetworkServer.Spawn(bullet);
@@ -67,8 +65,6 @@ public class PlayerController : NetworkBehaviour
     public void CmdSonar() {
         for(int i = 0; i < 360; i += 2) {
             GameObject sonarBullet = Instantiate(Sonar, ShotSpawn.position, ShotSpawn.rotation) as GameObject;
-            // Ignore collisions between the player and the bullet
-            Physics.IgnoreCollision(GetComponent<Collider>(), sonarBullet.GetComponent<Collider>());
             sonarBullet.transform.RotateAround(this.gameObject.transform.position, new Vector3(0.0f, 1.0f, 0.0f), i);
 
             // Instanciate the bullet on the network for all players 
