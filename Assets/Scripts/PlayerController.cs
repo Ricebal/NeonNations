@@ -9,10 +9,18 @@ public class PlayerController : NetworkBehaviour
     public Transform ShotSpawn;
     // Fire rate in seconds
     public float FireRate;
+    // Sonar rate in seconds
+    public float SonarRate;
+    // Amiunt of energy a bullet will consume
+    public int BulletCost;
+    // Amount of energy a sonar will consume
+    public int SonarCost;
 
     private Rigidbody m_rigidBody;
     // The next time the entity will be able to shoot in seconds
     private float m_nextFire;
+    // The next time the entity will be able to use the sonar in seconds
+    private float m_nextSonar;
     private PlayerEnergy m_playerEnergy;
 
     public void Start() {
@@ -28,13 +36,15 @@ public class PlayerController : NetworkBehaviour
         }
 
         // If the 'ctrl' key is held down and the entity is able to shoot
-        if(Input.GetButton("Fire1") && Time.time > m_nextFire && m_playerEnergy.CurrentEnergy >= 10) {
+        if(Input.GetButton("Fire1") && Time.time > m_nextFire && m_playerEnergy.CurrentEnergy >= BulletCost) {
             m_nextFire = Time.time + FireRate;
-            m_playerEnergy.AddEnergy(-10);
+            m_playerEnergy.AddEnergy(-BulletCost);
             CmdShoot();
         }
 
-        if(Input.GetButton("Jump") && Time.time > m_nextFire) {
+        if(Input.GetButton("Jump") && Time.time > m_nextSonar && m_playerEnergy.CurrentEnergy >= SonarCost) {
+            m_nextSonar = Time.time + SonarRate;
+            m_playerEnergy.AddEnergy(-SonarCost);
             CmdSonar();
         }
     }
