@@ -95,9 +95,18 @@ public class BoardManager : MonoBehaviour
         }
     }
 
+    void GenerateFloor()
+    {
+        GameObject floor = GameObject.CreatePrimitive(PrimitiveType.Plane);
+        floor.transform.position = new Vector3((float)columns/2 - 0.5f, -0.5f, (float)rows / 2 - 0.5f);
+        floor.transform.localScale = new Vector3((float)(columns + outerWallWidth*2) / 10, 1, (float)(rows + outerWallWidth*2) / 10);
+        floor.transform.SetParent(boardHolder);
+    }
+
     public void SetupScene()
     {
         GenerateMap();
+        GenerateFloor();
         LoadMap();
         GenerateOuterWall();
     }

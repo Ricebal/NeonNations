@@ -291,8 +291,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 262fd08e365fcbf47a888b69b8188b15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  columns: 32
-  rows: 24
+  columns: 30
+  rows: 22
+  outerWallWidth: 14
 --- !u!114 &245815556
 MonoBehaviour:
   m_ObjectHideFlags: 0
