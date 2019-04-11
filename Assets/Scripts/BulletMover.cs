@@ -28,10 +28,8 @@ public class BulletMover : NetworkBehaviour
     }
 
     public void OnCollisionEnter(Collision collision) {
-        // Destroy the bullet when it hits something else than another bullet
-        if(collision.gameObject.tag != this.gameObject.tag) {
-            Destroy(this.gameObject);
-        }
+        // The bullet is destroyed on collision
+        Destroy(this.gameObject);
     }
 
 }
