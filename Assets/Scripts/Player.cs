@@ -59,10 +59,11 @@ public class Player : NetworkBehaviour
     }
 
     // If the player is hit by a bullet, the player gets damaged
-    public void OnCollisionEnter(Collision collision) {
-        if (collision.gameObject.tag == "Bullet") {
+    public void OnTriggerEnter(Collider collider) {
+        if (collider.gameObject.tag == "Bullet") {
             if (m_playerHealth.GetCurrentHealth() > 0) {
-                m_playerHealth.TakeDamage(collision.gameObject.GetComponent<BulletMover>().Damage);
+                Debug.Log(collider.gameObject.GetComponent<BulletMover>().Damage);
+                m_playerHealth.TakeDamage(collider.gameObject.GetComponent<BulletMover>().Damage);
             }
         }
     }
