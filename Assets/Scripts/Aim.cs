@@ -6,8 +6,7 @@ using UnityEngine.Networking;
 public class Aim : NetworkBehaviour
 {
     // Update is called once per frame
-    void Update()
-    {
+    void Update() {
         if(!isLocalPlayer)
             return;
 
