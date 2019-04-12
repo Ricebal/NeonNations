@@ -25,6 +25,9 @@ public class Player : NetworkBehaviour
     }
 
     void FixedUpdate() {
+        if (!isLocalPlayer) {
+            return;
+        }
         m_playerEnergy.AddEnergy(1);
     }
 
