@@ -6,15 +6,12 @@ public class DebugMode : MonoBehaviour
 {
     public GameObject DirectionalLight;
     // Start is called before the first frame update
-    void Start()
-    {
-        
+    void Start() {
         DirectionalLight.SetActive(false);
     }
 
     // Update is called once per frame
-    void Update()
-    {
+    void Update() {
         if(Input.GetKeyDown(KeyCode.Return)) {
             DirectionalLight.SetActive(!DirectionalLight.activeSelf);
         }
