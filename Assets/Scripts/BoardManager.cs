@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(MeshFilter))]
+[RequireComponent(typeof(MeshRenderer))]
 public class BoardManager : MonoBehaviour
 {
     // this can be used with random map generation
@@ -22,9 +24,10 @@ public class BoardManager : MonoBehaviour
     public int Columns = 30;
     public int Rows = 22;
     public int OuterWallWidth = 14;
+    public GameObject Map;
 
     private bool[,] m_tileMap;
-    private Transform m_boardHolder;
+    private GameObject map;
 
     void GenerateMap()
     {
@@ -63,9 +66,17 @@ public class BoardManager : MonoBehaviour
         }
     }
 
+    void GenerateFloor()
+    {
+        map = Instantiate(Map, new Vector3(0, 0, 0), Quaternion.identity) as GameObject;
+        GameObject floor = GameObject.CreatePrimitive(PrimitiveType.Plane);
+        floor.transform.position = new Vector3((float)Columns / 2 - 0.5f, -0.5f, (float)Rows / 2 - 0.5f);
+        floor.transform.localScale = new Vector3((float)(Columns + OuterWallWidth * 2) / 10, 1, (float)(Rows + OuterWallWidth * 2) / 10);
+        floor.transform.SetParent(map.transform);
+    }
+
     void LoadMap()
     {
-        m_boardHolder = new GameObject("Board").transform;
         for (int i = 0; i < m_tileMap.GetLength(0); i++)
         {
             for (int j = 0; j < m_tileMap.GetLength(1); j++)
@@ -74,7 +85,7 @@ public class BoardManager : MonoBehaviour
                 {
                     GameObject instance = GameObject.CreatePrimitive(PrimitiveType.Cube);
                     instance.transform.position = new Vector3(i, 0f, j);
-                    instance.transform.SetParent(m_boardHolder);
+                    instance.transform.SetParent(map.transform);
                 }
             }
         }
@@ -90,18 +101,38 @@ public class BoardManager : MonoBehaviour
                 {
                     GameObject instance = GameObject.CreatePrimitive(PrimitiveType.Cube);
                     instance.transform.position = new Vector3(i, 0f, j);
-                    instance.transform.SetParent(m_boardHolder);
+                    instance.transform.SetParent(map.transform);
                 }
             }
         }
     }
 
-    void GenerateFloor()
+    void CombineMeshes()
     {
-        GameObject floor = GameObject.CreatePrimitive(PrimitiveType.Plane);
-        floor.transform.position = new Vector3((float)Columns/2 - 0.5f, -0.5f, (float)Rows / 2 - 0.5f);
-        floor.transform.localScale = new Vector3((float)(Columns + OuterWallWidth*2) / 10, 1, (float)(Rows + OuterWallWidth*2) / 10);
-        floor.transform.SetParent(m_boardHolder);
+
+        MeshFilter[] meshFilters = map.GetComponentsInChildren<MeshFilter>();
+        Mesh finalMesh = new Mesh();
+        CombineInstance[] combiners = new CombineInstance[meshFilters.Length];
+
+        for (int i = 0; i < meshFilters.Length; i++)
+        {
+            combiners[i].subMeshIndex = 0;
+            combiners[i].mesh = meshFilters[i].sharedMesh;
+            combiners[i].transform = meshFilters[i].transform.localToWorldMatrix;
+            meshFilters[i].gameObject.SetActive(false);
+        }
+
+        finalMesh.CombineMeshes(combiners);
+        map.transform.GetComponent<MeshFilter>().sharedMesh = finalMesh;
+        map.transform.gameObject.SetActive(true);
+
+        var collider = map.GetComponent<MeshCollider>();
+        collider.sharedMesh = finalMesh;
+
+        foreach (Transform child in map.transform)
+        {
+            Destroy(child.gameObject);
+        }
     }
 
     public void SetupScene()
@@ -110,5 +141,6 @@ public class BoardManager : MonoBehaviour
         GenerateFloor();
         LoadMap();
         GenerateOuterWall();
+        CombineMeshes();
     }
 }
