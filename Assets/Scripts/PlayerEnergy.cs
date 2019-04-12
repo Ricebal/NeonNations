@@ -6,30 +6,35 @@ using UnityEngine.UI;
 
 public class PlayerEnergy : NetworkBehaviour
 {
-    public int StartingEnergy = 100;
-    public int CurrentEnergy;
     public Slider EnergySlider;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        CurrentEnergy = StartingEnergy;
+    private int m_startingEnergy;
+    private int m_currentEnergy;
+
+    void Start() {
         EnergySlider = GameObject.Find("EnergySlider").GetComponent<Slider>();
+        m_startingEnergy = (int) EnergySlider.value;
+        m_currentEnergy = m_startingEnergy;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        if(!isLocalPlayer)
+    void Update() {
+        if (!isLocalPlayer) {
             return;
-        EnergySlider.value = CurrentEnergy;
+        }
+        EnergySlider.value = m_currentEnergy;
     }
 
     public void AddEnergy(int value) {
-        CurrentEnergy += value;
-        if(CurrentEnergy > 100)
-            CurrentEnergy = 100;   
-        if(CurrentEnergy < 0)
-            CurrentEnergy = 0;
+        m_currentEnergy += value;
+        if (m_currentEnergy > 100) { 
+            m_currentEnergy = 100;  
+        }
+        if (m_currentEnergy < 0) {
+            m_currentEnergy = 0;
+        }
+    }
+
+    public int GetCurrentEnergy() {
+        return m_currentEnergy;
     }
 }

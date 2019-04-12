@@ -42,7 +42,7 @@ public class Player : NetworkBehaviour
 
     public void Shoot() {
         // If the cooldown is elapsed and the player has enough energy
-        if (Time.time > m_nextFire && m_playerEnergy.CurrentEnergy >= BulletCost) {
+        if (Time.time > m_nextFire && m_playerEnergy.GetCurrentEnergy() >= BulletCost) {
             m_nextFire = Time.time + FireRate;
             m_playerEnergy.AddEnergy(-BulletCost);
             m_playerAction.CmdShoot();
@@ -51,7 +51,7 @@ public class Player : NetworkBehaviour
 
     public void Sonar() {
         // If the cooldown is elapsed and the player has enough energy
-        if (Time.time > m_nextSonar && m_playerEnergy.CurrentEnergy >= SonarCost) {
+        if (Time.time > m_nextSonar && m_playerEnergy.GetCurrentEnergy() >= SonarCost) {
             m_nextSonar = Time.time + SonarRate;
             m_playerEnergy.AddEnergy(-SonarCost);
             m_playerAction.CmdSonar();
@@ -62,8 +62,7 @@ public class Player : NetworkBehaviour
     public void OnTriggerEnter(Collider collider) {
         if (collider.gameObject.tag == "Bullet") {
             if (m_playerHealth.GetCurrentHealth() > 0) {
-                Debug.Log(collider.gameObject.GetComponent<BulletMover>().Damage);
-                m_playerHealth.TakeDamage(collider.gameObject.GetComponent<BulletMover>().Damage);
+                m_playerHealth.TakeDamage(collider.gameObject.GetComponent<Bullet>().Damage);
             }
         }
     }

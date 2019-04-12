@@ -10,18 +10,12 @@ public class PlayerHealth : MonoBehaviour
     private int m_startingHealth;
     private int m_currentHealth; 
     private bool m_isDead;                            // Whether the player is dead
-    //private bool m_damaged;                           // True when the player gets damaged
 
     void Start() {
         HealthSlider = GameObject.Find("HealthSlider").GetComponent<Slider>();
-        m_startingHealth = (int)HealthSlider.value;
+        m_startingHealth = (int) HealthSlider.value;
         m_currentHealth = m_startingHealth;
         m_isDead = false;
-    }
-
-    void Update()
-    {
-
     }
 
     public void TakeDamage(int amount) {

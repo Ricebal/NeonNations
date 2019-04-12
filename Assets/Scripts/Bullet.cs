@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
 using UnityEngine.Networking;
 
-public class BulletMover : NetworkBehaviour
+public class Bullet : NetworkBehaviour
 {
+    // Bullet speed
     public float Speed;
     // Time in seconds before the bullet is destroyed
     public float LivingTime;
