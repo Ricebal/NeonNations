@@ -357,8 +357,6 @@ MonoBehaviour:
   SonarBullet: {fileID: 4647958490886930736, guid: be7e8cfbb92a8f44b857f951d2f36f60,
     type: 3}
   BulletSpawn: {fileID: 8830476281594632761}
-  FireRate: 0.5
-  SonarRate: 1
 --- !u!114 &419414580977269258
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -373,6 +371,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BulletCost: 10
   SonarCost: 50
+  FireRate: 0.5
+  SonarRate: 1
 --- !u!114 &688729311383921738
 MonoBehaviour:
   m_ObjectHideFlags: 0

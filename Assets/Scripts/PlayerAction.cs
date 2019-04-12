@@ -9,6 +9,7 @@ public class PlayerAction : NetworkBehaviour
     public GameObject Bullet;
     // Prefab representing the sonar bullet
     public GameObject SonarBullet;
+    // Transform object representing the bullets' spawn location
     public Transform BulletSpawn;
 
     [Command]
