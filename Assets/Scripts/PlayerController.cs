@@ -8,7 +8,6 @@ public class PlayerController : NetworkBehaviour
     private Rigidbody m_rigidBody;
     private Player m_player;
     private GameObject m_escapeMenu;
-    private CameraController m_cameraController;
 
     public void Start() {
         if (!isLocalPlayer) {
@@ -17,7 +16,6 @@ public class PlayerController : NetworkBehaviour
         m_rigidBody = GetComponent<Rigidbody>();
         m_player = GetComponent<Player>();
         m_escapeMenu = GameObject.Find("MenuCanvas").transform.GetChild(0).gameObject;
-        m_cameraController = Camera.main.GetComponent<CameraController>();
     }
 
     public void Update() {
@@ -50,7 +48,7 @@ public class PlayerController : NetworkBehaviour
     }
 
     public override void OnStartLocalPlayer() {
-        m_cameraController.setTarget(gameObject.transform);
+        Camera.main.GetComponent<CameraController>().setTarget(gameObject.transform);
     }
 
     void OnDestroy() {
@@ -58,8 +56,8 @@ public class PlayerController : NetworkBehaviour
             return;
         }
 
-        m_cameraController.setInactive();
-        m_cameraController.PlayerTransform = null;
+        Camera.main.GetComponent<CameraController>().setInactive();
+        Camera.main.GetComponent<CameraController>().PlayerTransform = null;
     }
 
 }
