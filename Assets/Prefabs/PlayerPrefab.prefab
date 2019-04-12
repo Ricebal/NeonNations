@@ -48,7 +48,7 @@ GameObject:
   - component: {fileID: 2465073526135938245}
   - component: {fileID: 7604486595158206311}
   - component: {fileID: 2189273758118548216}
-  - component: {fileID: 4424299574088467733}
+  - component: {fileID: 8868325220508737310}
   m_Layer: 0
   m_Name: PlayerPrefab
   m_TagString: Player
@@ -95,7 +95,7 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 116
   m_CollisionDetection: 0
 --- !u!23 &8638977763130829897
 MeshRenderer:
@@ -235,7 +235,7 @@ MonoBehaviour:
   m_MovementTheshold: 0.001
   m_VelocityThreshold: 0.0001
   m_SnapThreshold: 5
-  m_InterpolateRotation: 1
+  m_InterpolateRotation: 0
   m_InterpolateMovement: 1
 --- !u!114 &2189273758118548216
 MonoBehaviour:
@@ -250,7 +250,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HealthSlider: {fileID: 0}
---- !u!114 &4424299574088467733
+--- !u!114 &8868325220508737310
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
