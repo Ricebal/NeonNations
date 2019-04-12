@@ -7,14 +7,13 @@ public class PlayerController : NetworkBehaviour
 
     private Rigidbody m_rigidBody;
     private Player m_player;
-
     private GameObject m_escapeMenu;
 
     public void Start() {
-        m_rigidBody = GetComponent<Rigidbody>();
         if (!isLocalPlayer) {
             return;
         }
+        m_rigidBody = GetComponent<Rigidbody>();
         m_player = GetComponent<Player>();
         m_escapeMenu = GameObject.Find("MenuCanvas").transform.GetChild(0).gameObject;
     }
@@ -53,10 +52,12 @@ public class PlayerController : NetworkBehaviour
     }
 
     void OnDestroy() {
-        if (isLocalPlayer) {
-            Camera.main.GetComponent<CameraController>().setInactive();
-            Camera.main.GetComponent<CameraController>().PlayerTransform = null;
+        if (!isLocalPlayer) {
+            return;
         }
+
+        Camera.main.GetComponent<CameraController>().setInactive();
+        Camera.main.GetComponent<CameraController>().PlayerTransform = null;
     }
 
 }
