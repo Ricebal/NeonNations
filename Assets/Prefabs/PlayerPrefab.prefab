@@ -49,6 +49,7 @@ GameObject:
   - component: {fileID: 7604486595158206311}
   - component: {fileID: 2189273758118548216}
   - component: {fileID: 8868325220508737310}
+  - component: {fileID: 4860999457290938284}
   m_Layer: 0
   m_Name: PlayerPrefab
   m_TagString: Player
@@ -262,6 +263,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46b6286f023363a43a2fd167d548cd66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &4860999457290938284
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6654271199680664771}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d57acbc7c518fd74aa718e3871d89aa3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6716781768823966986
 GameObject:
   m_ObjectHideFlags: 0
@@ -304,8 +317,8 @@ Light:
   serializedVersion: 8
   m_Type: 2
   m_Color: {r: 1, g: 0.9643769, b: 0.8632076, a: 1}
-  m_Intensity: 0.25
-  m_Range: 10
+  m_Intensity: 0.5
+  m_Range: 15
   m_SpotAngle: 30
   m_CookieSize: 10
   m_Shadows:
@@ -373,8 +386,8 @@ Light:
   serializedVersion: 8
   m_Type: 0
   m_Color: {r: 1, g: 0.9143163, b: 0.7783019, a: 1}
-  m_Intensity: 0.75
-  m_Range: 93.4
+  m_Intensity: 15
+  m_Range: 4.5
   m_SpotAngle: 15.6
   m_CookieSize: 10
   m_Shadows:
