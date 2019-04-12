@@ -48,6 +48,7 @@ GameObject:
   - component: {fileID: 2465073526135938245}
   - component: {fileID: 7604486595158206311}
   - component: {fileID: 2189273758118548216}
+  - component: {fileID: 4424299574088467733}
   m_Layer: 0
   m_Name: PlayerPrefab
   m_TagString: Player
@@ -249,6 +250,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HealthSlider: {fileID: 0}
+--- !u!114 &4424299574088467733
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6654271199680664771}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 46b6286f023363a43a2fd167d548cd66, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6716781768823966986
 GameObject:
   m_ObjectHideFlags: 0
