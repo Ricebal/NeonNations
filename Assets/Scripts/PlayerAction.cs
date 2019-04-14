@@ -14,7 +14,7 @@ public class PlayerAction : NetworkBehaviour
 
     [Command]
     public void CmdShoot() {
-        GameObject bullet = Instantiate(Bullet, BulletSpawn.position, BulletSpawn.rotation) as GameObject;
+        GameObject bullet = Instantiate(Bullet, BulletSpawn.position, BulletSpawn.rotation);
         bullet.GetComponent<Bullet>().SetShooter(this.gameObject);
 
         // Instanciate the bullet on the network for all players 
