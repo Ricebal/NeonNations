@@ -226,7 +226,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Speed: 5
-  LivingTime: 1.5
+  LivingTime: 1.25
   Damage: 0
 --- !u!114 &5439118275043155726
 MonoBehaviour:
