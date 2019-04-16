@@ -14,7 +14,7 @@ public class PlayerAction : NetworkBehaviour
 
     [Command]
     public void CmdShoot() {
-        GameObject bullet = Instantiate(Bullet, BulletSpawn.position, BulletSpawn.rotation) as GameObject;
+        GameObject bullet = Instantiate(Bullet, BulletSpawn.position, BulletSpawn.rotation);
         bullet.GetComponent<Bullet>().SetShooter(this.gameObject);
 
         // Instanciate the bullet on the network for all players 
@@ -23,8 +23,9 @@ public class PlayerAction : NetworkBehaviour
 
     [Command]
     public void CmdSonar() {
-        for (int i = 0; i < 360; i += 2) {
-            GameObject sonarBullet = Instantiate(SonarBullet, this.transform.position, BulletSpawn.rotation * Quaternion.Euler(0.0f, i, 0.0f)) as GameObject;
+        for (int i = 0; i < 360; i += 4) {
+            GameObject sonarBullet = Instantiate(SonarBullet, this.transform.position, Quaternion.Euler(0, i, 0));
+            sonarBullet.transform.Translate(new Vector3(0, 0, this.transform.localScale.z / 2f), Space.Self);
             sonarBullet.GetComponent<Bullet>().SetShooter(this.gameObject);
 
             // Instanciate the bullet on the network for all players 
