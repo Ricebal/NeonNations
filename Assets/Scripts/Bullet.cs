@@ -11,7 +11,7 @@ public class Bullet : NetworkBehaviour
     public int Damage;
 
     // The player that shot the bullet
-    private GameObject m_shooter;
+    public GameObject m_shooter;
     private float m_spawnTime;
 
     public void Start() {
