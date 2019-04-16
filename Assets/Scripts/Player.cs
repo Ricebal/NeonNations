@@ -20,23 +20,46 @@ public class Player : NetworkBehaviour
     // The next time the entity will be able to use the sonar, in seconds
     private float m_nextSonar;
 
+    private PlayerController m_playerController;
     private PlayerAction m_playerAction;
     private PlayerEnergy m_playerEnergy;
     private PlayerHealth m_playerHealth;
+    private CameraController m_cameraController;
+    private EscapeMenu m_escapeMenu;
 
     void Start() {
         if (!isLocalPlayer) {
             return;
         }
+
+        m_playerController = GetComponent<PlayerController>();
         m_playerAction = GetComponent<PlayerAction>();
         m_playerEnergy = GetComponent<PlayerEnergy>();
         m_playerHealth = GetComponent<PlayerHealth>();
+        m_cameraController = Camera.main.GetComponent<CameraController>();
+        m_cameraController.setTarget(this.transform);
+        m_escapeMenu = GameObject.Find("MenuCanvas").GetComponent<EscapeMenu>();
+    }
+
+    void Update() {
+        if(!isLocalPlayer) {
+            return;
+        }
+
+        // If the escape menu is displayed, stop player's movements and set its velocity to 0
+        if(m_escapeMenu.IsPaused()) {
+            m_playerController.SetEnabled(false);
+            m_playerController.Freeze();
+        } else {
+            m_playerController.SetEnabled(true);
+        }
     }
 
     void FixedUpdate() {
         if (!isLocalPlayer) {
             return;
         }
+
         m_playerEnergy.AddEnergy(1);
     }
 
@@ -59,7 +82,7 @@ public class Player : NetworkBehaviour
     }
 
     // If the player is hit by a bullet, the player gets damaged
-    public void OnTriggerEnter(Collider collider) {
+    void OnTriggerEnter(Collider collider) {
         if(!isLocalPlayer) {
             return;
         }
@@ -67,5 +90,14 @@ public class Player : NetworkBehaviour
         if (collider.gameObject.tag == "Bullet" && collider.gameObject.GetComponent<Bullet>().GetShooter() != this.gameObject) {
             m_playerHealth.TakeDamage(collider.gameObject.GetComponent<Bullet>().Damage);
         }
+    }
+
+    void OnDestroy() {
+        if (!isLocalPlayer) {
+            return;
+        }
+
+        m_cameraController.setInactive();
+        m_cameraController.PlayerTransform = null;
     }
 }
