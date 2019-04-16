@@ -877,7 +877,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DirectionalLight: {fileID: 1844940089}
---- !u!1001 &842043448
+--- !u!1001 &1679541086
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -994,11 +994,6 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7375908384011511246, guid: ff6331ee681933a49a95f9bcbb22c5ce,
-        type: 3}
-      propertyPath: NetworkManager
-      value: 
-      objectReference: {fileID: 662932399}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ff6331ee681933a49a95f9bcbb22c5ce, type: 3}
 --- !u!1 &1844940089
