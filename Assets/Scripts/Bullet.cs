@@ -24,10 +24,6 @@ public class Bullet : NetworkBehaviour
     }
 
     public void Update() {
-        if (!isServer) {
-            return;
-        }
-
         // Destroy the bullet when the LivingTime is elapsed
         if (Time.time - m_spawnTime > LivingTime) {
             Destroy(this.gameObject);
@@ -35,13 +31,13 @@ public class Bullet : NetworkBehaviour
     }
 
     public void OnTriggerEnter(Collider collider) {
-        if(!isServer) {
+        if (!isServer) {
             return;
         }
 
         if(collider.gameObject != m_shooter) {
             // The bullet is destroyed on collision
-            Destroy(this.gameObject);
+            NetworkBehaviour.Destroy(this.gameObject);
         }
     }
 
