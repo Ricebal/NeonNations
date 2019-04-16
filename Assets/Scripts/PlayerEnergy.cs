@@ -1,27 +1,16 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.Networking;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class PlayerEnergy : NetworkBehaviour
+public class PlayerEnergy : MonoBehaviour
 {
-    public Slider EnergySlider;
-
+    private Slider m_energySlider;
     private int m_startingEnergy;
     private int m_currentEnergy;
 
     void Start() {
-        EnergySlider = GameObject.Find("EnergySlider").GetComponent<Slider>();
-        m_startingEnergy = (int) EnergySlider.value;
-        m_currentEnergy = m_startingEnergy;
-    }
-
-    void Update() {
-        if (!isLocalPlayer) {
-            return;
-        }
-        EnergySlider.value = m_currentEnergy;
+        m_energySlider = GameObject.Find("EnergySlider").GetComponent<Slider>();
+        m_startingEnergy = (int) m_energySlider.value;
+        Reset();
     }
 
     public void AddEnergy(int value) {
@@ -32,6 +21,12 @@ public class PlayerEnergy : NetworkBehaviour
         if (m_currentEnergy < 0) {
             m_currentEnergy = 0;
         }
+        m_energySlider.value = m_currentEnergy;
+    }
+
+    public void Reset() {
+        m_currentEnergy = m_startingEnergy;
+        m_energySlider.value = m_currentEnergy;
     }
 
     public int GetCurrentEnergy() {

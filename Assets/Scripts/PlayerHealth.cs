@@ -1,30 +1,32 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class PlayerHealth : MonoBehaviour
 {
-    public Slider HealthSlider;
-
+    private Slider m_healthSlider;
     private int m_startingHealth;
     private int m_currentHealth; 
-    private bool m_isDead;                            // Whether the player is dead
 
     void Start() {
-        HealthSlider = GameObject.Find("HealthSlider").GetComponent<Slider>();
-        m_startingHealth = (int) HealthSlider.value;
-        m_currentHealth = m_startingHealth;
-        m_isDead = false;
+        m_healthSlider = GameObject.Find("HealthSlider").GetComponent<Slider>();
+        m_startingHealth = (int) m_healthSlider.value;
+        Reset();
     }
 
     public void TakeDamage(int amount) {
         m_currentHealth -= amount;
-        HealthSlider.value = m_currentHealth;
-
-        if (m_currentHealth <= 0) {
-            m_isDead = true;
+        if(m_currentHealth > 100) {
+            m_currentHealth = 100;
         }
+        if (m_currentHealth < 0) {
+            m_currentHealth = 0;
+        }
+        m_healthSlider.value = m_currentHealth;
+    }
+
+    public void Reset() {
+        m_currentHealth = m_startingHealth;
+        m_healthSlider.value = m_currentHealth;
     }
 
     public int GetCurrentHealth() {
