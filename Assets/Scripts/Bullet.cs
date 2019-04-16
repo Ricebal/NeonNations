@@ -12,7 +12,7 @@ public class Bullet : NetworkBehaviour
 
     // The player that shot the bullet
     [SyncVar]
-    public GameObject m_shooter;
+    private GameObject m_shooter;
     private float m_spawnTime;
 
     public void Start() {
