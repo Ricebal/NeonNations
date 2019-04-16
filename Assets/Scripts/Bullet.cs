@@ -11,6 +11,7 @@ public class Bullet : NetworkBehaviour
     public int Damage;
 
     // The player that shot the bullet
+    [SyncVar]
     private GameObject m_shooter;
     private float m_spawnTime;
 
@@ -42,6 +43,10 @@ public class Bullet : NetworkBehaviour
 
     public void SetShooter(GameObject shooter) {
         m_shooter = shooter;
+    }
+
+    public GameObject GetShooter() {
+        return m_shooter;
     }
 
 }
