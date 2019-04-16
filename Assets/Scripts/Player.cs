@@ -20,18 +20,21 @@ public class Player : NetworkBehaviour
     // The next time the entity will be able to use the sonar, in seconds
     private float m_nextSonar;
 
+    private Vector3 m_initialPosition;
     private PlayerController m_playerController;
     private PlayerAction m_playerAction;
     private PlayerEnergy m_playerEnergy;
     private PlayerHealth m_playerHealth;
     private CameraController m_cameraController;
     private EscapeMenu m_escapeMenu;
+    private GameOverMenu m_gameOverMenu;
 
     void Start() {
         if (!isLocalPlayer) {
             return;
         }
 
+        m_initialPosition = this.transform.position;
         m_playerController = GetComponent<PlayerController>();
         m_playerAction = GetComponent<PlayerAction>();
         m_playerEnergy = GetComponent<PlayerEnergy>();
@@ -39,6 +42,7 @@ public class Player : NetworkBehaviour
         m_cameraController = Camera.main.GetComponent<CameraController>();
         m_cameraController.setTarget(this.transform);
         m_escapeMenu = GameObject.Find("MenuCanvas").GetComponent<EscapeMenu>();
+        m_gameOverMenu = GameObject.Find("GameOverCanvas").GetComponent<GameOverMenu>();
     }
 
     void Update() {
@@ -47,11 +51,23 @@ public class Player : NetworkBehaviour
         }
 
         // If the escape menu is displayed, stop player's movements and set its velocity to 0
-        if(m_escapeMenu.IsPaused()) {
+        if(m_escapeMenu.IsPaused() || m_gameOverMenu.IsActive()) {
             m_playerController.SetEnabled(false);
             m_playerController.Freeze();
         } else {
             m_playerController.SetEnabled(true);
+        }
+
+        // If the player is dead...
+        if (m_playerHealth.GetCurrentHealth() <= 0) {
+            // ...and the game over menu is not already activated, the player just died
+            if (!m_gameOverMenu.IsActive()) {
+                Die();
+            }
+            // ...and the remaining time before respawn is elapsed, the player has to respawn
+            else if (m_gameOverMenu.GetRemainingTime() <= 0) {
+                Respawn();
+            }
         }
     }
 
@@ -79,6 +95,18 @@ public class Player : NetworkBehaviour
             m_playerEnergy.AddEnergy(-SonarCost);
             m_playerAction.CmdSonar();
         }
+    }
+
+    private void Die() {
+        m_gameOverMenu.SetActive(true);
+    }
+
+    private void Respawn() {
+        m_gameOverMenu.SetActive(false);
+
+        this.transform.position = m_initialPosition;
+        m_playerHealth.Reset();
+        m_playerEnergy.Reset();
     }
 
     // If the player is hit by a bullet, the player gets damaged
