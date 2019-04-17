@@ -159,8 +159,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Speed: 20
   LivingTime: 3
-  hitPrefab: {fileID: 3094941509523325703, guid: d77552685e61a8d42af654601f48fe98,
-    type: 3}
   Damage: 2
 --- !u!114 &5439118275043155726
 MonoBehaviour:
@@ -364,7 +362,7 @@ Light:
   m_Type: 2
   m_Color: {r: 1, g: 0, b: 0, a: 1}
   m_Intensity: 2
-  m_Range: 1
+  m_Range: 1.6
   m_SpotAngle: 30
   m_CookieSize: 10
   m_Shadows:

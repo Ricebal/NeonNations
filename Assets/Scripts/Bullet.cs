@@ -7,8 +7,6 @@ public class Bullet : NetworkBehaviour
     public float Speed;
     // Time in seconds before the bullet is destroyed
     public float LivingTime;
-    // The explosion on impact
-    public GameObject hitPrefab;
     // Damage done to a player on hit
     public int Damage;
 
@@ -40,12 +38,6 @@ public class Bullet : NetworkBehaviour
         if(collider.gameObject != m_shooter) {
             // The bullet is destroyed on collision
 
-            //Transform pos = collider.ClosestPoint(transform);
-            //if(collider.gameObject == )
-            if(hitPrefab != null)
-            {
-                hitPrefab = Instantiate(hitPrefab, transform);
-            }
             NetworkBehaviour.Destroy(this.gameObject);
         }
     }
