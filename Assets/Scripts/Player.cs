@@ -51,7 +51,7 @@ public class Player : NetworkBehaviour
             return;
         }
 
-        // If the escape menu is displayed, stop player's movements and set its velocity to 0
+        // If the escape menu or the game over menu is displayed, disable player's movements and set his velocity to 0
         if(m_escapeMenu.IsPaused() || m_gameOverMenu.IsActive()) {
             m_playerController.SetEnabled(false);
             m_playerController.Freeze();
