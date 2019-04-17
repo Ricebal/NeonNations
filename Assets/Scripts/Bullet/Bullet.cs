@@ -10,7 +10,7 @@ public class Bullet : NetworkBehaviour
     // Damage done to a player on hit
     public int Damage;
     // The explosion on impact
-    public GameObject hitPrefab;
+    public GameObject HitPrefab;
 
     // The player that shot the bullet
     [SyncVar]
@@ -48,9 +48,9 @@ public class Bullet : NetworkBehaviour
             Vector3 pos = contact.point;
 
             // Create explosion on impact
-            if (hitPrefab != null)
+            if (HitPrefab != null)
             {
-                var hitFvx = Instantiate(hitPrefab, pos, gameObject.transform.rotation);
+                var hitFvx = Instantiate(HitPrefab, pos, gameObject.transform.rotation);
             }
 
             // The bullet is destroyed on collision

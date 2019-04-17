@@ -8,6 +8,7 @@ public class ExplosionLight : MonoBehaviour
     public float IntensityMultiplier;
     public float Lifetime;
     public Light Light;
+
     // Start is called before the first frame update
     void Start()
     {
