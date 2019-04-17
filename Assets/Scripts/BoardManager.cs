@@ -7,20 +7,6 @@ using UnityEngine;
 [RequireComponent(typeof(MeshRenderer))]
 public class BoardManager : MonoBehaviour
 {
-    // this can be used with random map generation
-    //[Serializable]
-    //public class Count
-    //{
-    //    public int minimum;
-    //    public int maximum;
-
-    //    public Count (int min, int max)
-    //    {
-    //        minimum = min;
-    //        maximum = max;
-    //    }
-    //}
-
     public int Columns = 30;
     public int Rows = 22;
     public int OuterWallWidth = 14;
@@ -29,7 +15,7 @@ public class BoardManager : MonoBehaviour
     private bool[,] m_tileMap;
     private GameObject m_map;
 
-    void GenerateMap() {
+    void GenerateTestMap() {
         m_tileMap = new bool[Columns, Rows];
 
         for (int x = 0; x < Columns; x++) {
@@ -62,7 +48,7 @@ public class BoardManager : MonoBehaviour
         }
     }
 
-    void GenerateFloor() {
+    void LoadFloor() {
         m_map = Instantiate(Map, new Vector3(0, 0, 0), Quaternion.identity) as GameObject;
         GameObject floor = GameObject.CreatePrimitive(PrimitiveType.Plane);
         floor.transform.position = new Vector3((float)Columns / 2 - 0.5f, -0.5f, (float)Rows / 2 - 0.5f);
@@ -82,7 +68,7 @@ public class BoardManager : MonoBehaviour
         }
     }
 
-    void GenerateOuterWall() {
+    void CreateOuterWalls() {
         for (int i = -OuterWallWidth; i < m_tileMap.GetLength(0) + OuterWallWidth; i++) {
             for (int j = -OuterWallWidth; j < m_tileMap.GetLength(1) + OuterWallWidth; j++) {
                 if (i < 0 && j != 0 || i >= m_tileMap.GetLength(0) || j < 0 || j >= m_tileMap.GetLength(1)) {
@@ -119,10 +105,10 @@ public class BoardManager : MonoBehaviour
     }
 
     public void SetupScene() {
-        GenerateMap();
-        GenerateFloor();
+        GenerateTestMap();
+        LoadFloor();
         LoadMap();
-        GenerateOuterWall();
+        CreateOuterWalls();
         CombineMeshes();
     }
 }
