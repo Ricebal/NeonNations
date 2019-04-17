@@ -4,12 +4,10 @@ using UnityEngine.UI;
 public class PlayerHealth : MonoBehaviour
 {
     private Slider m_healthSlider;
-    private int m_startingHealth;
     private int m_currentHealth; 
 
     void Start() {
         m_healthSlider = GameObject.Find("HealthSlider").GetComponent<Slider>();
-        m_startingHealth = (int) m_healthSlider.value;
         Reset();
     }
 
@@ -25,7 +23,7 @@ public class PlayerHealth : MonoBehaviour
     }
 
     public void Reset() {
-        m_currentHealth = m_startingHealth;
+        m_currentHealth = (int) m_healthSlider.maxValue;
         m_healthSlider.value = m_currentHealth;
     }
 

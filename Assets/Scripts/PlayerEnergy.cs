@@ -4,12 +4,10 @@ using UnityEngine.UI;
 public class PlayerEnergy : MonoBehaviour
 {
     private Slider m_energySlider;
-    private int m_startingEnergy;
     private int m_currentEnergy;
 
     void Start() {
         m_energySlider = GameObject.Find("EnergySlider").GetComponent<Slider>();
-        m_startingEnergy = (int) m_energySlider.value;
         Reset();
     }
 
@@ -25,7 +23,7 @@ public class PlayerEnergy : MonoBehaviour
     }
 
     public void Reset() {
-        m_currentEnergy = m_startingEnergy;
+        m_currentEnergy = (int) m_energySlider.maxValue;
         m_energySlider.value = m_currentEnergy;
     }
 
