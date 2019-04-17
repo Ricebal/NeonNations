@@ -37,6 +37,7 @@ public class Bullet : NetworkBehaviour
 
         if(collider.gameObject != m_shooter) {
             // The bullet is destroyed on collision
+
             NetworkBehaviour.Destroy(this.gameObject);
         }
     }
