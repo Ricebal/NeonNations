@@ -19,7 +19,6 @@ public class Player : NetworkBehaviour
     // The next time the entity will be able to use the sonar, in seconds
     private float m_nextSonar;
 
-    private MeshRenderer m_meshRenderer;
     private Color m_initialColor;
     private Vector3 m_initialPosition;
     private PlayerController m_playerController;
@@ -35,8 +34,7 @@ public class Player : NetworkBehaviour
             return;
         }
 
-        m_meshRenderer = GetComponent<MeshRenderer>();
-        m_initialColor = m_meshRenderer.material.color;
+        m_initialColor = GetComponent<MeshRenderer>().material.color;
         m_initialPosition = this.transform.position;
         m_playerController = GetComponent<PlayerController>();
         m_playerAction = GetComponent<PlayerAction>();
@@ -69,8 +67,7 @@ public class Player : NetworkBehaviour
             }
             // ...and the remaining time before respawn is not elapsed, the player is fading away
             else if(m_gameOverMenu.GetRemainingTime() > 0) {
-                float alpha = m_gameOverMenu.GetRemainingTime() / m_gameOverMenu.RespawnDelay;
-                m_meshRenderer.material.color = new Color(m_meshRenderer.material.color.r, m_meshRenderer.material.color.g, m_meshRenderer.material.color.b, alpha);
+                CmdFade();
             }
             // ...and the remaining time before respawn is elapsed, the player has to respawn
             else if (m_gameOverMenu.GetRemainingTime() <= 0) {
@@ -107,12 +104,19 @@ public class Player : NetworkBehaviour
 
     private void Die() {
         m_gameOverMenu.SetActive(true);
-        m_meshRenderer.material.color = new Color(1, 0.39f, 0.28f, 1);
+        GetComponent<MeshRenderer>().material.color = new Color(1, 0.39f, 0.28f, 1);
+    }
+
+    [Command]
+    private void CmdFade() {
+        MeshRenderer renderer = GetComponent<MeshRenderer>();
+        float alpha = m_gameOverMenu.GetRemainingTime() / m_gameOverMenu.RespawnDelay;
+        renderer.material.color = new Color(renderer.material.color.r, renderer.material.color.g, renderer.material.color.b, alpha);
     }
 
     private void Respawn() {
         m_gameOverMenu.SetActive(false);
-        m_meshRenderer.material.color = m_initialColor;
+        GetComponent<MeshRenderer>().material.color = m_initialColor;
         this.transform.position = m_initialPosition;
         m_playerHealth.Reset();
         m_playerEnergy.Reset();
