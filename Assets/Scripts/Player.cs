@@ -107,7 +107,7 @@ public class Player : NetworkBehaviour
 
     private void Die() {
         m_gameOverMenu.SetActive(true);
-        m_meshRenderer.material.color = new Color(1, 0, 0, 1);
+        m_meshRenderer.material.color = new Color(1, 0.39f, 0.28f, 1);
     }
 
     private void Respawn() {
