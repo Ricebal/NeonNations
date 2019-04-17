@@ -12,16 +12,19 @@ public class BoardManager : MonoBehaviour
     public int OuterWallWidth = 14;
     public GameObject Map;
 
-    private bool[,] m_tileMap;
+    private int[,] m_tileMap;
     private GameObject m_map;
 
-    void GenerateTestMap() {
-        m_tileMap = new bool[Columns, Rows];
+    void GenerateTestMap()
+    {
+        m_tileMap = new int[Columns, Rows];
 
-        for (int x = 0; x < Columns; x++) {
-            for (int y = 0; y < Rows; y++) {
+        for (int x = 0; x < Columns; x++)
+        {
+            for (int y = 0; y < Rows; y++)
+            {
                 if (// rooms
-                    x == 0 && y == 0
+                    !(x == 0 && y == 0
                     || x >= 0 && x <= 9 && y >= 16 && y <= 21
                     || x >= 1 && x <= 7 && y >= 0 && y <= 5
                     || x >= 11 && x <= 15 && y >= 4 && y <= 10
@@ -41,14 +44,35 @@ public class BoardManager : MonoBehaviour
                     || x >= 17 && x <= 18 && y >= 10 && y <= 12
                     || x >= 19 && x <= 25 && y >= 20 && y <= 21
                     || x >= 23 && x <= 24 && y == 2
-                    || x >= 25 && x <= 26 && y >= 11 && y <= 16) {
-                    m_tileMap[x, y] = true;
+                    || x >= 25 && x <= 26 && y >= 11 && y <= 16))
+                {
+                    m_tileMap[x, y] = 1;
                 }
             }
         }
     }
 
-    void LoadFloor() {
+    void GenerateRandomMap()
+    {
+        // create level with only walls
+        m_tileMap = new int[Columns, Rows];
+
+        // generate first room
+        // add first room to map
+        // determine how many rooms will be generated
+
+        // for this amount
+            // if generate room tries doesn't exceed max buildRoomAttempts
+                // generate a room
+                //try to place the room x amount of times
+                    // if succeeded
+                    // add room to the map
+
+        // add shortcuts
+    }
+
+    void LoadFloor()
+    {
         m_map = Instantiate(Map, new Vector3(0, 0, 0), Quaternion.identity) as GameObject;
         GameObject floor = GameObject.CreatePrimitive(PrimitiveType.Plane);
         floor.transform.position = new Vector3((float)Columns / 2 - 0.5f, -0.5f, (float)Rows / 2 - 0.5f);
@@ -56,10 +80,14 @@ public class BoardManager : MonoBehaviour
         floor.transform.SetParent(m_map.transform);
     }
 
-    void LoadMap() {
-        for (int i = 0; i < m_tileMap.GetLength(0); i++) {
-            for (int j = 0; j < m_tileMap.GetLength(1); j++) {
-                if (!m_tileMap[i, j]) { // if false, build wall
+    void LoadMap()
+    {
+        for (int i = 0; i < m_tileMap.GetLength(0); i++)
+        {
+            for (int j = 0; j < m_tileMap.GetLength(1); j++)
+            {
+                if (m_tileMap[i, j] == 1)
+                { // if 1, build wall
                     GameObject instance = GameObject.CreatePrimitive(PrimitiveType.Cube);
                     instance.transform.position = new Vector3(i, 0f, j);
                     instance.transform.SetParent(m_map.transform);
@@ -68,10 +96,14 @@ public class BoardManager : MonoBehaviour
         }
     }
 
-    void CreateOuterWalls() {
-        for (int i = -OuterWallWidth; i < m_tileMap.GetLength(0) + OuterWallWidth; i++) {
-            for (int j = -OuterWallWidth; j < m_tileMap.GetLength(1) + OuterWallWidth; j++) {
-                if (i < 0 && j != 0 || i >= m_tileMap.GetLength(0) || j < 0 || j >= m_tileMap.GetLength(1)) {
+    void CreateOuterWalls()
+    {
+        for (int i = -OuterWallWidth; i < m_tileMap.GetLength(0) + OuterWallWidth; i++)
+        {
+            for (int j = -OuterWallWidth; j < m_tileMap.GetLength(1) + OuterWallWidth; j++)
+            {
+                if (i < 0 && j != 0 || i >= m_tileMap.GetLength(0) || j < 0 || j >= m_tileMap.GetLength(1))
+                {
                     GameObject instance = GameObject.CreatePrimitive(PrimitiveType.Cube);
                     instance.transform.position = new Vector3(i, 0f, j);
                     instance.transform.SetParent(m_map.transform);
@@ -80,12 +112,14 @@ public class BoardManager : MonoBehaviour
         }
     }
 
-    void CombineMeshes() {
+    void CombineMeshes()
+    {
         MeshFilter[] meshFilters = m_map.GetComponentsInChildren<MeshFilter>();
         Mesh finalMesh = new Mesh();
         CombineInstance[] combiners = new CombineInstance[meshFilters.Length];
 
-        for (int i = 0; i < meshFilters.Length; i++) {
+        for (int i = 0; i < meshFilters.Length; i++)
+        {
             combiners[i].subMeshIndex = 0;
             combiners[i].mesh = meshFilters[i].sharedMesh;
             combiners[i].transform = meshFilters[i].transform.localToWorldMatrix;
@@ -99,12 +133,14 @@ public class BoardManager : MonoBehaviour
         var collider = m_map.GetComponent<MeshCollider>();
         collider.sharedMesh = finalMesh;
 
-        foreach (Transform child in m_map.transform) {
+        foreach (Transform child in m_map.transform)
+        {
             Destroy(child.gameObject);
         }
     }
 
-    public void SetupScene() {
+    public void SetupScene()
+    {
         GenerateTestMap();
         LoadFloor();
         LoadMap();
