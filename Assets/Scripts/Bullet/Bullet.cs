@@ -34,7 +34,8 @@ public class Bullet : NetworkBehaviour
 
     public void OnCollisionEnter(Collision collision)
     {
-        if (!isServer){
+        if (!isServer)
+        {
             return;
         }
 
@@ -56,6 +57,21 @@ public class Bullet : NetworkBehaviour
             NetworkBehaviour.Destroy(gameObject);
         }
     }
+    public void OnTriggerEnter(Collider collider)
+    {
+        if (!isServer)
+        {
+            return;
+        }
+
+        // To prevent the player from hitting themselves
+        if (collider.gameObject != m_shooter)
+        {
+            // The bullet is destroyed on collision
+            NetworkBehaviour.Destroy(gameObject);
+        }
+    }
+
 
     public void SetShooter(GameObject shooter) {
         m_shooter = shooter;
