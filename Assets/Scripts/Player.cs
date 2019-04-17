@@ -1,6 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+
 using UnityEngine.Networking;
 
 public class Player : NetworkBehaviour
@@ -20,6 +19,8 @@ public class Player : NetworkBehaviour
     // The next time the entity will be able to use the sonar, in seconds
     private float m_nextSonar;
 
+    private MeshRenderer m_meshRenderer;
+    private Color m_initialColor;
     private Vector3 m_initialPosition;
     private PlayerController m_playerController;
     private PlayerAction m_playerAction;
@@ -34,6 +35,8 @@ public class Player : NetworkBehaviour
             return;
         }
 
+        m_meshRenderer = GetComponent<MeshRenderer>();
+        m_initialColor = m_meshRenderer.material.color;
         m_initialPosition = this.transform.position;
         m_playerController = GetComponent<PlayerController>();
         m_playerAction = GetComponent<PlayerAction>();
@@ -63,6 +66,11 @@ public class Player : NetworkBehaviour
             // ...and the game over menu is not already activated, the player just died
             if (!m_gameOverMenu.IsActive()) {
                 Die();
+            }
+            // ...and the remaining time before respawn is not elapsed, the player is fading away
+            else if(m_gameOverMenu.GetRemainingTime() > 0) {
+                float alpha = m_gameOverMenu.GetRemainingTime() / m_gameOverMenu.RespawnDelay;
+                m_meshRenderer.material.color = new Color(m_meshRenderer.material.color.r, m_meshRenderer.material.color.g, m_meshRenderer.material.color.b, alpha);
             }
             // ...and the remaining time before respawn is elapsed, the player has to respawn
             else if (m_gameOverMenu.GetRemainingTime() <= 0) {
@@ -99,11 +107,12 @@ public class Player : NetworkBehaviour
 
     private void Die() {
         m_gameOverMenu.SetActive(true);
+        m_meshRenderer.material.color = new Color(1, 0, 0, 1);
     }
 
     private void Respawn() {
         m_gameOverMenu.SetActive(false);
-
+        m_meshRenderer.material.color = m_initialColor;
         this.transform.position = m_initialPosition;
         m_playerHealth.Reset();
         m_playerEnergy.Reset();
