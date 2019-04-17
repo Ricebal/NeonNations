@@ -67,7 +67,9 @@ public class Player : NetworkBehaviour
             }
             // ...and the remaining time before respawn is not elapsed, the player is fading away
             else if(m_gameOverMenu.GetRemainingTime() > 0) {
-                CmdFade();
+                float alpha = m_gameOverMenu.GetRemainingTime() / m_gameOverMenu.RespawnDelay;
+                Color color = new Color(1, 0.39f, 0.28f, alpha);
+                CmdColor(this.gameObject, color);
             }
             // ...and the remaining time before respawn is elapsed, the player has to respawn
             else if (m_gameOverMenu.GetRemainingTime() <= 0) {
@@ -102,19 +104,23 @@ public class Player : NetworkBehaviour
         }
     }
 
+    [ClientRpc]
+    void RpcColor(GameObject obj, Color color) {
+        obj.GetComponent<Renderer>().material.color = color;
+    }
+
+    [Command]
+    void CmdColor(GameObject obj, Color color) {
+        RpcColor(obj, color);
+    }
+
     private void Die() {
         m_gameOverMenu.SetActive(true);
     }
 
-    [Command]
-    private void CmdFade() {
-        float alpha = m_gameOverMenu.GetRemainingTime() / m_gameOverMenu.RespawnDelay;
-        GetComponent<MeshRenderer>().material.color = new Color(1, 0.39f, 0.28f, alpha);
-    }
-
     private void Respawn() {
         m_gameOverMenu.SetActive(false);
-        GetComponent<MeshRenderer>().material.color = m_initialColor;
+        CmdColor(this.gameObject, m_initialColor);
         this.transform.position = m_initialPosition;
         m_playerHealth.Reset();
         m_playerEnergy.Reset();
