@@ -104,14 +104,12 @@ public class Player : NetworkBehaviour
 
     private void Die() {
         m_gameOverMenu.SetActive(true);
-        GetComponent<MeshRenderer>().material.color = new Color(1, 0.39f, 0.28f, 1);
     }
 
     [Command]
     private void CmdFade() {
-        MeshRenderer renderer = GetComponent<MeshRenderer>();
         float alpha = m_gameOverMenu.GetRemainingTime() / m_gameOverMenu.RespawnDelay;
-        renderer.material.color = new Color(renderer.material.color.r, renderer.material.color.g, renderer.material.color.b, alpha);
+        GetComponent<MeshRenderer>().material.color = new Color(1, 0.39f, 0.28f, alpha);
     }
 
     private void Respawn() {
