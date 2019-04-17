@@ -23,35 +23,60 @@ public class Player : NetworkBehaviour
     private PlayerAction m_playerAction;
     private PlayerEnergy m_playerEnergy;
     private PlayerHealth m_playerHealth;
+    private PlayerDash m_playerDash;
 
-    void Start() {
-        if (!isLocalPlayer) {
+    void Start()
+    {
+        if (!isLocalPlayer)
+        {
             return;
         }
         m_playerAction = GetComponent<PlayerAction>();
         m_playerEnergy = GetComponent<PlayerEnergy>();
         m_playerHealth = GetComponent<PlayerHealth>();
+        m_playerDash = GetComponent<PlayerDash>();
     }
 
-    void FixedUpdate() {
-        if (!isLocalPlayer) {
+    void FixedUpdate()
+    {
+        if (!isLocalPlayer)
+        {
             return;
         }
+
         m_playerEnergy.AddEnergy(1);
     }
 
-    public void Shoot() {
+    public void Dash()
+    {
+        if (!m_playerDash.CanDash(m_playerEnergy.GetCurrentEnergy()))
+            return;
+
+        m_playerEnergy.AddEnergy(-m_playerDash.Cost);
+        m_playerDash.StartDash();
+    }
+
+    public float DashMultiplier()
+    {
+        return m_playerDash.DashSpeed;
+    }
+
+    public void Shoot()
+    {
         // If the cooldown is elapsed and the player has enough energy
-        if (Time.time > m_nextFire && m_playerEnergy.GetCurrentEnergy() >= BulletCost) {
+        if (Time.time > m_nextFire && m_playerEnergy.GetCurrentEnergy() >= BulletCost)
+        {
             m_nextFire = Time.time + FireRate;
             m_playerEnergy.AddEnergy(-BulletCost);
             m_playerAction.CmdShoot();
         }
     }
 
-    public void Sonar() {
+    public void Sonar()
+    {
         // If the cooldown is elapsed and the player has enough energy
-        if (Time.time > m_nextSonar && m_playerEnergy.GetCurrentEnergy() >= SonarCost) {
+        if (Time.time > m_nextSonar && m_playerEnergy.GetCurrentEnergy() >= SonarCost)
+        {
             m_nextSonar = Time.time + SonarRate;
             m_playerEnergy.AddEnergy(-SonarCost);
             m_playerAction.CmdSonar();
@@ -59,12 +84,15 @@ public class Player : NetworkBehaviour
     }
 
     // If the player is hit by a bullet, the player gets damaged
-    public void OnTriggerEnter(Collider collider) {
-        if(!isLocalPlayer) {
+    public void OnTriggerEnter(Collider collider)
+    {
+        if (!isLocalPlayer)
+        {
             return;
         }
 
-        if (collider.gameObject.tag == "Bullet" && collider.gameObject.GetComponent<Bullet>().GetShooter() != this.gameObject) {
+        if (collider.gameObject.tag == "Bullet" && collider.gameObject.GetComponent<Bullet>().GetShooter() != this.gameObject)
+        {
             m_playerHealth.TakeDamage(collider.gameObject.GetComponent<Bullet>().Damage);
         }
     }
