@@ -9,6 +9,8 @@ public class Bullet : NetworkBehaviour
     public float LivingTime;
     // Damage done to a player on hit
     public int Damage;
+    // The explosion on impact
+    public GameObject HitPrefab;
 
     // The player that shot the bullet
     [SyncVar]
@@ -30,17 +32,46 @@ public class Bullet : NetworkBehaviour
         }
     }
 
-    public void OnTriggerEnter(Collider collider) {
-        if (!isServer) {
+    public void OnCollisionEnter(Collision collision)
+    {
+        if (!isServer)
+        {
             return;
         }
 
-        if(collider.gameObject != m_shooter) {
-            // The bullet is destroyed on collision
+        // To prevent the player from hitting themselves
+        if (collision.gameObject != m_shooter)
+        {
+            // Get impact-position
+            ContactPoint contact = collision.contacts[0];
+            Quaternion rot = Quaternion.FromToRotation(Vector3.up, contact.normal);
+            Vector3 pos = contact.point;
 
-            NetworkBehaviour.Destroy(this.gameObject);
+            // Create explosion on impact
+            if (HitPrefab != null)
+            {
+                var hitFvx = Instantiate(HitPrefab, pos, gameObject.transform.rotation);
+            }
+
+            // The bullet is destroyed on collision
+            NetworkBehaviour.Destroy(gameObject);
         }
     }
+    public void OnTriggerEnter(Collider collider)
+    {
+        if (!isServer)
+        {
+            return;
+        }
+
+        // To prevent the player from hitting themselves
+        if (collider.gameObject != m_shooter)
+        {
+            // The bullet is destroyed on collision
+            NetworkBehaviour.Destroy(gameObject);
+        }
+    }
+
 
     public void SetShooter(GameObject shooter) {
         m_shooter = shooter;
