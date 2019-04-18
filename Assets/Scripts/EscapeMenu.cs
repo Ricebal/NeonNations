@@ -8,7 +8,6 @@ using UnityEngine.SceneManagement;
 public class EscapeMenu : NetworkBehaviour
 {
     public GameObject Canvas;
-    public NetworkManager NetworkManager;
     private bool m_paused = false;
 
     // Update is called once per frame
