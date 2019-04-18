@@ -16,7 +16,7 @@ public class BoardManager : MonoBehaviour
     public int MinRoomSize = 24;
     public int MinLength = 4;
     public int MaxPlaceRoomAttempts = 10;
-    public int MaxBuildRoomAttempts = 5;
+    public int MaxBuildRoomAttempts = 250;
 
     private int[,] m_tileMap;
     private GameObject m_map;
@@ -77,7 +77,7 @@ public class BoardManager : MonoBehaviour
         // add first room to map
         AddRoom(room);
         // determine how many rooms will be generated
-        int roomAmount = 5;
+        int roomAmount = 50;
         int currentRoomAmount = 1;
 
         // for this amount (starts from 1 since main room has been created)
@@ -159,12 +159,11 @@ public class BoardManager : MonoBehaviour
             if (room.Pos.x != -1 && room.Pos.y != -1)
                 return room;
         }
-
         return room;
     }
 
     Room TryPlacement (Room room) {
-        room.Pos = new Vector2(UnityEngine.Random.Range(0, 30), UnityEngine.Random.Range(0, 22));
+        room.Pos = new Vector2(UnityEngine.Random.Range(0, MapWidth), UnityEngine.Random.Range(0, MapHeight));
         if (!CanPlace(room)) {
             room.Pos = new Vector2(-1, -1);
         }
@@ -174,14 +173,25 @@ public class BoardManager : MonoBehaviour
     bool CanPlace(Room room)
     {
         // check out of bounds
-        if (room.Pos.x > MapWidth - room.Roommap.GetLength(0) || room.Pos.y > MapHeight - room.Roommap.GetLength(1)) {
+        if (room.Pos.x <= 0 || room.Pos.x > MapWidth - room.Roommap.GetLength(0) - 1 || room.Pos.y <= 0 || room.Pos.y > MapHeight - room.Roommap.GetLength(1) - 1) {
             return false;
         }
 
         // check overlap
         for (int x = 0; x < room.Roommap.GetLength(0); x++) {
             for (int y = 0; y < room.Roommap.GetLength(1); y++) {
-                if (m_tileMap[x + (int)room.Pos.x, y + (int)room.Pos.y] == 0 && room.Roommap[x, y] == 0)
+                Debug.Log("room = " + room.Roommap.GetLength(0) + " by " + room.Roommap.GetLength(1) + " at position " + room.Pos.x + "," + room.Pos.y + ", now checking tile " + x + "," + y);
+                if (room.Roommap[x, y] == 0 && // check if position in room equals zero
+                    (m_tileMap[x + (int)room.Pos.x, y + (int)room.Pos.y] == 0 || // if so, check if the same position on map is zero
+                    m_tileMap[x + (int)room.Pos.x, y + (int)room.Pos.y + 1] == 0 || // if so, check all tiles around the position on the map is zero, starting with north
+                    m_tileMap[x + (int)room.Pos.x + 1, y + (int)room.Pos.y + 1] == 0 || // northeast
+                    m_tileMap[x + (int)room.Pos.x + 1, y + (int)room.Pos.y] == 0 || // east
+                    m_tileMap[x + (int)room.Pos.x + 1 , y + (int)room.Pos.y - 1] == 0 || // southeast
+                    m_tileMap[x + (int)room.Pos.x, y + (int)room.Pos.y - 1] == 0 || // south
+                    m_tileMap[x + (int)room.Pos.x - 1, y + (int)room.Pos.y - 1] == 0 || // southwest
+                    m_tileMap[x + (int)room.Pos.x - 1, y + (int)room.Pos.y] == 0 || // west
+                    m_tileMap[x + (int)room.Pos.x - 1, y + (int)room.Pos.y + 1] == 0 // northwest
+                    ))
                     return false;
             }
         }
