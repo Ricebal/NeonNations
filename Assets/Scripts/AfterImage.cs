@@ -18,22 +18,18 @@ public class AfterImage : MonoBehaviour
     private const float TIME_MAX = 45;
 
     public bool Active;
-
-	// Use this for initialization
-	void Start ()
-    {
-		//TargetObject = 
-	}
 	
 	// Update is called once per frame
 	void Update ()
     {
+        // Update the afterimages
         if (m_time > 0) { m_time--; Active = true; m_intensity = (m_time / TIME_MAX) * 10 * m_pow; UpdateRenderer(); }//transform.localScale *= 1.03f; }
         else { Active = false; m_intensity = 0; }
 	}
 
     void UpdateRenderer()
     {
+        // Update the renderer
         MyRenderer.material.SetFloat("_Intensity", m_intensity);
         MyRenderer.material.SetFloat("_MKGlowPower", m_intensity);
     }
@@ -44,6 +40,7 @@ public class AfterImage : MonoBehaviour
     }
 
     public bool Fade() {
+        // Fade out the afterimage and return true once it's faded
         Color color = MyRenderer.material.color;
         if(color.a > 0){
             MyRenderer.material.color = new Color(color.r, color.g, color.b, color.a - 0.15f);

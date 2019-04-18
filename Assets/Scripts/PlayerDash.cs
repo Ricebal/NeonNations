@@ -17,6 +17,7 @@ public class PlayerDash : NetworkBehaviour
         m_imagePool = GetComponent<AfterImagePool>();
     }
 
+    // Start the dash, set speed multiplier and afterimages
     public void StartDash()
     {
         m_multiplier = MULTIPLIER_AMOUNT;
@@ -25,6 +26,8 @@ public class PlayerDash : NetworkBehaviour
         m_imagePool.ShowImages = true;
     }
 
+
+    // End dash, reset the speed multiplier and start the afterimage fadeout
     private void EndDash()
     {
         m_multiplier = 1f;

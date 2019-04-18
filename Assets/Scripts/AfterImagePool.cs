@@ -4,24 +4,14 @@ using UnityEngine;
 
 public class AfterImagePool : MonoBehaviour
 {
-
-    //public CharacterControl myCharacterControl;
-    public GameObject TargetObject;     //Set these manually to the character object you're copying
-    // public Animator targetAnimator;   //Set these manually to the character object you're copying
-    public GameObject PreFab;           //This is the PreFab you made in the scene. It's a parent transform with an animator and AfterImage script on it, with Armature and SkinnedMeshRenderer children
+    public GameObject TargetObject;     
+    // public Animator targetAnimator;  // Uncomment for animations
+    public GameObject PreFab;           
+    public bool ShowImages = false;
     private const int POOLSIZE = 4;
     private List<AfterImage> m_afterImages;
-    public bool ShowImages = false;
-
     private const int INTERVAL = 0;
-
     private int m_time = 0;
-
-    // Use this for initialization
-    void Start()
-    {
-      
-    }
 
     public void CreatePool() 
     {
@@ -40,6 +30,7 @@ public class AfterImagePool : MonoBehaviour
     void Update()
     {
         m_time++;
+        // If the playing is dashing show the images otherwise start fading them out.
         if(ShowImages) {
             if (m_time > INTERVAL) { m_time = 0; AddAfterImage(); }
         } else {
@@ -49,10 +40,9 @@ public class AfterImagePool : MonoBehaviour
 
     void AddAfterImage()
     {
+        // Find an inactive image and activate it
         for (int i = 0; i < POOLSIZE; i++)
         {
-            // m_afterImages[i].myRenderer.enabled = ShowImages;
-
             if (!m_afterImages[i].Active) { m_afterImages[i].Activate(); break; }
         }
     }

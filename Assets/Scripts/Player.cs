@@ -47,6 +47,7 @@ public class Player : NetworkBehaviour
         m_playerEnergy.AddEnergy(1);
     }
 
+    // Dash, if player can dash deduct energy and start dashing
     public void Dash()
     {
         if (!m_playerDash.CanDash(m_playerEnergy.GetCurrentEnergy()))
