@@ -22,7 +22,7 @@ public class ExplosionLight : MonoBehaviour
     void Update()
     {
         _timeCount += Time.deltaTime;
-        if(_timeCount > Lifetime)
+        if(_timeCount > Lifetime && _growing)
         {
             _growing = false;
         }

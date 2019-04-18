@@ -11,6 +11,8 @@ public class Bullet : NetworkBehaviour
     public int Damage;
     // The explosion on impact
     public GameObject HitPrefab;
+    // Value for offset from wall to prevent light from going through the walls
+    public float wallOffset;
 
     // The player that shot the bullet
     [SyncVar]
@@ -51,6 +53,7 @@ public class Bullet : NetworkBehaviour
             if (HitPrefab != null)
             {
                 var hitFvx = Instantiate(HitPrefab, pos, gameObject.transform.rotation);
+                hitFvx.transform.Translate(0, 0, -wallOffset);
             }
 
             // The bullet is destroyed on collision

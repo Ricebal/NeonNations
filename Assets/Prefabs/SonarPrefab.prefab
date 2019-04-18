@@ -42,12 +42,12 @@ Light:
   serializedVersion: 8
   m_Type: 2
   m_Color: {r: 1, g: 0, b: 0, a: 1}
-  m_Intensity: 0.6
-  m_Range: 6
+  m_Intensity: 0.4
+  m_Range: 8
   m_SpotAngle: 30
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 0
+    m_Type: 1
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 1
@@ -228,7 +228,8 @@ MonoBehaviour:
   Speed: 5
   LivingTime: 1.25
   Damage: 0
-  hitPrefab: {fileID: 0}
+  HitPrefab: {fileID: 0}
+  wallOffset: 0
 --- !u!114 &5439118275043155726
 MonoBehaviour:
   m_ObjectHideFlags: 0
