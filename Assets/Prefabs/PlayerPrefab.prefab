@@ -326,13 +326,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d1a3c26af409094cb9753d5a9423dd6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetObject: {fileID: 6654271199680664771}
-  prefab: {fileID: 4278105648758884905, guid: b7ef729de582b5a469c6774727d3dca1, type: 3}
-  poolSize: 30
-  afterImages: []
+  TargetObject: {fileID: 6654271199680664771}
+  PreFab: {fileID: 4278105648758884905, guid: b7ef729de582b5a469c6774727d3dca1, type: 3}
   ShowImages: 0
-  interval: 0
-  time: 1
 --- !u!1 &6716781768823966986
 GameObject:
   m_ObjectHideFlags: 0

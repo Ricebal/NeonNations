@@ -21,6 +21,7 @@ public class PlayerDash : NetworkBehaviour
     {
         m_multiplier = MULTIPLIER_AMOUNT;
         m_start = Time.time;
+        m_imagePool.CreatePool();
         m_imagePool.ShowImages = true;
     }
 
