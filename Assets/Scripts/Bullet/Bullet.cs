@@ -52,10 +52,18 @@ public class Bullet : NetworkBehaviour
             // Create explosion on impact
             if (HitPrefab != null)
             {
-                var hitFvx = Instantiate(HitPrefab, pos, gameObject.transform.rotation);
-                hitFvx.transform.Translate(0, 0, -wallOffset);
+                GameObject explosion = Instantiate(HitPrefab, pos, gameObject.transform.rotation);
+                explosion.transform.Translate(0, 0, -wallOffset);
+                // Instanciate the explosion on the network for all players 
+                NetworkServer.Spawn(explosion);
             }
 
+            // Decouple particle system from bullet to prevent the trail from disappearing
+            Transform trail = transform.FindChild("Particle System");
+            trail.parent = null;
+
+            // Destroy the particles after 0.5 seconds, the max lifetime of a particle
+            NetworkBehaviour.Destroy(trail.gameObject, 0.5f);
             // The bullet is destroyed on collision
             NetworkBehaviour.Destroy(gameObject);
         }

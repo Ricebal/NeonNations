@@ -147,7 +147,9 @@ MonoBehaviour:
   Speed: 20
   LivingTime: 3
   Damage: 2
-  hitPrefab: {fileID: 0}
+  HitPrefab: {fileID: 1830171323858905800, guid: 5a5341eef4aad1241958b2c797b6b2e7,
+    type: 3}
+  wallOffset: 0
 --- !u!114 &5439118275043155726
 MonoBehaviour:
   m_ObjectHideFlags: 0

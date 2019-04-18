@@ -1,8 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.Networking;
 
-public class ExplosionLight : MonoBehaviour
+public class ExplosionLight : NetworkBehaviour
 {
     public float RangeMultiplier;
     public float IntensityMultiplier;
@@ -15,7 +14,7 @@ public class ExplosionLight : MonoBehaviour
     void Start()
     {
         //Destroys explosion after certain time
-        Destroy(gameObject, Lifetime*2);
+        NetworkBehaviour.Destroy(gameObject, Lifetime*2);
     }
 
     // Update is called once per frame
