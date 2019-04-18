@@ -26,13 +26,14 @@ public class PlayerAction : NetworkBehaviour
     [Command]
     public void CmdSonar() {
         float amount = (float)(360/SonarRays);
-        for (int i = 0; i < 360; i += (int)amount) {
+        for (int i = 0; i < 360; i += (int)amount)
+        {
             GameObject sonarBullet = Instantiate(SonarBullet, this.transform.position, Quaternion.Euler(0, i, 0));
             sonarBullet.transform.Translate(new Vector3(0, 0, this.transform.localScale.z / 2f), Space.Self);
             sonarBullet.GetComponent<Bullet>().SetShooter(this.gameObject);
 
-            // Instanciate the bullet on the network for all players 
-            NetworkServer.Spawn(sonarBullet);
+            //Instanciate the bullet on the network for all players
+           NetworkServer.Spawn(sonarBullet);
         }
     }
 
