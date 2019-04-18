@@ -66,12 +66,13 @@ public class BoardManager : MonoBehaviour
     void GenerateFloor() {
         m_map = Instantiate(Map, new Vector3(0, 0, 0), Quaternion.identity) as GameObject;
         GameObject floor = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        floor.transform.position = new Vector3((float)Columns / 2 - 0.5f, -1f, (float)Rows / 2 - 0.5f);
+        floor.transform.position = new Vector3((float)Columns / 2 - 0.5f, -1.1f, (float)Rows / 2 - 0.5f);
         floor.transform.localScale = new Vector3((float)(Columns + OuterWallWidth * 2) /*/ 10*/, 1, (float)(Rows + OuterWallWidth * 2) /*/ 10*/);
         //GameObject floor = GameObject.CreatePrimitive(PrimitiveType.Plane);
         //floor.transform.position = new Vector3((float)Columns / 2 - 0.5f, -0.5f, (float)Rows / 2 - 0.5f);
         //floor.transform.localScale = new Vector3((float)(Columns + OuterWallWidth * 2) / 10, 1, (float)(Rows + OuterWallWidth * 2) / 10);
-        floor.transform.SetParent(m_map.transform);
+        //floor.transform.SetParent(m_map.transform);
+        Instantiate(floor);
     }
 
     void LoadMap() {
@@ -79,8 +80,8 @@ public class BoardManager : MonoBehaviour
             for (int j = 0; j < m_tileMap.GetLength(1); j++) {
                 if (!m_tileMap[i, j]) { // if false, build wall
                     GameObject instance = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                    instance.transform.localScale = new Vector3(1, 3f, 1);
-                    instance.transform.position = new Vector3(i, -1f, j);
+                    instance.transform.position = new Vector3(i, 0f, j);
+                    //instance.transform.localScale = new Vector3(1, 1f, 1);
                     instance.transform.SetParent(m_map.transform);
                 }
             }
