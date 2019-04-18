@@ -15,7 +15,8 @@ public class BoardManager : MonoBehaviour
     public int MaxRoomSize = 60;
     public int MinRoomSize = 24;
     public int MinLength = 4;
-    public int PlaceRoomAttempts = 10;
+    public int MaxPlaceRoomAttempts = 10;
+    public int MaxBuildRoomAttempts = 5;
 
     private int[,] m_tileMap;
     private GameObject m_map;
@@ -71,49 +72,49 @@ public class BoardManager : MonoBehaviour
         GenerateEmptyMap(1);
 
         // generate first room (in the middle)
-        int[,] room = GenerateRandomRoom();
-        Vector2 roomPos = new Vector2(MapWidth/2 - room.GetLength(0)/2, MapHeight / 2 - room.GetLength(1)/2);
+        Room room = GenerateRandomRoom();
+        room.Pos = new Vector2(MapWidth/2 - room.Roommap.GetLength(0)/2, MapHeight / 2 - room.Roommap.GetLength(1)/2);
         // add first room to map
-        AddRoom(room, roomPos);
+        AddRoom(room);
         // determine how many rooms will be generated
         int roomAmount = 5;
-        int currentBuildRoomAttempts = 0;
-        int maxBuildRoomAttempts = 1000;
+        int currentRoomAmount = 1;
 
         // for this amount (starts from 1 since main room has been created)
-        for (int i = 1; i < roomAmount; i++)
-        {
+        for (int i = 0; i < MaxBuildRoomAttempts; i++) {
             // if generate room tries doesn't exceed max buildRoomAttempts
-            if (currentBuildRoomAttempts <= maxBuildRoomAttempts)
-            {
-                // generate a room
-                room = GenerateRandomRoom();
-                // try to place the room x amount of times
-                // if succeeded
-                // add room to the map
+            if (currentRoomAmount >= roomAmount) {
+                break;
             }
-
+            // generate a room
+            room = GenerateRandomRoom();
+            // try to place the room x amount of times
+            room = PlaceRoom(room);
+            // if succeeded
+            if (room.Pos.x != -1 && room.Pos.y != -1) {
+                // add room to the map
+                AddRoom(room);
+                currentRoomAmount++;
+            }
         }
 
         // add shortcuts
     }
 
-    int[,] GenerateRandomRoom() {
-        System.Random random = new System.Random();
-        int width = random.Next(MinLength, MaxRoomSize/MinLength);
-        int height = random.Next(MinLength, MaxRoomSize/width);
+    Room GenerateRandomRoom() {
+        int width = UnityEngine.Random.Range(MinLength, MaxRoomSize/MinLength);
+        int height = UnityEngine.Random.Range(MinLength, MaxRoomSize/width);
 
         int[,] roomMap = new int[width, height];
-        return roomMap;
+        return new Room(roomMap);
     }
 
-    void AddRoom(int[,] room, Vector2 pos) {
-        PasteTileMap(room, m_tileMap, pos);
+    void AddRoom(Room room) {
+        PasteTileMap(room.Roommap, m_tileMap, room.Pos);
     }
 
     Vector2 GenerateRandomDirection() {
-        System.Random random = new System.Random();
-        return GetDirection(random.Next(1, 4));
+        return GetDirection(UnityEngine.Random.Range(1, 4));
     }
 
     Vector2 GetDirection(int directionInt) {
@@ -152,8 +153,40 @@ public class BoardManager : MonoBehaviour
         }
     }
 
-    Vector2 PlaceRoom() {
-        return new Vector2();
+    Room PlaceRoom(Room room) {
+        for (int i = 1; i <= MaxPlaceRoomAttempts; i++) {
+            room = TryPlacement(room);
+            if (room.Pos.x != -1 && room.Pos.y != -1)
+                return room;
+        }
+
+        return room;
+    }
+
+    Room TryPlacement (Room room) {
+        room.Pos = new Vector2(UnityEngine.Random.Range(0, 30), UnityEngine.Random.Range(0, 22));
+        if (!CanPlace(room)) {
+            room.Pos = new Vector2(-1, -1);
+        }
+        return room;
+    }
+
+    bool CanPlace(Room room)
+    {
+        // check out of bounds
+        if (room.Pos.x > MapWidth - room.Roommap.GetLength(0) || room.Pos.y > MapHeight - room.Roommap.GetLength(1)) {
+            return false;
+        }
+
+        // check overlap
+        for (int x = 0; x < room.Roommap.GetLength(0); x++) {
+            for (int y = 0; y < room.Roommap.GetLength(1); y++) {
+                if (m_tileMap[x + (int)room.Pos.x, y + (int)room.Pos.y] == 0 && room.Roommap[x, y] == 0)
+                    return false;
+            }
+        }
+
+        return true;
     }
 
     void LoadFloor() {
@@ -218,5 +251,19 @@ public class BoardManager : MonoBehaviour
         LoadMap();
         CreateOuterWalls();
         CombineMeshes();
+    }
+}
+
+public class Room
+{
+    public int[,] Roommap;
+    public Vector2 Pos;
+    public Vector2 WallTile;
+    public Vector2 Direction;
+    public int tunnelLength;
+
+    public Room(int[,] roomMap)
+    {
+        Roommap = roomMap;
     }
 }
