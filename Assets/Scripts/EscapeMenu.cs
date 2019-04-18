@@ -28,10 +28,8 @@ public class EscapeMenu : NetworkBehaviour
     public void Disconnect()
     {
         TogglePause();
-        if (isServer) {
+        if (isServer) 
             NetworkManager.singleton.StopHost();
-            NetworkServer.Reset();
-        }
         else
             NetworkManager.singleton.StopClient();
     }

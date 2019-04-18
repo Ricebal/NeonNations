@@ -7,7 +7,23 @@ using UnityEngine.SceneManagement;
 
 public class NetworkManagerCustom : NetworkManager
 {
+    void OnEnable() {
+        SceneManager.sceneLoaded += OnLobbyLoaded;
+    }
 
+    void OnDisable() {
+        SceneManager.sceneLoaded -= OnLobbyLoaded;
+    }
+
+    private void OnLobbyLoaded(Scene scene, LoadSceneMode mode) {
+        if (scene.name == "Lobby") {
+            GameObject.Find("ButtonStartHost").GetComponent<Button>().onClick.RemoveAllListeners();
+            GameObject.Find("ButtonStartHost").GetComponent<Button>().onClick.AddListener(StartUpHost);
+
+            GameObject.Find("ButtonJoinGame").GetComponent<Button>().onClick.RemoveAllListeners();
+            GameObject.Find("ButtonJoinGame").GetComponent<Button>().onClick.AddListener(JoinGame);
+        }
+    }
     public void StartUpHost() {
         SetPort();
         NetworkManager.singleton.StartHost();
