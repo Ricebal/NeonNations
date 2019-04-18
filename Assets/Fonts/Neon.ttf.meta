@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 69398bff29cedfa4face2118eb0c5981
+guid: cd0831e9c5398d94cb17f7f29d12ef53
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
@@ -8,9 +8,9 @@ TrueTypeFontImporter:
   characterSpacing: 0
   characterPadding: 1
   includeFontData: 1
-  fontName: Neon
+  fontName: NEON
   fontNames:
-  - Neon
+  - NEON
   fallbackFontReferences: []
   customCharacters: 
   fontRenderingMode: 0

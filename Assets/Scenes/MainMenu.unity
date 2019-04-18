@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481694, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657868, g: 0.49641263, b: 0.57481706, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -445,6 +445,61 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6966701535852417024, guid: a9f9d82fd7684b54d8afa040108a2b9a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6966701535852417028, guid: a9f9d82fd7684b54d8afa040108a2b9a,
+        type: 3}
+      propertyPath: m_CullTransparentMesh
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6458732047005782310, guid: a9f9d82fd7684b54d8afa040108a2b9a,
+        type: 3}
+      propertyPath: m_EffectColor.r
+      value: 0.6431373
+      objectReference: {fileID: 0}
+    - target: {fileID: 6458732047005782310, guid: a9f9d82fd7684b54d8afa040108a2b9a,
+        type: 3}
+      propertyPath: m_EffectColor.g
+      value: 0.003921569
+      objectReference: {fileID: 0}
+    - target: {fileID: 6458732047005782310, guid: a9f9d82fd7684b54d8afa040108a2b9a,
+        type: 3}
+      propertyPath: m_EffectColor.b
+      value: 0.3137255
+      objectReference: {fileID: 0}
+    - target: {fileID: 3502419470065525703, guid: a9f9d82fd7684b54d8afa040108a2b9a,
+        type: 3}
+      propertyPath: m_EffectDistance.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3502419470065525703, guid: a9f9d82fd7684b54d8afa040108a2b9a,
+        type: 3}
+      propertyPath: m_EffectDistance.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3502419470065525703, guid: a9f9d82fd7684b54d8afa040108a2b9a,
+        type: 3}
+      propertyPath: m_UseGraphicAlpha
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3502419470065525703, guid: a9f9d82fd7684b54d8afa040108a2b9a,
+        type: 3}
+      propertyPath: m_EffectColor.r
+      value: 0.6415094
+      objectReference: {fileID: 0}
+    - target: {fileID: 3502419470065525703, guid: a9f9d82fd7684b54d8afa040108a2b9a,
+        type: 3}
+      propertyPath: m_EffectColor.g
+      value: 0.003025995
+      objectReference: {fileID: 0}
+    - target: {fileID: 3502419470065525703, guid: a9f9d82fd7684b54d8afa040108a2b9a,
+        type: 3}
+      propertyPath: m_EffectColor.b
+      value: 0.31267685
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a9f9d82fd7684b54d8afa040108a2b9a, type: 3}
