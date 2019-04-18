@@ -52,13 +52,13 @@ public class Player : NetworkBehaviour
         if (!m_playerDash.CanDash(m_playerEnergy.GetCurrentEnergy()))
             return;
 
-        m_playerEnergy.AddEnergy(-m_playerDash.Cost);
+        m_playerEnergy.AddEnergy(-m_playerDash.GetCost());
         m_playerDash.StartDash();
     }
 
     public float DashMultiplier()
     {
-        return m_playerDash.DashSpeed;
+        return m_playerDash.GetMultiplier();
     }
 
     public void Shoot()

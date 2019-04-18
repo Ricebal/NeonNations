@@ -5,28 +5,51 @@ using UnityEngine.Networking;
 
 public class PlayerDash : NetworkBehaviour
 {
-    public float DashSpeed = 1f;
-    public int Cost = 20;
-    private float m_dashFriction = 0.3f;
-    private float m_dashRate = 0f;
-    private float m_nextDash;
+    private float m_multiplier = 1f;
+    private const int COST = 20;
+    private const float DURATION = 0.05f;
+    private const float COOLDOWN = 1f;
+    private float m_start;
+    private const float MULTIPLIER_AMOUNT = 7.5f;
+    private AfterImagePool m_imagePool;
+
+    private void Start() {
+        m_imagePool = GetComponent<AfterImagePool>();
+    }
 
     public void StartDash()
     {
-        DashSpeed = 5f;
-        m_nextDash = Time.time + m_dashRate;
+        m_multiplier = MULTIPLIER_AMOUNT;
+        m_start = Time.time;
+        m_imagePool.ShowImages = true;
+    }
+
+    private void EndDash()
+    {
+        m_multiplier = 1f;
+        m_imagePool.ShowImages = false;
     }
 
     public bool CanDash(int energy)
     {
-        return energy >= Cost && DashSpeed == 1f && Time.time > m_nextDash;
+        return energy >= COST && Time.time > m_start + COOLDOWN;
+    }
+
+    public int GetCost() 
+    {
+        return COST;
+    }
+
+    public float GetMultiplier()
+    {
+        return m_multiplier;
     }
 
     private void FixedUpdate()
     {
-        if (DashSpeed > 1)
-            DashSpeed -= m_dashFriction;
-        else
-            DashSpeed = 1;
+        if(Time.time > m_start + DURATION) 
+        {
+            EndDash();
+        }
     }
 }
