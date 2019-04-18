@@ -87,11 +87,11 @@ GameObject:
   m_Component:
   - component: {fileID: 2485670567771087245}
   - component: {fileID: 8253390180041620419}
-  - component: {fileID: 2826513337032882244}
   - component: {fileID: 6587786285906454183}
   - component: {fileID: 5439118275043155726}
   - component: {fileID: 7810844292074717741}
   - component: {fileID: 3200705619309674890}
+  - component: {fileID: 7992921887214788939}
   m_Layer: 9
   m_Name: MagicBulletPrefab
   m_TagString: Bullet
@@ -132,20 +132,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 3
---- !u!136 &2826513337032882244
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4647958490886930736}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  m_Radius: 0.025
-  m_Height: 0.5
-  m_Direction: 2
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &6587786285906454183
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -323,6 +309,19 @@ TrailRenderer:
   m_MinVertexDistance: 0.01
   m_Autodestruct: 0
   m_Emitting: 1
+--- !u!65 &7992921887214788939
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4647958490886930736}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.8258009, y: 0.045843184, z: 0.7316242}
+  m_Center: {x: 0.0046658516, y: 0.0028440058, z: 0.0016129017}
 --- !u!1 &7167055040628441238
 GameObject:
   m_ObjectHideFlags: 0

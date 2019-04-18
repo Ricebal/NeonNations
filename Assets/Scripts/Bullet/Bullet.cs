@@ -34,8 +34,10 @@ public class Bullet : NetworkBehaviour
         }
     }
 
-    public void OnTriggerEnter(Collider collider) {
-        if (!isServer) {
+    public void OnCollisionEnter(Collision collision)
+    {
+        if (!isServer)
+        {
             return;
         }
 
@@ -63,10 +65,24 @@ public class Bullet : NetworkBehaviour
             // Destroy the particles after 0.5 seconds, the max lifetime of a particle
             NetworkBehaviour.Destroy(trail.gameObject, 0.5f);
             // The bullet is destroyed on collision
-
-            NetworkBehaviour.Destroy(this.gameObject);
+            NetworkBehaviour.Destroy(gameObject);
         }
     }
+    public void OnTriggerEnter(Collider collider)
+    {
+        if (!isServer)
+        {
+            return;
+        }
+
+        // To prevent the player from hitting themselves
+        if (collider.gameObject != m_shooter)
+        {
+            // The bullet is destroyed on collision
+            NetworkBehaviour.Destroy(gameObject);
+        }
+    }
+
 
     public void SetShooter(GameObject shooter) {
         m_shooter = shooter;
