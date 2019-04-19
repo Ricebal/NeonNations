@@ -33,7 +33,7 @@ public class Bullet : NetworkBehaviour
             Destroy(this.gameObject);
         }
     }
-
+    
     public void OnCollisionEnter(Collision collision)
     {
         if (!isServer)
@@ -45,21 +45,16 @@ public class Bullet : NetworkBehaviour
         if (collision.gameObject != m_shooter)
         {
             // Get impact-position
-            ContactPoint contact = collision.contacts[0];
-            Quaternion rot = Quaternion.FromToRotation(Vector3.up, contact.normal);
-            Vector3 pos = contact.point;
+            /* ContactPoint contact*/
+            Vector3 pos = collision.contacts[0].point;
+            //Quaternion rot = Quaternion.FromToRotation(Vector3.up, contact.normal);
+            //Vector3 pos = contact.point;
 
             // Create explosion on impact
-            if (HitPrefab != null)
-            {
-                GameObject explosion = Instantiate(HitPrefab, pos, gameObject.transform.rotation);
-                explosion.transform.Translate(0, 0, -wallOffset);
-                // Instanciate the explosion on the network for all players 
-                NetworkServer.Spawn(explosion);
-            }
+            CmdCreateExplosion(pos);
 
             // Decouple particle system from bullet to prevent the trail from disappearing
-            Transform trail = transform.FindChild("Particle System");
+            Transform trail = transform.Find("Particle System");
             trail.parent = null;
 
             // Destroy the particles after 0.5 seconds, the max lifetime of a particle
@@ -68,6 +63,21 @@ public class Bullet : NetworkBehaviour
             NetworkBehaviour.Destroy(gameObject);
         }
     }
+
+
+    [Command]
+    private void CmdCreateExplosion(Vector3 pos)
+    {
+        if (HitPrefab != null)
+        {
+            GameObject explosion = Instantiate(HitPrefab, pos, gameObject.transform.rotation);
+            explosion.transform.Translate(0, 0, -wallOffset);
+
+            // Instanciate the explosion on the network for all players 
+            NetworkServer.Spawn(explosion);
+        }
+    }
+
     public void OnTriggerEnter(Collider collider)
     {
         if (!isServer)
