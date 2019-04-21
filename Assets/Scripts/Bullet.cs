@@ -45,10 +45,7 @@ public class Bullet : NetworkBehaviour
         if (collision.gameObject != m_shooter)
         {
             // Get impact-position
-            /* ContactPoint contact*/
             Vector3 pos = collision.contacts[0].point;
-            //Quaternion rot = Quaternion.FromToRotation(Vector3.up, contact.normal);
-            //Vector3 pos = contact.point;
 
             // Create explosion on impact
             CmdCreateExplosion(pos);
