@@ -14,7 +14,7 @@ public class ExplosionLight : NetworkBehaviour
     void Start()
     {
         //Destroys explosion after certain time
-        NetworkBehaviour.Destroy(gameObject, Lifetime*2);
+        NetworkBehaviour.Destroy(gameObject, Lifetime * 2);
     }
 
     // Update is called once per frame

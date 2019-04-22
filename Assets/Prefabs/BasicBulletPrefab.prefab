@@ -130,7 +130,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 3
+  m_CollisionDetection: 1
 --- !u!114 &6587786285906454183
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -146,7 +146,8 @@ MonoBehaviour:
   Speed: 20
   LivingTime: 3
   Damage: 2
-  hitPrefab: {fileID: 0}
+  HitPrefab: {fileID: 0}
+  wallOffset: 0
 --- !u!114 &5439118275043155726
 MonoBehaviour:
   m_ObjectHideFlags: 0
