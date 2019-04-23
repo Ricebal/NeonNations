@@ -10,7 +10,6 @@ public class CameraController : MonoBehaviour
     private Vector3 m_offset;
     private bool m_active;
 
-    // LateUpdate is called once per frame, after all Update functions have been called
     void LateUpdate()
     {
         // for debugging

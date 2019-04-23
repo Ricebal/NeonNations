@@ -4,7 +4,6 @@ public class GameManager : MonoBehaviour
 {
     public BoardManager boardScript;
 
-    // Awake is called when the script instance is being loaded
     void Awake()
     {
         boardScript = GetComponent<BoardManager>();

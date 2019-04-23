@@ -7,7 +7,6 @@ public class EscapeMenu : NetworkBehaviour
     public GameObject Canvas;
     private bool m_paused = false;
 
-    // Update is called once per frame
     void Update()
     {
         if (Input.GetKeyDown("escape"))

@@ -4,7 +4,6 @@ using UnityEngine.UI;
 
 public class MainMenuButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-
     // Method triggered when the mouse cursor entered the button area
     public void OnPointerEnter(PointerEventData pointerEvent)
     {

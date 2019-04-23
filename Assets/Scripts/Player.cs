@@ -4,7 +4,6 @@ using UnityEngine.Networking;
 
 public class Player : NetworkBehaviour
 {
-
     // Amount of energy a bullet will consume
     public int BulletCost;
     // Amount of energy a sonar will consume
