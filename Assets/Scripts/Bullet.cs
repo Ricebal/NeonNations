@@ -36,34 +36,7 @@ public class Bullet : NetworkBehaviour
             Destroy(this.gameObject);
         }
     }
-
-    public void OnCollisionEnter(Collision collision)
-    {
-        if (!isServer)
-        {
-            return;
-        }
-
-        if (collision.gameObject != m_shooter)
-        {
-            // Get impact-position
-            Vector3 pos = collision.contacts[0].point;
-
-            // Create explosion on impact
-            CmdCreateExplosion(pos);
-
-            // Decouple particle system from bullet to prevent the trail from disappearing
-            Transform trail = transform.Find("Particle System");
-            trail.parent = null;
-
-            // Destroy the particles after 0.5 seconds, the max lifetime of a particle
-            NetworkBehaviour.Destroy(trail.gameObject, 0.5f);
-            // The bullet is destroyed on collision
-            NetworkBehaviour.Destroy(gameObject);
-        }
-    }
-
-    // Collision checker for the sonar
+    
     public void OnTriggerEnter(Collider collider) {
         if (!isServer) {
             return;
