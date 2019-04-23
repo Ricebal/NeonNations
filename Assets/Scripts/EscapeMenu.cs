@@ -8,7 +8,6 @@ using UnityEngine.SceneManagement;
 public class EscapeMenu : NetworkBehaviour
 {
     public GameObject Canvas;
-    public NetworkManager NetworkManager;
     private bool m_paused = false;
 
     // Update is called once per frame
@@ -28,15 +27,20 @@ public class EscapeMenu : NetworkBehaviour
     public void Disconnect()
     {
         TogglePause();
-        if (isServer)
+        if (isServer) 
             NetworkManager.singleton.StopHost();
         else
             NetworkManager.singleton.StopClient();
+        SceneManager.LoadScene(2);
     }
 
     public void MainMenu()
     {
-        Disconnect();
+        TogglePause();
+        if (isServer)
+            NetworkManager.singleton.StopHost();
+        else
+            NetworkManager.singleton.StopClient();
         SceneManager.LoadScene(0);
     }
 
