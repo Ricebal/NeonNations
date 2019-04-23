@@ -36,7 +36,7 @@ public class Bullet : NetworkBehaviour
             Destroy(this.gameObject);
         }
     }
-    
+
     public void OnTriggerEnter(Collider collider) {
         if (!isServer) {
             return;
@@ -47,12 +47,12 @@ public class Bullet : NetworkBehaviour
             if (HitPrefab != null)
             {
                 // Get tag of collider
-                string tag = collider.tag;
+                int id = collider.GetInstanceID();
                 // Get impact-position
                 RaycastHit trueHit = default(RaycastHit);
                 RaycastHit[] hits = Physics.RaycastAll(m_startPosition, transform.forward, 80);
                 foreach (RaycastHit hit in hits) {
-                    if (hit.collider.CompareTag(tag))
+                    if (hit.collider.GetInstanceID() == id)
                     {
                         trueHit = hit;
                         break;
