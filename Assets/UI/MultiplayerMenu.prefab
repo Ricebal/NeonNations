@@ -448,7 +448,7 @@ GameObject:
   - component: {fileID: 5322645931517820371}
   - component: {fileID: 5322645931346774475}
   m_Layer: 5
-  m_Name: Lobby
+  m_Name: MultiplayerMenu
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -547,6 +547,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28286a1dfd596cb44bf1da0182311401, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ButtonStartHost: {fileID: 0}
+  ButtonJoingGame: {fileID: 0}
+  ButtonBack: {fileID: 0}
+  ConnectionText: {fileID: 0}
 --- !u!1 &5322645931849754024
 GameObject:
   m_ObjectHideFlags: 0
