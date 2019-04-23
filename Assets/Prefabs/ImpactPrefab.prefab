@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2302226258172003179}
   - component: {fileID: 2302226258172003181}
   - component: {fileID: 2302226258172003178}
-  m_Layer: 0
+  m_Layer: 4
   m_Name: ExplosionParticles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4766,7 +4766,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2302226259342091655}
   - component: {fileID: 2302226259342091652}
-  m_Layer: 0
+  m_Layer: 4
   m_Name: Point Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4837,7 +4837,7 @@ GameObject:
   - component: {fileID: 2302226259571672646}
   - component: {fileID: 2302226259571672647}
   - component: {fileID: 2302226259571672644}
-  m_Layer: 0
+  m_Layer: 4
   m_Name: ImpactPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
