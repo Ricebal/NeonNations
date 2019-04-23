@@ -42,7 +42,7 @@ public class Player : NetworkBehaviour
         m_playerEnergy = GetComponent<PlayerEnergy>();
         m_playerHealth = GetComponent<PlayerHealth>();
         m_cameraController = Camera.main.GetComponent<CameraController>();
-        m_cameraController.setTarget(this.transform);
+        m_cameraController.SetTarget(this.transform);
         m_escapeMenu = GameObject.Find("MenuCanvas").GetComponent<EscapeMenu>();
         m_gameOverMenu = GameObject.Find("GameOverCanvas").GetComponent<GameOverMenu>();
     }
@@ -167,7 +167,7 @@ public class Player : NetworkBehaviour
             return;
         }
 
-        m_cameraController.setInactive();
+        m_cameraController.SetInactive();
         m_cameraController.PlayerTransform = null;
     }
 }

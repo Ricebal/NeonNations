@@ -7,6 +7,7 @@ public class ExplosionLight : MonoBehaviour
     public float IntensityMultiplier;
     public float Lifetime;
     public Light Light;
+
     private bool m_growing = true;
     private float m_timeCount = 0.0f;
 

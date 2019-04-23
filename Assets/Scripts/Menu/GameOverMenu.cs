@@ -4,17 +4,14 @@ using UnityEngine.UI;
 
 public class GameOverMenu : MonoBehaviour
 {
-
     public float RespawnDelay;
     public GameObject Panel;
-    public Button RespawnButton;
     public Text RespawnText;
 
     private float m_remainingTime;
 
     void Start()
     {
-        RespawnButton.onClick.AddListener(Respawn);
         SetActive(false);
     }
 

@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 public class EscapeMenu : NetworkBehaviour
 {
     public GameObject Canvas;
+
     private bool m_paused = false;
 
     void Update()

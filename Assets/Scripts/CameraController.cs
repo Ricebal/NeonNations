@@ -24,14 +24,14 @@ public class CameraController : MonoBehaviour
         }
     }
 
-    public void setTarget(Transform target)
+    public void SetTarget(Transform target)
     {
         m_active = true;
         PlayerTransform = target;
         transform.position = PlayerTransform.position;
     }
 
-    public void setInactive()
+    public void SetInactive()
     {
         m_active = false;
     }

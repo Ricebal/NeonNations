@@ -2,16 +2,16 @@
 
 public class GameManager : MonoBehaviour
 {
-    public BoardManager boardScript;
+    public BoardManager BoardScript;
 
     void Awake()
     {
-        boardScript = GetComponent<BoardManager>();
+        BoardScript = GetComponent<BoardManager>();
         InitGame();
     }
 
     void InitGame()
     {
-        boardScript.SetupScene();
+        BoardScript.SetupScene();
     }
 }
