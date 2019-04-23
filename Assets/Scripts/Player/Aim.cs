@@ -1,9 +1,15 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 
-public class Aim : MonoBehaviour
+public class Aim : NetworkBehaviour
 {
     void Update()
     {
+        if (!isLocalPlayer)
+        {
+            return;
+        }
+
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         Plane plane = new Plane(Vector3.up, Vector3.zero);
         float distance;
