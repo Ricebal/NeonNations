@@ -31,11 +31,16 @@ public class EscapeMenu : NetworkBehaviour
             NetworkManager.singleton.StopHost();
         else
             NetworkManager.singleton.StopClient();
+        SceneManager.LoadScene(2);
     }
 
     public void MainMenu()
     {
-        Disconnect();
+        TogglePause();
+        if (isServer)
+            NetworkManager.singleton.StopHost();
+        else
+            NetworkManager.singleton.StopClient();
         SceneManager.LoadScene(0);
     }
 

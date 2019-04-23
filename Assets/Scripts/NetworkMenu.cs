@@ -45,4 +45,5 @@ public class NetworkMenu : MonoBehaviour
     private void LoadMainMenu() {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 2);
     }
+
 }
