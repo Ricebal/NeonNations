@@ -140,7 +140,7 @@ CapsuleCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4647958490886930736}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.025
   m_Height: 0.5
@@ -163,7 +163,7 @@ MonoBehaviour:
   Damage: 2
   HitPrefab: {fileID: 2302226259571672645, guid: 5a5341eef4aad1241958b2c797b6b2e7,
     type: 3}
-  WallOffset: 0.4
+  WallOffset: 0
 --- !u!114 &5439118275043155726
 MonoBehaviour:
   m_ObjectHideFlags: 0

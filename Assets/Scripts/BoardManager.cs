@@ -66,7 +66,7 @@ public class BoardManager : MonoBehaviour
     void GenerateFloor() {
         m_map = Instantiate(Map, new Vector3(0, 0, 0), Quaternion.identity) as GameObject;
         GameObject floor = GameObject.CreatePrimitive(PrimitiveType.Plane);
-        floor.transform.position = new Vector3((float)Columns / 2 - 0.5f, -0.5f, (float)Rows / 2 - 0.5f);
+        floor.transform.position = new Vector3((float)Columns / 2 - 0.5f, -0.55f, (float)Rows / 2 - 0.5f);
         floor.transform.localScale = new Vector3((float)(Columns + OuterWallWidth * 2) / 10, 1, (float)(Rows + OuterWallWidth * 2) / 10);
         floor.transform.SetParent(m_map.transform);
     }
