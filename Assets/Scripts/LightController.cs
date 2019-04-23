@@ -1,22 +1,12 @@
-﻿using UnityEngine.Networking;
+﻿using UnityEngine;
 
-public class LightController : NetworkBehaviour
+public class LightController : MonoBehaviour
 {
     // Start is called before the first frame update
     void Start()
     {
-        if (!isLocalPlayer)
-        {
-            return;
-        }
-
         transform.GetChild(1).gameObject.SetActive(true);
         transform.GetChild(2).gameObject.SetActive(true);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
 }

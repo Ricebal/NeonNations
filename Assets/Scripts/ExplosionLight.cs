@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Networking;
 
-public class ExplosionLight : NetworkBehaviour
+public class ExplosionLight : MonoBehaviour
 {
     public float RangeMultiplier;
     public float IntensityMultiplier;

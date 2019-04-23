@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Networking;
 
-public class PlayerController : NetworkBehaviour
+public class PlayerController : MonoBehaviour
 {
     public float Speed;
 
@@ -11,11 +11,6 @@ public class PlayerController : NetworkBehaviour
 
     public void Start()
     {
-        if (!isLocalPlayer)
-        {
-            return;
-        }
-
         m_rigidbody = GetComponent<Rigidbody>();
         m_player = GetComponent<Player>();
         SetEnabled(true);
@@ -23,7 +18,7 @@ public class PlayerController : NetworkBehaviour
 
     public void Update()
     {
-        if (!isLocalPlayer || !m_isEnabled)
+        if (!m_isEnabled)
         {
             return;
         }
@@ -43,7 +38,7 @@ public class PlayerController : NetworkBehaviour
 
     public void FixedUpdate()
     {
-        if (!isLocalPlayer || !m_isEnabled)
+        if (!m_isEnabled)
         {
             return;
         }
