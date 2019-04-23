@@ -2,6 +2,7 @@
 
 public class LightController : NetworkBehaviour
 {
+
     void Start()
     {
         if (!isLocalPlayer)
@@ -13,9 +14,4 @@ public class LightController : NetworkBehaviour
         transform.GetChild(2).gameObject.SetActive(true);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
 }
