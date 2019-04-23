@@ -753,15 +753,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 262fd08e365fcbf47a888b69b8188b15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MapWidth: 50
+  MapWidth: 30
   MapHeight: 22
   OuterWallWidth: 14
   Map: {fileID: 6182289135420230192, guid: 1e44135debb4a9a41a46d373ce5d9c91, type: 3}
+  RoomAmount: 15
   MaxRoomSize: 60
   MinRoomSize: 24
-  MinLength: 4
+  MinRoomLength: 4
   MaxPlaceRoomAttempts: 1
   MaxBuildRoomAttempts: 250
+  MinTunnelLength: 1
+  MaxTunnelLength: 7
+  TunnelWidth: 2
 --- !u!114 &817318511
 MonoBehaviour:
   m_ObjectHideFlags: 0
