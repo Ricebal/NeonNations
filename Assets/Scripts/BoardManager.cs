@@ -194,9 +194,15 @@ public class BoardManager : MonoBehaviour
     }
 
     void AddTunnel(Vector2 from, Vector2 direction, int length) {
-        int[,] corridor = new int[Math.Max(TunnelWidth, (int)Math.Abs(direction.x) * length), Math.Max(TunnelWidth, (int)Math.Abs(direction.y) * length)];
+        Vector2 tunnelSize = new Vector2(TunnelWidth, TunnelWidth);
+        if (direction.x != 0)
+            tunnelSize.x = length;
+        else if (direction.y != 0)
+            tunnelSize.y = length;
+        int[,] tunnel = new int[(int)tunnelSize.x, (int)tunnelSize.y];
+
         Vector2 pos = new Vector2(Math.Min(from.x, from.x + (direction.x * length)+1) , Math.Min(from.y, from.y + (direction.y * length)+1));
-        PasteTileMap(corridor, m_tileMap, pos);
+        PasteTileMap(tunnel, m_tileMap, pos);
     }
 
     void PasteTileMap(int[,] smallMap, int[,] bigMap, Vector2 pos) {
@@ -229,11 +235,20 @@ public class BoardManager : MonoBehaviour
         // get random walltile for that direction
         room.WallTile = GetRandomWallTile(room.Direction);
 
-        // get a random tile within the room, to attach the corridor too
-        Vector2 pos = new Vector2(UnityEngine.Random.Range(0, room.Roommap.GetLength(0) + 1 - TunnelWidth), UnityEngine.Random.Range(0, room.Roommap.GetLength(1) + 1 - TunnelWidth));
+        // get a random tile within the room, to attach the corridor to
+        room.Entrance = new Vector2(UnityEngine.Random.Range(0, room.Roommap.GetLength(0) + 1 - TunnelWidth), UnityEngine.Random.Range(0, room.Roommap.GetLength(1) + 1 - TunnelWidth));
+        if (room.Direction.y == -1) {
+            room.Entrance.y = room.Roommap.GetLength(1) - 1;
+        } else if (room.Direction.y == 1) {
+            room.Entrance.y = 0;
+        } else if (room.Direction.x == -1) {
+            room.Entrance.x = room.Roommap.GetLength(0) - 1;
+        } else if (room.Direction.x == 1) {
+            room.Entrance.x = 0;
+        }
 
         // determine the position of the room within the map, based on the walltile and the tile within the room
-        room.Pos = new Vector2(room.WallTile.x - pos.x, room.WallTile.y - pos.y);
+        room.Pos = new Vector2(room.WallTile.x - room.Entrance.x, room.WallTile.y - room.Entrance.y);
 
         // generate random ordered list of tunnel lengths
         IEnumerable<int> tunnelLengths = UniqueRandom(MinTunnelLength, MaxTunnelLength);
@@ -253,6 +268,8 @@ public class BoardManager : MonoBehaviour
                 room.Pos.x = room.WallTile.x + room.TunnelLength;
             }
 
+            DebugMap(AddTunnelToMap(room));
+
             // if it can be placed, return the room
             if (CanPlace(room)) {
                 return room;
@@ -262,6 +279,56 @@ public class BoardManager : MonoBehaviour
         // for every length of the tunnel, this room doesn't fit. set the pos to -1,-1 and return
         room.Pos = new Vector2(-1, -1);
         return room;
+    }
+
+    int[,] AddTunnelToMap(Room room)
+    {
+        // create new map with right size
+        int[,] newMap = new int[room.Roommap.GetLength(0) + (int)Math.Abs(room.Direction.x) * room.TunnelLength, room.Roommap.GetLength(1) + (int)Math.Abs(room.Direction.y) * room.TunnelLength];
+        for (int x = 0; x < newMap.GetLength(0); x++) {
+            for (int y = 0; y < newMap.GetLength(1); y++) {
+                newMap[x, y] = 1;
+            }
+        }
+
+        // copy roommap into new map
+        for (int x = 0; x < room.Roommap.GetLength(0); x++) {
+            for (int y = 0; y < room.Roommap.GetLength(1); y++) {
+                newMap[x + (int)Math.Abs(Math.Max(0, room.Direction.x)) * room.TunnelLength, y + (int)Math.Abs(Math.Max(0, room.Direction.y)) * room.TunnelLength] = room.Roommap[x, y];
+            }
+        }
+
+        // copy tunnel into new map
+        // generate tunnel
+        // IDEA: (absolute of direction * -1 + 1) * width
+        Vector2 tunnelSize = new Vector2(TunnelWidth, TunnelWidth);
+        if (room.Direction.x != 0)
+            tunnelSize.x = room.TunnelLength;
+        else if (room.Direction.y != 0)
+            tunnelSize.y = room.TunnelLength;
+        int[,] tunnel = new int[(int)tunnelSize.x, (int)tunnelSize.y];
+
+        // generate position within new map
+        Vector2 pos = new Vector2(room.Entrance.x + (int)Math.Abs(Math.Max(0, room.Direction.x)) * room.TunnelLength, room.Entrance.y + (int)Math.Abs(Math.Max(0, room.Direction.y)) * room.TunnelLength);
+        if (room.Direction.x == 1) {
+            pos.x = pos.x - room.TunnelLength;
+        } else if (room.Direction.x == -1) {
+            pos.x = pos.x + 1;
+        } else if (room.Direction.y == 1) {
+            pos.y = pos.y - room.TunnelLength;
+        } else if (room.Direction.y == -1) {
+            pos.y = pos.y + 1;
+        }
+
+        // add tunnel to new map
+        for (int x = 0; x < tunnel.GetLength(0); x++) {
+            for (int y = 0; y < tunnel.GetLength(1); y++) {
+                newMap[x + (int)pos.x, y + (int)pos.y] = 0;
+            }
+        }
+
+        // return new map
+        return newMap;
     }
 
     bool CanPlace(Room room)
@@ -417,6 +484,7 @@ public class Room
     public Vector2 WallTile;
     public Vector2 Direction;
     public int TunnelLength;
+    public Vector2 Entrance;
 
     public Room(int[,] roomMap)
     {
