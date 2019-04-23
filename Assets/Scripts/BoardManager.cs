@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 
 [RequireComponent(typeof(MeshFilter))]
@@ -21,13 +22,10 @@ public class BoardManager : MonoBehaviour
     private int[,] m_tileMap;
     private GameObject m_map;
 
-    void GenerateEmptyMap(int content)
-    {
+    void GenerateEmptyMap(int content) {
         m_tileMap = new int[MapWidth, MapHeight];
-        for (int x = 0; x < MapWidth; x++)
-        {
-            for (int y = 0; y < MapHeight; y++)
-            {
+        for (int x = 0; x < MapWidth; x++) {
+            for (int y = 0; y < MapHeight; y++) {
                 m_tileMap[x, y] = content;
             }
         }
@@ -77,7 +75,7 @@ public class BoardManager : MonoBehaviour
         // add first room to map
         AddRoom(room);
         // determine how many rooms will be generated
-        int roomAmount = 50;
+        int roomAmount = 15;
         int currentRoomAmount = 1;
 
         // for this amount (starts from 1 since main room has been created)
@@ -94,9 +92,12 @@ public class BoardManager : MonoBehaviour
             if (room.Pos.x != -1 && room.Pos.y != -1) {
                 // add room to the map
                 AddRoom(room);
+                AddTunnel(room.WallTile, room.Direction, room.TunnelLength);
                 currentRoomAmount++;
             }
         }
+
+        DebugMap(m_tileMap);
 
         // add shortcuts
     }
@@ -114,7 +115,7 @@ public class BoardManager : MonoBehaviour
     }
 
     Vector2 GenerateRandomDirection() {
-        return GetDirection(UnityEngine.Random.Range(1, 4));
+        return GetDirection(UnityEngine.Random.Range(1, 5)); // max is exclusive, so this will generate number between 1 and 4
     }
 
     Vector2 GetDirection(int directionInt) {
@@ -135,6 +136,21 @@ public class BoardManager : MonoBehaviour
                 break;
         }
         return direction;
+    }
+
+    Vector2 GetRandomWallTile(Vector2 direction) {
+        Vector2 wallTile = new Vector2(-1,-1);
+        while (wallTile.x == -1 && wallTile.y == -1) {
+            Vector2 randomTile = new Vector2(UnityEngine.Random.Range(1, MapWidth - 1), UnityEngine.Random.Range(1, MapHeight - 1));
+            if (m_tileMap[(int)randomTile.x, (int)randomTile.y] == 1
+                && m_tileMap[(int)randomTile.x + (int)direction.x, (int)randomTile.y + (int)direction.y] == 1
+                && m_tileMap[(int)randomTile.x - (int)direction.x, (int)randomTile.y - (int)direction.y] == 0)
+            {
+                wallTile = randomTile;
+            }
+        }
+
+        return wallTile;
     }
 
     void AddTunnel(Vector2 from, Vector2 direction, int length) {
@@ -163,10 +179,29 @@ public class BoardManager : MonoBehaviour
     }
 
     Room TryPlacement (Room room) {
-        room.Pos = new Vector2(UnityEngine.Random.Range(0, MapWidth), UnityEngine.Random.Range(0, MapHeight));
+        Vector2 direction = GenerateRandomDirection();
+        Vector2 wallTile = GetRandomWallTile(direction);
+        Vector2 pos = new Vector2(UnityEngine.Random.Range(0, room.Roommap.GetLength(0)), UnityEngine.Random.Range(0, room.Roommap.GetLength(1)));
+        room.Pos = new Vector2(wallTile.x - pos.x, wallTile.y - pos.y);
+        if (direction.y == -1) {
+            room.Pos.y = wallTile.y - room.Roommap.GetLength(1);
+        } else if (direction.y == 1) {
+            room.Pos.y = wallTile.y + 1;
+        } else if (direction.x == -1) {
+            room.Pos.x = wallTile.x - room.Roommap.GetLength(0);
+        } else if (direction.x == 1) {
+            room.Pos.x = wallTile.x + 1;
+        }
+
+        room.TunnelLength = 1;
+        room.Direction = direction;
+        room.WallTile = wallTile;
+
         if (!CanPlace(room)) {
+            DebugAddingRoom(m_tileMap, room);
             room.Pos = new Vector2(-1, -1);
         }
+
         return room;
     }
 
@@ -180,7 +215,6 @@ public class BoardManager : MonoBehaviour
         // check overlap
         for (int x = 0; x < room.Roommap.GetLength(0); x++) {
             for (int y = 0; y < room.Roommap.GetLength(1); y++) {
-                Debug.Log("room = " + room.Roommap.GetLength(0) + " by " + room.Roommap.GetLength(1) + " at position " + room.Pos.x + "," + room.Pos.y + ", now checking tile " + x + "," + y);
                 if (room.Roommap[x, y] == 0 && // check if position in room equals zero
                     (m_tileMap[x + (int)room.Pos.x, y + (int)room.Pos.y] == 0 || // if so, check if the same position on map is zero
                     m_tileMap[x + (int)room.Pos.x, y + (int)room.Pos.y + 1] == 0 || // if so, check all tiles around the position on the map is zero, starting with north
@@ -262,6 +296,40 @@ public class BoardManager : MonoBehaviour
         CreateOuterWalls();
         CombineMeshes();
     }
+
+    private void DebugMap(int[,] map)
+    {
+        StringBuilder builder = new StringBuilder();
+        builder.Append('\n');
+        for (int y = 0; y < map.GetLength(1); y++)
+        {
+            for (int x = 0; x < map.GetLength(0); x++)
+            {
+                builder.Append(map[x, y]);
+            }
+            builder.Append('\n');
+        }
+        string s = builder.ToString();
+        Debug.Log(s);
+    }
+
+    private void DebugAddingRoom(int[,] map, Room room)
+    {
+        StringBuilder builder = new StringBuilder();
+        builder.Append('\n');
+        for (int y = 0; y < map.GetLength(1); y++) {
+            for (int x = 0; x < map.GetLength(0); x++) {
+                if (x >= room.Pos.x && x < room.Pos.x + room.Roommap.GetLength(0) && y >= room.Pos.y && y < room.Pos.y + room.Roommap.GetLength(1)) {
+                    builder.Append(room.Roommap[x - (int)room.Pos.x, y - (int)room.Pos.y] + 2);
+                } else {
+                    builder.Append(map[x, y]);
+                }
+            }
+            builder.Append('\n');
+        }
+        string s = builder.ToString();
+        Debug.Log(s);
+    }
 }
 
 public class Room
@@ -270,7 +338,7 @@ public class Room
     public Vector2 Pos;
     public Vector2 WallTile;
     public Vector2 Direction;
-    public int tunnelLength;
+    public int TunnelLength;
 
     public Room(int[,] roomMap)
     {
