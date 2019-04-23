@@ -190,6 +190,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: HUDCanvas
       objectReference: {fileID: 0}
+    - target: {fileID: 331448660912219843, guid: 3f543ce0544b7344b8f77a3ae4ea9157,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 331448660912219855, guid: 3f543ce0544b7344b8f77a3ae4ea9157,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -474,6 +479,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Interactable
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 331448661467225678, guid: 3f543ce0544b7344b8f77a3ae4ea9157,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3f543ce0544b7344b8f77a3ae4ea9157, type: 3}
@@ -912,6 +922,11 @@ PrefabInstance:
     - target: {fileID: 7375908384011511234, guid: ff6331ee681933a49a95f9bcbb22c5ce,
         type: 3}
       propertyPath: m_Pivot.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7375908384395104213, guid: ff6331ee681933a49a95f9bcbb22c5ce,
+        type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
