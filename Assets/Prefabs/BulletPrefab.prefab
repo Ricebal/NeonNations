@@ -160,7 +160,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Speed: 20
   LivingTime: 3
-  Damage: 2
+  Damage: 15
   HitPrefab: {fileID: 2302226259571672645, guid: 5a5341eef4aad1241958b2c797b6b2e7,
     type: 3}
   WallOffset: 0
