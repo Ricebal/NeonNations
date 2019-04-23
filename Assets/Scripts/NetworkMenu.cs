@@ -9,11 +9,20 @@ public class NetworkMenu : MonoBehaviour
     public Button ButtonStartHost;
     public Button ButtonJoingGame;
     public Button ButtonBack;
+    // Text displayed when there is a client connection or disconnection
+    public Text ConnectionText;
 
     private NetworkManagerCustom m_networkManagerCustom;
 
     void Awake() {
         m_networkManagerCustom = GameObject.Find("NetworkManager").GetComponent<NetworkManagerCustom>();
+    }
+
+    void Update() {
+        ConnectionText.text = m_networkManagerCustom.GetConnectionText();
+        // The buttons are disabled when a client is trying to connect and vice versa
+        ButtonJoingGame.interactable = !m_networkManagerCustom.IsConnecting();
+        ButtonStartHost.interactable = !m_networkManagerCustom.IsConnecting();
     }
 
     void OnEnable() {
@@ -43,6 +52,7 @@ public class NetworkMenu : MonoBehaviour
 
     // Go to the MainMenu scene
     private void LoadMainMenu() {
+        m_networkManagerCustom.Stop();
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 2);
     }
 

@@ -6,37 +6,61 @@ using UnityEngine.UI;
 
 public class NetworkManagerCustom : NetworkManager
 {
+    public float TimeOut = 5;
 
     private bool m_isConnecting;
-    private bool m_thereIsConnection;
+    private string m_connectionText;
 
     void Start() {
         m_isConnecting = false;
+        m_connectionText = "";
     }
 
     // Start a game as a host
     public void StartUpHost() {
         if (m_isConnecting) {
-            NetworkManager.singleton.StopClient();
+            m_connectionText = "Disconnecting";
+            StopClient();
         }
         SetPort();
-        NetworkManager.singleton.StartHost();
+        StartHost();
     }
 
     // Join a game as a client
     public void JoinGame() {
         if (!m_isConnecting) {
             m_isConnecting = true;
+            m_connectionText = "Connecting...";
+
             SetIPAddress();
-            TestConnection();
-            if (m_thereIsConnection) {
-                SetPort();
-                NetworkManager.singleton.StartClient();
+            SetPort();
+            StartClient();
+        }
+    }
+
+    public override void OnClientDisconnect(NetworkConnection conn) {
+        StopClient();
+
+        // If the client is not properly disconnected...
+        if (conn.lastError != NetworkError.Ok) {
+            // and if it is a timeout error, print "impossible to connect"
+            if (conn.lastError == NetworkError.Timeout) {
+                m_connectionText = "Impossible to connect.";
             }
-            else {
-                Debug.Log("no connection");
+            // otherwise print the error in the console
+            if (LogFilter.logError) {
+                Debug.LogError("ClientDisconnected due to error: " + conn.lastError);
             }
         }
+
+        Debug.Log("Client disconnected from server: " + conn);
+        m_isConnecting = false;
+    }
+
+    public override void OnClientConnect(NetworkConnection conn) {
+        base.OnClientConnect(conn);
+        m_connectionText = "";
+        m_isConnecting = false;
     }
 
     // Set the IP address of the network manager for the StartClient function
@@ -50,29 +74,18 @@ public class NetworkManagerCustom : NetworkManager
         NetworkManager.singleton.networkPort = 7777;
     }
 
-    IEnumerator TestConnection() {
-        float timeTaken = 0;
-        float maxTime = 2;
-
-        while (true) {
-            Ping testPing = new Ping(NetworkManager.singleton.networkAddress);
-            timeTaken = 0;
-            while (!testPing.isDone) {
-                timeTaken += Time.deltaTime;
-                if (timeTaken > maxTime) {
-                    m_thereIsConnection = false;
-                    break;
-                }
-
-                yield return null;
-            }
-
-            if (timeTaken <= maxTime) {
-                m_thereIsConnection = true;
-            }
-
-            yield return null;
-        }
+    public bool IsConnecting() {
+        return m_isConnecting;
     }
 
+    public string GetConnectionText() {
+        return m_connectionText;
+    }
+
+    public void Stop() {
+        StopClient();
+        StopHost();
+        m_isConnecting = false;
+        m_connectionText = "";
+    }
 }
