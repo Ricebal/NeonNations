@@ -21,7 +21,7 @@ public class BoardManager : MonoBehaviour
     public int MaxBuildRoomAttempts = 250;
     public int MinTunnelLength = 1;
     public int MaxTunnelLength = 7;
-    public int TunnelWidth = 1;
+    public int TunnelWidth = 2;
 
     private int[,] m_tileMap;
     private GameObject m_map;
@@ -162,16 +162,9 @@ public class BoardManager : MonoBehaviour
         Vector2 wallTile = new Vector2(-1,-1);
         while (wallTile.x == -1 && wallTile.y == -1) {
             // generate a random tile in the map
-            Vector2 randomTile = new Vector2(UnityEngine.Random.Range(1, MapWidth - 1), UnityEngine.Random.Range(1, MapHeight - 1));
+            Vector2 randomTile = new Vector2(UnityEngine.Random.Range(1, MapWidth - TunnelWidth), UnityEngine.Random.Range(1, MapHeight - TunnelWidth));
 
             bool possible = true;
-
-            // check if the initial tile is a wall in the correct direction
-            //if (!(m_tileMap[(int)randomTile.x, (int)randomTile.y] == 1
-            //    && m_tileMap[(int)randomTile.x + (int)direction.x, (int)randomTile.y + (int)direction.y] == 1
-            //    && m_tileMap[(int)randomTile.x - (int)direction.x, (int)randomTile.y - (int)direction.y] == 0)) {
-            //    possible = false;
-            //}
 
             // check if the surrounding tiles are suitable for the width of the tunnel
             for (int i = 0; i < TunnelWidth; i++) {
@@ -184,9 +177,9 @@ public class BoardManager : MonoBehaviour
                 }
 
                 if (direction.y == 0) { // if direction is on the x-axis
-                    if (!(m_tileMap[(int)randomTile.x, (int)randomTile.y - i] == 1
-                        && m_tileMap[(int)randomTile.x + (int)direction.x, (int)randomTile.y - i + (int)direction.y] == 1
-                        && m_tileMap[(int)randomTile.x - (int)direction.x, (int)randomTile.y - i - (int)direction.y] == 0)) {
+                    if (!(m_tileMap[(int)randomTile.x, (int)randomTile.y + i] == 1
+                        && m_tileMap[(int)randomTile.x + (int)direction.x, (int)randomTile.y + i + (int)direction.y] == 1
+                        && m_tileMap[(int)randomTile.x - (int)direction.x, (int)randomTile.y + i - (int)direction.y] == 0)) {
                         possible = false;
                     }
                 }
@@ -201,7 +194,7 @@ public class BoardManager : MonoBehaviour
     }
 
     void AddTunnel(Vector2 from, Vector2 direction, int length) {
-        int[,] corridor = new int[Math.Max(1, (int)Math.Abs(direction.x) * length), Math.Max(1, (int)Math.Abs(direction.y) * length)];
+        int[,] corridor = new int[Math.Max(TunnelWidth, (int)Math.Abs(direction.x) * length), Math.Max(TunnelWidth, (int)Math.Abs(direction.y) * length)];
         Vector2 pos = new Vector2(Math.Min(from.x, from.x + (direction.x * length)+1) , Math.Min(from.y, from.y + (direction.y * length)+1));
         PasteTileMap(corridor, m_tileMap, pos);
     }
@@ -237,7 +230,7 @@ public class BoardManager : MonoBehaviour
         room.WallTile = GetRandomWallTile(room.Direction);
 
         // get a random tile within the room, to attach the corridor too
-        Vector2 pos = new Vector2(UnityEngine.Random.Range(0, room.Roommap.GetLength(0)), UnityEngine.Random.Range(0, room.Roommap.GetLength(1)));
+        Vector2 pos = new Vector2(UnityEngine.Random.Range(0, room.Roommap.GetLength(0) + 1 - TunnelWidth), UnityEngine.Random.Range(0, room.Roommap.GetLength(1) + 1 - TunnelWidth));
 
         // determine the position of the room within the map, based on the walltile and the tile within the room
         room.Pos = new Vector2(room.WallTile.x - pos.x, room.WallTile.y - pos.y);

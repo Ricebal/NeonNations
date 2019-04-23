@@ -761,7 +761,7 @@ MonoBehaviour:
   MaxRoomSize: 60
   MinRoomSize: 24
   MinRoomLength: 4
-  MaxPlaceRoomAttempts: 1
+  MaxPlaceRoomAttempts: 10
   MaxBuildRoomAttempts: 250
   MinTunnelLength: 1
   MaxTunnelLength: 7
