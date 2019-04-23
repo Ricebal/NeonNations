@@ -6,12 +6,11 @@ using UnityEngine.UI;
 
 public class NetworkManagerCustom : NetworkManager
 {
-    public float TimeOut = 5;
-
     private bool m_isConnecting;
     private string m_connectionText;
 
     void Start() {
+        connectionConfig.MaxConnectionAttempt = 2;
         m_isConnecting = false;
         m_connectionText = "";
     }
