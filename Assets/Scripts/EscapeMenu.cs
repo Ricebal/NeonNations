@@ -49,4 +49,8 @@ public class EscapeMenu : NetworkBehaviour
         m_paused = !m_paused;
         Canvas.gameObject.SetActive(m_paused);
     }
+
+    public bool IsPaused() {
+        return m_paused;
+    }
 }

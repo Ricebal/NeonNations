@@ -5,25 +5,26 @@ public class PlayerController : NetworkBehaviour
 {
     public float Speed;
 
-    private Rigidbody m_rigidBody;
+    private Rigidbody m_rigidbody;
     private Player m_player;
-    private GameObject m_escapeMenu;
+    private bool m_isEnabled;
 
     public void Start() {
         if (!isLocalPlayer) {
             return;
         }
-        m_rigidBody = GetComponent<Rigidbody>();
+
+        m_rigidbody = GetComponent<Rigidbody>();
         m_player = GetComponent<Player>();
-        m_escapeMenu = GameObject.Find("MenuCanvas").transform.GetChild(0).gameObject;
+        SetEnabled(true);
     }
 
     public void Update() {
-        if (!isLocalPlayer || m_escapeMenu.activeSelf) {
+        if (!isLocalPlayer || !m_isEnabled) {
             return;
         }
 
-        // If the 'ctrl' key is held down
+        // If a fire key is held down
         if (Input.GetButton("Fire1")) {
             m_player.Shoot();
         }
@@ -35,7 +36,7 @@ public class PlayerController : NetworkBehaviour
     }
 
     public void FixedUpdate() {
-        if (!isLocalPlayer) {
+        if (!isLocalPlayer || !m_isEnabled) {
             return;
         }
 
@@ -44,20 +45,17 @@ public class PlayerController : NetworkBehaviour
 
         Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
 
-        m_rigidBody.velocity = movement * Speed;
+        m_rigidbody.velocity = movement * Speed;
     }
 
-    public override void OnStartLocalPlayer() {
-        Camera.main.GetComponent<CameraController>().setTarget(gameObject.transform);
+    // Set player's speed to 0
+    public void Freeze() {
+        m_rigidbody.velocity = new Vector3(0, 0, 0);
     }
 
-    void OnDestroy() {
-        if (!isLocalPlayer) {
-            return;
-        }
-
-        Camera.main.GetComponent<CameraController>().setInactive();
-        Camera.main.GetComponent<CameraController>().PlayerTransform = null;
+    // Enable / disable player's movements
+    public void SetEnabled(bool isEnabled) {
+        m_isEnabled = isEnabled;
     }
 
 }
