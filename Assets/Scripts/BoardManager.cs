@@ -15,9 +15,11 @@ public class BoardManager : MonoBehaviour
 
     public int MaxRoomSize = 60;
     public int MinRoomSize = 24;
-    public int MinLength = 4;
+    public int MinRoomLength = 4;
     public int MaxPlaceRoomAttempts = 10;
     public int MaxBuildRoomAttempts = 250;
+    public int MinTunnelLength = 1;
+    public int MaxTunnelLength = 7;
 
     private int[,] m_tileMap;
     private GameObject m_map;
@@ -86,13 +88,10 @@ public class BoardManager : MonoBehaviour
             }
             // generate a room
             room = GenerateRandomRoom();
-            // try to place the room x amount of times
-            room = PlaceRoom(room);
+            // try to place the room
+            bool placed = PlaceRoom(room);
             // if succeeded
-            if (room.Pos.x != -1 && room.Pos.y != -1) {
-                // add room to the map
-                AddRoom(room);
-                AddTunnel(room.WallTile, room.Direction, room.TunnelLength);
+            if (placed) {
                 currentRoomAmount++;
             }
         }
@@ -103,8 +102,8 @@ public class BoardManager : MonoBehaviour
     }
 
     Room GenerateRandomRoom() {
-        int width = UnityEngine.Random.Range(MinLength, MaxRoomSize/MinLength);
-        int height = UnityEngine.Random.Range(MinLength, MaxRoomSize/width);
+        int width = UnityEngine.Random.Range(MinRoomLength, MaxRoomSize/MinRoomLength);
+        int height = UnityEngine.Random.Range(MinRoomLength, MaxRoomSize/width);
 
         int[,] roomMap = new int[width, height];
         return new Room(roomMap);
@@ -169,39 +168,58 @@ public class BoardManager : MonoBehaviour
         }
     }
 
-    Room PlaceRoom(Room room) {
+    bool PlaceRoom(Room room) {
         for (int i = 1; i <= MaxPlaceRoomAttempts; i++) {
             room = TryPlacement(room);
-            if (room.Pos.x != -1 && room.Pos.y != -1)
-                return room;
+            if (room.Pos.x != -1 && room.Pos.y != -1) {
+                // add room and tunnel to the map
+                AddRoom(room);
+                AddTunnel(room.WallTile, room.Direction, room.TunnelLength);
+                return true;
+            }
         }
-        return room;
+        return false;
     }
 
     Room TryPlacement (Room room) {
-        Vector2 direction = GenerateRandomDirection();
-        Vector2 wallTile = GetRandomWallTile(direction);
+        // get random direction to attach the room to the map
+        room.Direction = GenerateRandomDirection();
+
+        // get random walltile for that direction
+        room.WallTile = GetRandomWallTile(room.Direction);
+
+        // get a random tile within the room, to attach the corridor too
         Vector2 pos = new Vector2(UnityEngine.Random.Range(0, room.Roommap.GetLength(0)), UnityEngine.Random.Range(0, room.Roommap.GetLength(1)));
-        room.Pos = new Vector2(wallTile.x - pos.x, wallTile.y - pos.y);
-        if (direction.y == -1) {
-            room.Pos.y = wallTile.y - room.Roommap.GetLength(1);
-        } else if (direction.y == 1) {
-            room.Pos.y = wallTile.y + 1;
-        } else if (direction.x == -1) {
-            room.Pos.x = wallTile.x - room.Roommap.GetLength(0);
-        } else if (direction.x == 1) {
-            room.Pos.x = wallTile.x + 1;
+
+        // determine the position of the room within the map, based on the walltile and the tile within the room
+        room.Pos = new Vector2(room.WallTile.x - pos.x, room.WallTile.y - pos.y);
+
+        // generate random ordered list of tunnel lengths
+        IEnumerable<int> tunnelLengths = UniqueRandom(MinTunnelLength, MaxTunnelLength);
+
+        foreach(int i in tunnelLengths) {
+            // set length of the tunnel to the specific length
+            room.TunnelLength = i;
+
+            // adjust position of the room based on the length of the tunnel
+            if (room.Direction.y == -1) {
+                room.Pos.y = room.WallTile.y + 1 - room.Roommap.GetLength(1) - room.TunnelLength;
+            } else if (room.Direction.y == 1) {
+                room.Pos.y = room.WallTile.y + room.TunnelLength;
+            } else if (room.Direction.x == -1) {
+                room.Pos.x = room.WallTile.x + 1 - room.Roommap.GetLength(0) - room.TunnelLength;
+            } else if (room.Direction.x == 1) {
+                room.Pos.x = room.WallTile.x + room.TunnelLength;
+            }
+
+            // if it can be placed, return the room
+            if (CanPlace(room)) {
+                return room;
+            }
         }
 
-        room.TunnelLength = 1;
-        room.Direction = direction;
-        room.WallTile = wallTile;
-
-        if (!CanPlace(room)) {
-            DebugAddingRoom(m_tileMap, room);
-            room.Pos = new Vector2(-1, -1);
-        }
-
+        // for every length of the tunnel, this room doesn't fit. set the pos to -1,-1 and return
+        room.Pos = new Vector2(-1, -1);
         return room;
     }
 
@@ -286,6 +304,21 @@ public class BoardManager : MonoBehaviour
 
         foreach (Transform child in m_map.transform) {
             Destroy(child.gameObject);
+        }
+    }
+
+    private IEnumerable<int> UniqueRandom(int min, int max)
+    {
+        List<int> candidates = new List<int>();
+        for (int i = min; i <= max; i++)
+        {
+            candidates.Add(i);
+        }
+        while (candidates.Count > 0)
+        {
+            int index = UnityEngine.Random.Range(0, candidates.Count);
+            yield return candidates[index];
+            candidates.RemoveAt(index);
         }
     }
 
