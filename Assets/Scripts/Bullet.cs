@@ -9,6 +9,10 @@ public class Bullet : NetworkBehaviour
     public float LivingTime;
     // Damage done to a player on hit
     public int Damage;
+    // The explosion on impact
+    public GameObject HitPrefab;
+    // Offset for spawning the lights
+    public float WallOffset;
 
     // The player that shot the bullet
     [SyncVar]
@@ -30,15 +34,63 @@ public class Bullet : NetworkBehaviour
         }
     }
 
+    public void OnCollisionEnter(Collision collision)
+    {
+        if (!isServer)
+        {
+            return;
+        }
+
+        if (collision.gameObject != m_shooter)
+        {
+            // Get impact-position
+            Vector3 pos = collision.contacts[0].point;
+
+            // Create explosion on impact
+            CmdCreateExplosion(pos);
+
+            // Decouple particle system from bullet to prevent the trail from disappearing
+            Transform trail = transform.Find("Particle System");
+            trail.parent = null;
+
+            // Destroy the particles after 0.5 seconds, the max lifetime of a particle
+            NetworkBehaviour.Destroy(trail.gameObject, 0.5f);
+            // The bullet is destroyed on collision
+            NetworkBehaviour.Destroy(gameObject);
+        }
+    }
     public void OnTriggerEnter(Collider collider) {
         if (!isServer) {
             return;
         }
 
-        if(collider.gameObject != m_shooter) {
-            // The bullet is destroyed on collision
+        if(collider.gameObject != m_shooter)
+        {
+            // Create explosion on impact
+            //CmdCreateExplosion();
 
-            NetworkBehaviour.Destroy(this.gameObject);
+            // Decouple particle system from bullet to prevent the trail from disappearing
+            Transform trail = transform.Find("Particle System");
+            trail.parent = null;
+
+            // Destroy the particles after 0.5 seconds, the max lifetime of a particle
+            NetworkBehaviour.Destroy(trail.gameObject, 0.5f);
+            // The bullet is destroyed on collision
+            NetworkBehaviour.Destroy(gameObject);
+        }
+    }
+
+    [Command]
+    private void CmdCreateExplosion(Vector3 pos)
+    {
+        if (HitPrefab != null)
+        {
+            // Instantiate explosion
+            GameObject explosion = Instantiate(HitPrefab, pos, gameObject.transform.rotation);
+            explosion.transform.Translate(0, 0, -WallOffset);
+            
+            // Instanciate the explosion on the network for all players 
+            NetworkServer.Spawn(explosion);
         }
     }
 
