@@ -21,7 +21,8 @@ public class Bullet : NetworkBehaviour
     private GameObject m_shooter;
     private float m_spawnTime;
 
-    public void Start() {
+    public void Start()
+    {
         m_startPosition = transform.position;
         Rigidbody rigidbody = GetComponent<Rigidbody>();
         // Move the bullet straight ahead with constant speed
@@ -30,19 +31,23 @@ public class Bullet : NetworkBehaviour
         m_spawnTime = Time.time;
     }
 
-    public void Update() {
+    public void Update()
+    {
         // Destroy the bullet when the LivingTime is elapsed
-        if (Time.time - m_spawnTime > LivingTime) {
+        if (Time.time - m_spawnTime > LivingTime)
+        {
             Destroy(this.gameObject);
         }
     }
 
-    public void OnTriggerEnter(Collider collider) {
-        if (!isServer) {
+    public void OnTriggerEnter(Collider collider)
+    {
+        if (!isServer)
+        {
             return;
         }
 
-        if(collider.gameObject != m_shooter)
+        if (collider.gameObject != m_shooter)
         {
             if (HitPrefab != null)
             {
@@ -51,7 +56,8 @@ public class Bullet : NetworkBehaviour
                 // Get impact-position
                 RaycastHit trueHit = default(RaycastHit);
                 RaycastHit[] hits = Physics.RaycastAll(m_startPosition, transform.forward, 80);
-                foreach (RaycastHit hit in hits) {
+                foreach (RaycastHit hit in hits)
+                {
                     if (hit.collider.GetInstanceID() == id)
                     {
                         trueHit = hit;
@@ -68,7 +74,7 @@ public class Bullet : NetworkBehaviour
 
             // Decouple particle system from bullet to prevent the trail from disappearing
             Transform trail = transform.Find("Particle System");
-            if(trail != null)
+            if (trail != null)
             {
                 trail.parent = null;
 
@@ -87,16 +93,18 @@ public class Bullet : NetworkBehaviour
         // Instantiate explosion
         GameObject explosion = Instantiate(HitPrefab, pos, gameObject.transform.rotation);
         explosion.transform.Translate(0, 0, -WallOffset);
-            
+
         // Instanciate the explosion on the network for all players 
         NetworkServer.Spawn(explosion);
     }
 
-    public void SetShooter(GameObject shooter) {
+    public void SetShooter(GameObject shooter)
+    {
         m_shooter = shooter;
     }
 
-    public GameObject GetShooter() {
+    public GameObject GetShooter()
+    {
         return m_shooter;
     }
 

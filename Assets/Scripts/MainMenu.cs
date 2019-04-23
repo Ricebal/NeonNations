@@ -10,7 +10,8 @@ public class MainMenu : MonoBehaviour
     }
 
     // Quit game button
-    public void QuitGame() {
+    public void QuitGame()
+    {
         Application.Quit();
     }
 }

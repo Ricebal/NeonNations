@@ -29,8 +29,10 @@ public class Player : NetworkBehaviour
     private EscapeMenu m_escapeMenu;
     private GameOverMenu m_gameOverMenu;
 
-    void Start() {
-        if (!isLocalPlayer) {
+    void Start()
+    {
+        if (!isLocalPlayer)
+        {
             return;
         }
 
@@ -46,58 +48,73 @@ public class Player : NetworkBehaviour
         m_gameOverMenu = GameObject.Find("GameOverCanvas").GetComponent<GameOverMenu>();
     }
 
-    void Update() {
-        if(!isLocalPlayer) {
+    void Update()
+    {
+        if (!isLocalPlayer)
+        {
             return;
         }
 
         // If the escape menu or the game over menu is displayed, disable player's movements and set his velocity to 0
-        if(m_escapeMenu.IsPaused() || m_gameOverMenu.IsActive()) {
+        if (m_escapeMenu.IsPaused() || m_gameOverMenu.IsActive())
+        {
             m_playerController.SetEnabled(false);
             m_playerController.Freeze();
-        } else {
+        }
+        else
+        {
             m_playerController.SetEnabled(true);
         }
 
         // If the player is dead...
-        if (m_playerHealth.GetCurrentHealth() <= 0) {
+        if (m_playerHealth.GetCurrentHealth() <= 0)
+        {
             // ...and the game over menu is not already activated, the player just died
-            if (!m_gameOverMenu.IsActive()) {
+            if (!m_gameOverMenu.IsActive())
+            {
                 Die();
             }
             // ...and the remaining time before respawn is not elapsed, the player is fading away
-            else if(m_gameOverMenu.GetRemainingTime() > 0) {
+            else if (m_gameOverMenu.GetRemainingTime() > 0)
+            {
                 float alpha = m_gameOverMenu.GetRemainingTime() / m_gameOverMenu.RespawnDelay;
                 Color color = new Color(1, 0.39f, 0.28f, alpha);
                 CmdColor(this.gameObject, color);
             }
             // ...and the remaining time before respawn is elapsed, the player has to respawn
-            else if (m_gameOverMenu.GetRemainingTime() <= 0) {
+            else if (m_gameOverMenu.GetRemainingTime() <= 0)
+            {
                 Respawn();
             }
         }
     }
 
-    void FixedUpdate() {
-        if (!isLocalPlayer) {
+    void FixedUpdate()
+    {
+        if (!isLocalPlayer)
+        {
             return;
         }
 
         m_playerEnergy.AddEnergy(1);
     }
 
-    public void Shoot() {
+    public void Shoot()
+    {
         // If the cooldown is elapsed and the player has enough energy
-        if (Time.time > m_nextFire && m_playerEnergy.GetCurrentEnergy() >= BulletCost) {
+        if (Time.time > m_nextFire && m_playerEnergy.GetCurrentEnergy() >= BulletCost)
+        {
             m_nextFire = Time.time + FireRate;
             m_playerEnergy.AddEnergy(-BulletCost);
             m_playerAction.CmdShoot();
         }
     }
 
-    public void Sonar() {
+    public void Sonar()
+    {
         // If the cooldown is elapsed and the player has enough energy
-        if (Time.time > m_nextSonar && m_playerEnergy.GetCurrentEnergy() >= SonarCost) {
+        if (Time.time > m_nextSonar && m_playerEnergy.GetCurrentEnergy() >= SonarCost)
+        {
             m_nextSonar = Time.time + SonarRate;
             m_playerEnergy.AddEnergy(-SonarCost);
             m_playerAction.CmdSonar();
@@ -105,20 +122,24 @@ public class Player : NetworkBehaviour
     }
 
     [ClientRpc]
-    void RpcColor(GameObject obj, Color color) {
+    void RpcColor(GameObject obj, Color color)
+    {
         obj.GetComponent<Renderer>().material.color = color;
     }
 
     [Command]
-    void CmdColor(GameObject obj, Color color) {
+    void CmdColor(GameObject obj, Color color)
+    {
         RpcColor(obj, color);
     }
 
-    private void Die() {
+    private void Die()
+    {
         m_gameOverMenu.SetActive(true);
     }
 
-    private void Respawn() {
+    private void Respawn()
+    {
         m_gameOverMenu.SetActive(false);
         CmdColor(this.gameObject, m_initialColor);
         this.transform.position = m_initialPosition;
@@ -127,18 +148,23 @@ public class Player : NetworkBehaviour
     }
 
     // If the player is hit by a bullet, the player gets damaged
-    void OnTriggerEnter(Collider collider) {
-        if(!isLocalPlayer) {
+    void OnTriggerEnter(Collider collider)
+    {
+        if (!isLocalPlayer)
+        {
             return;
         }
 
-        if (collider.gameObject.tag == "Bullet" && collider.gameObject.GetComponent<Bullet>().GetShooter() != this.gameObject) {
+        if (collider.gameObject.tag == "Bullet" && collider.gameObject.GetComponent<Bullet>().GetShooter() != this.gameObject)
+        {
             m_playerHealth.TakeDamage(collider.gameObject.GetComponent<Bullet>().Damage);
         }
     }
 
-    void OnDestroy() {
-        if (!isLocalPlayer) {
+    void OnDestroy()
+    {
+        if (!isLocalPlayer)
+        {
             return;
         }
 

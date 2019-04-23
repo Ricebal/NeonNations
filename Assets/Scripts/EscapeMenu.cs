@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 
@@ -27,10 +24,14 @@ public class EscapeMenu : NetworkBehaviour
     public void Disconnect()
     {
         TogglePause();
-        if (isServer) 
+        if (isServer)
+        {
             NetworkManager.singleton.StopHost();
+        }
         else
+        {
             NetworkManager.singleton.StopClient();
+        }
         SceneManager.LoadScene(2);
     }
 
@@ -38,9 +39,13 @@ public class EscapeMenu : NetworkBehaviour
     {
         TogglePause();
         if (isServer)
+        {
             NetworkManager.singleton.StopHost();
+        }
         else
+        {
             NetworkManager.singleton.StopClient();
+        }
         SceneManager.LoadScene(0);
     }
 
@@ -50,7 +55,8 @@ public class EscapeMenu : NetworkBehaviour
         Canvas.gameObject.SetActive(m_paused);
     }
 
-    public bool IsPaused() {
+    public bool IsPaused()
+    {
         return m_paused;
     }
 }

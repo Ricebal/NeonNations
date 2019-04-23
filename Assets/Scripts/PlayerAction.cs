@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Networking;
 
 public class PlayerAction : NetworkBehaviour
@@ -15,7 +13,8 @@ public class PlayerAction : NetworkBehaviour
     public float SonarRays;
 
     [Command]
-    public void CmdShoot() {
+    public void CmdShoot()
+    {
         GameObject bullet = Instantiate(Bullet, BulletSpawn.position, BulletSpawn.rotation);
         bullet.GetComponent<Bullet>().SetShooter(this.gameObject);
 
@@ -24,9 +23,11 @@ public class PlayerAction : NetworkBehaviour
     }
 
     [Command]
-    public void CmdSonar() {
-        float amount = (float)(360 / SonarRays);
-        for (int i = 0; i < 360; i += (int)amount) {
+    public void CmdSonar()
+    {
+        float amount = 360 / SonarRays;
+        for (int i = 0; i < 360; i += (int)amount)
+        {
             GameObject sonarBullet = Instantiate(SonarBullet, this.transform.position, Quaternion.Euler(0, i, 0));
             sonarBullet.transform.Translate(new Vector3(0, 0, this.transform.localScale.z / 2f), Space.Self);
             sonarBullet.GetComponent<Bullet>().SetShooter(this.gameObject);

@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 
@@ -9,15 +7,18 @@ public class NetworkManagerCustom : NetworkManager
     private bool m_isConnecting;
     private string m_connectionText;
 
-    void Start() {
+    void Start()
+    {
         connectionConfig.MaxConnectionAttempt = 2;
         m_isConnecting = false;
         m_connectionText = "";
     }
 
     // Start a game as a host
-    public void StartUpHost() {
-        if (m_isConnecting) {
+    public void StartUpHost()
+    {
+        if (m_isConnecting)
+        {
             m_connectionText = "Disconnecting";
             StopClient();
         }
@@ -26,8 +27,10 @@ public class NetworkManagerCustom : NetworkManager
     }
 
     // Join a game as a client
-    public void JoinGame() {
-        if (!m_isConnecting) {
+    public void JoinGame()
+    {
+        if (!m_isConnecting)
+        {
             m_isConnecting = true;
             m_connectionText = "Connecting...";
 
@@ -37,17 +40,21 @@ public class NetworkManagerCustom : NetworkManager
         }
     }
 
-    public override void OnClientDisconnect(NetworkConnection conn) {
+    public override void OnClientDisconnect(NetworkConnection conn)
+    {
         StopClient();
 
         // If the client is not properly disconnected...
-        if (conn.lastError != NetworkError.Ok) {
+        if (conn.lastError != NetworkError.Ok)
+        {
             // and if it is a timeout error, print "impossible to connect"
-            if (conn.lastError == NetworkError.Timeout) {
+            if (conn.lastError == NetworkError.Timeout)
+            {
                 m_connectionText = "Impossible to connect.";
             }
             // otherwise print the error in the console
-            if (LogFilter.logError) {
+            if (LogFilter.logError)
+            {
                 Debug.LogError("ClientDisconnected due to error: " + conn.lastError);
             }
         }
@@ -56,32 +63,38 @@ public class NetworkManagerCustom : NetworkManager
         m_isConnecting = false;
     }
 
-    public override void OnClientConnect(NetworkConnection conn) {
+    public override void OnClientConnect(NetworkConnection conn)
+    {
         base.OnClientConnect(conn);
         m_connectionText = "";
         m_isConnecting = false;
     }
 
     // Set the IP address of the network manager for the StartClient function
-    void SetIPAddress() {
+    void SetIPAddress()
+    {
         string ipAddress = GameObject.Find("InputFieldIPAddress").transform.Find("Text").GetComponent<Text>().text;
         NetworkManager.singleton.networkAddress = ipAddress;
     }
 
     // Set the port of the network manager for the StartClient function
-    void SetPort() {
+    void SetPort()
+    {
         NetworkManager.singleton.networkPort = 7777;
     }
 
-    public bool IsConnecting() {
+    public bool IsConnecting()
+    {
         return m_isConnecting;
     }
 
-    public string GetConnectionText() {
+    public string GetConnectionText()
+    {
         return m_connectionText;
     }
 
-    public void Stop() {
+    public void Stop()
+    {
         StopClient();
         StopHost();
         m_isConnecting = false;

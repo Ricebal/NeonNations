@@ -1,8 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class NetworkMenu : MonoBehaviour
 {
@@ -14,28 +12,34 @@ public class NetworkMenu : MonoBehaviour
 
     private NetworkManagerCustom m_networkManagerCustom;
 
-    void Awake() {
+    void Awake()
+    {
         m_networkManagerCustom = GameObject.Find("NetworkManager").GetComponent<NetworkManagerCustom>();
     }
 
-    void Update() {
+    void Update()
+    {
         ConnectionText.text = m_networkManagerCustom.GetConnectionText();
         // The buttons are disabled when a client is trying to connect and vice versa
         ButtonJoingGame.interactable = !m_networkManagerCustom.IsConnecting();
         ButtonStartHost.interactable = !m_networkManagerCustom.IsConnecting();
     }
 
-    void OnEnable() {
+    void OnEnable()
+    {
         SceneManager.sceneLoaded += OnNetworkMenuLoaded;
     }
 
-    void OnDisable() {
+    void OnDisable()
+    {
         SceneManager.sceneLoaded -= OnNetworkMenuLoaded;
     }
 
-    private void OnNetworkMenuLoaded(Scene scene, LoadSceneMode mode) {
+    private void OnNetworkMenuLoaded(Scene scene, LoadSceneMode mode)
+    {
         // If the NetworkMenu scene is loaded...
-        if (scene.name == "NetworkMenu") {
+        if (scene.name == "NetworkMenu")
+        {
             // if the button start host is clicked, call the StartUpHost function
             ButtonStartHost.onClick.RemoveAllListeners();
             ButtonStartHost.onClick.AddListener(m_networkManagerCustom.StartUpHost);
@@ -51,7 +55,8 @@ public class NetworkMenu : MonoBehaviour
     }
 
     // Go to the MainMenu scene
-    private void LoadMainMenu() {
+    private void LoadMainMenu()
+    {
         m_networkManagerCustom.Stop();
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 2);
     }

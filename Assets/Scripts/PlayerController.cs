@@ -9,8 +9,10 @@ public class PlayerController : NetworkBehaviour
     private Player m_player;
     private bool m_isEnabled;
 
-    public void Start() {
-        if (!isLocalPlayer) {
+    public void Start()
+    {
+        if (!isLocalPlayer)
+        {
             return;
         }
 
@@ -19,24 +21,30 @@ public class PlayerController : NetworkBehaviour
         SetEnabled(true);
     }
 
-    public void Update() {
-        if (!isLocalPlayer || !m_isEnabled) {
+    public void Update()
+    {
+        if (!isLocalPlayer || !m_isEnabled)
+        {
             return;
         }
 
         // If a fire key is held down
-        if (Input.GetButton("Fire1")) {
+        if (Input.GetButton("Fire1"))
+        {
             m_player.Shoot();
         }
 
         // If the 'space' key is held down
-        if (Input.GetButton("Jump")) {
+        if (Input.GetButton("Jump"))
+        {
             m_player.Sonar();
         }
     }
 
-    public void FixedUpdate() {
-        if (!isLocalPlayer || !m_isEnabled) {
+    public void FixedUpdate()
+    {
+        if (!isLocalPlayer || !m_isEnabled)
+        {
             return;
         }
 
@@ -49,12 +57,14 @@ public class PlayerController : NetworkBehaviour
     }
 
     // Set player's speed to 0
-    public void Freeze() {
+    public void Freeze()
+    {
         m_rigidbody.velocity = new Vector3(0, 0, 0);
     }
 
     // Enable / disable player's movements
-    public void SetEnabled(bool isEnabled) {
+    public void SetEnabled(bool isEnabled)
+    {
         m_isEnabled = isEnabled;
     }
 

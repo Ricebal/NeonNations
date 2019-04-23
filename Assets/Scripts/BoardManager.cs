@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 [RequireComponent(typeof(MeshFilter))]
 [RequireComponent(typeof(MeshRenderer))]
@@ -29,11 +26,14 @@ public class BoardManager : MonoBehaviour
     private bool[,] m_tileMap;
     private GameObject m_map;
 
-    void GenerateMap() {
+    void GenerateMap()
+    {
         m_tileMap = new bool[Columns, Rows];
 
-        for (int x = 0; x < Columns; x++) {
-            for (int y = 0; y < Rows; y++) {
+        for (int x = 0; x < Columns; x++)
+        {
+            for (int y = 0; y < Rows; y++)
+            {
                 if (// rooms
                     x == 0 && y == 0
                     || x >= 0 && x <= 9 && y >= 16 && y <= 21
@@ -56,14 +56,16 @@ public class BoardManager : MonoBehaviour
                     || x >= 17 && x <= 18 && y >= 10 && y <= 12
                     || x >= 19 && x <= 25 && y >= 20 && y <= 21
                     || x >= 23 && x <= 24 && y == 2
-                    || x >= 25 && x <= 26 && y >= 11 && y <= 16) {
+                    || x >= 25 && x <= 26 && y >= 11 && y <= 16)
+                {
                     m_tileMap[x, y] = true;
                 }
             }
         }
     }
 
-    void GenerateFloor() {
+    void GenerateFloor()
+    {
         m_map = Instantiate(Map, new Vector3(0, 0, 0), Quaternion.identity) as GameObject;
         GameObject floor = GameObject.CreatePrimitive(PrimitiveType.Plane);
         floor.transform.position = new Vector3((float)Columns / 2 - 0.5f, -0.55f, (float)Rows / 2 - 0.5f);
@@ -71,10 +73,14 @@ public class BoardManager : MonoBehaviour
         floor.transform.SetParent(m_map.transform);
     }
 
-    void LoadMap() {
-        for (int i = 0; i < m_tileMap.GetLength(0); i++) {
-            for (int j = 0; j < m_tileMap.GetLength(1); j++) {
-                if (!m_tileMap[i, j]) { // if false, build wall
+    void LoadMap()
+    {
+        for (int i = 0; i < m_tileMap.GetLength(0); i++)
+        {
+            for (int j = 0; j < m_tileMap.GetLength(1); j++)
+            {
+                if (!m_tileMap[i, j])
+                { // if false, build wall
                     GameObject instance = GameObject.CreatePrimitive(PrimitiveType.Cube);
                     instance.transform.position = new Vector3(i, 0f, j);
                     instance.transform.SetParent(m_map.transform);
@@ -83,10 +89,14 @@ public class BoardManager : MonoBehaviour
         }
     }
 
-    void GenerateOuterWall() {
-        for (int i = -OuterWallWidth; i < m_tileMap.GetLength(0) + OuterWallWidth; i++) {
-            for (int j = -OuterWallWidth; j < m_tileMap.GetLength(1) + OuterWallWidth; j++) {
-                if (i < 0 && j != 0 || i >= m_tileMap.GetLength(0) || j < 0 || j >= m_tileMap.GetLength(1)) {
+    void GenerateOuterWall()
+    {
+        for (int i = -OuterWallWidth; i < m_tileMap.GetLength(0) + OuterWallWidth; i++)
+        {
+            for (int j = -OuterWallWidth; j < m_tileMap.GetLength(1) + OuterWallWidth; j++)
+            {
+                if (i < 0 && j != 0 || i >= m_tileMap.GetLength(0) || j < 0 || j >= m_tileMap.GetLength(1))
+                {
                     GameObject instance = GameObject.CreatePrimitive(PrimitiveType.Cube);
                     instance.transform.position = new Vector3(i, 0f, j);
                     instance.transform.SetParent(m_map.transform);
@@ -95,12 +105,14 @@ public class BoardManager : MonoBehaviour
         }
     }
 
-    void CombineMeshes() {
+    void CombineMeshes()
+    {
         MeshFilter[] meshFilters = m_map.GetComponentsInChildren<MeshFilter>();
         Mesh finalMesh = new Mesh();
         CombineInstance[] combiners = new CombineInstance[meshFilters.Length];
 
-        for (int i = 0; i < meshFilters.Length; i++) {
+        for (int i = 0; i < meshFilters.Length; i++)
+        {
             combiners[i].subMeshIndex = 0;
             combiners[i].mesh = meshFilters[i].sharedMesh;
             combiners[i].transform = meshFilters[i].transform.localToWorldMatrix;
@@ -114,12 +126,14 @@ public class BoardManager : MonoBehaviour
         var collider = m_map.GetComponent<MeshCollider>();
         collider.sharedMesh = finalMesh;
 
-        foreach (Transform child in m_map.transform) {
+        foreach (Transform child in m_map.transform)
+        {
             Destroy(child.gameObject);
         }
     }
 
-    public void SetupScene() {
+    public void SetupScene()
+    {
         GenerateMap();
         GenerateFloor();
         LoadMap();
