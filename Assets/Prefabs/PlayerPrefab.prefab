@@ -270,6 +270,7 @@ MonoBehaviour:
   SonarBullet: {fileID: 4647958490886930736, guid: be7e8cfbb92a8f44b857f951d2f36f60,
     type: 3}
   BulletSpawn: {fileID: 8830476281594632761}
+  SonarRays: 60
 --- !u!114 &419414580977269258
 MonoBehaviour:
   m_ObjectHideFlags: 0
