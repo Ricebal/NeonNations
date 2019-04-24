@@ -268,10 +268,13 @@ public class BoardManager : MonoBehaviour
                 room.Pos.x = room.WallTile.x + room.TunnelLength;
             }
 
-            DebugMap(AddTunnelToMap(room));
+            int[,] tempMap = AddTunnelToMap(room);
+            //DebugMap(tempMap);
+            //DebugAddingRoom(m_tileMap, tempMap, room.Pos);
 
             // if it can be placed, return the room
-            if (CanPlace(room)) {
+            if (CanPlace(room.Roommap, room.Pos)) {
+                //room.Roommap = tempMap;
                 return room;
             }
         }
@@ -331,26 +334,26 @@ public class BoardManager : MonoBehaviour
         return newMap;
     }
 
-    bool CanPlace(Room room)
+    bool CanPlace(int[,] map, Vector2 pos)
     {
         // check out of bounds
-        if (room.Pos.x <= 0 || room.Pos.x > MapWidth - room.Roommap.GetLength(0) - 1 || room.Pos.y <= 0 || room.Pos.y > MapHeight - room.Roommap.GetLength(1) - 1) {
+        if (pos.x <= 0 || pos.x > MapWidth - map.GetLength(0) - 1 || pos.y <= 0 || pos.y > MapHeight - map.GetLength(1) - 1) {
             return false;
         }
 
         // check overlap
-        for (int x = 0; x < room.Roommap.GetLength(0); x++) {
-            for (int y = 0; y < room.Roommap.GetLength(1); y++) {
-                if (room.Roommap[x, y] == 0 && // check if position in room equals zero
-                    (m_tileMap[x + (int)room.Pos.x, y + (int)room.Pos.y] == 0 || // if so, check if the same position on map is zero
-                    m_tileMap[x + (int)room.Pos.x, y + (int)room.Pos.y + 1] == 0 || // if so, check all tiles around the position on the map is zero, starting with north
-                    m_tileMap[x + (int)room.Pos.x + 1, y + (int)room.Pos.y + 1] == 0 || // northeast
-                    m_tileMap[x + (int)room.Pos.x + 1, y + (int)room.Pos.y] == 0 || // east
-                    m_tileMap[x + (int)room.Pos.x + 1 , y + (int)room.Pos.y - 1] == 0 || // southeast
-                    m_tileMap[x + (int)room.Pos.x, y + (int)room.Pos.y - 1] == 0 || // south
-                    m_tileMap[x + (int)room.Pos.x - 1, y + (int)room.Pos.y - 1] == 0 || // southwest
-                    m_tileMap[x + (int)room.Pos.x - 1, y + (int)room.Pos.y] == 0 || // west
-                    m_tileMap[x + (int)room.Pos.x - 1, y + (int)room.Pos.y + 1] == 0 // northwest
+        for (int x = 0; x < map.GetLength(0); x++) {
+            for (int y = 0; y < map.GetLength(1); y++) {
+                if (map[x, y] == 0 && // check if position in room equals zero
+                    (m_tileMap[x + (int)pos.x, y + (int)pos.y] == 0 || // if so, check if the same position on map is zero
+                    m_tileMap[x + (int)pos.x, y + (int)pos.y + 1] == 0 || // if so, check all tiles around the position on the map is zero, starting with north
+                    m_tileMap[x + (int)pos.x + 1, y + (int)pos.y + 1] == 0 || // northeast
+                    m_tileMap[x + (int)pos.x + 1, y + (int)pos.y] == 0 || // east
+                    m_tileMap[x + (int)pos.x + 1 , y + (int)pos.y - 1] == 0 || // southeast
+                    m_tileMap[x + (int)pos.x, y + (int)pos.y - 1] == 0 || // south
+                    m_tileMap[x + (int)pos.x - 1, y + (int)pos.y - 1] == 0 || // southwest
+                    m_tileMap[x + (int)pos.x - 1, y + (int)pos.y] == 0 || // west
+                    m_tileMap[x + (int)pos.x - 1, y + (int)pos.y + 1] == 0 // northwest
                     ))
                     return false;
             }
@@ -458,14 +461,14 @@ public class BoardManager : MonoBehaviour
         Debug.Log(s);
     }
 
-    private void DebugAddingRoom(int[,] map, Room room)
+    private void DebugAddingRoom(int[,] map, int[,] roommap, Vector2 pos)
     {
         StringBuilder builder = new StringBuilder();
         builder.Append('\n');
         for (int y = map.GetLength(1) - 1; y >= 0; y--) {
             for (int x = 0; x < map.GetLength(0); x++) {
-                if (x >= room.Pos.x && x < room.Pos.x + room.Roommap.GetLength(0) && y >= room.Pos.y && y < room.Pos.y + room.Roommap.GetLength(1)) {
-                    builder.Append(room.Roommap[x - (int)room.Pos.x, y - (int)room.Pos.y] + 2);
+                if (x >= pos.x && x < pos.x + roommap.GetLength(0) && y >= pos.y && y < pos.y + roommap.GetLength(1)) {
+                    builder.Append(roommap[x - (int)pos.x, y - (int)pos.y] + 2);
                 } else {
                     builder.Append(map[x, y]);
                 }
