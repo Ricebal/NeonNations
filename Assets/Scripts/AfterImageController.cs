@@ -27,12 +27,13 @@ public class AfterImageController : NetworkBehaviour
         // If the time since last image is greater than interval and generate images is true spawn an image
         if (Time.time > m_lastSpawnTime + INTERVAL && m_generateImages)
         {
-            SpawnImage();
+            CmdSpawnImage();
             m_lastSpawnTime = Time.time;
         }
     }
 
-    private void SpawnImage()
+    [Command]
+    private void CmdSpawnImage()
     {
         GameObject afterImage = Instantiate(Prefab, SpawnLocation.position, SpawnLocation.rotation);
         NetworkServer.Spawn(afterImage);
