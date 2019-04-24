@@ -125,21 +125,17 @@ public class Player : NetworkBehaviour
     public void Dash()
     {
         if (!m_playerDash.CanDash(m_playerEnergy.GetCurrentEnergy()))
+        {
             return;
+        }
 
         m_playerEnergy.AddEnergy(-m_playerDash.GetCost());
         m_playerDash.StartDash();
     }
 
-    public bool IsDashing()
-    {
-        return m_playerDash.IsDashing();
-    }
+    public bool IsDashing() => m_playerDash.IsDashing();
 
-    public float DashMultiplier()
-    {
-        return m_playerDash.GetMultiplier();
-    }
+    public float DashMultiplier() => m_playerDash.GetMultiplier();
 
     [ClientRpc]
     void RpcColor(GameObject obj, Color color)
