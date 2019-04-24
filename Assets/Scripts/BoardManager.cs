@@ -9,14 +9,14 @@ using UnityEngine;
 public class BoardManager : MonoBehaviour
 {
     public int MapWidth = 30;
-    public int MapHeight = 22;
+    public int MapHeight = 30;
     public int OuterWallWidth = 14;
     public GameObject Map;
 
     public int RoomAmount = 15;
-    public int MaxRoomSize = 60;
-    public int MinRoomSize = 24;
-    public int MinRoomLength = 4;
+    public int MaxRoomSize = 80;
+    public int MinRoomSize = 36;
+    public int MinRoomLength = 6;
     public int MaxPlaceRoomAttempts = 10;
     public int MaxBuildRoomAttempts = 250;
     public int MinTunnelLength = 1;
@@ -221,7 +221,7 @@ public class BoardManager : MonoBehaviour
             if (room.Pos.x != -1 && room.Pos.y != -1) {
                 // add room and tunnel to the map
                 AddRoom(room);
-                AddTunnel(room.WallTile, room.Direction, room.TunnelLength);
+                //AddTunnel(room.WallTile, room.Direction, room.TunnelLength);
                 return true;
             }
         }
@@ -257,24 +257,33 @@ public class BoardManager : MonoBehaviour
             // set length of the tunnel to the specific length
             room.TunnelLength = i;
 
-            // adjust position of the room based on the length of the tunnel
-            if (room.Direction.y == -1) {
-                room.Pos.y = room.WallTile.y + 1 - room.Roommap.GetLength(1) - room.TunnelLength;
-            } else if (room.Direction.y == 1) {
-                room.Pos.y = room.WallTile.y + room.TunnelLength;
-            } else if (room.Direction.x == -1) {
-                room.Pos.x = room.WallTile.x + 1 - room.Roommap.GetLength(0) - room.TunnelLength;
-            } else if (room.Direction.x == 1) {
-                room.Pos.x = room.WallTile.x + room.TunnelLength;
+            int[,] tempMap = AddTunnelToMap(room);
+            Vector2 tempEntrance = new Vector2(room.Entrance.x, room.Entrance.y);
+
+            // adjust position and entrance of the room based on the length of the tunnel
+            if (room.Direction.y == -1)
+            {
+                room.Pos.y = room.WallTile.y + 1 - tempMap.GetLength(1);
+                tempEntrance.y += room.TunnelLength;
+            }
+            else if (room.Direction.x == -1)
+            {
+                room.Pos.x = room.WallTile.x + 1 - tempMap.GetLength(0);
+                tempEntrance.x += room.TunnelLength;
             }
 
-            int[,] tempMap = AddTunnelToMap(room);
+            // adjust entrance
+            for (int j = 0; j < TunnelWidth; j++)
+            {
+                tempMap[(int)tempEntrance.x + Math.Abs((int)room.Direction.y)*j, (int)tempEntrance.y + Math.Abs((int)room.Direction.x) * j] = 2;
+            }
+
             //DebugMap(tempMap);
             //DebugAddingRoom(m_tileMap, tempMap, room.Pos);
 
             // if it can be placed, return the room
-            if (CanPlace(room.Roommap, room.Pos)) {
-                //room.Roommap = tempMap;
+            if (CanPlace(tempMap, room.Pos)) {
+                room.Roommap = tempMap;
                 return room;
             }
         }
