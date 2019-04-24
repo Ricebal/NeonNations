@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CameraController : MonoBehaviour
@@ -12,27 +10,28 @@ public class CameraController : MonoBehaviour
     private Vector3 m_offset;
     private bool m_active;
 
-    // LateUpdate is called once per frame, after all Update functions have been called
     void LateUpdate()
     {
         // for debugging
         transform.eulerAngles = new Vector3((float)CameraTilt, 0, 0);
-        m_offset =  new Vector3(0, 0, 0);
+        m_offset = new Vector3(0, 0, 0);
         m_offset.y = (float)Math.Cos(Math.PI / 180 * (90 - CameraTilt)) * DistanceFromPlayer; // cos(θ) = Adjacent / Hypotenuse
         m_offset.z = (float)Math.Sin(Math.PI / 180 * (90 - CameraTilt)) * -DistanceFromPlayer; // sin(θ) = Opposite / Hypotenuse
 
         if (m_active)
+        {
             transform.position = PlayerTransform.position + m_offset;
+        }
     }
 
-    public void setTarget(Transform target)
+    public void SetTarget(Transform target)
     {
         m_active = true;
         PlayerTransform = target;
         transform.position = PlayerTransform.position;
     }
 
-    public void setInactive()
+    public void SetInactive()
     {
         m_active = false;
     }

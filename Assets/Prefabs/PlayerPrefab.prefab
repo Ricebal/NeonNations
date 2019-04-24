@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8830476281594632761}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Shot Spawn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -54,7 +54,7 @@ GameObject:
   - component: {fileID: 7305227545255766034}
   - component: {fileID: 5442535361888930886}
   - component: {fileID: 2016021774025495372}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: PlayerPrefab
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -119,7 +119,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 0ac070d8fe408de49a20b87e448a2e82, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -177,7 +177,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e40043910e5d6764db617b38ec1b0073, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  EnergySlider: {fileID: 0}
 --- !u!114 &2189273758118548216
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -190,7 +189,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be1d7aaa601c2ab4e91aca7b5d582966, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HealthSlider: {fileID: 0}
 --- !u!114 &2465073526135938245
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -274,6 +272,7 @@ MonoBehaviour:
   SonarBullet: {fileID: 4647958490886930736, guid: be7e8cfbb92a8f44b857f951d2f36f60,
     type: 3}
   BulletSpawn: {fileID: 8830476281594632761}
+  SonarRays: 60
 --- !u!114 &419414580977269258
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -338,7 +337,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8763978311029635708}
   - component: {fileID: 5445096779193966606}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Point Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -407,7 +406,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7555909981702408597}
   - component: {fileID: 3103035607344363123}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Spot Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -478,4 +477,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e40043910e5d6764db617b38ec1b0073, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  EnergySlider: {fileID: 0}
