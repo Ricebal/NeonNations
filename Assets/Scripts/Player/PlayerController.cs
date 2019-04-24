@@ -39,6 +39,12 @@ public class PlayerController : NetworkBehaviour
         {
             m_player.Sonar();
         }
+
+        // If shift or mouse3 is pressed
+        if (Input.GetButton("Fire3"))
+        {
+            m_player.Dash();
+        }
     }
 
     public void FixedUpdate()
@@ -53,7 +59,12 @@ public class PlayerController : NetworkBehaviour
 
         Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
 
-        m_rigidbody.velocity = movement * Speed;
+        if (m_player.IsDashing())
+        {
+            movement.Normalize();
+        }
+
+        m_rigidbody.velocity = movement * Speed * m_player.DashMultiplier();
     }
 
     // Set player's speed to 0

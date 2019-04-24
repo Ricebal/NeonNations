@@ -26,6 +26,7 @@ public class Player : NetworkBehaviour
     private CameraController m_cameraController;
     private EscapeMenu m_escapeMenu;
     private GameOverMenu m_gameOverMenu;
+    private PlayerDash m_playerDash;
 
     void Start()
     {
@@ -44,6 +45,7 @@ public class Player : NetworkBehaviour
         m_cameraController.SetTarget(this.transform);
         m_escapeMenu = GameObject.Find("MenuCanvas").GetComponent<EscapeMenu>();
         m_gameOverMenu = GameObject.Find("GameOverCanvas").GetComponent<GameOverMenu>();
+        m_playerDash = GetComponent<PlayerDash>();
     }
 
     void Update()
@@ -117,6 +119,26 @@ public class Player : NetworkBehaviour
             m_playerEnergy.AddEnergy(-SonarCost);
             m_playerAction.CmdSonar();
         }
+    }
+
+    // Dash, if player can dash deduct energy and start dashing
+    public void Dash()
+    {
+        if (!m_playerDash.CanDash(m_playerEnergy.GetCurrentEnergy()))
+            return;
+
+        m_playerEnergy.AddEnergy(-m_playerDash.GetCost());
+        m_playerDash.StartDash();
+    }
+
+    public bool IsDashing()
+    {
+        return m_playerDash.IsDashing();
+    }
+
+    public float DashMultiplier()
+    {
+        return m_playerDash.GetMultiplier();
     }
 
     [ClientRpc]
