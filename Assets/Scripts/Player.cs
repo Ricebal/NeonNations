@@ -54,7 +54,7 @@ public class Player : NetworkBehaviour
             return;
 
         m_playerEnergy.AddEnergy(-m_playerDash.GetCost());
-        m_playerDash.CmdDash();
+        m_playerDash.StartDash();
     }
 
     public bool IsDashing()
@@ -62,9 +62,9 @@ public class Player : NetworkBehaviour
         return m_playerDash.IsDashing();
     }
 
-    public float DashSpeed()
+    public float DashMultiplier()
     {
-        return m_playerDash.GetSpeed();
+        return m_playerDash.GetMultiplier();
     }
 
     public void Shoot()

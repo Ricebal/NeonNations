@@ -1,16 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Networking;
 
-public class PlayerDash : NetworkBehaviour
+public class PlayerDash : MonoBehaviour
 {
-    private const float SPEED = 100f;
+    private const float MULTIPLIER = 10f;
     private const int COST = 20;
     private const float DURATION = 0.05f;
     private const float COOLDOWN = 1f;
-    [SyncVar]
     private float m_start;
+    private float m_currentMultiplier = 1f;
     private AfterImageController m_afterImageController;
 
     private void Start()
@@ -19,16 +18,17 @@ public class PlayerDash : NetworkBehaviour
     }
 
     // Start the dash, set speed multiplier and afterimages
-    [Command]
-    public void CmdDash()
+    public void StartDash()
     {
         m_start = Time.time;
+        m_currentMultiplier = MULTIPLIER;
         m_afterImageController.StartAfterImages();
     }
 
     // End dash, reset the speed multiplier and start the afterimage fadeout
     private void EndDash()
     {
+        m_currentMultiplier = 1f;
         m_afterImageController.StopAfterImages();
     }
 
@@ -42,9 +42,9 @@ public class PlayerDash : NetworkBehaviour
         return COST;
     }
 
-    public float GetSpeed()
+    public float GetMultiplier()
     {
-        return SPEED;
+        return m_currentMultiplier;
     }
 
     public bool IsDashing()
@@ -54,7 +54,7 @@ public class PlayerDash : NetworkBehaviour
 
     private void FixedUpdate()
     {
-        if (!IsDashing())
+        if (!IsDashing() && m_afterImageController.IsGenerating())
         {
             EndDash();
         }

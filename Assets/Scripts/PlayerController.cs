@@ -61,12 +61,9 @@ public class PlayerController : NetworkBehaviour
         if (m_player.IsDashing())
         {
             movement.Normalize();
-            m_rigidBody.velocity = movement * m_player.DashSpeed();
         }
-        else
-        {
-            m_rigidBody.velocity = movement * Speed;
-        }
+
+        m_rigidBody.velocity = movement * Speed * m_player.DashMultiplier();
     }
 
     public override void OnStartLocalPlayer()
