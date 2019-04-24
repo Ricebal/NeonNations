@@ -9,7 +9,6 @@ public class AfterImageController : NetworkBehaviour
     public Transform SpawnLocation;
     private const float INTERVAL = 0.005f;
     private float m_lastSpawnTime;
-    [SyncVar]
     private bool m_generateImages;
 
     public void StartAfterImages()
@@ -35,7 +34,8 @@ public class AfterImageController : NetworkBehaviour
 
     private void SpawnImage()
     {
-        Instantiate(Prefab, SpawnLocation.position, SpawnLocation.rotation);
+        GameObject afterImage = Instantiate(Prefab, SpawnLocation.position, SpawnLocation.rotation);
+        NetworkServer.Spawn(afterImage);
     }
 
     public bool IsGenerating()
