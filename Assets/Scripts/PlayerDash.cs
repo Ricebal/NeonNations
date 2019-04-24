@@ -5,33 +5,31 @@ using UnityEngine.Networking;
 
 public class PlayerDash : NetworkBehaviour
 {
-    private float m_multiplier = 1f;
+    private const float SPEED = 100f;
     private const int COST = 20;
     private const float DURATION = 0.05f;
     private const float COOLDOWN = 1f;
+    [SyncVar]
     private float m_start;
-    private const float MULTIPLIER_AMOUNT = 7.5f;
-    private AfterImagePool m_imagePool;
+    private AfterImageController m_afterImageController;
 
-    private void Start() {
-        m_imagePool = GetComponent<AfterImagePool>();
+    private void Start()
+    {
+        m_afterImageController = GetComponent<AfterImageController>();
     }
 
     // Start the dash, set speed multiplier and afterimages
-    public void StartDash()
+    [Command]
+    public void CmdDash()
     {
-        m_multiplier = MULTIPLIER_AMOUNT;
         m_start = Time.time;
-        m_imagePool.CreatePool();
-        m_imagePool.ShowImages = true;
+        m_afterImageController.StartAfterImages();
     }
-
 
     // End dash, reset the speed multiplier and start the afterimage fadeout
     private void EndDash()
     {
-        m_multiplier = 1f;
-        m_imagePool.ShowImages = false;
+        m_afterImageController.StopAfterImages();
     }
 
     public bool CanDash(int energy)
@@ -39,19 +37,24 @@ public class PlayerDash : NetworkBehaviour
         return energy >= COST && Time.time > m_start + COOLDOWN;
     }
 
-    public int GetCost() 
+    public int GetCost()
     {
         return COST;
     }
 
-    public float GetMultiplier()
+    public float GetSpeed()
     {
-        return m_multiplier;
+        return SPEED;
+    }
+
+    public bool IsDashing()
+    {
+        return !(Time.time > m_start + DURATION);
     }
 
     private void FixedUpdate()
     {
-        if(Time.time > m_start + DURATION) 
+        if (!IsDashing())
         {
             EndDash();
         }

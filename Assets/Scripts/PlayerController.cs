@@ -58,7 +58,15 @@ public class PlayerController : NetworkBehaviour
 
         Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
 
-        m_rigidBody.velocity = movement * Speed * m_player.DashMultiplier();
+        if (m_player.IsDashing())
+        {
+            movement.Normalize();
+            m_rigidBody.velocity = movement * m_player.DashSpeed();
+        }
+        else
+        {
+            m_rigidBody.velocity = movement * Speed;
+        }
     }
 
     public override void OnStartLocalPlayer()

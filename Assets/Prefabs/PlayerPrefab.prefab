@@ -53,7 +53,7 @@ GameObject:
   - component: {fileID: 419414580977269258}
   - component: {fileID: 7305227545255766034}
   - component: {fileID: 5442535361888930886}
-  - component: {fileID: 8488158631569097312}
+  - component: {fileID: 2016021774025495372}
   m_Layer: 0
   m_Name: PlayerPrefab
   m_TagString: Player
@@ -314,7 +314,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b8bafabb052fca4cab35ef9f742f0aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &8488158631569097312
+--- !u!114 &2016021774025495372
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -323,12 +323,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 6654271199680664771}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9d1a3c26af409094cb9753d5a9423dd6, type: 3}
+  m_Script: {fileID: 11500000, guid: 0223991d6e74d5e43bbe073c9693bb0e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TargetObject: {fileID: 6654271199680664771}
-  PreFab: {fileID: 4278105648758884905, guid: b7ef729de582b5a469c6774727d3dca1, type: 3}
-  ShowImages: 0
+  Prefab: {fileID: 4278105648758884905, guid: b7ef729de582b5a469c6774727d3dca1, type: 3}
+  SpawnLocation: {fileID: 8638977763130829894}
 --- !u!1 &6716781768823966986
 GameObject:
   m_ObjectHideFlags: 0

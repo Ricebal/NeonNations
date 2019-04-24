@@ -80,7 +80,7 @@ GameObject:
   - component: {fileID: 1947211700338038157}
   - component: {fileID: 3438403886207257913}
   - component: {fileID: 2399466285092204019}
-  - component: {fileID: 6717719759759218925}
+  - component: {fileID: 2466847120356045866}
   m_Layer: 0
   m_Name: AfterImagePrefab
   m_TagString: Player
@@ -148,7 +148,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!114 &6717719759759218925
+--- !u!114 &2466847120356045866
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -161,7 +161,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MyRenderer: {fileID: 2399466285092204019}
-  TargetAnimator: {fileID: 0}
-  TargetObject: {fileID: 6654271199680664771, guid: 073989fcfeb340f43b1b3ad5cb563d7a,
-    type: 3}
-  Active: 0
+  MyLight: {fileID: 8573210478504206487}
