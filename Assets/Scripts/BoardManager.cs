@@ -421,7 +421,8 @@ public class BoardManager : MonoBehaviour
 
     private void LoadFloor()
     {
-        m_map = Instantiate(Map, Vector3.zero, Quaternion.identity) as GameObject;
+        m_map = new GameObject();
+        m_map.name = "Map";
         GameObject floor = GameObject.CreatePrimitive(PrimitiveType.Plane);
         floor.transform.position = new Vector3((float)MapWidth / 2 - 0.5f, -0.5f, (float)MapHeight / 2 - 0.5f);
         floor.transform.localScale = new Vector3((float)(MapWidth + OuterWallWidth * 2) / 10, 1, (float)(MapHeight + OuterWallWidth * 2) / 10);
@@ -621,6 +622,7 @@ public class BoardManager : MonoBehaviour
 
         // add part to list
         m_mapParts.Add(mapPart);
+        mapPart.name = "MapPart " + m_mapParts.Count;
     }
 
     // --------------------------------------------------------------------------------------------
