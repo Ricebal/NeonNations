@@ -233,7 +233,7 @@ PrefabInstance:
     - target: {fileID: 331448660912219855, guid: 3f543ce0544b7344b8f77a3ae4ea9157,
         type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 331448660912219855, guid: 3f543ce0544b7344b8f77a3ae4ea9157,
         type: 3}
@@ -646,7 +646,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 964e321cfd277184fba4affa04ff21d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  boardScript: {fileID: 0}
+  BoardScript: {fileID: 0}
 --- !u!4 &817318512
 Transform:
   m_ObjectHideFlags: 0
@@ -659,7 +659,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &817318513
 MonoBehaviour:
@@ -796,6 +796,11 @@ PrefabInstance:
       propertyPath: NetworkManager
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 9193401821296859895, guid: ff6331ee681933a49a95f9bcbb22c5ce,
+        type: 3}
+      propertyPath: m_SceneId
+      value: 628661241
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ff6331ee681933a49a95f9bcbb22c5ce, type: 3}
 --- !u!1 &1844940089
@@ -865,7 +870,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
 --- !u!1 &3093128335276401593 stripped
 GameObject:
@@ -884,11 +889,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: GameOverCanvas
-      objectReference: {fileID: 0}
-    - target: {fileID: 3093128335276401593, guid: 9bdddbb0b87161043a7638e45d83840d,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 537076440540080456, guid: 9bdddbb0b87161043a7638e45d83840d,
         type: 3}
@@ -1080,5 +1080,15 @@ PrefabInstance:
       propertyPath: Canvas
       value: 
       objectReference: {fileID: 3093128335276401593}
+    - target: {fileID: 3093128335276401593, guid: 9bdddbb0b87161043a7638e45d83840d,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2569688173816950815, guid: 9bdddbb0b87161043a7638e45d83840d,
+        type: 3}
+      propertyPath: m_SceneId
+      value: 2714116543
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9bdddbb0b87161043a7638e45d83840d, type: 3}

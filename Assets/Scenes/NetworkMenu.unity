@@ -203,8 +203,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 748370233}
-  - component: {fileID: 748370235}
   - component: {fileID: 748370234}
+  - component: {fileID: 748370231}
   m_Layer: 0
   m_Name: NetworkManager
   m_TagString: Untagged
@@ -212,6 +212,36 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &748370231
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 748370230}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9dc8b2ed2355a674d95d05a1b524c88d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dontDestroyOnLoad: 1
+  runInBackground: 1
+  startOnHeadless: 1
+  serverTickRate: 30
+  showDebugMessages: 0
+  offlineScene: MainMenu
+  onlineScene: Game
+  transport: {fileID: 748370234}
+  networkAddress: localhost
+  maxConnections: 4
+  playerPrefab: {fileID: 6654271199680664771, guid: 073989fcfeb340f43b1b3ad5cb563d7a,
+    type: 3}
+  autoCreatePlayer: 1
+  playerSpawnMethod: 0
+  spawnPrefabs:
+  - {fileID: 4647958490886930736, guid: c00706cf39d2dec45acc42ae29296223, type: 3}
+  - {fileID: 4647958490886930736, guid: be7e8cfbb92a8f44b857f951d2f36f60, type: 3}
+  - {fileID: 2302226259571672645, guid: 5a5341eef4aad1241958b2c797b6b2e7, type: 3}
 --- !u!4 &748370233
 Transform:
   m_ObjectHideFlags: 0
@@ -280,36 +310,6 @@ MonoBehaviour:
   NoDelay: 1
   serverMaxMessageSize: 16384
   clientMaxMessageSize: 16384
---- !u!114 &748370235
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 748370230}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8aab4c8111b7c411b9b92cf3dbc5bd4e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dontDestroyOnLoad: 1
-  runInBackground: 1
-  startOnHeadless: 1
-  serverTickRate: 30
-  showDebugMessages: 0
-  offlineScene: MainMenu
-  onlineScene: Game
-  transport: {fileID: 748370234}
-  networkAddress: localhost
-  maxConnections: 4
-  playerPrefab: {fileID: 6654271199680664771, guid: 073989fcfeb340f43b1b3ad5cb563d7a,
-    type: 3}
-  autoCreatePlayer: 1
-  playerSpawnMethod: 0
-  spawnPrefabs:
-  - {fileID: 4647958490886930736, guid: be7e8cfbb92a8f44b857f951d2f36f60, type: 3}
-  - {fileID: 4647958490886930736, guid: c00706cf39d2dec45acc42ae29296223, type: 3}
-  - {fileID: 2302226259571672645, guid: 5a5341eef4aad1241958b2c797b6b2e7, type: 3}
 --- !u!1 &929140896
 GameObject:
   m_ObjectHideFlags: 0
