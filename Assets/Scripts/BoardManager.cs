@@ -9,7 +9,7 @@ using UnityEngine;
 public class BoardManager : MonoBehaviour
 {
     public int MapWidth = 30;
-    public int MapHeight = 25;
+    public int MapHeight = 30;
     public int OuterWallWidth = 14;
     public GameObject Map;
 
@@ -25,6 +25,7 @@ public class BoardManager : MonoBehaviour
 
     private int[,] m_tileMap;
     private GameObject m_map;
+    private List<GameObject> m_mapParts = new List<GameObject>();
 
     // --------------------------------------------------------------------------------------------
     // Public functions
@@ -36,7 +37,7 @@ public class BoardManager : MonoBehaviour
         LoadFloor();
         LoadMap();
         CreateOuterWalls();
-        CombineMeshes();
+        CombineAllMeshes();
     }
 
     // --------------------------------------------------------------------------------------------
@@ -420,7 +421,7 @@ public class BoardManager : MonoBehaviour
 
     private void LoadFloor()
     {
-        m_map = Instantiate(Map, new Vector3(0, 0, 0), Quaternion.identity) as GameObject;
+        m_map = Instantiate(Map, Vector3.zero, Quaternion.identity) as GameObject;
         GameObject floor = GameObject.CreatePrimitive(PrimitiveType.Plane);
         floor.transform.position = new Vector3((float)MapWidth / 2 - 0.5f, -0.5f, (float)MapHeight / 2 - 0.5f);
         floor.transform.localScale = new Vector3((float)(MapWidth + OuterWallWidth * 2) / 10, 1, (float)(MapHeight + OuterWallWidth * 2) / 10);
@@ -459,31 +460,67 @@ public class BoardManager : MonoBehaviour
         }
     }
 
-    private void CombineMeshes()
+    private void CombineAllMeshes()
     {
+        // initialize
+        int vertexLimit = 30000;
+        int verticesSoFar = 0;
         MeshFilter[] meshFilters = m_map.GetComponentsInChildren<MeshFilter>();
-        Mesh finalMesh = new Mesh();
-        CombineInstance[] combiners = new CombineInstance[meshFilters.Length];
+        List<CombineInstance> combiners = new List<CombineInstance>();
+        CombineInstance combine = new CombineInstance();
 
+        // for all the objects within the map
         for (int i = 0; i < meshFilters.Length; i++)
         {
-            combiners[i].subMeshIndex = 0;
-            combiners[i].mesh = meshFilters[i].sharedMesh;
-            combiners[i].transform = meshFilters[i].transform.localToWorldMatrix;
-            meshFilters[i].gameObject.SetActive(false);
+            // if the amount of vertices till now would be over the limit
+            if (verticesSoFar + meshFilters[i].mesh.vertexCount > vertexLimit)
+            {
+                // send list to be combined
+                CreateCombinedMeshes(combiners);
+                combiners.Clear();
+                verticesSoFar = 0;
+            }
+
+            // add to the list
+            combine.subMeshIndex = 0;
+            combine.mesh = meshFilters[i].sharedMesh;
+            combine.transform = meshFilters[i].transform.localToWorldMatrix;
+            combiners.Add(combine);
+            verticesSoFar += meshFilters[i].mesh.vertexCount;
         }
 
-        finalMesh.CombineMeshes(combiners);
-        m_map.transform.GetComponent<MeshFilter>().sharedMesh = finalMesh;
-        m_map.transform.gameObject.SetActive(true);
+        // call the mesh combiner one last time for the last few objects in the list
+        CreateCombinedMeshes(combiners);
 
-        var collider = m_map.GetComponent<MeshCollider>();
-        collider.sharedMesh = finalMesh;
-
+        // destroy all the objects the map was made up of
         foreach (Transform child in m_map.transform)
         {
             Destroy(child.gameObject);
         }
+
+        // add all the map parts to the map
+        foreach (GameObject mapPart in m_mapParts)
+        {
+            mapPart.transform.SetParent(m_map.transform);
+        }
+    }
+
+    private void CreateCombinedMeshes(List<CombineInstance> meshDataList)
+    {
+        // create the combined mesh
+        Mesh newMesh = new Mesh();
+        newMesh.CombineMeshes(meshDataList.ToArray());
+
+        // create new map object to hold part of the map
+        GameObject mapPart = Instantiate(Map, Vector3.zero, Quaternion.identity) as GameObject;
+        
+        // handle new map object
+        mapPart.transform.GetComponent<MeshFilter>().sharedMesh = newMesh;
+        var collider = mapPart.GetComponent<MeshCollider>();
+        collider.sharedMesh = newMesh;
+
+        // add part to list
+        m_mapParts.Add(mapPart);
     }
 
     // --------------------------------------------------------------------------------------------

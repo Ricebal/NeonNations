@@ -754,15 +754,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MapWidth: 30
-  MapHeight: 25
+  MapHeight: 30
   OuterWallWidth: 14
   Map: {fileID: 6182289135420230192, guid: 1e44135debb4a9a41a46d373ce5d9c91, type: 3}
-  RoomAmount: 15
+  MaxRoomAmount: 15
   MaxRoomSize: 80
   MinRoomSize: 36
   MinRoomLength: 6
-  MaxPlaceRoomAttempts: 10
-  MaxBuildRoomAttempts: 250
+  MaxPlaceAttempts: 10
+  MaxBuildAttempts: 250
   MinTunnelLength: 1
   MaxTunnelLength: 7
   TunnelWidth: 2
