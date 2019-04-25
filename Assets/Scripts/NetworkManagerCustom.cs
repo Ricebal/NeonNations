@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using UnityEngine.Networking;
+using UnityEngine;
+using Mirror;
 using UnityEngine.UI;
 
 public class NetworkManagerCustom : NetworkManager
@@ -7,9 +7,11 @@ public class NetworkManagerCustom : NetworkManager
     private bool m_isConnecting;
     private string m_connectionText;
 
-    void Start()
+    public override void Start()
     {
-        connectionConfig.MaxConnectionAttempt = 2;
+        base.Start();
+
+        //connectionConfig.MaxConnectionAttempt = 2;
         m_isConnecting = false;
         m_connectionText = "";
     }
@@ -40,23 +42,18 @@ public class NetworkManagerCustom : NetworkManager
         }
     }
 
-    public override void OnClientDisconnect(NetworkConnection conn)
+    public override void OnClientError(NetworkConnection conn, int errorCode)
     {
-        StopClient();
-
         // If the client is not properly disconnected...
-        if (conn.lastError != NetworkError.Ok)
+        if ((int) UnityEngine.Networking.NetworkError.Ok != errorCode)
         {
-            // and if it is a timeout error, print "impossible to connect"
-            if (conn.lastError == NetworkError.Timeout)
+            // and if it is a timeout error, print "connection failed"
+            if ((int) UnityEngine.Networking.NetworkError.Timeout == errorCode)
             {
-                m_connectionText = "Impossible to connect.";
+                m_connectionText = "Connection failed";
             }
-            // otherwise print the error in the console
-            if (LogFilter.logError)
-            {
-                Debug.LogError("ClientDisconnected due to error: " + conn.lastError);
-            }
+            // print the error in the console
+            Debug.LogError("ClientDisconnected due to error: " + (UnityEngine.Networking.NetworkError) errorCode);
         }
 
         Debug.Log("Client disconnected from server: " + conn);
@@ -80,7 +77,7 @@ public class NetworkManagerCustom : NetworkManager
     // Set the port of the network manager for the StartClient function
     void SetPort()
     {
-        NetworkManager.singleton.networkPort = 7777;
+       // NetworkManager.singleton.networkPort = 7777;
     }
 
     public bool IsConnecting()
