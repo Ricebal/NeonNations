@@ -229,7 +229,7 @@ MonoBehaviour:
   startOnHeadless: 1
   serverTickRate: 30
   showDebugMessages: 0
-  offlineScene: MainMenu
+  offlineScene: 
   onlineScene: Game
   transport: {fileID: 748370234}
   networkAddress: localhost
