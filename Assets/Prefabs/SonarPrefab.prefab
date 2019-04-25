@@ -81,8 +81,8 @@ GameObject:
   - component: {fileID: 8253390180041620419}
   - component: {fileID: 2826513337032882244}
   - component: {fileID: 6587786285906454183}
-  - component: {fileID: 5439118275043155726}
-  - component: {fileID: 7810844292074717741}
+  - component: {fileID: 8051232798533037202}
+  - component: {fileID: 5923397954003999110}
   m_Layer: 9
   m_Name: SonarPrefab
   m_TagString: Sonar
@@ -147,12 +147,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cdbdf148558ac9947b63b9afecdb4fbd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncInterval: 0.1
   Speed: 5
   LivingTime: 1.25
   Damage: 0
   HitPrefab: {fileID: 0}
   WallOffset: 0
---- !u!114 &5439118275043155726
+--- !u!114 &8051232798533037202
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -161,31 +162,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 4647958490886930736}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 372142912, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_SceneId:
-    m_Value: 0
-  m_AssetId:
-    i0: 0
-    i1: 0
-    i2: 0
-    i3: 0
-    i4: 0
-    i5: 0
-    i6: 0
-    i7: 0
-    i8: 0
-    i9: 0
-    i10: 0
-    i11: 0
-    i12: 0
-    i13: 0
-    i14: 0
-    i15: 0
-  m_ServerOnly: 0
-  m_LocalPlayerAuthority: 0
---- !u!114 &7810844292074717741
+  serverOnly: 0
+  localPlayerAuthority: 0
+  m_AssetId: 
+  m_SceneId: 535476571
+--- !u!114 &5923397954003999110
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -194,16 +178,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 4647958490886930736}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: -1768714887, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
+  m_Script: {fileID: 11500000, guid: 2f74aedd71d9a4f55b3ce499326d45fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_TransformSyncMode: 3
-  m_SendInterval: 0
-  m_SyncRotationAxis: 7
-  m_RotationSyncCompression: 0
-  m_SyncSpin: 0
-  m_MovementTheshold: 0.001
-  m_VelocityThreshold: 0.0001
-  m_SnapThreshold: 5
-  m_InterpolateRotation: 1
-  m_InterpolateMovement: 1
+  syncInterval: 0.1
+  compressRotation: 1
