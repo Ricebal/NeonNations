@@ -3,6 +3,7 @@ using UnityEngine.Networking;
 
 public class Player : NetworkBehaviour
 {
+    [SyncVar] public int Team;
     // Amount of energy a bullet will consume
     public int BulletCost;
     // Amount of energy a sonar will consume
@@ -17,7 +18,7 @@ public class Player : NetworkBehaviour
     // The next time the entity will be able to use the sonar, in seconds
     private float m_nextSonar;
 
-    private Color m_initialColor;
+    [SyncVar] private Color m_initialColor;
     private Vector3 m_initialPosition;
     private PlayerController m_playerController;
     private PlayerAction m_playerAction;
@@ -117,6 +118,13 @@ public class Player : NetworkBehaviour
             m_playerEnergy.AddEnergy(-SonarCost);
             m_playerAction.CmdSonar();
         }
+    }
+
+    public void SetInitialColor(Color color)
+    {
+        Color newColor = new Color(color.r, color.g, color.b, 1f);
+        m_initialColor = newColor;
+        CmdColor(this.gameObject, newColor);
     }
 
     [ClientRpc]

@@ -6,6 +6,7 @@ public class NetworkManagerCustom : NetworkManager
 {
     private bool m_isConnecting;
     private string m_connectionText;
+    private GameManager m_gameManager;
 
     void Start()
     {
@@ -61,6 +62,13 @@ public class NetworkManagerCustom : NetworkManager
 
         Debug.Log("Client disconnected from server: " + conn);
         m_isConnecting = false;
+    }
+
+    public override void OnServerAddPlayer(NetworkConnection conn, short playerControllerId)
+    {
+        GameObject player = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
+        NetworkServer.AddPlayerForConnection(conn, player, playerControllerId);
+        GameObject.Find("GameManager").GetComponent<GameManager>().AddPlayer(player.GetComponent<Player>());
     }
 
     public override void OnClientConnect(NetworkConnection conn)
