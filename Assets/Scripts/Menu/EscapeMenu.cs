@@ -52,6 +52,7 @@ public class EscapeMenu : NetworkBehaviour
     public void TogglePause()
     {
         m_paused = !m_paused;
+        Cursor.visible = m_paused;
         Canvas.gameObject.SetActive(m_paused);
     }
 
