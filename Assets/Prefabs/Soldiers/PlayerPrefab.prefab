@@ -162,7 +162,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf8fdaa2f3d69904ea1405c1300aa75d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Speed: 10
 --- !u!114 &2656307798546998540
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -283,6 +282,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31f847ffbb0308647b962db967ddd401, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Speed: 10
   BulletCost: 10
   SonarCost: 50
   FireRate: 0.25

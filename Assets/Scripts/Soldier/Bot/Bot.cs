@@ -3,8 +3,6 @@ using UnityEngine.Networking;
 
 public class Bot : Soldier
 {
-    // The speed of the entity
-    public float Speed;
     // The respawn time of the bot
     private float m_respawnTime = 5;
     // The time left untill the bot will respawn
@@ -48,6 +46,7 @@ public class Bot : Soldier
             // Make the bot fade away
             else if (m_remainingRespawnTime > 0)
             {
+                m_remainingRespawnTime -= Time.deltaTime;
                 float alpha = m_remainingRespawnTime / m_respawnTime;
                 Color color = new Color(1, 0.39f, 0.28f, alpha);
                 CmdColor(this.gameObject, color);
@@ -101,6 +100,7 @@ public class Bot : Soldier
     private void Die()
     {
         m_isDead = true;
+        m_remainingRespawnTime = m_respawnTime;
     }
 
     private void Respawn()

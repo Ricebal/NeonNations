@@ -3,8 +3,6 @@ using UnityEngine.Networking;
 
 public class PlayerController : NetworkBehaviour
 {
-    public float Speed;
-
     private Rigidbody m_rigidbody;
     private Player m_player;
     private bool m_isEnabled;
@@ -53,7 +51,7 @@ public class PlayerController : NetworkBehaviour
 
         Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
 
-        m_rigidbody.velocity = movement * Speed;
+        m_rigidbody.velocity = movement * m_player.Speed;
     }
 
     // Set player's speed to 0

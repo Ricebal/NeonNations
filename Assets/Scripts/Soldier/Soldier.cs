@@ -3,6 +3,8 @@ using UnityEngine.Networking;
 
 public class Soldier : NetworkBehaviour
 {
+    // The speed of the entity
+    public float Speed;
     // Amount of energy a bullet will consume
     public int BulletCost;
     // Amount of energy a sonar will consume
