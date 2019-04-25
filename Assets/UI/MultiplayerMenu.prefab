@@ -249,6 +249,7 @@ MonoBehaviour:
   ButtonStartHost: {fileID: 7030078101164493913}
   ButtonJoingGame: {fileID: 7030078100420840216}
   ButtonBack: {fileID: 7030078101674196920}
+  IpAddressField: {fileID: 7030078102279281705}
   ConnectionText: {fileID: 7030078102193095335}
 --- !u!1 &7030078100763076321
 GameObject:
