@@ -78,8 +78,14 @@ public class Player : Soldier
         m_gameOverMenu.SetActive(true);
     }
 
-    // If the player is hit by a bullet, the player gets damaged
-    void OnTriggerEnter(Collider collider)
+    private void Respawn()
+    {
+        m_gameOverMenu.SetActive(false);
+        base.Respawn();
+    }
+
+        // If the player is hit by a bullet, the player gets damaged
+        void OnTriggerEnter(Collider collider)
     {
         if (!isLocalPlayer)
         {
