@@ -50,7 +50,7 @@ public class NetworkManagerCustom : NetworkManager
             // and if it is a timeout error, print "impossible to connect"
             if (conn.lastError == NetworkError.Timeout)
             {
-                m_connectionText = "Impossible to connect.";
+                m_connectionText = "Connection failed";
             }
             // otherwise print the error in the console
             if (LogFilter.logError)
