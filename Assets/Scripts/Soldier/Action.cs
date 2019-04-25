@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Networking;
 
-public class PlayerAction : NetworkBehaviour
+public class Action : NetworkBehaviour
 {
     // Prefab representing the bullet
     public GameObject Bullet;

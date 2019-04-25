@@ -43,17 +43,15 @@ GameObject:
   - component: {fileID: 8638977763130829896}
   - component: {fileID: 8638977763130829897}
   - component: {fileID: 8638977763130829898}
-  - component: {fileID: 8638977763130829899}
   - component: {fileID: 2656307798546998540}
   - component: {fileID: 2189273758118548216}
   - component: {fileID: 2465073526135938245}
   - component: {fileID: 7604486595158206311}
-  - component: {fileID: 4860999457290938284}
-  - component: {fileID: 4592339017705222691}
-  - component: {fileID: 419414580977269258}
   - component: {fileID: 7305227545255766034}
+  - component: {fileID: 7122264329543758612}
+  - component: {fileID: 3362813290604796342}
   m_Layer: 10
-  m_Name: PlayerPrefab
+  m_Name: BotPrefab
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -150,19 +148,6 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &8638977763130829899
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6654271199680664771}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cf8fdaa2f3d69904ea1405c1300aa75d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Speed: 10
 --- !u!114 &2656307798546998540
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -242,7 +227,7 @@ MonoBehaviour:
   m_SnapThreshold: 5
   m_InterpolateRotation: 0
   m_InterpolateMovement: 1
---- !u!114 &4860999457290938284
+--- !u!114 &7305227545255766034
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -251,10 +236,29 @@ MonoBehaviour:
   m_GameObject: {fileID: 6654271199680664771}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d57acbc7c518fd74aa718e3871d89aa3, type: 3}
+  m_Script: {fileID: 11500000, guid: 46b6286f023363a43a2fd167d548cd66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &4592339017705222691
+--- !u!114 &7122264329543758612
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6654271199680664771}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d3dc3168fb30bf4089eaf0e45b16eca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BulletCost: 10
+  SonarCost: 50
+  FireRate: 0.25
+  SonarRate: 1
+  MaxHealth: 100
+  MaxEnergy: 100
+  Speed: 10
+--- !u!114 &3362813290604796342
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -271,34 +275,6 @@ MonoBehaviour:
     type: 3}
   BulletSpawn: {fileID: 8830476281594632761}
   SonarRays: 60
---- !u!114 &419414580977269258
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6654271199680664771}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 31f847ffbb0308647b962db967ddd401, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  BulletCost: 10
-  SonarCost: 50
-  FireRate: 0.25
-  SonarRate: 1
---- !u!114 &7305227545255766034
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6654271199680664771}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 46b6286f023363a43a2fd167d548cd66, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &6716781768823966986
 GameObject:
   m_ObjectHideFlags: 0

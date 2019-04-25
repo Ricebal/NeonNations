@@ -1,14 +1,14 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class PlayerHealth : MonoBehaviour
+public class Health : MonoBehaviour
 {
-    private Slider m_healthSlider;
+    private Soldier m_soldier;
     private int m_currentHealth;
 
     void Start()
     {
-        m_healthSlider = GameObject.Find("HealthSlider").GetComponent<Slider>();
+        m_soldier = GetComponent<Soldier>();
         Reset();
     }
 
@@ -23,13 +23,11 @@ public class PlayerHealth : MonoBehaviour
         {
             m_currentHealth = 0;
         }
-        m_healthSlider.value = m_currentHealth;
     }
 
     public void Reset()
     {
-        m_currentHealth = (int)m_healthSlider.maxValue;
-        m_healthSlider.value = m_currentHealth;
+        m_currentHealth = (int)m_soldier.MaxHealth;
     }
 
     public int GetCurrentHealth()

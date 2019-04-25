@@ -1,28 +1,9 @@
 ﻿using UnityEngine;
 using UnityEngine.Networking;
 
-public class Player : NetworkBehaviour
+public class Player : Soldier
 {
-    // Amount of energy a bullet will consume
-    public int BulletCost;
-    // Amount of energy a sonar will consume
-    public int SonarCost;
-    // Fire rate in seconds
-    public float FireRate;
-    // Sonar rate in seconds
-    public float SonarRate;
-
-    // The next time the entity will be able to shoot, in seconds
-    private float m_nextFire;
-    // The next time the entity will be able to use the sonar, in seconds
-    private float m_nextSonar;
-
-    private Color m_initialColor;
-    private Vector3 m_initialPosition;
     private PlayerController m_playerController;
-    private PlayerAction m_playerAction;
-    private PlayerEnergy m_playerEnergy;
-    private PlayerHealth m_playerHealth;
     private CameraController m_cameraController;
     private EscapeMenu m_escapeMenu;
     private GameOverMenu m_gameOverMenu;
@@ -33,13 +14,8 @@ public class Player : NetworkBehaviour
         {
             return;
         }
-
-        m_initialColor = GetComponent<MeshRenderer>().material.color;
-        m_initialPosition = this.transform.position;
+        base.Start();
         m_playerController = GetComponent<PlayerController>();
-        m_playerAction = GetComponent<PlayerAction>();
-        m_playerEnergy = GetComponent<PlayerEnergy>();
-        m_playerHealth = GetComponent<PlayerHealth>();
         m_cameraController = Camera.main.GetComponent<CameraController>();
         m_cameraController.SetTarget(this.transform);
         m_escapeMenu = GameObject.Find("MenuCanvas").GetComponent<EscapeMenu>();
@@ -65,7 +41,7 @@ public class Player : NetworkBehaviour
         }
 
         // If the player is dead...
-        if (m_playerHealth.GetCurrentHealth() <= 0)
+        if (m_health.GetCurrentHealth() <= 0)
         {
             // ...and the game over menu is not already activated, the player just died
             if (!m_gameOverMenu.IsActive())
@@ -94,55 +70,12 @@ public class Player : NetworkBehaviour
             return;
         }
 
-        m_playerEnergy.AddEnergy(1);
-    }
-
-    public void Shoot()
-    {
-        // If the cooldown is elapsed and the player has enough energy
-        if (Time.time > m_nextFire && m_playerEnergy.GetCurrentEnergy() >= BulletCost)
-        {
-            m_nextFire = Time.time + FireRate;
-            m_playerEnergy.AddEnergy(-BulletCost);
-            m_playerAction.CmdShoot();
-        }
-    }
-
-    public void Sonar()
-    {
-        // If the cooldown is elapsed and the player has enough energy
-        if (Time.time > m_nextSonar && m_playerEnergy.GetCurrentEnergy() >= SonarCost)
-        {
-            m_nextSonar = Time.time + SonarRate;
-            m_playerEnergy.AddEnergy(-SonarCost);
-            m_playerAction.CmdSonar();
-        }
-    }
-
-    [ClientRpc]
-    void RpcColor(GameObject obj, Color color)
-    {
-        obj.GetComponent<Renderer>().material.color = color;
-    }
-
-    [Command]
-    void CmdColor(GameObject obj, Color color)
-    {
-        RpcColor(obj, color);
+        m_energy.AddEnergy(1);
     }
 
     private void Die()
     {
         m_gameOverMenu.SetActive(true);
-    }
-
-    private void Respawn()
-    {
-        m_gameOverMenu.SetActive(false);
-        CmdColor(this.gameObject, m_initialColor);
-        this.transform.position = m_initialPosition;
-        m_playerHealth.Reset();
-        m_playerEnergy.Reset();
     }
 
     // If the player is hit by a bullet, the player gets damaged
@@ -155,7 +88,7 @@ public class Player : NetworkBehaviour
 
         if (collider.gameObject.tag == "Bullet" && collider.gameObject.GetComponent<Bullet>().GetShooter() != this.gameObject)
         {
-            m_playerHealth.TakeDamage(collider.gameObject.GetComponent<Bullet>().Damage);
+            m_health.TakeDamage(collider.gameObject.GetComponent<Bullet>().Damage);
         }
     }
 
