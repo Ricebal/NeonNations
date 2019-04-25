@@ -437,6 +437,28 @@ public class BoardManager : MonoBehaviour
                 if (m_tileMap[i, j] == 1)
                 { // if 1, build wall
                     GameObject instance = GameObject.CreatePrimitive(PrimitiveType.Cube);
+
+                    // calculate walls
+                    Walls walls = Walls.None;
+                    if (j + 1 < m_tileMap.GetLength(1) && m_tileMap[i, j + 1] == 0)
+                    {
+                        walls = walls | Walls.Up;
+                    }
+                    if (i + 1 < m_tileMap.GetLength(0) && m_tileMap[i + 1, j] == 0)
+                    {
+                        walls = walls | Walls.Right;
+                    }
+                    if (j - 1 >= 0 && m_tileMap[i, j - 1] == 0)
+                    {
+                        walls = walls | Walls.Down;
+                    }
+                    if (i - 1 >= 0 && m_tileMap[i - 1, j] == 0)
+                    {
+                        walls = walls | Walls.Left;
+                    }
+
+                    instance.transform.GetComponent<MeshFilter>().sharedMesh = generateNewMesh(walls);
+
                     instance.transform.position = new Vector3(i, 0f, j);
                     instance.transform.SetParent(m_map.transform);
                 }
@@ -450,13 +472,91 @@ public class BoardManager : MonoBehaviour
         {
             for (int j = -OuterWallWidth; j < m_tileMap.GetLength(1) + OuterWallWidth; j++)
             {
-                if (i < 0 /*&& j != 0 */ || i >= m_tileMap.GetLength(0) || j < 0 || j >= m_tileMap.GetLength(1))
+                if (i < 0 || i >= m_tileMap.GetLength(0) || j < 0 || j >= m_tileMap.GetLength(1))
                 {
                     GameObject instance = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                    //Walls walls = Walls.None;
+
+                    instance.transform.GetComponent<MeshFilter>().sharedMesh = generateNewMesh(Walls.None);
+
                     instance.transform.position = new Vector3(i, 0f, j);
                     instance.transform.SetParent(m_map.transform);
                 }
             }
+        }
+    }
+
+    private Mesh generateNewMesh(Walls walls)
+    {
+        // all the vertices needed for the different faces
+        // vertices can't be shared between the triangles, because the shading will be wrong then
+        Vector3[] vertices = {
+                        new Vector3 (1, 0.5f, 0),
+                        new Vector3 (0, 0.5f, 0),
+                        new Vector3 (0, 0.5f, 1),
+                        new Vector3 (1, 0.5f, 1),
+
+                        new Vector3 (1, 0.5f, 1),
+                        new Vector3 (0, 0.5f, 1),
+                        new Vector3 (0, -0.5f, 1),
+                        new Vector3 (1, -0.5f, 1),
+
+                        new Vector3 (1, -0.5f, 0),
+                        new Vector3 (1, 0.5f, 0),
+                        new Vector3 (1, 0.5f, 1),
+                        new Vector3 (1, -0.5f, 1),
+
+                        new Vector3 (0, -0.5f, 0),
+                        new Vector3 (1, 0.5f, 0),
+                        new Vector3 (1, -0.5f, 0),
+                        new Vector3 (0, 0.5f, 0),
+
+                        new Vector3 (0, -0.5f, 0),
+                        new Vector3 (0, -0.5f, 1),
+                        new Vector3 (0, 0.5f, 1),
+                        new Vector3 (0, 0.5f, 0)
+                    };
+
+        int[] faceTop = { 0, 1, 2, 0, 2, 3 };
+        int[] faceUp = { 4, 5, 6, 4, 6, 7 };
+        int[] faceRight = { 8, 9, 10, 8, 10, 11 };
+        int[] faceDown = { 12, 13, 14, 12, 15, 13 };
+        int[] faceLeft = { 16, 17, 18, 16, 18, 19 };
+
+        List<int> triangles = new List<int>();
+
+        addMultipleInts(triangles, faceTop);
+
+        if (walls.HasFlag(Walls.Up))
+        {
+            addMultipleInts(triangles, faceUp);
+        }
+        if (walls.HasFlag(Walls.Right))
+        {
+            addMultipleInts(triangles, faceRight);
+        }
+        if (walls.HasFlag(Walls.Down))
+        {
+            addMultipleInts(triangles, faceDown);
+        }
+        if (walls.HasFlag(Walls.Left))
+        {
+            addMultipleInts(triangles, faceLeft);
+        }
+
+        Mesh mesh = new Mesh();
+        mesh.vertices = vertices;
+        mesh.triangles = triangles.ToArray();
+        mesh.RecalculateNormals();
+
+        return mesh;
+    }
+
+    private void addMultipleInts(List<int> list, int[] ints)
+    {
+        for (int i = 0; i < ints.Length; i++)
+        {
+            list.Add(ints[i]);
         }
     }
 
@@ -486,7 +586,7 @@ public class BoardManager : MonoBehaviour
             combine.mesh = meshFilters[i].sharedMesh;
             combine.transform = meshFilters[i].transform.localToWorldMatrix;
             combiners.Add(combine);
-            verticesSoFar += meshFilters[i].mesh.vertexCount;
+            verticesSoFar += combine.mesh.triangles.Length;
         }
 
         // call the mesh combiner one last time for the last few objects in the list
@@ -513,7 +613,7 @@ public class BoardManager : MonoBehaviour
 
         // create new map object to hold part of the map
         GameObject mapPart = Instantiate(Map, Vector3.zero, Quaternion.identity) as GameObject;
-        
+
         // handle new map object
         mapPart.transform.GetComponent<MeshFilter>().sharedMesh = newMesh;
         var collider = mapPart.GetComponent<MeshCollider>();
@@ -595,4 +695,15 @@ public class Room
     {
         Roommap = roomMap;
     }
+}
+
+[Flags]
+public enum Walls
+{
+    // Decimal     // Binary
+    None = 0,    // 000000
+    Up = 1,    // 000001
+    Right = 2,    // 000010
+    Down = 4,    // 000100
+    Left = 8    // 001000
 }
