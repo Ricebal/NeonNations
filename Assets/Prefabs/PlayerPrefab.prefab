@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8830476281594632761}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Shot Spawn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -52,7 +52,7 @@ GameObject:
   - component: {fileID: 4592339017705222691}
   - component: {fileID: 419414580977269258}
   - component: {fileID: 7305227545255766034}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: PlayerPrefab
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -117,7 +117,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 0ac070d8fe408de49a20b87e448a2e82, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -175,7 +175,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e40043910e5d6764db617b38ec1b0073, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  EnergySlider: {fileID: 0}
 --- !u!114 &2189273758118548216
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -188,7 +187,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be1d7aaa601c2ab4e91aca7b5d582966, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HealthSlider: {fileID: 0}
 --- !u!114 &2465073526135938245
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -272,6 +270,7 @@ MonoBehaviour:
   SonarBullet: {fileID: 4647958490886930736, guid: be7e8cfbb92a8f44b857f951d2f36f60,
     type: 3}
   BulletSpawn: {fileID: 8830476281594632761}
+  SonarRays: 60
 --- !u!114 &419414580977269258
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -286,7 +285,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BulletCost: 10
   SonarCost: 50
-  FireRate: 0.5
+  FireRate: 0.25
   SonarRate: 1
 --- !u!114 &7305227545255766034
 MonoBehaviour:
@@ -310,7 +309,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8763978311029635708}
   - component: {fileID: 5445096779193966606}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Point Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -343,7 +342,7 @@ Light:
   m_Type: 2
   m_Color: {r: 1, g: 0.9643769, b: 0.8632076, a: 1}
   m_Intensity: 0.5
-  m_Range: 15
+  m_Range: 12.5
   m_SpotAngle: 30
   m_CookieSize: 10
   m_Shadows:
@@ -357,7 +356,7 @@ Light:
   m_Cookie: {fileID: 0}
   m_DrawHalo: 0
   m_Flare: {fileID: 0}
-  m_RenderMode: 0
+  m_RenderMode: 1
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -379,7 +378,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7555909981702408597}
   - component: {fileID: 3103035607344363123}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Spot Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -394,7 +393,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8748101757251267009}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 4.28, z: 0}
+  m_LocalPosition: {x: 0, y: 4, z: 0}
   m_LocalScale: {x: 1, y: 1, z: -0.0028920854}
   m_Children: []
   m_Father: {fileID: 8638977763130829894}
@@ -426,7 +425,7 @@ Light:
   m_Cookie: {fileID: 0}
   m_DrawHalo: 0
   m_Flare: {fileID: 0}
-  m_RenderMode: 0
+  m_RenderMode: 1
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -450,4 +449,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e40043910e5d6764db617b38ec1b0073, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  EnergySlider: {fileID: 0}

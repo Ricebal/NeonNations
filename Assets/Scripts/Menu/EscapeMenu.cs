@@ -1,17 +1,13 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 
 public class EscapeMenu : NetworkBehaviour
 {
     public GameObject Canvas;
-    public NetworkManager NetworkManager;
+
     private bool m_paused = false;
 
-    // Update is called once per frame
     void Update()
     {
         if (Input.GetKeyDown("escape"))
@@ -29,14 +25,27 @@ public class EscapeMenu : NetworkBehaviour
     {
         TogglePause();
         if (isServer)
+        {
             NetworkManager.singleton.StopHost();
+        }
         else
+        {
             NetworkManager.singleton.StopClient();
+        }
+        SceneManager.LoadScene(2);
     }
 
     public void MainMenu()
     {
-        Disconnect();
+        TogglePause();
+        if (isServer)
+        {
+            NetworkManager.singleton.StopHost();
+        }
+        else
+        {
+            NetworkManager.singleton.StopClient();
+        }
         SceneManager.LoadScene(0);
     }
 
@@ -44,5 +53,10 @@ public class EscapeMenu : NetworkBehaviour
     {
         m_paused = !m_paused;
         Canvas.gameObject.SetActive(m_paused);
+    }
+
+    public bool IsPaused()
+    {
+        return m_paused;
     }
 }

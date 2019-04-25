@@ -1,18 +1,17 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public BoardManager boardScript;
+    public BoardManager BoardScript;
 
-    // Awake is called when the script instance is being loaded
-    void Awake() {
-        boardScript = GetComponent<BoardManager>();
+    void Awake()
+    {
+        BoardScript = GetComponent<BoardManager>();
         InitGame();
     }
 
-    void InitGame() {
-        boardScript.SetupScene();
+    void InitGame()
+    {
+        BoardScript.SetupScene();
     }
 }
