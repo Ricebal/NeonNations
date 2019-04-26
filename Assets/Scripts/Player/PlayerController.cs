@@ -6,7 +6,7 @@ public class PlayerController : NetworkBehaviour
     public float Speed;
 
     private Rigidbody m_rigidbody;
-    private Player m_player;
+    private PlayerAction m_playerAction;
     private bool m_isEnabled;
 
     public void Start()
@@ -17,7 +17,7 @@ public class PlayerController : NetworkBehaviour
         }
 
         m_rigidbody = GetComponent<Rigidbody>();
-        m_player = GetComponent<Player>();
+        m_playerAction = GetComponent<PlayerAction>();
         SetEnabled(true);
     }
 
@@ -31,13 +31,13 @@ public class PlayerController : NetworkBehaviour
         // If a fire key is held down
         if (Input.GetButton("Fire1"))
         {
-            m_player.Shoot();
+            m_playerAction.Shoot();
         }
 
         // If the 'space' key is held down
         if (Input.GetButton("Jump"))
         {
-            m_player.Sonar();
+            m_playerAction.Sonar();
         }
     }
 
