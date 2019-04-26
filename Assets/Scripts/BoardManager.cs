@@ -23,6 +23,7 @@ public class BoardManager : MonoBehaviour
     public int MaxTunnelLength = 7;
     public int TunnelWidth = 2;
 
+    // TODO: check if jagged arrays is faster than this
     private int[,] m_tileMap;
     private GameObject m_map;
     private List<GameObject> m_mapParts = new List<GameObject>();
@@ -124,6 +125,7 @@ public class BoardManager : MonoBehaviour
         DebugMap(m_tileMap);
 
         // add shortcuts
+        AddShortcuts();
     }
 
     // --------------------------------------------------------------------------------------------
@@ -281,39 +283,41 @@ public class BoardManager : MonoBehaviour
             // generate a random tile in the map
             Vector2 randomTile = new Vector2(UnityEngine.Random.Range(1, MapWidth - TunnelWidth), UnityEngine.Random.Range(1, MapHeight - TunnelWidth));
 
-            bool possible = true;
-
-            // check if the surrounding tiles are suitable for the width of the tunnel
-            for (int i = 0; i < TunnelWidth; i++)
-            {
-                if (direction.x == 0)
-                { // if direction is on the y-axis
-                    if (!(m_tileMap[(int)randomTile.x + i, (int)randomTile.y] == 1
-                        && m_tileMap[(int)randomTile.x + i + (int)direction.x, (int)randomTile.y + (int)direction.y] == 1
-                        && m_tileMap[(int)randomTile.x + i - (int)direction.x, (int)randomTile.y - (int)direction.y] == 0))
-                    {
-                        possible = false;
-                    }
-                }
-
-                if (direction.y == 0)
-                { // if direction is on the x-axis
-                    if (!(m_tileMap[(int)randomTile.x, (int)randomTile.y + i] == 1
-                        && m_tileMap[(int)randomTile.x + (int)direction.x, (int)randomTile.y + i + (int)direction.y] == 1
-                        && m_tileMap[(int)randomTile.x - (int)direction.x, (int)randomTile.y + i - (int)direction.y] == 0))
-                    {
-                        possible = false;
-                    }
-                }
-            }
-
-            if (possible)
+            if (CheckWallTile(randomTile, direction))
             {
                 wallTile = randomTile;
             }
         }
 
         return wallTile;
+    }
+
+    private bool CheckWallTile(Vector2 randomTile, Vector2 direction)
+    {
+        // check if the surrounding tiles are suitable for the width of the tunnel
+        for (int i = 0; i < TunnelWidth; i++)
+        {
+            if (direction.x == 0)
+            { // if direction is on the y-axis
+                if (!(m_tileMap[(int)randomTile.x + i, (int)randomTile.y] == 1
+                    && m_tileMap[(int)randomTile.x + i + (int)direction.x, (int)randomTile.y + (int)direction.y] == 1
+                    && m_tileMap[(int)randomTile.x + i - (int)direction.x, (int)randomTile.y - (int)direction.y] == 0))
+                {
+                    return false;
+                }
+            }
+
+            if (direction.y == 0)
+            { // if direction is on the x-axis
+                if (!(m_tileMap[(int)randomTile.x, (int)randomTile.y + i] == 1
+                    && m_tileMap[(int)randomTile.x + (int)direction.x, (int)randomTile.y + i + (int)direction.y] == 1
+                    && m_tileMap[(int)randomTile.x - (int)direction.x, (int)randomTile.y + i - (int)direction.y] == 0))
+                {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     private int[,] AddTunnelToMap(Room room, int tunnellength, Vector2 entrance, Vector2 direction)
@@ -413,6 +417,97 @@ public class BoardManager : MonoBehaviour
         }
 
         return true;
+    }
+
+    private void AddShortcuts()
+    {
+        for (int i = 0; i < 300; i++)
+        {
+            // get random direction to create a shortcut
+            Vector2 direction = GenerateRandomDirection();
+
+            // get random walltile for that direction
+            Vector2 wallTile = GetRandomWallTile(direction);
+            Vector2 otherWallTile = Vector2.zero;
+
+            for (int j = MinTunnelLength; j < MaxTunnelLength; j++)
+            {
+                otherWallTile = new Vector2(wallTile.x + direction.x * (j-1), (int)(wallTile.y + direction.y * (j-1)));
+                if (!(otherWallTile.x <= 1 || otherWallTile.x >= MapWidth - 1 || otherWallTile.y <= 1 || otherWallTile.y >= MapHeight - 1) && CheckWallTile(otherWallTile, new Vector2(direction.x*-1, direction.y*-1)))
+                {
+                    // generate tunnel
+                    Vector2 tunnelSize = new Vector2();
+                    if (direction.x != 0)
+                    {
+                        tunnelSize.x = j;
+                        tunnelSize.y = TunnelWidth;
+                    }
+                    else
+                    {
+                        tunnelSize.x = TunnelWidth;
+                        tunnelSize.y = j;
+                    }
+                    int[,] tunnel = new int[(int)tunnelSize.x, (int)tunnelSize.y];
+
+                    // generate position of tunnel
+                    Vector2 pos = new Vector2();
+                    if (direction.x > 0 || direction.y > 0)
+                    {
+                        pos = wallTile;
+                    }
+                    else
+                    {
+                        pos = otherWallTile;
+                    }
+
+                    // set entrances
+                    if (direction.x != 0)
+                    {
+                        for (int k = 0; k < TunnelWidth; k++)
+                        {
+                            tunnel[0, k] = 2;
+                            tunnel[(int)tunnelSize.x - 1, k] = 2;
+                        }
+                    }
+                    else
+                    {
+                        for (int k = 0; k < TunnelWidth; k++)
+                        {
+                            tunnel[k, 0] = 2;
+                            tunnel[k, (int)tunnelSize.y - 1] = 2;
+                        }
+                    }
+                    
+                    // check if placeable
+                    if (CanPlace(tunnel, pos)) {
+                        // remove entrances
+                        if (direction.x != 0)
+                        {
+                            for (int k = 0; k < TunnelWidth; k++)
+                            {
+                                tunnel[0, k] = 0;
+                                tunnel[(int)tunnelSize.x - 1, k] = 0;
+                            }
+                        }
+                        else
+                        {
+                            for (int k = 0; k < TunnelWidth; k++)
+                            {
+                                tunnel[k, 0] = 0;
+                                tunnel[k, (int)tunnelSize.y - 1] = 0;
+                            }
+                        }
+                        int[,] wall = new int[1, 1];
+                        Debug.Log(direction.x + "," + direction.y);
+                        DebugAddingRoom(m_tileMap, wall, wallTile);
+                        DebugAddingRoom(m_tileMap, wall, otherWallTile);
+
+                        DebugAddingRoom(m_tileMap, tunnel, pos);
+                        PasteTileMap(tunnel, m_tileMap, pos);
+                    }
+                }
+            }
+        }
     }
 
     // --------------------------------------------------------------------------------------------
