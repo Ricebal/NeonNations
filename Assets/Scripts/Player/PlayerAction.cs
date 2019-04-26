@@ -12,10 +12,12 @@ public class PlayerAction : NetworkBehaviour
     // Amount of bullets spawned by sonar
     public float SonarRays;
     public PlayerDash m_playerDash;
+    public PlayerEnergy m_playerEnergy;
 
     private void Start()
     {
         m_playerDash = GetComponent<PlayerDash>();
+        m_playerEnergy = GetComponent<PlayerEnergy>();
     }
 
     [Command]
@@ -43,5 +45,12 @@ public class PlayerAction : NetworkBehaviour
         }
     }
 
-    public void Dash() => m_playerDash.StartDash();
+    public void Dash()
+    {
+        if (m_playerDash.CanDash(m_playerEnergy.GetCurrentEnergy()))
+        {
+            m_playerEnergy.AddEnergy(-m_playerDash.Cost);
+            m_playerDash.StartDash();
+        }
+    }
 }

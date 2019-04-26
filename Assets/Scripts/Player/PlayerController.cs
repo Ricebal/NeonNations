@@ -7,6 +7,7 @@ public class PlayerController : NetworkBehaviour
 
     private Rigidbody m_rigidbody;
     private Player m_player;
+    private PlayerAction m_playerAction;
     private bool m_isEnabled;
 
     public void Start()
@@ -18,6 +19,7 @@ public class PlayerController : NetworkBehaviour
 
         m_rigidbody = GetComponent<Rigidbody>();
         m_player = GetComponent<Player>();
+        m_playerAction = GetComponent<PlayerAction>();
         SetEnabled(true);
     }
 
@@ -43,7 +45,7 @@ public class PlayerController : NetworkBehaviour
         // If shift or mouse3 is pressed
         if (Input.GetButton("Fire3"))
         {
-            m_player.Dash();
+            m_playerAction.Dash();
         }
     }
 

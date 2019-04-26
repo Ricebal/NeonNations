@@ -37,11 +37,6 @@ public class PlayerDash : MonoBehaviour
         return energy >= Cost && Time.time > m_start + Cooldown;
     }
 
-    public int GetCost()
-    {
-        return Cost;
-    }
-
     public float GetMultiplier()
     {
         return m_currentMultiplier;

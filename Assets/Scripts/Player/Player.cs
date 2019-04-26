@@ -121,18 +121,6 @@ public class Player : NetworkBehaviour
         }
     }
 
-    // Dash, if player can dash deduct energy and start dashing
-    public void Dash()
-    {
-        if (!m_playerDash.CanDash(m_playerEnergy.GetCurrentEnergy()))
-        {
-            return;
-        }
-
-        m_playerEnergy.AddEnergy(-m_playerDash.GetCost());
-        m_playerAction.Dash();
-    }
-
     public bool IsDashing() => m_playerDash.IsDashing();
 
     public float DashMultiplier() => m_playerDash.GetMultiplier();
