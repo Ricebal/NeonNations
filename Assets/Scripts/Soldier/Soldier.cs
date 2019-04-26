@@ -13,10 +13,6 @@ public class Soldier : NetworkBehaviour
     public float FireRate;
     // Sonar rate in seconds
     public float SonarRate;
-    // Maximum amount of health
-    public int MaxHealth;
-    // Maximum amount of energy
-    public int MaxEnergy;
     // The respawn time of the soldier
     public float RespawnTime;
 
@@ -66,7 +62,7 @@ public class Soldier : NetworkBehaviour
         }
     }
 
-    protected void Die()
+    protected virtual void Die()
     {
         m_isDead = true;
         m_remainingRespawnTime = RespawnTime;
@@ -106,7 +102,7 @@ public class Soldier : NetworkBehaviour
         RpcColor(obj, color);
     }
 
-    protected void Respawn()
+    protected virtual void Respawn()
     {
         m_isDead = false;
         CmdColor(this.gameObject, m_initialColor);

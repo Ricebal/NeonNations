@@ -276,8 +276,6 @@ MonoBehaviour:
   SonarCost: 50
   FireRate: 0.25
   SonarRate: 1
-  MaxHealth: 100
-  MaxEnergy: 100
   RespawnTime: 5
 --- !u!114 &7305227545255766034
 MonoBehaviour:

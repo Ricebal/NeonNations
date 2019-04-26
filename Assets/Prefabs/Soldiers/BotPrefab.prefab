@@ -45,10 +45,10 @@ GameObject:
   - component: {fileID: 8638977763130829898}
   - component: {fileID: 2189273758118548216}
   - component: {fileID: 2465073526135938245}
-  - component: {fileID: 7604486595158206311}
   - component: {fileID: 7305227545255766034}
   - component: {fileID: 7122264329543758612}
   - component: {fileID: 3362813290604796342}
+  - component: {fileID: 6022550131767877144}
   m_Layer: 10
   m_Name: BotPrefab
   m_TagString: Player
@@ -159,6 +159,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be1d7aaa601c2ab4e91aca7b5d582966, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MaxHealth: 100
+  MaxEnergy: 100
 --- !u!114 &2465073526135938245
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -192,28 +194,6 @@ MonoBehaviour:
     i15: 0
   m_ServerOnly: 0
   m_LocalPlayerAuthority: 1
---- !u!114 &7604486595158206311
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6654271199680664771}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1768714887, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_TransformSyncMode: 3
-  m_SendInterval: 0.033333335
-  m_SyncRotationAxis: 7
-  m_RotationSyncCompression: 0
-  m_SyncSpin: 0
-  m_MovementTheshold: 0.001
-  m_VelocityThreshold: 0.0001
-  m_SnapThreshold: 5
-  m_InterpolateRotation: 0
-  m_InterpolateMovement: 1
 --- !u!114 &7305227545255766034
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -243,8 +223,6 @@ MonoBehaviour:
   SonarCost: 50
   FireRate: 0.25
   SonarRate: 1
-  MaxHealth: 100
-  MaxEnergy: 100
   RespawnTime: 5
 --- !u!114 &3362813290604796342
 MonoBehaviour:
@@ -263,6 +241,28 @@ MonoBehaviour:
     type: 3}
   BulletSpawn: {fileID: 8830476281594632761}
   SonarRays: 60
+--- !u!114 &6022550131767877144
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6654271199680664771}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1768714887, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_TransformSyncMode: 3
+  m_SendInterval: 0.033333335
+  m_SyncRotationAxis: 7
+  m_RotationSyncCompression: 0
+  m_SyncSpin: 0
+  m_MovementTheshold: 0.001
+  m_VelocityThreshold: 0.0001
+  m_SnapThreshold: 5
+  m_InterpolateRotation: 1
+  m_InterpolateMovement: 1
 --- !u!1 &6716781768823966986
 GameObject:
   m_ObjectHideFlags: 0

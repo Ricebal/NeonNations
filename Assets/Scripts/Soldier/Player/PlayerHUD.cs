@@ -13,7 +13,6 @@ public class PlayerHUD : MonoBehaviour
     void Start()
     {
         m_playerStats = GetComponent<Stats>();
-
         m_healthSlider = GameObject.Find("HealthSlider").GetComponent<Slider>();
         m_energySlider = GameObject.Find("EnergySlider").GetComponent<Slider>();
     }

@@ -6,14 +6,12 @@ public class GameOverMenu : MonoBehaviour
 {
     public GameObject Panel;
     public Text RespawnText;
-
-    private Player m_player;
+    
     private float m_remainingTime;
 
     void Start()
     {
-        SetActive(false);
-        m_player = GetComponent<Player>();
+        Deactivate();
     }
 
     void Update()
@@ -31,24 +29,21 @@ public class GameOverMenu : MonoBehaviour
 
     public void Respawn()
     {
-        m_remainingTime = 0;
-    }
-
-    // Return the remaining time in seconds before the player's respawn
-    public float GetRemainingTime()
-    {
-        return m_remainingTime;
+        //m_remainingTime = 0;
     }
 
     // Active or not the game over menu
-    public void SetActive(bool active)
+    public void Activate(float respawnTime)
     {
-        Panel.gameObject.SetActive(active);
-        // Reset the timer when the game over menu is disabled
-        if (!active)
-        {
-            m_remainingTime = m_player.GetRemainingSpawnTime();
-        }
+        Cursor.visible = true;
+        Panel.gameObject.SetActive(true);
+        m_remainingTime = respawnTime;
+    }
+
+    public void Deactivate()
+    {
+        Cursor.visible = false;
+        Panel.gameObject.SetActive(false);
     }
 
     // Return true if the game over menu is currently displayed, false otherwise

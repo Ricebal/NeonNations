@@ -3,22 +3,22 @@ using UnityEngine.UI;
 
 public class Stats : MonoBehaviour
 {
-    private Soldier m_soldier;
+    public int MaxHealth = 100;
+    public int MaxEnergy = 100;
     private int m_currentHealth;
     private int m_currentEnergy;
 
     void Start()
     {
-        m_soldier = GetComponent<Soldier>();
         Reset();
     }
 
     public void TakeDamage(int amount)
     {
         m_currentHealth -= amount;
-        if (m_currentHealth > 100)
+        if (m_currentHealth > MaxHealth)
         {
-            m_currentHealth = 100;
+            m_currentHealth = MaxHealth;
         }
         if (m_currentHealth < 0)
         {
@@ -29,9 +29,9 @@ public class Stats : MonoBehaviour
     public void AddEnergy(int value)
     {
         m_currentEnergy += value;
-        if (m_currentEnergy > 100)
+        if (m_currentEnergy > MaxEnergy)
         {
-            m_currentEnergy = 100;
+            m_currentEnergy = MaxEnergy;
         }
         if (m_currentEnergy < 0)
         {
@@ -41,8 +41,8 @@ public class Stats : MonoBehaviour
 
     public void Reset()
     {
-        m_currentHealth = (int)m_soldier.MaxHealth;
-        m_currentEnergy = (int)m_soldier.MaxEnergy;
+        m_currentHealth = MaxHealth;
+        m_currentEnergy = MaxEnergy;
     }
 
     public int GetCurrentHealth()

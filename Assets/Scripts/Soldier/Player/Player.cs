@@ -56,15 +56,15 @@ public class Player : Soldier
         m_hud.UpdateHUD();
     }
 
-    private void Die()
+    protected override void Die()
     {
+        m_gameOverMenu.Activate(RespawnTime);
         base.Die();
-        m_gameOverMenu.SetActive(true);
     }
 
-    private void Respawn()
+    protected override void Respawn()
     {
-        m_gameOverMenu.SetActive(false);
+        m_gameOverMenu.Deactivate();
         base.Respawn();
         m_hud.UpdateHUD();
     }

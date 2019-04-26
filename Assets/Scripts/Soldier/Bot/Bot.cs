@@ -54,17 +54,9 @@ public class Bot : Soldier
         {
             return;
         }
-
-        Ray ray = Camera.main.ScreenPointToRay(new Vector3(x,0,z));
-        Plane plane = new Plane(Vector3.up, Vector3.zero);
-        float distance;
-        if (plane.Raycast(ray, out distance))
-        {
-            Vector3 target = ray.GetPoint(distance);
-            Vector3 direction = target - transform.position;
-            float rotation = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
-            transform.rotation = Quaternion.Euler(0, rotation, 0);
-        }
+        Vector3 newDirection = new Vector3(x, transform.forward.y, z);
+        // Change the rotation
+        transform.rotation = Quaternion.LookRotation(newDirection);
     }
 
     private void Respawn()
