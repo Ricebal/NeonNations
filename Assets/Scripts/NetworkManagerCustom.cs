@@ -31,10 +31,17 @@ public class NetworkManagerCustom : NetworkManager
     {
         if (!m_isConnecting)
         {
+            string ipAddress = GameObject.Find("InputFieldIPAddress").transform.Find("Text").GetComponent<Text>().text;
+            if (ipAddress.Length == 0)
+            {
+                m_connectionText = "IP address must not be empty";
+                return;
+            }
+
             m_isConnecting = true;
             m_connectionText = "Connecting...";
 
-            SetIPAddress();
+            SetIPAddress(ipAddress);
             SetPort();
             StartClient();
         }
@@ -50,7 +57,7 @@ public class NetworkManagerCustom : NetworkManager
             // and if it is a timeout error, print "impossible to connect"
             if (conn.lastError == NetworkError.Timeout)
             {
-                m_connectionText = "Impossible to connect.";
+                m_connectionText = "Connection failed";
             }
             // otherwise print the error in the console
             if (LogFilter.logError)
@@ -71,9 +78,8 @@ public class NetworkManagerCustom : NetworkManager
     }
 
     // Set the IP address of the network manager for the StartClient function
-    void SetIPAddress()
+    void SetIPAddress(string ipAddress)
     {
-        string ipAddress = GameObject.Find("InputFieldIPAddress").transform.Find("Text").GetComponent<Text>().text;
         NetworkManager.singleton.networkAddress = ipAddress;
     }
 
