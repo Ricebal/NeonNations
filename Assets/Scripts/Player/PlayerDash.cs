@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class PlayerDash : MonoBehaviour
 {
-    private const float MULTIPLIER = 10f;
-    private const int COST = 20;
-    private const float DURATION = 0.05f;
-    private const float COOLDOWN = 1f;
+    public float Multiplier = 10f;
+    public int Cost = 20;
+    public float Duration = 0.05f;
+    public float Cooldown = 1f;
     private float m_start;
     private float m_currentMultiplier = 1f;
     private AfterImageController m_afterImageController;
@@ -21,7 +21,7 @@ public class PlayerDash : MonoBehaviour
     public void StartDash()
     {
         m_start = Time.time;
-        m_currentMultiplier = MULTIPLIER;
+        m_currentMultiplier = Multiplier;
         m_afterImageController.StartAfterImages();
     }
 
@@ -34,12 +34,12 @@ public class PlayerDash : MonoBehaviour
 
     public bool CanDash(int energy)
     {
-        return energy >= COST && Time.time > m_start + COOLDOWN;
+        return energy >= Cost && Time.time > m_start + Cooldown;
     }
 
     public int GetCost()
     {
-        return COST;
+        return Cost;
     }
 
     public float GetMultiplier()
@@ -49,7 +49,7 @@ public class PlayerDash : MonoBehaviour
 
     public bool IsDashing()
     {
-        return !(Time.time > m_start + DURATION);
+        return !(Time.time > m_start + Duration);
     }
 
     private void FixedUpdate()
