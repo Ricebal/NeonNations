@@ -225,20 +225,16 @@ public class BoardManager : MonoBehaviour
                 tempEntrance.x += i;
             }
 
-            // add entrance to the map, neccessary for the CanPlace() to work properly
+            // calculate all entrance tiles
+            List<Vector2> entranceTiles = new List<Vector2>();
             for (int j = 0; j < TunnelWidth; j++)
             {
-                tempMap[(int)tempEntrance.x + Math.Abs((int)direction.y) * j, (int)tempEntrance.y + Math.Abs((int)direction.x) * j] = 2;
+                entranceTiles.Add(new Vector2((int)tempEntrance.x + Math.Abs((int)direction.y) * j, (int)tempEntrance.y + Math.Abs((int)direction.x) * j));
             }
 
             // if it can be placed, return the room
-            if (CanPlace(tempMap, room.Pos))
+            if (CanPlace(tempMap, room.Pos, entranceTiles, direction))
             {
-                // remove entrance from map
-                for (int j = 0; j < TunnelWidth; j++)
-                {
-                    tempMap[(int)tempEntrance.x + Math.Abs((int)direction.y) * j, (int)tempEntrance.y + Math.Abs((int)direction.x) * j] = 0;
-                }
                 room.Roommap = tempMap;
                 return room;
             }
@@ -388,7 +384,7 @@ public class BoardManager : MonoBehaviour
         return newMap;
     }
 
-    private bool CanPlace(int[,] map, Vector2 pos)
+    private bool CanPlace(int[,] map, Vector2 pos, List<Vector2> entranceTiles, Vector2 direction)
     {
         // check out of bounds
         if (pos.x <= 0 || pos.x > MapWidth - map.GetLength(0) - 1 || pos.y <= 0 || pos.y > MapHeight - map.GetLength(1) - 1)
@@ -402,8 +398,9 @@ public class BoardManager : MonoBehaviour
             for (int y = 0; y < map.GetLength(1); y++)
             {
                 if (map[x, y] == 0 && // check if position in room equals zero
+                    !entranceTiles.Contains(new Vector2(x,y)) && // check if the tile isn't an entrance
                     (m_tileMap[x + (int)pos.x, y + (int)pos.y] == 0 || // if so, check if the same position on map is zero
-                    m_tileMap[x + (int)pos.x, y + (int)pos.y + 1] == 0 || // if so, check all tiles around the position on the map is zero, starting with north
+                    m_tileMap[x + (int)pos.x, y + (int)pos.y + 1] == 0 || // and check all tiles around the position on the map is zero, starting with north
                     m_tileMap[x + (int)pos.x + 1, y + (int)pos.y + 1] == 0 || // northeast
                     m_tileMap[x + (int)pos.x + 1, y + (int)pos.y] == 0 || // east
                     m_tileMap[x + (int)pos.x + 1, y + (int)pos.y - 1] == 0 || // southeast
@@ -415,7 +412,6 @@ public class BoardManager : MonoBehaviour
                     return false;
             }
         }
-
         return true;
     }
 
@@ -461,42 +457,26 @@ public class BoardManager : MonoBehaviour
                     }
 
                     // set entrances
+                    List<Vector2> entranceTiles = new List<Vector2>();
                     if (direction.x != 0)
                     {
                         for (int k = 0; k < TunnelWidth; k++)
                         {
-                            tunnel[0, k] = 2;
-                            tunnel[(int)tunnelSize.x - 1, k] = 2;
+                            entranceTiles.Add(new Vector2(0, k));
+                            entranceTiles.Add(new Vector2((int)tunnelSize.x - 1, k));
                         }
                     }
                     else
                     {
                         for (int k = 0; k < TunnelWidth; k++)
                         {
-                            tunnel[k, 0] = 2;
-                            tunnel[k, (int)tunnelSize.y - 1] = 2;
+                            entranceTiles.Add(new Vector2(k, 0));
+                            entranceTiles.Add(new Vector2(k, (int)tunnelSize.x - 1));
                         }
                     }
                     
                     // check if placeable
-                    if (CanPlace(tunnel, pos)) {
-                        // remove entrances
-                        if (direction.x != 0)
-                        {
-                            for (int k = 0; k < TunnelWidth; k++)
-                            {
-                                tunnel[0, k] = 0;
-                                tunnel[(int)tunnelSize.x - 1, k] = 0;
-                            }
-                        }
-                        else
-                        {
-                            for (int k = 0; k < TunnelWidth; k++)
-                            {
-                                tunnel[k, 0] = 0;
-                                tunnel[k, (int)tunnelSize.y - 1] = 0;
-                            }
-                        }
+                    if (CanPlace(tunnel, pos, entranceTiles, direction)) {
                         int[,] wall = new int[1, 1];
                         Debug.Log(direction.x + "," + direction.y);
                         DebugAddingRoom(m_tileMap, wall, wallTile);
