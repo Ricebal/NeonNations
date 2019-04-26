@@ -6,11 +6,13 @@ public class AfterImage : MonoBehaviour
 {
     public Renderer MyRenderer;
     public Light MyLight;
+    private float m_initialIntensity;
     private const float LIFESPAN = 1f;
 
     // Start is called before the first frame update
     void Start()
     {
+        m_initialIntensity = MyLight.intensity;
         Destroy(this.gameObject, LIFESPAN);
     }
 
@@ -23,7 +25,7 @@ public class AfterImage : MonoBehaviour
         MyRenderer.material.color = new Color(oldColor.r, oldColor.g, oldColor.b, newAlpha);
 
         // Set light intensity between 0.5 and 0 based on lifespan
-        float newIntensity = MyLight.intensity - ((Time.deltaTime / LIFESPAN) / 2);
+        float newIntensity = MyLight.intensity - ((Time.deltaTime / LIFESPAN) * m_initialIntensity);
         MyLight.intensity = newIntensity;
     }
 }
