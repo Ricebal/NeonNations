@@ -4,15 +4,16 @@ using UnityEngine.UI;
 
 public class GameOverMenu : MonoBehaviour
 {
-    public float RespawnDelay;
     public GameObject Panel;
     public Text RespawnText;
 
+    private Player m_player;
     private float m_remainingTime;
 
     void Start()
     {
         SetActive(false);
+        m_player = GetComponent<Player>();
     }
 
     void Update()
@@ -46,7 +47,7 @@ public class GameOverMenu : MonoBehaviour
         // Reset the timer when the game over menu is disabled
         if (!active)
         {
-            m_remainingTime = RespawnDelay;
+            m_remainingTime = m_player.GetRemainingSpawnTime();
         }
     }
 

@@ -3,13 +3,6 @@ using UnityEngine.Networking;
 
 public class Bot : Soldier
 {
-    // The respawn time of the bot
-    private float m_respawnTime = 5;
-    // The time left untill the bot will respawn
-    private float m_remainingRespawnTime;
-    
-    private PlayerController m_playerController;
-    private bool m_isDead = false;
     private Rigidbody m_rigidbody;
 
     void Start()
@@ -34,29 +27,7 @@ public class Bot : Soldier
         {
             m_rigidbody.velocity = new Vector3(0, 0, 0);
         }
-
-        // If the bot's health is below or equal to 0...
-        if (m_stats.GetCurrentHealth() <= 0)
-        {
-            // ...and the bot is not yet dead, the bot will die
-            if (!m_isDead)
-            {
-                Die();
-            }
-            // Make the bot fade away
-            else if (m_remainingRespawnTime > 0)
-            {
-                m_remainingRespawnTime -= Time.deltaTime;
-                float alpha = m_remainingRespawnTime / m_respawnTime;
-                Color color = new Color(1, 0.39f, 0.28f, alpha);
-                CmdColor(this.gameObject, color);
-            }
-            // If the bot is dead, but is able to respawn
-            else
-            {
-                Respawn();
-            }
-        }
+        base.Update();
     }
 
     void FixedUpdate()
@@ -68,7 +39,7 @@ public class Bot : Soldier
         m_stats.AddEnergy(1);
     }
 
-    // Should be called from the script that will controll the bot
+    // Should be called from the script that will control the bot
     public void Move(float horizontal, float vertical)
     {
         Vector3 movement = new Vector3(horizontal, 0.0f, vertical);
@@ -76,7 +47,7 @@ public class Bot : Soldier
         m_rigidbody.velocity = movement * Speed;
     }
 
-    // Should be called from the script that will controll the bot
+    // Should be called from the script that will control the bot
     public void Aim(float x, float z)
     {
         if (!isServer)
@@ -96,15 +67,8 @@ public class Bot : Soldier
         }
     }
 
-    private void Die()
-    {
-        m_isDead = true;
-        m_remainingRespawnTime = m_respawnTime;
-    }
-
     private void Respawn()
-    {
-        m_isDead = false;
+    { 
         base.Respawn();
     }
 
@@ -119,15 +83,6 @@ public class Bot : Soldier
         if (collider.gameObject.tag == "Bullet" && collider.gameObject.GetComponent<Bullet>().GetShooter() != this.gameObject)
         {
             m_stats.TakeDamage(collider.gameObject.GetComponent<Bullet>().Damage);
-        }
-    }
-
-    //This function seems unnessecairy for now, but will probably still be used later
-    void OnDestroy()
-    {
-        if (!isServer)
-        {
-            return;
         }
     }
 }

@@ -43,7 +43,6 @@ GameObject:
   - component: {fileID: 8638977763130829896}
   - component: {fileID: 8638977763130829897}
   - component: {fileID: 8638977763130829898}
-  - component: {fileID: 2656307798546998540}
   - component: {fileID: 2189273758118548216}
   - component: {fileID: 2465073526135938245}
   - component: {fileID: 7604486595158206311}
@@ -148,18 +147,6 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &2656307798546998540
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6654271199680664771}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e40043910e5d6764db617b38ec1b0073, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &2189273758118548216
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -251,13 +238,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d3dc3168fb30bf4089eaf0e45b16eca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Speed: 10
   BulletCost: 10
   SonarCost: 50
   FireRate: 0.25
   SonarRate: 1
   MaxHealth: 100
   MaxEnergy: 100
-  Speed: 10
+  RespawnTime: 5
 --- !u!114 &3362813290604796342
 MonoBehaviour:
   m_ObjectHideFlags: 0

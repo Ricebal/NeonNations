@@ -42,27 +42,7 @@ public class Player : Soldier
             m_playerController.SetEnabled(true);
         }
 
-        // If the player is dead...
-        if (m_stats.GetCurrentHealth() <= 0)
-        {
-            // ...and the game over menu is not already activated, the player just died
-            if (!m_gameOverMenu.IsActive())
-            {
-                Die();
-            }
-            // ...and the remaining time before respawn is not elapsed, the player is fading away
-            else if (m_gameOverMenu.GetRemainingTime() > 0)
-            {
-                float alpha = m_gameOverMenu.GetRemainingTime() / m_gameOverMenu.RespawnDelay;
-                Color color = new Color(1, 0.39f, 0.28f, alpha);
-                CmdColor(this.gameObject, color);
-            }
-            // ...and the remaining time before respawn is elapsed, the player has to respawn
-            else if (m_gameOverMenu.GetRemainingTime() <= 0)
-            {
-                Respawn();
-            }
-        }
+        base.Update();
     }
 
     void FixedUpdate()
@@ -78,6 +58,7 @@ public class Player : Soldier
 
     private void Die()
     {
+        base.Die();
         m_gameOverMenu.SetActive(true);
     }
 
@@ -88,8 +69,8 @@ public class Player : Soldier
         m_hud.UpdateHUD();
     }
 
-        // If the player is hit by a bullet, the player gets damaged
-        void OnTriggerEnter(Collider collider)
+    // If the player is hit by a bullet, the player gets damaged
+    void OnTriggerEnter(Collider collider)
     {
         if (!isLocalPlayer)
         {
@@ -101,6 +82,11 @@ public class Player : Soldier
             m_stats.TakeDamage(collider.gameObject.GetComponent<Bullet>().Damage);
             m_hud.UpdateHUD();
         }
+    }
+
+    public float GetRemainingSpawnTime()
+    {
+        return m_remainingRespawnTime;
     }
 
     void OnDestroy()
