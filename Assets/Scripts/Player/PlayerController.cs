@@ -33,13 +33,13 @@ public class PlayerController : NetworkBehaviour
         // If a fire key is held down
         if (Input.GetButton("Fire1"))
         {
-            m_player.Shoot();
+            m_playerAction.Shoot();
         }
 
         // If the 'space' key is held down
         if (Input.GetButton("Jump"))
         {
-            m_player.Sonar();
+            m_playerAction.Sonar();
         }
 
         // If shift or mouse3 is pressed

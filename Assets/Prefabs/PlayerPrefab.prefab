@@ -50,6 +50,8 @@ GameObject:
   - component: {fileID: 4860999457290938284}
   - component: {fileID: 4592339017705222691}
   - component: {fileID: 7305227545255766034}
+  - component: {fileID: 878025824821367766}
+  - component: {fileID: 696097138422065991}
   - component: {fileID: 5442535361888930886}
   - component: {fileID: 8217748938549719913}
   - component: {fileID: 5337140830429242400}
@@ -256,11 +258,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61e158b863bff404e98072b23a699e6d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Bullet: {fileID: 4647958490886930736, guid: c00706cf39d2dec45acc42ae29296223, type: 3}
-  SonarBullet: {fileID: 4647958490886930736, guid: be7e8cfbb92a8f44b857f951d2f36f60,
-    type: 3}
-  BulletSpawn: {fileID: 8830476281594632761}
-  SonarRays: 60
 --- !u!114 &7305227545255766034
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -273,6 +270,38 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46b6286f023363a43a2fd167d548cd66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &878025824821367766
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6654271199680664771}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a37e3b0faa9a0444b8b6fd05ff93ccb9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Prefab: {fileID: 4647958490886930736, guid: c00706cf39d2dec45acc42ae29296223, type: 3}
+  Spawn: {fileID: 8830476281594632761}
+  Cost: 10
+  Rate: 0.25
+--- !u!114 &696097138422065991
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6654271199680664771}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee5757a1517d3534f9de5f69d549ccdb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Prefab: {fileID: 4647958490886930736, guid: be7e8cfbb92a8f44b857f951d2f36f60, type: 3}
+  Rays: 60
+  Rate: 1
+  Cost: 50
 --- !u!114 &5442535361888930886
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -285,6 +314,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b8bafabb052fca4cab35ef9f742f0aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Multiplier: 10
+  Cost: 20
+  Duration: 0.05
+  Cooldown: 1
 --- !u!114 &8217748938549719913
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -297,10 +330,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 279162d81d13c1647a233c8821b60b53, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BulletCost: 10
-  SonarCost: 50
-  FireRate: 0.5
-  SonarRate: 1
 --- !u!114 &5337140830429242400
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -3,24 +3,10 @@ using UnityEngine.Networking;
 
 public class Player : NetworkBehaviour
 {
-    // Amount of energy a bullet will consume
-    public int BulletCost;
-    // Amount of energy a sonar will consume
-    public int SonarCost;
-    // Fire rate in seconds
-    public float FireRate;
-    // Sonar rate in seconds
-    public float SonarRate;
-
-    // The next time the entity will be able to shoot, in seconds
-    private float m_nextFire;
-    // The next time the entity will be able to use the sonar, in seconds
-    private float m_nextSonar;
 
     private Color m_initialColor;
     private Vector3 m_initialPosition;
     private PlayerController m_playerController;
-    private PlayerAction m_playerAction;
     private PlayerEnergy m_playerEnergy;
     private PlayerHealth m_playerHealth;
     private CameraController m_cameraController;
@@ -38,7 +24,6 @@ public class Player : NetworkBehaviour
         m_initialColor = GetComponent<MeshRenderer>().material.color;
         m_initialPosition = this.transform.position;
         m_playerController = GetComponent<PlayerController>();
-        m_playerAction = GetComponent<PlayerAction>();
         m_playerEnergy = GetComponent<PlayerEnergy>();
         m_playerHealth = GetComponent<PlayerHealth>();
         m_cameraController = Camera.main.GetComponent<CameraController>();
@@ -97,28 +82,6 @@ public class Player : NetworkBehaviour
         }
 
         m_playerEnergy.AddEnergy(1);
-    }
-
-    public void Shoot()
-    {
-        // If the cooldown is elapsed and the player has enough energy
-        if (Time.time > m_nextFire && m_playerEnergy.GetCurrentEnergy() >= BulletCost)
-        {
-            m_nextFire = Time.time + FireRate;
-            m_playerEnergy.AddEnergy(-BulletCost);
-            m_playerAction.CmdShoot();
-        }
-    }
-
-    public void Sonar()
-    {
-        // If the cooldown is elapsed and the player has enough energy
-        if (Time.time > m_nextSonar && m_playerEnergy.GetCurrentEnergy() >= SonarCost)
-        {
-            m_nextSonar = Time.time + SonarRate;
-            m_playerEnergy.AddEnergy(-SonarCost);
-            m_playerAction.CmdSonar();
-        }
     }
 
     public bool IsDashing() => m_playerDash.IsDashing();
