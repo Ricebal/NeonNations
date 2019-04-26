@@ -3,16 +3,17 @@ using UnityEngine.Networking;
 
 public class Action : NetworkBehaviour
 {
-
     private PlayerShoot m_playerShoot;
     private PlayerSonar m_playerSonar;
     private Stats m_playerStats;
+    private PlayerDash m_playerDash;
 
     private void Start()
     {
         m_playerShoot = GetComponent<PlayerShoot>();
         m_playerSonar = GetComponent<PlayerSonar>();
         m_playerStats = GetComponent<Stats>();
+        m_playerDash = GetComponent<PlayerDash>();
     }
 
     public void Sonar()
@@ -36,4 +37,12 @@ public class Action : NetworkBehaviour
 
     }
 
+    public void Dash()
+    {
+        if (m_playerDash.CanDash(m_playerStats.GetCurrentEnergy()))
+        {
+            m_playerStats.AddEnergy(-m_playerDash.Cost);
+            m_playerDash.StartDash();
+        }
+    }
 }
