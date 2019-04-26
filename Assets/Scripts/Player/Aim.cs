@@ -38,7 +38,7 @@ public class Aim : NetworkBehaviour
         }
 
         // draw on current mouse position
-        float xMin = Screen.width - (Screen.width - Input.mousePosition.x) - (CrosshairImage.width / 2);
+        float xMin = Input.mousePosition.x - (CrosshairImage.width / 2);
         float yMin = (Screen.height - Input.mousePosition.y) - (CrosshairImage.height / 2);
         GUI.DrawTexture(new Rect(xMin, yMin, CrosshairImage.width, CrosshairImage.height), CrosshairImage);
     }
