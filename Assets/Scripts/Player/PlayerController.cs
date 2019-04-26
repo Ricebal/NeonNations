@@ -6,7 +6,6 @@ public class PlayerController : NetworkBehaviour
     public float Speed;
 
     private Rigidbody m_rigidbody;
-    private Player m_player;
     private PlayerAction m_playerAction;
     private PlayerDash m_playerDash;
     private bool m_isEnabled;
@@ -19,7 +18,6 @@ public class PlayerController : NetworkBehaviour
         }
 
         m_rigidbody = GetComponent<Rigidbody>();
-        m_player = GetComponent<Player>();
         m_playerAction = GetComponent<PlayerAction>();
         m_playerDash = GetComponent<PlayerDash>();
         SetEnabled(true);
