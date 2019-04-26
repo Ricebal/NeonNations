@@ -7,22 +7,24 @@ public class InputFieldHovering : MonoBehaviour, IPointerEnterHandler, IPointerE
 
     public Color HoveringColor;
 
+    private Image m_image;
     private Color m_initialColor;
 
     void Start()
     {
+        m_image = GetComponent<Image>();
         m_initialColor = GetComponent<Image>().color;
     }
 
     // Method triggered when the mouse cursor entered the input field area
     public void OnPointerEnter(PointerEventData pointerEvent)
     {
-        GetComponent<Image>().color = HoveringColor;
+        m_image.color = HoveringColor;
     }
 
     // Method triggered when the mouse cursor exited the input field area
     public void OnPointerExit(PointerEventData pointerEvent)
     {
-        GetComponent<Image>().color = m_initialColor;
+        m_image.color = m_initialColor;
     }
 }
