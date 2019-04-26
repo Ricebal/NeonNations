@@ -3,38 +3,37 @@ using UnityEngine.Networking;
 
 public class Action : NetworkBehaviour
 {
-    // Prefab representing the bullet
-    public GameObject Bullet;
-    // Prefab representing the sonar bullet
-    public GameObject SonarBullet;
-    // Transform object representing the bullets' spawn location
-    public Transform BulletSpawn;
-    // Amount of bullets spawned by sonar
-    public float SonarRays;
 
-    [Command]
-    public void CmdShoot()
+    private PlayerShoot m_playerShoot;
+    private PlayerSonar m_playerSonar;
+    private Stats m_playerStats;
+
+    private void Start()
     {
-        GameObject bullet = Instantiate(Bullet, BulletSpawn.position, BulletSpawn.rotation);
-        bullet.GetComponent<Bullet>().SetShooter(this.gameObject);
-
-        // Instanciate the bullet on the network for all players 
-        NetworkServer.Spawn(bullet);
+        m_playerShoot = GetComponent<PlayerShoot>();
+        m_playerSonar = GetComponent<PlayerSonar>();
+        m_playerStats = GetComponent<Stats>();
     }
 
-    [Command]
-    public void CmdSonar()
+    public void Sonar()
     {
-        float amount = 360 / SonarRays;
-        for (int i = 0; i < 360; i += (int)amount)
+        // If the cooldown is elapsed and the player has enough energy
+        if (m_playerSonar.CanSonar(m_playerStats.GetCurrentEnergy()))
         {
-            GameObject sonarBullet = Instantiate(SonarBullet, this.transform.position, Quaternion.Euler(0, i, 0));
-            sonarBullet.transform.Translate(new Vector3(0, 0, this.transform.localScale.z / 2f), Space.Self);
-            sonarBullet.GetComponent<Bullet>().SetShooter(this.gameObject);
-
-            // Instanciate the bullet on the network for all players 
-            NetworkServer.Spawn(sonarBullet);
+            m_playerStats.AddEnergy(-m_playerSonar.Cost);
+            m_playerSonar.Fire();
         }
+    }
+
+    public void Shoot()
+    {
+        // If the cooldown is elapsed and the player has enough energy
+        if (m_playerShoot.CanShoot(m_playerStats.GetCurrentEnergy()))
+        {
+            m_playerStats.AddEnergy(-m_playerShoot.Cost);
+            m_playerShoot.Fire();
+        }
+
     }
 
 }
