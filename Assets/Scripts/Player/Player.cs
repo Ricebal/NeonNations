@@ -130,7 +130,7 @@ public class Player : NetworkBehaviour
         }
 
         m_playerEnergy.AddEnergy(-m_playerDash.GetCost());
-        m_playerDash.StartDash();
+        m_playerAction.Dash();
     }
 
     public bool IsDashing() => m_playerDash.IsDashing();

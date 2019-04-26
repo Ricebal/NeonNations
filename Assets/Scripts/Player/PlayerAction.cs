@@ -11,6 +11,12 @@ public class PlayerAction : NetworkBehaviour
     public Transform BulletSpawn;
     // Amount of bullets spawned by sonar
     public float SonarRays;
+    public PlayerDash m_playerDash;
+
+    private void Start()
+    {
+        m_playerDash = GetComponent<PlayerDash>();
+    }
 
     [Command]
     public void CmdShoot()
@@ -26,7 +32,7 @@ public class PlayerAction : NetworkBehaviour
     public void CmdSonar()
     {
         float amount = 360 / SonarRays;
-        for (int i = 0; i < 360; i += (int)amount)
+        for (int i = 0; i < 360; i += (int) amount)
         {
             GameObject sonarBullet = Instantiate(SonarBullet, this.transform.position, Quaternion.Euler(0, i, 0));
             sonarBullet.transform.Translate(new Vector3(0, 0, this.transform.localScale.z / 2f), Space.Self);
@@ -37,4 +43,5 @@ public class PlayerAction : NetworkBehaviour
         }
     }
 
+    public void Dash() => m_playerDash.StartDash();
 }
