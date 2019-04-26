@@ -14,11 +14,13 @@ public class BoardManager : MonoBehaviour
     public GameObject Map;
 
     public int MaxRoomAmount = 15;
+    public int MaxShortcutAmount = 10;
     public int MaxRoomSize = 80;
     public int MinRoomSize = 36;
     public int MinRoomLength = 6;
     public int MaxPlaceAttempts = 10;
     public int MaxBuildAttempts = 250;
+    public int MaxShortcutAttempts = 250;
     public int MinTunnelLength = 1;
     public int MaxTunnelLength = 7;
     public int TunnelWidth = 2;
@@ -126,6 +128,7 @@ public class BoardManager : MonoBehaviour
 
         // add shortcuts
         AddShortcuts();
+        DebugMap(m_tileMap);
     }
 
     // --------------------------------------------------------------------------------------------
@@ -273,19 +276,16 @@ public class BoardManager : MonoBehaviour
 
     private Vector2 GetRandomWallTile(Vector2 direction)
     {
-        Vector2 wallTile = new Vector2(-1, -1);
-        while (wallTile.x == -1 && wallTile.y == -1)
+        while (true)
         {
             // generate a random tile in the map
             Vector2 randomTile = new Vector2(UnityEngine.Random.Range(1, MapWidth - TunnelWidth), UnityEngine.Random.Range(1, MapHeight - TunnelWidth));
 
             if (CheckWallTile(randomTile, direction))
             {
-                wallTile = randomTile;
+                return randomTile;
             }
         }
-
-        return wallTile;
     }
 
     private bool CheckWallTile(Vector2 randomTile, Vector2 direction)
@@ -293,24 +293,11 @@ public class BoardManager : MonoBehaviour
         // check if the surrounding tiles are suitable for the width of the tunnel
         for (int i = 0; i < TunnelWidth; i++)
         {
-            if (direction.x == 0)
-            { // if direction is on the y-axis
-                if (!(m_tileMap[(int)randomTile.x + i, (int)randomTile.y] == 1
-                    && m_tileMap[(int)randomTile.x + i + (int)direction.x, (int)randomTile.y + (int)direction.y] == 1
-                    && m_tileMap[(int)randomTile.x + i - (int)direction.x, (int)randomTile.y - (int)direction.y] == 0))
-                {
-                    return false;
-                }
-            }
-
-            if (direction.y == 0)
-            { // if direction is on the x-axis
-                if (!(m_tileMap[(int)randomTile.x, (int)randomTile.y + i] == 1
-                    && m_tileMap[(int)randomTile.x + (int)direction.x, (int)randomTile.y + i + (int)direction.y] == 1
-                    && m_tileMap[(int)randomTile.x - (int)direction.x, (int)randomTile.y + i - (int)direction.y] == 0))
-                {
-                    return false;
-                }
+            if (!(m_tileMap[(int)randomTile.x + i * (int)Math.Abs(direction.y), (int)randomTile.y + i * (int)Math.Abs(direction.x)] == 1
+                    && m_tileMap[(int)randomTile.x + i * (int)Math.Abs(direction.y) + (int)direction.x, (int)randomTile.y + i * (int)Math.Abs(direction.x) + (int)direction.y] == 1
+                    && m_tileMap[(int)randomTile.x + i * (int)Math.Abs(direction.y) - (int)direction.x, (int)randomTile.y + i * (int)Math.Abs(direction.x) - (int)direction.y] == 0))
+            {
+                return false;
             }
         }
         return true;
@@ -329,56 +316,32 @@ public class BoardManager : MonoBehaviour
         }
 
         // copy roommap into new map
-        for (int x = 0; x < room.Roommap.GetLength(0); x++)
-        {
-            for (int y = 0; y < room.Roommap.GetLength(1); y++)
-            {
-                newMap[x + (int)Math.Abs(Math.Max(0, direction.x)) * tunnellength, y + (int)Math.Abs(Math.Max(0, direction.y)) * tunnellength] = room.Roommap[x, y];
-            }
-        }
-
-        // copy tunnel into new map
+        PasteTileMap(room.Roommap, newMap, new Vector2((int)Math.Abs(Math.Max(0, direction.x)) * tunnellength, (int)Math.Abs(Math.Max(0, direction.y)) * tunnellength));
+        
         // generate tunnel
-        Vector2 tunnelSize = new Vector2();
-        if (direction.x != 0)
-        {
-            tunnelSize.x = tunnellength;
-            tunnelSize.y = TunnelWidth;
-        }
-        else if (direction.y != 0)
-        {
-            tunnelSize.x = TunnelWidth;
-            tunnelSize.y = tunnellength;
-        }
-        int[,] tunnel = new int[(int)tunnelSize.x, (int)tunnelSize.y];
+        int[,] tunnel = new int[(int)(TunnelWidth * Math.Abs(direction.y) + tunnellength * Math.Abs(direction.x)), (int)(TunnelWidth * Math.Abs(direction.x) + tunnellength * Math.Abs(direction.y))];
 
         // generate position within new map
         Vector2 pos = new Vector2(entrance.x + (int)Math.Abs(Math.Max(0, direction.x)) * tunnellength, entrance.y + (int)Math.Abs(Math.Max(0, direction.y)) * tunnellength);
         if (direction.x == 1)
         {
-            pos.x = pos.x - tunnellength;
+            pos.x -= tunnellength;
         }
         else if (direction.x == -1)
         {
-            pos.x = pos.x + 1;
+            pos.x += 1;
         }
         else if (direction.y == 1)
         {
-            pos.y = pos.y - tunnellength;
+            pos.y -= tunnellength;
         }
         else if (direction.y == -1)
         {
-            pos.y = pos.y + 1;
+            pos.y += 1;
         }
 
         // add tunnel to new map
-        for (int x = 0; x < tunnel.GetLength(0); x++)
-        {
-            for (int y = 0; y < tunnel.GetLength(1); y++)
-            {
-                newMap[x + (int)pos.x, y + (int)pos.y] = 0;
-            }
-        }
+        PasteTileMap(tunnel, newMap, pos);
 
         // return new map
         return newMap;
@@ -417,8 +380,10 @@ public class BoardManager : MonoBehaviour
 
     private void AddShortcuts()
     {
-        for (int i = 0; i < 300; i++)
-        {
+        int currentShortcutAttempt = 0;
+        int currentShortcutAmount = 0;
+        while (currentShortcutAttempt < MaxShortcutAttempts && currentShortcutAmount < MaxShortcutAmount)
+            {
             // get random direction to create a shortcut
             Vector2 direction = GenerateRandomDirection();
 
@@ -432,18 +397,7 @@ public class BoardManager : MonoBehaviour
                 if (!(otherWallTile.x <= 1 || otherWallTile.x >= MapWidth - 1 || otherWallTile.y <= 1 || otherWallTile.y >= MapHeight - 1) && CheckWallTile(otherWallTile, new Vector2(direction.x*-1, direction.y*-1)))
                 {
                     // generate tunnel
-                    Vector2 tunnelSize = new Vector2();
-                    if (direction.x != 0)
-                    {
-                        tunnelSize.x = j;
-                        tunnelSize.y = TunnelWidth;
-                    }
-                    else
-                    {
-                        tunnelSize.x = TunnelWidth;
-                        tunnelSize.y = j;
-                    }
-                    int[,] tunnel = new int[(int)tunnelSize.x, (int)tunnelSize.y];
+                    int[,] tunnel = new int[(int)(TunnelWidth * Math.Abs(direction.y) + j * Math.Abs(direction.x)), (int)(TunnelWidth * Math.Abs(direction.x) + j * Math.Abs(direction.y))];
 
                     // generate position of tunnel
                     Vector2 pos = new Vector2();
@@ -458,35 +412,20 @@ public class BoardManager : MonoBehaviour
 
                     // set entrances
                     List<Vector2> entranceTiles = new List<Vector2>();
-                    if (direction.x != 0)
+                    for (int k = 0; k < TunnelWidth; k++)
                     {
-                        for (int k = 0; k < TunnelWidth; k++)
-                        {
-                            entranceTiles.Add(new Vector2(0, k));
-                            entranceTiles.Add(new Vector2((int)tunnelSize.x - 1, k));
-                        }
+                        entranceTiles.Add(new Vector2(direction.y*k, direction.x*k));
+                        entranceTiles.Add(new Vector2(direction.y * k + direction.x * (tunnel.GetLength(1) - 1), direction.y * (tunnel.GetLength(1) - 1) + direction.x * k));
                     }
-                    else
-                    {
-                        for (int k = 0; k < TunnelWidth; k++)
-                        {
-                            entranceTiles.Add(new Vector2(k, 0));
-                            entranceTiles.Add(new Vector2(k, (int)tunnelSize.x - 1));
-                        }
-                    }
-                    
+
                     // check if placeable
                     if (CanPlace(tunnel, pos, entranceTiles, direction)) {
-                        int[,] wall = new int[1, 1];
-                        Debug.Log(direction.x + "," + direction.y);
-                        DebugAddingRoom(m_tileMap, wall, wallTile);
-                        DebugAddingRoom(m_tileMap, wall, otherWallTile);
-
-                        DebugAddingRoom(m_tileMap, tunnel, pos);
                         PasteTileMap(tunnel, m_tileMap, pos);
+                        currentShortcutAmount++;
                     }
                 }
             }
+            currentShortcutAttempt++;
         }
     }
 
