@@ -29,7 +29,7 @@ public class Bot : Soldier
             return;
         }
 
-        // if the bot is dead, /*disable bot's movements and */set its velocity to 0
+        // if the bot is dead, set its velocity to 0
         if (m_isDead)
         {
             m_rigidbody.velocity = new Vector3(0, 0, 0);
@@ -65,7 +65,6 @@ public class Bot : Soldier
         {
             return;
         }
-
         m_energy.AddEnergy(1);
     }
 

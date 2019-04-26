@@ -7,6 +7,7 @@ public class Player : Soldier
     private CameraController m_cameraController;
     private EscapeMenu m_escapeMenu;
     private GameOverMenu m_gameOverMenu;
+    private PlayerHUD m_hud;
 
     void Start()
     {
@@ -20,6 +21,7 @@ public class Player : Soldier
         m_cameraController.SetTarget(this.transform);
         m_escapeMenu = GameObject.Find("MenuCanvas").GetComponent<EscapeMenu>();
         m_gameOverMenu = GameObject.Find("GameOverCanvas").GetComponent<GameOverMenu>();
+        m_hud = GetComponent<PlayerHUD>();
     }
 
     void Update()
@@ -71,6 +73,7 @@ public class Player : Soldier
         }
 
         m_energy.AddEnergy(1);
+        m_hud.UpdateHUD();
     }
 
     private void Die()
@@ -82,6 +85,7 @@ public class Player : Soldier
     {
         m_gameOverMenu.SetActive(false);
         base.Respawn();
+        m_hud.UpdateHUD();
     }
 
         // If the player is hit by a bullet, the player gets damaged
@@ -95,6 +99,7 @@ public class Player : Soldier
         if (collider.gameObject.tag == "Bullet" && collider.gameObject.GetComponent<Bullet>().GetShooter() != this.gameObject)
         {
             m_health.TakeDamage(collider.gameObject.GetComponent<Bullet>().Damage);
+            m_hud.UpdateHUD();
         }
     }
 

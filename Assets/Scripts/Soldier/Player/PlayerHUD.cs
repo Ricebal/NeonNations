@@ -20,7 +20,7 @@ public class PlayerHUD : MonoBehaviour
         m_energySlider = GameObject.Find("EnergySlider").GetComponent<Slider>();
     }
 
-    private void OnGUI()
+    public void UpdateHUD()
     {
         m_healthSlider.value = m_playerHealth.GetCurrentHealth();
         m_energySlider.value = m_playerEnergy.GetCurrentEnergy();
