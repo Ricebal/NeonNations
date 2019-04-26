@@ -7,14 +7,12 @@ public class PlayerHUD : MonoBehaviour
 {
     private Slider m_healthSlider;
     private Slider m_energySlider;
-    private Health m_playerHealth;
-    private Energy m_playerEnergy;
+    private Stats m_playerStats;
 
     // Start is called before the first frame update
     void Start()
     {
-        m_playerHealth = GetComponent<Health>();
-        m_playerEnergy = GetComponent<Energy>();
+        m_playerStats = GetComponent<Stats>();
 
         m_healthSlider = GameObject.Find("HealthSlider").GetComponent<Slider>();
         m_energySlider = GameObject.Find("EnergySlider").GetComponent<Slider>();
@@ -22,7 +20,7 @@ public class PlayerHUD : MonoBehaviour
 
     public void UpdateHUD()
     {
-        m_healthSlider.value = m_playerHealth.GetCurrentHealth();
-        m_energySlider.value = m_playerEnergy.GetCurrentEnergy();
+        m_healthSlider.value = m_playerStats.GetCurrentHealth();
+        m_energySlider.value = m_playerStats.GetCurrentEnergy();
     }
 }

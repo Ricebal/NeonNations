@@ -43,7 +43,7 @@ public class Player : Soldier
         }
 
         // If the player is dead...
-        if (m_health.GetCurrentHealth() <= 0)
+        if (m_stats.GetCurrentHealth() <= 0)
         {
             // ...and the game over menu is not already activated, the player just died
             if (!m_gameOverMenu.IsActive())
@@ -72,7 +72,7 @@ public class Player : Soldier
             return;
         }
 
-        m_energy.AddEnergy(1);
+        m_stats.AddEnergy(1);
         m_hud.UpdateHUD();
     }
 
@@ -98,7 +98,7 @@ public class Player : Soldier
 
         if (collider.gameObject.tag == "Bullet" && collider.gameObject.GetComponent<Bullet>().GetShooter() != this.gameObject)
         {
-            m_health.TakeDamage(collider.gameObject.GetComponent<Bullet>().Damage);
+            m_stats.TakeDamage(collider.gameObject.GetComponent<Bullet>().Damage);
             m_hud.UpdateHUD();
         }
     }

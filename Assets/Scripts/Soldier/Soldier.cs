@@ -26,25 +26,23 @@ public class Soldier : NetworkBehaviour
     protected Color m_initialColor;
     protected Vector3 m_initialPosition;
     protected Action m_playerAction;
-    protected Energy m_energy;
-    protected Health m_health;
+    protected Stats m_stats;
 
     protected void Start()
     {
         m_initialColor = GetComponent<MeshRenderer>().material.color;
         m_initialPosition = this.transform.position;
         m_playerAction = GetComponent<Action>();
-        m_energy = GetComponent<Energy>();
-        m_health = GetComponent<Health>();
+        m_stats = GetComponent<Stats>();
     }
 
     public void Shoot()
     {
         // If the cooldown is elapsed and the player has enough energy
-        if (Time.time > m_nextFire && m_energy.GetCurrentEnergy() >= BulletCost)
+        if (Time.time > m_nextFire && m_stats.GetCurrentEnergy() >= BulletCost)
         {
             m_nextFire = Time.time + FireRate;
-            m_energy.AddEnergy(-BulletCost);
+            m_stats.AddEnergy(-BulletCost);
             m_playerAction.CmdShoot();
         }
     }
@@ -52,10 +50,10 @@ public class Soldier : NetworkBehaviour
     public void Sonar()
     {
         // If the cooldown is elapsed and the player has enough energy
-        if (Time.time > m_nextSonar && m_energy.GetCurrentEnergy() >= SonarCost)
+        if (Time.time > m_nextSonar && m_stats.GetCurrentEnergy() >= SonarCost)
         {
             m_nextSonar = Time.time + SonarRate;
-            m_energy.AddEnergy(-SonarCost);
+            m_stats.AddEnergy(-SonarCost);
             m_playerAction.CmdSonar();
         }
     }
@@ -76,7 +74,6 @@ public class Soldier : NetworkBehaviour
     {
         CmdColor(this.gameObject, m_initialColor);
         this.transform.position = m_initialPosition;
-        m_health.Reset();
-        m_energy.Reset();
+        m_stats.Reset();
     }
 }

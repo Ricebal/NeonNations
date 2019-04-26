@@ -36,7 +36,7 @@ public class Bot : Soldier
         }
 
         // If the bot's health is below or equal to 0...
-        if (m_health.GetCurrentHealth() <= 0)
+        if (m_stats.GetCurrentHealth() <= 0)
         {
             // ...and the bot is not yet dead, the bot will die
             if (!m_isDead)
@@ -65,7 +65,7 @@ public class Bot : Soldier
         {
             return;
         }
-        m_energy.AddEnergy(1);
+        m_stats.AddEnergy(1);
     }
 
     // Should be called from the script that will controll the bot
@@ -118,7 +118,7 @@ public class Bot : Soldier
 
         if (collider.gameObject.tag == "Bullet" && collider.gameObject.GetComponent<Bullet>().GetShooter() != this.gameObject)
         {
-            m_health.TakeDamage(collider.gameObject.GetComponent<Bullet>().Damage);
+            m_stats.TakeDamage(collider.gameObject.GetComponent<Bullet>().Damage);
         }
     }
 
