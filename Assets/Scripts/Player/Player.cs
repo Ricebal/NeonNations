@@ -12,7 +12,6 @@ public class Player : NetworkBehaviour
     private CameraController m_cameraController;
     private EscapeMenu m_escapeMenu;
     private GameOverMenu m_gameOverMenu;
-    private PlayerDash m_playerDash;
 
     void Start()
     {
@@ -30,7 +29,6 @@ public class Player : NetworkBehaviour
         m_cameraController.SetTarget(this.transform);
         m_escapeMenu = GameObject.Find("MenuCanvas").GetComponent<EscapeMenu>();
         m_gameOverMenu = GameObject.Find("GameOverCanvas").GetComponent<GameOverMenu>();
-        m_playerDash = GetComponent<PlayerDash>();
     }
 
     void Update()
@@ -83,10 +81,6 @@ public class Player : NetworkBehaviour
 
         m_playerEnergy.AddEnergy(1);
     }
-
-    public bool IsDashing() => m_playerDash.IsDashing();
-
-    public float DashMultiplier() => m_playerDash.GetMultiplier();
 
     [ClientRpc]
     void RpcColor(GameObject obj, Color color)
