@@ -7,6 +7,7 @@ public class PlayerController : NetworkBehaviour
 
     private Rigidbody m_rigidbody;
     private PlayerAction m_playerAction;
+    private PlayerDash m_playerDash;
     private bool m_isEnabled;
 
     public void Start()
@@ -18,6 +19,7 @@ public class PlayerController : NetworkBehaviour
 
         m_rigidbody = GetComponent<Rigidbody>();
         m_playerAction = GetComponent<PlayerAction>();
+        m_playerDash = GetComponent<PlayerDash>();
         SetEnabled(true);
     }
 
@@ -39,6 +41,12 @@ public class PlayerController : NetworkBehaviour
         {
             m_playerAction.Sonar();
         }
+
+        // If shift or mouse3 is pressed
+        if (Input.GetButton("Fire3"))
+        {
+            m_playerAction.Dash();
+        }
     }
 
     public void FixedUpdate()
@@ -53,7 +61,13 @@ public class PlayerController : NetworkBehaviour
 
         Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
 
-        m_rigidbody.velocity = movement * Speed;
+        // If dashing normalize movement vector so you are always at max speed
+        if (m_playerDash.IsDashing())
+        {
+            movement.Normalize();
+        }
+
+        m_rigidbody.velocity = movement * Speed * m_playerDash.GetMultiplier();
     }
 
     // Set player's speed to 0
