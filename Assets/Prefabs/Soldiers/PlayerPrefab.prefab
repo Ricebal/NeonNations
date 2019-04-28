@@ -163,7 +163,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6654271199680664771}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e40043910e5d6764db617b38ec1b0073, type: 3}
+  m_Script: {fileID: 11500000, guid: cc8a6478df242ae45a24293502aefb68, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &2189273758118548216
@@ -178,6 +178,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be1d7aaa601c2ab4e91aca7b5d582966, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MaxHealth: 100
+  MaxEnergy: 100
 --- !u!114 &2465073526135938245
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -330,6 +332,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 279162d81d13c1647a233c8821b60b53, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Speed: 7.5
+  RespawnTime: 5
 --- !u!114 &5337140830429242400
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -342,7 +346,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 901712a8bc2f95c43af841ee49e798f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Speed: 7.5
 --- !u!114 &2016021774025495372
 MonoBehaviour:
   m_ObjectHideFlags: 0

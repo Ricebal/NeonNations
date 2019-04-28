@@ -3,11 +3,10 @@ using UnityEngine.Networking;
 
 public class PlayerController : NetworkBehaviour
 {
-    public float Speed;
-
     private Rigidbody m_rigidbody;
-    private PlayerAction m_playerAction;
-    private PlayerDash m_playerDash;
+    private Player m_player;
+    private Action m_action;
+    private Dash m_playerDash;
     private bool m_isEnabled;
 
     public void Start()
@@ -18,8 +17,9 @@ public class PlayerController : NetworkBehaviour
         }
 
         m_rigidbody = GetComponent<Rigidbody>();
-        m_playerAction = GetComponent<PlayerAction>();
-        m_playerDash = GetComponent<PlayerDash>();
+        m_player = GetComponent<Player>();
+        m_action = GetComponent<Action>();
+        m_playerDash = GetComponent<Dash>();
         SetEnabled(true);
     }
 
@@ -33,19 +33,19 @@ public class PlayerController : NetworkBehaviour
         // If a fire key is held down
         if (Input.GetButton("Fire1"))
         {
-            m_playerAction.Shoot();
+            m_action.Shoot();
         }
 
         // If the 'space' key is held down
         if (Input.GetButton("Jump"))
         {
-            m_playerAction.Sonar();
+            m_action.Sonar();
         }
 
         // If shift or mouse3 is pressed
         if (Input.GetButton("Fire3"))
         {
-            m_playerAction.Dash();
+            m_action.Dash();
         }
     }
 
@@ -67,7 +67,7 @@ public class PlayerController : NetworkBehaviour
             movement.Normalize();
         }
 
-        m_rigidbody.velocity = movement * Speed * m_playerDash.GetMultiplier();
+        m_rigidbody.velocity = movement * m_player.Speed * m_playerDash.GetMultiplier();
     }
 
     // Set player's speed to 0
