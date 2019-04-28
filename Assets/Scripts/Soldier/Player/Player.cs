@@ -77,9 +77,8 @@ public class Player : Soldier
             return;
         }
 
-        if (collider.gameObject.tag == "Bullet" && collider.gameObject.GetComponent<Bullet>().GetShooter() != this.gameObject)
-        {
-            m_stats.TakeDamage(collider.gameObject.GetComponent<Bullet>().Damage);
+        // If the player is hit by a bullet, update the HUD to show the new HP
+        if (base.OnTriggerEnter(collider)){
             m_hud.UpdateHUD();
         }
     }

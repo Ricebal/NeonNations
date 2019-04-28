@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
-public class PlayerSonar : NetworkBehaviour
+public class Sonar : NetworkBehaviour
 {
     // Prefab representing the sonar bullet
     public GameObject Prefab;

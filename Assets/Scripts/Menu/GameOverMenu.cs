@@ -32,7 +32,6 @@ public class GameOverMenu : MonoBehaviour
         //m_remainingTime = 0;
     }
 
-    // Active or not the game over menu
     public void Activate(float respawnTime)
     {
         Cursor.visible = true;

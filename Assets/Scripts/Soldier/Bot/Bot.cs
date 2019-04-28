@@ -59,22 +59,13 @@ public class Bot : Soldier
         transform.rotation = Quaternion.LookRotation(newDirection);
     }
 
-    private void Respawn()
-    { 
-        base.Respawn();
-    }
-
-    // If the player is hit by a bullet, the player gets damaged
+    // If the bot is hit by a bullet, the bot gets damaged
     void OnTriggerEnter(Collider collider)
     {
         if (!isServer)
         {
             return;
         }
-
-        if (collider.gameObject.tag == "Bullet" && collider.gameObject.GetComponent<Bullet>().GetShooter() != this.gameObject)
-        {
-            m_stats.TakeDamage(collider.gameObject.GetComponent<Bullet>().Damage);
-        }
+        base.OnTriggerEnter(collider);
     }
 }

@@ -24,15 +24,15 @@ public class Soldier : NetworkBehaviour
 
     protected void Update()
     {
-        // If the bot's health is below or equal to 0...
+        // If the Soldier's health is below or equal to 0...
         if (m_stats.GetCurrentHealth() <= 0)
         {
-            // ...and the bot is not yet dead, the bot will die
+            // ...and the Soldier is not yet dead, the Soldier will die
             if (!m_isDead)
             {
                 Die();
             }
-            // Make the bot fade away
+            // Make the Soldier fade away
             else if (m_remainingRespawnTime > 0)
             {
                 m_remainingRespawnTime -= Time.deltaTime;
@@ -40,7 +40,7 @@ public class Soldier : NetworkBehaviour
                 Color color = new Color(1, 0.39f, 0.28f, alpha);
                 CmdColor(this.gameObject, color);
             }
-            // If the bot is dead, but is able to respawn
+            // If the Soldier is dead, but is able to respawn
             else
             {
                 Respawn();
@@ -72,5 +72,16 @@ public class Soldier : NetworkBehaviour
         CmdColor(this.gameObject, m_initialColor);
         this.transform.position = m_initialPosition;
         m_stats.Reset();
+    }
+
+    // If the Soldier gets hit by a bullet, it will take damage. Will return true if the collider was a Bullet and the Soldier took damage.
+    protected bool OnTriggerEnter(Collider collider)
+    {
+        if (collider.gameObject.tag == "Bullet" && collider.gameObject.GetComponent<Bullet>().GetShooter() != this.gameObject)
+        {
+            m_stats.TakeDamage(collider.gameObject.GetComponent<Bullet>().Damage);
+            return true;
+        }
+        return false;
     }
 }

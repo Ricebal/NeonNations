@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
-public class PlayerShoot : NetworkBehaviour
+public class Shoot : NetworkBehaviour
 {
     // Prefab representing the bullet
     public GameObject Prefab;
