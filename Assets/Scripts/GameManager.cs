@@ -18,9 +18,13 @@ public class GameManager : NetworkBehaviour
         m_boardManager.SetupScene();
     }
 
-    public void AddPlayer(Player player)
+    public void AddPlayer(Soldier player)
     {
-        player.Team = m_teamManager.AddPlayer();
-        player.SetInitialColor(m_teamManager.GetColor(player.Team));
+        player.Team = m_teamManager.AddPlayer(player);
+    }
+
+    public void RemovePlayer(Soldier player)
+    {
+        m_teamManager.RemovePlayer(player);
     }
 }

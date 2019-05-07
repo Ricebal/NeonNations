@@ -614,6 +614,7 @@ GameObject:
   - component: {fileID: 817318513}
   - component: {fileID: 817318514}
   - component: {fileID: 817318515}
+  - component: {fileID: 817318516}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -649,7 +650,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 964e321cfd277184fba4affa04ff21d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_teamManager: {fileID: 0}
 --- !u!4 &817318512
 Transform:
   m_ObjectHideFlags: 0
@@ -691,7 +691,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ColorTeam1: {r: 1, g: 0, b: 0.82725763, a: 0}
   ColorTeam2: {r: 0.0025007725, g: 1, b: 0, a: 0}
-  Bot: {fileID: 6654271199680664771, guid: e2a0c09fe58275743a21d2b5cd539eb5, type: 3}
 --- !u!114 &817318515
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -725,6 +724,19 @@ MonoBehaviour:
     i15: 0
   m_ServerOnly: 0
   m_LocalPlayerAuthority: 0
+--- !u!114 &817318516
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 817318509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0cb5d8c00e723a44da5e49a1df25899d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Bot: {fileID: 6654271199680664771, guid: e2a0c09fe58275743a21d2b5cd539eb5, type: 3}
 --- !u!1001 &1679541086
 PrefabInstance:
   m_ObjectHideFlags: 0

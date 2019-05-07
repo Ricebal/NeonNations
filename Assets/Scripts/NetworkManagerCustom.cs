@@ -6,7 +6,6 @@ public class NetworkManagerCustom : NetworkManager
 {
     private bool m_isConnecting;
     private string m_connectionText;
-    private GameManager m_gameManager;
 
     void Start()
     {
@@ -71,8 +70,16 @@ public class NetworkManagerCustom : NetworkManager
         m_isConnecting = false;
     }
 
+    public override void OnServerDisconnect(NetworkConnection conn)
+    {
+        // Remove disconnecting player from team
+        GameObject.Find("GameManager").GetComponent<GameManager>().RemovePlayer(conn.playerControllers[0].gameObject.GetComponent<Player>());
+        base.OnServerDisconnect(conn);
+    }
+
     public override void OnServerAddPlayer(NetworkConnection conn, short playerControllerId)
     {
+        // Instantiate new player and assign a team
         GameObject player = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
         NetworkServer.AddPlayerForConnection(conn, player, playerControllerId);
         GameObject.Find("GameManager").GetComponent<GameManager>().AddPlayer(player.GetComponent<Player>());
