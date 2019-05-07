@@ -7,6 +7,7 @@ public class NetworkMenu : MonoBehaviour
     public Button ButtonStartHost;
     public Button ButtonJoingGame;
     public Button ButtonBack;
+    public InputField IpAddressField;
     // Text displayed when there is a client connection or disconnection
     public Text ConnectionText;
 
@@ -23,6 +24,12 @@ public class NetworkMenu : MonoBehaviour
         // The buttons are disabled when a client is trying to connect and vice versa
         ButtonJoingGame.interactable = !m_networkManagerCustom.IsConnecting();
         ButtonStartHost.interactable = !m_networkManagerCustom.IsConnecting();
+
+        // Trigger join game button click when the user presses 'enter' and the ip address is specified
+        if(Input.GetKey(KeyCode.Return) && IpAddressField.text.Length != 0)
+        {
+            ButtonJoingGame.onClick.Invoke();
+        }
     }
 
     void OnEnable()
