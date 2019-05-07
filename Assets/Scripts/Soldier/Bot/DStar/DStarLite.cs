@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class DStarLite
 {
-    public Heap U;
+    public Heap Heap;
     public State[,] Map;
     public double Km;
     public State SGoal;
@@ -35,7 +35,8 @@ public class DStarLite
 
     private void Initialize()
     {
-        U = new Heap(10000);
+        //Creates an heap the size of the map
+        Heap = new Heap(Map.GetLength(0)*Map.GetLength(1));
         for(int i = 0; i < Map.GetLength(0); i++)
         {
             for (int j = 0; j<Map.GetLength(1); j++)
@@ -48,7 +49,7 @@ public class DStarLite
         SStart = Map[SStart.X, SStart.Y];
         SGoal.Rhs = 0;
         Km = 0;
-        U.Insert(SGoal, CalculateKey(SGoal));
+        Heap.Insert(SGoal, CalculateKey(SGoal));
     }
 
     /// <summary>
@@ -187,13 +188,13 @@ public class DStarLite
         {
             state.Rhs = MinSucc(state);
         }
-        if (U.Contains(state))
+        if (Heap.Contains(state))
         {
-            U.Remove(state);
+            Heap.Remove(state);
         }
         if (state.CostFromStartingPoint != state.Rhs)
         {
-            U.Insert(state, CalculateKey(state));
+            Heap.Insert(state, CalculateKey(state));
         }
     }
 
@@ -233,28 +234,28 @@ public class DStarLite
 
     public void ComputeShortestPath()
     {
-        while (U.TopKey().CompareTo(CalculateKey(SStart)) < 0 || SStart.Rhs != SStart.CostFromStartingPoint)
+        while (Heap.TopKey().CompareTo(CalculateKey(SStart)) < 0 || SStart.Rhs != SStart.CostFromStartingPoint)
         {
-            Key kold = U.TopKey();
-            State u = U.Pop();
-            if (u == null) break;
-            if (kold.CompareTo(CalculateKey(u)) < 0)
+            Key oldKey = Heap.TopKey();
+            State state = Heap.Pop();
+            if (state == null) break;
+            if (oldKey.CompareTo(CalculateKey(state)) < 0)
             {
-                U.Insert(u, CalculateKey(u));
+                Heap.Insert(state, CalculateKey(state));
             }
-            else if (u.CostFromStartingPoint > u.Rhs)
+            else if (state.CostFromStartingPoint > state.Rhs)
             {
-                u.CostFromStartingPoint = u.Rhs;
-                foreach (State s in u.GetSurroundingOpenSpaces())
+                state.CostFromStartingPoint = state.Rhs;
+                foreach (State s in state.GetSurroundingOpenSpaces())
                 {
                     UpdateVertex(s);
                 }
             }
             else
             {
-                u.CostFromStartingPoint = double.PositiveInfinity;
-                UpdateVertex(u);
-                foreach (State s in u.GetSurroundingOpenSpaces())
+                state.CostFromStartingPoint = double.PositiveInfinity;
+                UpdateVertex(state);
+                foreach (State s in state.GetSurroundingOpenSpaces())
                 {
                     UpdateVertex(s);
                 }
