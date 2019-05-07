@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Networking;
 
+[NetworkSettings(channel = 0, sendInterval = 0.033f)]
 public class SyncPosition : NetworkBehaviour
 {
     // Send a command to the server every 0.5 meter
@@ -12,15 +13,19 @@ public class SyncPosition : NetworkBehaviour
     private Vector3 m_syncPos;
     private Vector3 m_lastPos;
 
+    private void Update()
+    {
+        LerpPosition();
+    }
+
     void FixedUpdate()
     {
         TransmitPosition();
-        LerpPosition();
     }
 
     private void LerpPosition()
     {
-        if(!isLocalPlayer)
+        if (!isLocalPlayer)
         {
             Transform.position = Vector3.Lerp(Transform.position, m_syncPos, Time.deltaTime * LerpRate);
         }
@@ -35,7 +40,7 @@ public class SyncPosition : NetworkBehaviour
     [Client]
     private void TransmitPosition()
     {
-        if(isLocalPlayer && Vector3.Distance(Transform.position, m_lastPos) > Threshold)
+        if (isLocalPlayer && Vector3.Distance(Transform.position, m_lastPos) > Threshold)
         {
             CmdProvidePositionToServer(Transform.position);
             m_lastPos = Transform.position;
