@@ -1,15 +1,16 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class Coordinates
+﻿public class Coordinates
 {
-    public int x;
-    public int y;
+    public int X;
+    public int Y;
 
+    public Coordinates()
+    {
+        this.X = 0;
+        this.Y = 0;
+    }
     public Coordinates(int x, int y)
     {
-        this.x = x;
-        this.y = y;
+        this.X = x;
+        this.Y = y;
     }
 }

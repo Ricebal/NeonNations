@@ -15,6 +15,8 @@ public class BotManager : NetworkBehaviour
             return;
         }
         GameObject bot = Instantiate(Bot, new Vector3(2, 0, 17), new Quaternion(0, 0, 0, 0));
+        GameObject bot2 = Instantiate(Bot, new Vector3(17, 0, 19), new Quaternion(0, 0, 0, 0));
         NetworkServer.Spawn(bot);
+        NetworkServer.Spawn(bot2);
     }
 }
