@@ -25,8 +25,8 @@ public class BoardManager : MonoBehaviour
     public int MinTunnelLength = 1;
     public int MaxTunnelLength = 7;
     public int TunnelWidth = 2;
-    public int[][] m_tileMap;
 
+    private int[][] m_tileMap;
     private GameObject m_map;
     private List<GameObject> m_mapParts = new List<GameObject>();
 
@@ -41,6 +41,11 @@ public class BoardManager : MonoBehaviour
         LoadMap();
         CreateOuterWalls();
         CombineAllMeshes();
+    }
+
+    public int[][] GetTileMap()
+    {
+        return m_tileMap;
     }
 
     // --------------------------------------------------------------------------------------------
