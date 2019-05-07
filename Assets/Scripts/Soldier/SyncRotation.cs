@@ -3,11 +3,14 @@ using UnityEngine.Networking;
 
 public class SyncRotation : NetworkBehaviour
 {
+    // Send a command to the server every 5 degrees
+    public float Threshold = 5;
     public float LerpRate = 15;
     public Transform Transform;
 
     [SyncVar]
     private Quaternion m_syncPlayerRotation;
+    private Quaternion m_lastPlayerRotation;
 
     void FixedUpdate()
     {
@@ -32,9 +35,10 @@ public class SyncRotation : NetworkBehaviour
     [Client]
     private void TransmitRotation()
     {
-        if(isLocalPlayer)
+        if(isLocalPlayer && Quaternion.Angle(Transform.rotation, m_lastPlayerRotation) > Threshold)
         {
             CmdProvideRotationToServer(Transform.rotation);
+            m_lastPlayerRotation = Transform.rotation;
         }
     }
 }
