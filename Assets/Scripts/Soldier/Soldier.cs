@@ -91,10 +91,13 @@ public class Soldier : NetworkBehaviour
     // If the Soldier gets hit by a bullet, it will take damage. Will return true if the collider was a Bullet and the Soldier took damage.
     protected bool OnTriggerEnter(Collider collider)
     {
-        if (collider.gameObject.tag == "Bullet" && collider.gameObject.GetComponent<Bullet>().GetShooter() != this.gameObject)
-        {
-            m_stats.TakeDamage(collider.gameObject.GetComponent<Bullet>().Damage);
-            return true;
+        if (collider.gameObject.tag == "Bullet") {
+            Bullet bullet = collider.gameObject.GetComponent<Bullet>();
+            if(bullet.GetShooter() != this.gameObject)
+            {
+                m_stats.TakeDamage(bullet.Damage);
+                return true;
+            }
         }
         return false;
     }
