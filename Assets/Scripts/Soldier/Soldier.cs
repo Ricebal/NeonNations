@@ -3,15 +3,16 @@ using UnityEngine.Networking;
 
 public class Soldier : NetworkBehaviour
 {
+    [SyncVar] public int Team;
     // The speed of the entity
     public float Speed;
     // The respawn time of the soldier
     public float RespawnTime;
-    
+
     protected bool m_isDead = false;
     protected float m_remainingRespawnTime;
 
-    protected Color m_initialColor;
+    [SyncVar] protected Color m_initialColor;
     protected Vector3 m_initialPosition;
     protected Stats m_stats;
 
@@ -52,6 +53,13 @@ public class Soldier : NetworkBehaviour
     {
         m_isDead = true;
         m_remainingRespawnTime = RespawnTime;
+    }
+
+    public void SetInitialColor(Color color)
+    {
+        Color newColor = new Color(color.r, color.g, color.b, 1f);
+        m_initialColor = newColor;
+        CmdColor(this.gameObject, newColor);
     }
 
     [ClientRpc]
