@@ -102,19 +102,18 @@ public class BoardManager : MonoBehaviour
         // create level with only walls
         GenerateEmptyMap(1);
 
-        // set seed
-        string seed = "🔥";
-        //string seed = "kjcrfemhnrpprlpejggc";
-        //seed = GenerateSeed();
+        // set seed to be used by generation
+        string seed = GenerateSeed();
+
+        // display seed on the hud
         GameObject hud = GameObject.FindGameObjectWithTag("HUD");
         TextMeshProUGUI text = hud.GetComponent<TextMeshProUGUI>();
         text.text = seed;
         UnityEngine.Random.InitState(seed.GetHashCode());
 
-        // generate first room (in the middle)
+        // generate first room (in the middle) and add it to the map
         Room room = GenerateRandomRoom();
         room.Pos = new Vector2(MapWidth / 2 - room.Roommap.Length / 2, MapHeight / 2 - room.Roommap[0].Length / 2);
-        // add first room to map
         AddRoom(room);
 
         int currentRoomAmount = 1;
