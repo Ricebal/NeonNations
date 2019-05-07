@@ -3,6 +3,13 @@ using UnityEngine.Networking;
 
 public class Aim : NetworkBehaviour
 {
+    public Texture2D CrosshairImage;
+
+    private void Start()
+    {
+        Cursor.visible = false;
+    }
+
     void Update()
     {
         if (!isLocalPlayer)
@@ -20,5 +27,19 @@ public class Aim : NetworkBehaviour
             float rotation = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
             transform.rotation = Quaternion.Euler(0, rotation, 0);
         }
+    }
+
+    private void OnGUI()
+    {
+        // Only draw crosshair when cursor isn't visible
+        if (Cursor.visible)
+        {
+            return;
+        }
+
+        // draw on current mouse position
+        float xMin = Input.mousePosition.x - (CrosshairImage.width / 2);
+        float yMin = (Screen.height - Input.mousePosition.y) - (CrosshairImage.height / 2);
+        GUI.DrawTexture(new Rect(xMin, yMin, CrosshairImage.width, CrosshairImage.height), CrosshairImage);
     }
 }

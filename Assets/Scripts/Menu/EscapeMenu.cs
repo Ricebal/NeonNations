@@ -32,6 +32,7 @@ public class EscapeMenu : NetworkBehaviour
         {
             NetworkManager.singleton.StopClient();
         }
+        Cursor.visible = true;
         SceneManager.LoadScene(2);
     }
 
@@ -46,12 +47,14 @@ public class EscapeMenu : NetworkBehaviour
         {
             NetworkManager.singleton.StopClient();
         }
+        Cursor.visible = true;
         SceneManager.LoadScene(0);
     }
 
     public void TogglePause()
     {
         m_paused = !m_paused;
+        Cursor.visible = m_paused;
         Canvas.gameObject.SetActive(m_paused);
     }
 
