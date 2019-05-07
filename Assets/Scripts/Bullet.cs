@@ -19,7 +19,6 @@ public class Bullet : NetworkBehaviour
     // The player that shot the bullet
     [SyncVar]
     private GameObject m_shooter;
-    private float m_spawnTime;
 
     public void Start()
     {
@@ -28,16 +27,8 @@ public class Bullet : NetworkBehaviour
         // Move the bullet straight ahead with constant speed
         rigidbody.velocity = transform.forward * Speed;
 
-        m_spawnTime = Time.time;
-    }
-
-    public void Update()
-    {
         // Destroy the bullet when the LivingTime is elapsed
-        if (Time.time - m_spawnTime > LivingTime)
-        {
-            Destroy(this.gameObject);
-        }
+        Destroy(gameObject, LivingTime);
     }
 
     public void OnTriggerEnter(Collider collider)
