@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
+using TMPro;
 
 [RequireComponent(typeof(MeshFilter))]
 [RequireComponent(typeof(MeshRenderer))]
@@ -24,8 +25,8 @@ public class BoardManager : MonoBehaviour
     public int MinTunnelLength = 1;
     public int MaxTunnelLength = 7;
     public int TunnelWidth = 2;
-    
-    private int[][] m_tileMap;
+    public int[][] m_tileMap;
+
     private GameObject m_map;
     private List<GameObject> m_mapParts = new List<GameObject>();
 
@@ -101,6 +102,15 @@ public class BoardManager : MonoBehaviour
         // create level with only walls
         GenerateEmptyMap(1);
 
+        // set seed
+        string seed = "🔥";
+        //string seed = "kjcrfemhnrpprlpejggc";
+        //seed = GenerateSeed();
+        GameObject hud = GameObject.FindGameObjectWithTag("HUD");
+        TextMeshProUGUI text = hud.GetComponent<TextMeshProUGUI>();
+        text.text = seed;
+        UnityEngine.Random.InitState(seed.GetHashCode());
+
         // generate first room (in the middle)
         Room room = GenerateRandomRoom();
         room.Pos = new Vector2(MapWidth / 2 - room.Roommap.Length / 2, MapHeight / 2 - room.Roommap[0].Length / 2);
@@ -161,7 +171,10 @@ public class BoardManager : MonoBehaviour
             for (int y = 0; y < smallMap[0].Length; y++)
             {
                 // change the according tile on the map
-                bigMap[x + (int)pos.x][y + (int)pos.y] = smallMap[x][y];
+                if (smallMap[x][y] != 1)
+                {
+                    bigMap[x + (int)pos.x][y + (int)pos.y] = smallMap[x][y];
+                }
             }
         }
     }
@@ -443,6 +456,18 @@ public class BoardManager : MonoBehaviour
             }
             currentShortcutAttempt++;
         }
+    }
+
+    private string GenerateSeed()
+    {
+        StringBuilder builder = new StringBuilder();
+        char ch;
+        for (int i = 0; i < 20; i++)
+        {
+            ch = (char)UnityEngine.Random.Range('a', 'z');
+            builder.Append(ch);
+        }
+        return builder.ToString();
     }
 
     // --------------------------------------------------------------------------------------------
