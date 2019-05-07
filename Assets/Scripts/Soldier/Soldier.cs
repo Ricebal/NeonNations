@@ -53,6 +53,7 @@ public class Soldier : NetworkBehaviour
     {
         m_isDead = true;
         m_remainingRespawnTime = RespawnTime;
+        CmdLayer(gameObject, 11);
     }
 
     public void SetInitialColor(Color color)
@@ -74,12 +75,25 @@ public class Soldier : NetworkBehaviour
         RpcColor(obj, color);
     }
 
+    [ClientRpc]
+    void RpcLayer(GameObject obj, int layer)
+    {
+        obj.layer = layer;
+    }
+
+    [Command]
+    void CmdLayer(GameObject obj, int layer)
+    {
+        RpcLayer(obj, layer);
+    }
+
     protected virtual void Respawn()
     {
         m_isDead = false;
         CmdColor(this.gameObject, m_initialColor);
         this.transform.position = m_initialPosition;
         m_stats.Reset();
+        CmdLayer(gameObject, 10);
     }
 
     // If the Soldier gets hit by a bullet, it will take damage. Will return true if the collider was a Bullet and the Soldier took damage.
