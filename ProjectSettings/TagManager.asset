@@ -6,7 +6,6 @@ TagManager:
   tags:
   - Sonar
   - Bullet
-  - Seed
   - HUD
   layers:
   - Default
