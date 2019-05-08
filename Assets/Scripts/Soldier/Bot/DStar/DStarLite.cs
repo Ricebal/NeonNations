@@ -5,13 +5,14 @@ using UnityEngine;
 
 public class DStarLite
 {
-    public Heap Heap;
     public State[,] Map;
-    public double Km;
-    public State SGoal;
-    public State SStart;
-    private State SLast;
-    private IDStarLiteEnvironment env;
+
+    private Heap m_heap;
+    private double m_km;
+    private State m_goal;
+    private State m_start;
+    private State m_last;
+    private IDStarLiteEnvironment m_environment;
 
     /// <summary>
     /// Set's up the Algorithm.
@@ -22,13 +23,13 @@ public class DStarLite
     /// <param name="goalX">The x of the goal-position</param>
     public void RunDStarLite(int startX, int startY, int goalX, int goalY)
     {
-        SStart = new State(this);
-        SStart.X = startX;
-        SStart.Y = startY;
-        SGoal = new State(this);
-        SGoal.X = goalX;
-        SGoal.Y = goalY;
-        SLast = SStart;
+        m_start = new State(this);
+        m_start.X = startX;
+        m_start.Y = startY;
+        m_goal = new State(this);
+        m_goal.X = goalX;
+        m_goal.Y = goalY;
+        m_last = m_start;
         Initialize();
         ComputeShortestPath();
     }
@@ -36,7 +37,7 @@ public class DStarLite
     private void Initialize()
     {
         //Creates an heap the size of the map
-        Heap = new Heap(Map.GetLength(0)*Map.GetLength(1));
+        m_heap = new Heap(Map.GetLength(0)*Map.GetLength(1));
         for(int i = 0; i < Map.GetLength(0); i++)
         {
             for (int j = 0; j<Map.GetLength(1); j++)
@@ -45,11 +46,11 @@ public class DStarLite
                 Map[i, j].Rhs = double.PositiveInfinity;
             }
         }
-        SGoal = Map[SGoal.X, SGoal.Y];
-        SStart = Map[SStart.X, SStart.Y];
-        SGoal.Rhs = 0;
-        Km = 0;
-        Heap.Insert(SGoal, CalculateKey(SGoal));
+        m_goal = Map[m_goal.X, m_goal.Y];
+        m_start = Map[m_start.X, m_start.Y];
+        m_goal.Rhs = 0;
+        m_km = 0;
+        m_heap.Insert(m_goal, CalculatePriority(m_goal));
     }
 
     /// <summary>
@@ -62,7 +63,7 @@ public class DStarLite
     public void GenerateEmptyMap(int x, int y, IDStarLiteEnvironment env)
     {
         Map = new State[x, y];
-        this.env = env;
+        this.m_environment = env;
         for (int i = 0; i < x; i++)
         {
             for (int j = 0; j < y; j++)
@@ -84,37 +85,37 @@ public class DStarLite
     public void NextMove()
     {
         // if(sstart.g.isInfinity) then there is no known path
-        SStart = MinSuccState(SStart);
-        env.MoveTo(new Coordinates(SStart.X, SStart.Y));
-        LinkedList<Coordinates> obstacleCoord = env.GetObstaclesInVision();
-        double oldkm = Km;
-        State oldslast = SLast;
-        Km += Heuristic(SStart, SLast);
-        SLast = SStart;
+        m_start = MinSuccState(m_start);
+        m_environment.MoveTo(new Coordinates(m_start.X, m_start.Y));
+        LinkedList<Coordinates> obstacleCoord = m_environment.GetObstaclesInVision();
+        double oldkm = m_km;
+        State oldslast = m_last;
+        m_km += Heuristic(m_start, m_last);
+        m_last = m_start;
         bool change = false;
         foreach (Coordinates c in obstacleCoord)
         {
-            State s = Map[c.X, c.Y];
-            if (s.Obstacle)// The obstacle is already known
+            State state = Map[c.X, c.Y];
+            if (state.Obstacle)// The obstacle is already known
             {
                 continue;
             }
             change = true;
-            s.Obstacle = true;
-            foreach (State p in s.GetSurroundingOpenSpaces())
+            state.Obstacle = true;
+            foreach (State surroundingState in state.GetSurroundingOpenSpaces())
             {
-                UpdateVertex(p);
+                UpdateVertex(surroundingState);
             }
         }
         if (!change)
         {
-            Km = oldkm;
-            SLast = oldslast;
+            m_km = oldkm;
+            m_last = oldslast;
         }
         DebugMap(Map);
         ComputeShortestPath();
-        Coordinates botCoordinates = env.GetPosition();
-        SStart = Map[botCoordinates.X, botCoordinates.Y];
+        Coordinates botCoordinates = m_environment.GetPosition();
+        m_start = Map[botCoordinates.X, botCoordinates.Y];
     }
 
     // --------------------------------------------------------------------------------------------
@@ -123,7 +124,7 @@ public class DStarLite
 
     private void DebugMap(State[,] map)
     {
-        Coordinates botCoordinates = env.GetPosition();
+        Coordinates botCoordinates = m_environment.GetPosition();
         StringBuilder builder = new StringBuilder();
         builder.Append('\n');
         for (int y = map.GetLength(1) - 1; y >= 0; y--)
@@ -140,12 +141,12 @@ public class DStarLite
                     builder.Append("@");
                     continue;
                 }
-                if (x == SStart.X && y == SStart.Y)
+                if (x == m_start.X && y == m_start.Y)
                 {
                     builder.Append("%");
                     continue;
                 }
-                if (x == SGoal.X && y == SGoal.Y)
+                if (x == m_goal.X && y == m_goal.Y)
                 {
                     builder.Append("X");
                     continue;
@@ -159,16 +160,16 @@ public class DStarLite
     }
     
     ///<summary>
-    /// calculates the key
-    /// Priority of a vertex = key
-    /// Key – vector with 2 components
-    /// k(s) = [ k1(s);  k2(s) ]
-    /// k1(s) = min(g(s), rhs(s)) + h(s, sstart) + km
-    /// k2(s) = min(g(s), rhs(s)) 
+    /// calculates the key.
+    /// Priority of a vertex = key.
+    /// Key – vector with 2 components.
+    /// k(s) = [ k1(s);  k2(s) ].
+    /// k1(s) = min(g(s), rhs(s)) + h(s, sstart) + km.
+    /// k2(s) = min(g(s), rhs(s)).
     ///</summary>
-    public Key CalculateKey(State s)
+    public PriorityKey CalculatePriority(State s)
     {
-        return new Key(SmallestValue(s.CostFromStartingPoint, s.Rhs) + Heuristic(s, SStart) + Km, SmallestValue(s.CostFromStartingPoint, s.Rhs));
+        return new PriorityKey(SmallestValue(s.CostFromStartingPoint, s.Rhs) + Heuristic(s, m_start) + m_km, SmallestValue(s.CostFromStartingPoint, s.Rhs));
     }
 
     /// <summary>
@@ -184,17 +185,17 @@ public class DStarLite
     /// </summary>
     public void UpdateVertex(State state)
     {
-        if (!state.Equals(SGoal))
+        if (!state.Equals(m_goal))
         {
             state.Rhs = MinSucc(state);
         }
-        if (Heap.Contains(state))
+        if (m_heap.Contains(state))   // To prevent any copies
         {
-            Heap.Remove(state);
+            m_heap.Remove(state);
         }
         if (state.CostFromStartingPoint != state.Rhs)
         {
-            Heap.Insert(state, CalculateKey(state));
+            m_heap.Insert(state, CalculatePriority(state));
         }
     }
 
@@ -218,46 +219,54 @@ public class DStarLite
     }
 
     /// <summary>
-    /// finds the succesor s' with the min (c(u,s')+g(s'))
-    /// where cost from u to s' is 1 and returns the value
+    /// Finds the succesor s' with the minium value of (c(state,s')+CostFromStartingPoint(s')).
+    /// Where cost from state to s' is 1 and returns the value
     /// </summary>
+    /// <returns>
+    /// The minimum value of the surrounding tile(s) after adding 1 (for being the next move)
+    /// </returns>
     public double MinSucc(State state)
     {
         double min = double.PositiveInfinity;
         foreach (State s in state.GetVisitablePositions())
         {
-            double val = 1 + s.CostFromStartingPoint;
-            if (val < min && !s.Obstacle) min = val;
+            double val = 1 + s.CostFromStartingPoint; // Add's 1 to the CostFromStartingPoint since it's one more move
+            if (val < min && !s.Obstacle) // If the value is smaller than the minimum value found
+            {
+                min = val;
+            }
         }
         return min;
     }
 
     public void ComputeShortestPath()
     {
-        while (Heap.TopKey().CompareTo(CalculateKey(SStart)) < 0 || SStart.Rhs != SStart.CostFromStartingPoint)
+        //While the top state of the Heap has a higher priority than the start state OR start.rhs is not the cost of start
+        while (m_heap.TopKey().CompareTo(CalculatePriority(m_start)) < 0 || m_start.Rhs != m_start.CostFromStartingPoint)
         {
-            Key oldKey = Heap.TopKey();
-            State state = Heap.Pop();
-            if (state == null) break;
-            if (oldKey.CompareTo(CalculateKey(state)) < 0)
+            PriorityKey oldKey = m_heap.TopKey();
+            State state = m_heap.Pop();
+            PriorityKey newKey = CalculatePriority(state);
+            if (state == null) break; // Heap is empty
+            if (oldKey.CompareTo(newKey) < 0) // The state has a lower priority than before
             {
-                Heap.Insert(state, CalculateKey(state));
+                m_heap.Insert(state, newKey);
             }
             else if (state.CostFromStartingPoint > state.Rhs)
             {
                 state.CostFromStartingPoint = state.Rhs;
-                foreach (State s in state.GetSurroundingOpenSpaces())
+                foreach (State surroundingState in state.GetSurroundingOpenSpaces())
                 {
-                    UpdateVertex(s);
+                    UpdateVertex(surroundingState);
                 }
             }
             else
             {
                 state.CostFromStartingPoint = double.PositiveInfinity;
                 UpdateVertex(state);
-                foreach (State s in state.GetSurroundingOpenSpaces())
+                foreach (State surroundingState in state.GetSurroundingOpenSpaces())
                 {
-                    UpdateVertex(s);
+                    UpdateVertex(surroundingState);
                 }
             }
         }

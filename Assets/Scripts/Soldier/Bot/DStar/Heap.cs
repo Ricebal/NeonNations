@@ -14,9 +14,9 @@ public class Heap //minheap
         m_hash = new Dictionary<State, int>();
     }
 
-    public Key TopKey()
+    public PriorityKey TopKey()
     {
-        if (m_count == 0) return new Key(double.PositiveInfinity, double.PositiveInfinity);
+        if (m_count == 0) return new PriorityKey(double.PositiveInfinity, double.PositiveInfinity);
         return m_heap[1].Key;
     }
 
@@ -32,7 +32,7 @@ public class Heap //minheap
         return s;
     }
 
-    public void Insert(State s, Key k)
+    public void Insert(State s, PriorityKey k)
     {
         HeapElement e = new HeapElement(s, k);
         m_count++;
@@ -42,11 +42,11 @@ public class Heap //minheap
         moveUp(m_count);
     }
 
-    public void Update(State s, Key k)
+    public void Update(State s, PriorityKey k)
     {
         int i = m_hash[s];
         if (i == 0) return;
-        Key kold = m_heap[i].Key;
+        PriorityKey kold = m_heap[i].Key;
         m_heap[i].Key = k;
         if (kold.CompareTo(k) < 0)
         {
