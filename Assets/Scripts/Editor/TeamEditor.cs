@@ -43,8 +43,6 @@ public class TeamEditor : Editor
         EditorUtility.SetDirty(target);
         EditorApplication.MarkSceneDirty();
         serializedObject.ApplyModifiedProperties();
-
-        base.OnInspectorGUI();
     }
 
     private void AddTeam() => tm.AddTeam();
