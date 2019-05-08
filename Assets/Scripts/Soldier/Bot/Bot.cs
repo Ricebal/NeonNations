@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.Networking;
 
 public class Bot : Soldier
 {
@@ -11,7 +10,6 @@ public class Bot : Soldier
         {
             return;
         }
-        base.Start();
         m_rigidbody = GetComponent<Rigidbody>();
     }
 

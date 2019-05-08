@@ -15,9 +15,7 @@ public class Player : Soldier
             return;
         }
 
-        base.Start();
         m_playerController = GetComponent<PlayerController>();
-        m_playerController.enabled = true;
         m_cameraController = Camera.main.GetComponent<CameraController>();
         m_cameraController.SetTarget(this.transform);
         m_escapeMenu = GameObject.Find("MenuCanvas").GetComponent<EscapeMenu>();
@@ -28,17 +26,12 @@ public class Player : Soldier
 
     void OnDisable()
     {
-        m_escapeMenu.EventPauseToggled -= PauseToggled;
-    }
-
-    void Update()
-    {
         if (!isLocalPlayer)
         {
             return;
         }
 
-        base.Update();
+        m_escapeMenu.EventPauseToggled -= PauseToggled;
     }
 
     void FixedUpdate()
@@ -59,15 +52,21 @@ public class Player : Soldier
 
     protected override void Die()
     {
-        m_gameOverMenu.Activate(RespawnTime);
-        m_playerController.enabled = false;
+        if (isLocalPlayer)
+        {
+            m_gameOverMenu.Activate(RespawnTime);
+            m_playerController.enabled = false;
+        }
         base.Die();
     }
 
     protected override void Respawn()
     {
-        m_gameOverMenu.Deactivate();
-        m_playerController.enabled = true;
+        if (isLocalPlayer)
+        {
+            m_gameOverMenu.Deactivate();
+            m_playerController.enabled = true;
+        }
         m_hud.UpdateHUD();
         base.Respawn();
     }
@@ -85,11 +84,6 @@ public class Player : Soldier
         {
             m_hud.UpdateHUD();
         }
-    }
-
-    public float GetRemainingSpawnTime()
-    {
-        return m_remainingRespawnTime;
     }
 
     void OnDestroy()

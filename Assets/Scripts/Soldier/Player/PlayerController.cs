@@ -70,6 +70,11 @@ public class PlayerController : NetworkBehaviour
 
     void OnDisable()
     {
+        if (!isLocalPlayer)
+        {
+            return;
+        }
+
         m_rigidbody.velocity = new Vector3(0, 0, 0);
     }
 
