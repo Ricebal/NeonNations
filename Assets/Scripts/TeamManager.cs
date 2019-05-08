@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class TeamManager : MonoBehaviour
 {
-    public List<Team> Teams = new List<Team>();
+    public List<Team> Teams;
     private int m_playerCount;
     private Soldier[] m_players = new Soldier[8];
 

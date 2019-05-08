@@ -18,7 +18,6 @@ public class Soldier : NetworkBehaviour
 
     protected void Start()
     {
-        m_initialColor = GetComponent<MeshRenderer>().material.color;
         m_initialPosition = this.transform.position;
         m_stats = GetComponent<Stats>();
     }
@@ -90,6 +89,7 @@ public class Soldier : NetworkBehaviour
     protected virtual void Respawn()
     {
         m_isDead = false;
+        Debug.Log("Soldier died, returning to default color \n" + m_initialColor);
         CmdColor(this.gameObject, m_initialColor);
         this.transform.position = m_initialPosition;
         m_stats.Reset();

@@ -13,11 +13,16 @@ public class TeamEditor : Editor
 
     public override void OnInspectorGUI()
     {
+        serializedObject.Update();
+
+        GUILayout.BeginVertical("Box");
+        GUILayout.BeginHorizontal();
         GUILayout.Label("Team count: " + tm.Teams.Count);
         if (GUILayout.Button("Add team"))
         {
             AddTeam();
         }
+        GUILayout.EndHorizontal();
 
         tm.Teams.ForEach(e =>
         {
@@ -33,6 +38,13 @@ public class TeamEditor : Editor
 
             GUILayout.EndHorizontal();
         });
+        GUILayout.EndVertical();
+
+        EditorUtility.SetDirty(target);
+        EditorApplication.MarkSceneDirty();
+        serializedObject.ApplyModifiedProperties();
+
+        base.OnInspectorGUI();
     }
 
     private void AddTeam() => tm.AddTeam();
