@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class HeapElement
 {
-    public State State;
+    public Node Node;
     public PriorityKey Key;
 
-    public HeapElement(State state, PriorityKey key)
+    public HeapElement(Node node, PriorityKey key)
     {
-        State = state;
+        Node = node;
         Key = key;
     }
 }

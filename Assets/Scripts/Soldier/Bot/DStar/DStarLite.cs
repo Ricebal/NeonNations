@@ -5,13 +5,14 @@ using UnityEngine;
 
 public class DStarLite
 {
-    public State[][] Map;
+    public Node[][] Map;
 
     private Heap m_heap;
-    private double m_km;
-    private State m_goal;
-    private State m_start;
-    private State m_last;
+    private double m_travelledDistance;
+    private Node m_goal;
+    
+    private Node m_botPosition;
+    private Node m_previousBotPosition;
     private IDStarLiteEnvironment m_environment;
 
     /// <summary>
@@ -23,18 +24,12 @@ public class DStarLite
     /// <param name="goalX">The x of the goal-position</param>
     public void RunDStarLite(int startX, int startY, int goalX, int goalY)
     {
-        m_start = new State(this);
-        m_start.X = startX;
-        m_start.Y = startY;
-        m_goal = new State(this);
-        m_goal.X = goalX;
-        m_goal.Y = goalY;
-        m_last = m_start;
-        Reset();
+        Reset(startX, startY, goalX, goalY);
+        // Calculate initial path
         ComputeShortestPath();
     }
 
-    private void Reset()
+    private void Reset(int startX, int startY, int goalX, int goalY)
     {
         //Creates an heap the size of the map
         m_heap = new Heap(Map.Length * Map[0].Length);
@@ -46,11 +41,12 @@ public class DStarLite
                 Map[i][j].Rhs = double.PositiveInfinity;
             }
         }
-        m_goal = Map[m_goal.X][m_goal.Y];
-        m_start = Map[m_start.X][m_start.Y];
+        m_goal = Map[goalX][goalY];
+        m_botPosition = Map[startX][startY];
+        m_previousBotPosition = m_botPosition;
         m_goal.Rhs = 0;
-        m_km = 0;
         m_heap.Insert(m_goal, CalculatePriority(m_goal));
+        m_travelledDistance = 0;
     }
 
     /// <summary>
@@ -62,17 +58,17 @@ public class DStarLite
     /// <param name="env">Any class that extends IDStarLiteEnvironment. Used for moving the entity and getting the surroundings</param>
     public void GenerateEmptyMap(int width, int height, IDStarLiteEnvironment env)
     {
-        Map = new State[width][];
+        Map = new Node[width][];
         for (int i = 0; i < width; i++)
         {
-            Map[i] = new State[height];
+            Map[i] = new Node[height];
         }
-        this.m_environment = env;
+        m_environment = env;
         for (int i = 0; i < width; i++)
         {
             for (int j = 0; j < height; j++)
             {
-                Map[i][j] = new State(this);
+                Map[i][j] = new Node(this);
                 Map[i][j].X = i;
                 Map[i][j].Y = j;
                 Map[i][j].CostFromStartingPoint = double.PositiveInfinity;
@@ -88,45 +84,52 @@ public class DStarLite
     /// </summary>
     public void NextMove()
     {
-        // if(sstart.g.isInfinity) then there is no known path
-        m_start = MinSuccState(m_start);
-        m_environment.MoveTo(new Coordinates(m_start.X, m_start.Y));
+        // Update position of bot
+        m_botPosition = MinCostNode(m_botPosition);
+        m_environment.MoveTo(new Coordinates(m_botPosition.X, m_botPosition.Y));
+
+        // Check if bot sees new obstacles
         LinkedList<Coordinates> obstacleCoord = m_environment.GetObstaclesInVision();
-        double oldkm = m_km;
-        State oldslast = m_last;
-        m_km += Heuristic(m_start, m_last);
-        m_last = m_start;
+
+        double oldTravelledDistance = m_travelledDistance;
+        Node oldPreviousBotPosition = m_previousBotPosition;
+        m_travelledDistance += Heuristic(m_botPosition, m_previousBotPosition);
+        m_previousBotPosition = m_botPosition;
+
         bool change = false;
         foreach (Coordinates c in obstacleCoord)
         {
-            State state = Map[c.X][c.Y];
-            if (state.Obstacle)// The obstacle is already known
+            Node node = Map[c.X][c.Y];
+            // If the obstacle was not previously known
+            if (!node.Obstacle)
             {
-                continue;
-            }
-            change = true;
-            state.Obstacle = true;
-            foreach (State surroundingState in state.GetSurroundingOpenSpaces())
-            {
-                UpdateVertex(surroundingState);
+                change = true;
+                node.Obstacle = true;
+                foreach (Node surroundingState in node.GetSurroundingOpenSpaces())
+                {
+                    UpdateVertex(surroundingState);
+                }
             }
         }
         if (!change)
         {
-            m_km = oldkm;
-            m_last = oldslast;
+            m_travelledDistance = oldTravelledDistance;
+            m_previousBotPosition = oldPreviousBotPosition;
         }
+
         DebugMap(Map);
         ComputeShortestPath();
+
+        // Get current position on the map (might be different than calculated position)
         Coordinates botCoordinates = m_environment.GetPosition();
-        m_start = Map[botCoordinates.X][botCoordinates.Y];
+        m_botPosition = Map[botCoordinates.X][botCoordinates.Y];
     }
 
     // --------------------------------------------------------------------------------------------
     // Debug functions
     // --------------------------------------------------------------------------------------------
 
-    private void DebugMap(State[][] map)
+    private void DebugMap(Node[][] map)
     {
         Coordinates botCoordinates = m_environment.GetPosition();
         StringBuilder builder = new StringBuilder();
@@ -145,7 +148,7 @@ public class DStarLite
                     builder.Append("@");
                     continue;
                 }
-                if (x == m_start.X && y == m_start.Y)
+                if (x == m_botPosition.X && y == m_botPosition.Y)
                 {
                     builder.Append("%");
                     continue;
@@ -164,22 +167,22 @@ public class DStarLite
     }
     
     ///<summary>
-    /// calculates the key.
+    /// Calculates the key.
     /// Priority of a vertex = key.
     /// Key – vector with 2 components.
     /// k(s) = [ k1(s);  k2(s) ].
     /// k1(s) = min(g(s), rhs(s)) + h(s, sstart) + km.
     /// k2(s) = min(g(s), rhs(s)).
     ///</summary>
-    public PriorityKey CalculatePriority(State s)
+    public PriorityKey CalculatePriority(Node node)
     {
-        return new PriorityKey(SmallestValue(s.CostFromStartingPoint, s.Rhs) + Heuristic(s, m_start) + m_km, SmallestValue(s.CostFromStartingPoint, s.Rhs));
+        return new PriorityKey(Math.Min(node.CostFromStartingPoint, node.Rhs) + Heuristic(node, m_botPosition) + m_travelledDistance, Math.Min(node.CostFromStartingPoint, node.Rhs));
     }
 
     /// <summary>
     /// Calculates the Heuristics for traveling between two points
     /// </summary>
-    public double Heuristic(State pointA, State pointB)
+    public double Heuristic(Node pointA, Node pointB)
     {
         return Math.Sqrt(Math.Pow(Math.Abs(pointA.X - pointB.X), 2) + Math.Pow(Math.Abs(pointA.Y - pointB.Y), 2));
     }
@@ -187,55 +190,54 @@ public class DStarLite
     /// <summary>
     /// Re-evaluates the Rhs-value of a State
     /// </summary>
-    public void UpdateVertex(State state)
+    public void UpdateVertex(Node node)
     {
-        if (!state.Equals(m_goal))
+        if (!node.Equals(m_goal))
         {
-            state.Rhs = MinSucc(state);
+            node.Rhs = MinCost(node);
         }
-        if (m_heap.Contains(state))   // To prevent any copies
+        if (m_heap.Contains(node))   // To prevent any copies
         {
-            m_heap.Remove(state);
+            m_heap.Remove(node);
         }
-        if (state.CostFromStartingPoint != state.Rhs)
+        if (node.CostFromStartingPoint != node.Rhs)
         {
-            m_heap.Insert(state, CalculatePriority(state));
+            m_heap.Insert(node, CalculatePriority(node));
         }
     }
 
     /// <summary>
-    /// Returns the position that has the lowest cost
+    /// Returns the node that has the lowest cost
     /// </summary>
-    public State MinSuccState(State state)
+    public Node MinCostNode(Node node)
     {
         double min = double.PositiveInfinity;
-        State n = null;
-        foreach (State s in state.GetVisitablePositions())
+        Node returnNode = null;
+        foreach (Node s in node.GetSurroundingOpenSpaces())
         {
             double val = 1 + s.CostFromStartingPoint;
-            if (val <= min && !s.Obstacle)
+            if (val <= min)
             {
                 min = val;
-                n = s;
+                returnNode = s;
             }
         }
-        return n;
+        return returnNode;
     }
 
     /// <summary>
-    /// Finds the succesor s' with the minium value of (c(state,s')+CostFromStartingPoint(s')).
-    /// Where cost from state to s' is 1 and returns the value
+    /// Gets the minimum distance to travel to this node
     /// </summary>
     /// <returns>
-    /// The minimum value of the surrounding tile(s) after adding 1 (for being the next move)
+    /// Double containing the minimum distance
     /// </returns>
-    public double MinSucc(State state)
+    public double MinCost(Node node)
     {
         double min = double.PositiveInfinity;
-        foreach (State s in state.GetVisitablePositions())
+        foreach (Node n in node.GetSurroundingOpenSpaces())
         {
-            double val = 1 + s.CostFromStartingPoint; // Add's 1 to the CostFromStartingPoint since it's one more move
-            if (val < min && !s.Obstacle) // If the value is smaller than the minimum value found
+            double val = 1 + n.CostFromStartingPoint; // Add's 1 to the CostFromStartingPoint since it's one more move
+            if (val < min) // If the value is smaller than the minimum value found
             {
                 min = val;
             }
@@ -245,43 +247,38 @@ public class DStarLite
 
     public void ComputeShortestPath()
     {
-        //While the top state of the Heap has a higher priority than the start state OR start.rhs is not the cost of start
-        while (m_heap.TopKey().CompareTo(CalculatePriority(m_start)) < 0 || m_start.Rhs != m_start.CostFromStartingPoint)
+        // While the top state of the Heap has a higher priority than the start state OR start.rhs is not the cost of start
+        while (m_heap.TopKey().CompareTo(CalculatePriority(m_botPosition)) < 0 || m_botPosition.Rhs != m_botPosition.CostFromStartingPoint)
         {
+            // Gets the priority key op the top
             PriorityKey oldKey = m_heap.TopKey();
-            State state = m_heap.Pop();
-            PriorityKey newKey = CalculatePriority(state);
-            if (state == null) break; // Heap is empty
-            if (oldKey.CompareTo(newKey) < 0) // The state has a lower priority than before
+            // Gets the node of the top
+            Node node = m_heap.Pop();
+            if (node == null) break; // Heap is empty
+
+            // Gets new key based on current botPosition
+            PriorityKey newKey = CalculatePriority(node);
+            if (oldKey.CompareTo(newKey) < 0) // The node has a lower priority than before
             {
-                m_heap.Insert(state, newKey);
+                m_heap.Insert(node, newKey);
             }
-            else if (state.CostFromStartingPoint > state.Rhs)
+            else if (node.CostFromStartingPoint > node.Rhs)
             {
-                state.CostFromStartingPoint = state.Rhs;
-                foreach (State surroundingState in state.GetSurroundingOpenSpaces())
+                node.CostFromStartingPoint = node.Rhs;
+                foreach (Node surroundingState in node.GetSurroundingOpenSpaces())
                 {
                     UpdateVertex(surroundingState);
                 }
             }
             else
             {
-                state.CostFromStartingPoint = double.PositiveInfinity;
-                UpdateVertex(state);
-                foreach (State surroundingState in state.GetSurroundingOpenSpaces())
+                node.CostFromStartingPoint = double.PositiveInfinity;
+                UpdateVertex(node);
+                foreach (Node surroundingState in node.GetSurroundingOpenSpaces())
                 {
                     UpdateVertex(surroundingState);
                 }
             }
         }
-    }
-
-    /// <summary>
-    /// Returns the smallest of two values
-    /// </summary>
-    public double SmallestValue(double valueA, double valueB)
-    {
-        if (valueB < valueA) return valueB;
-        return valueA;
     }
 }

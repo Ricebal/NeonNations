@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 
-public class Heap //minheap
+public class Heap // minheap
 {
     private int m_count;
     private HeapElement[] m_heap;
-    private Dictionary<State, int> m_hash;
+    private Dictionary<Node, int> m_hash;
 
     public Heap(int cap)
     {
         m_count = 0;
         m_heap = new HeapElement[cap];
-        m_hash = new Dictionary<State, int>();
+        m_hash = new Dictionary<Node, int>();
     }
 
     public PriorityKey TopKey()
@@ -20,56 +20,43 @@ public class Heap //minheap
         return m_heap[1].Key;
     }
 
-    public State Pop()
+    public Node Pop()
     {
         if (m_count == 0) return null;
-        State s = m_heap[1].State;
+        Node s = m_heap[1].Node;
         m_heap[1] = m_heap[m_count];
-        m_hash[m_heap[1].State] = 1;
+        m_hash[m_heap[1].Node] = 1;
         m_hash[s] = 0;
         m_count--;
         moveDown(1);
         return s;
     }
 
-    public void Insert(State s, PriorityKey k)
+    public void Insert(Node s, PriorityKey k)
     {
         HeapElement e = new HeapElement(s, k);
         m_count++;
         m_hash[s] = m_count;
-        if (m_count == m_heap.Length) increaseCap();
+        if (m_count == m_heap.Length)
+        {
+            increaseCap();
+        }
         m_heap[m_count] = e;
         moveUp(m_count);
     }
 
-    public void Update(State s, PriorityKey k)
-    {
-        int i = m_hash[s];
-        if (i == 0) return;
-        PriorityKey kold = m_heap[i].Key;
-        m_heap[i].Key = k;
-        if (kold.CompareTo(k) < 0)
-        {
-            moveDown(i);
-        }
-        else
-        {
-            moveUp(i);
-        }
-    }
-
-    public void Remove(State s)
+    public void Remove(Node s)
     {
         int i = m_hash[s];
         if (i == 0) return;
         m_hash[s] = 0;
         m_heap[i] = m_heap[m_count];
-        m_hash[m_heap[i].State] = i;
+        m_hash[m_heap[i].Node] = i;
         m_count--;
         moveDown(i);
     }
 
-    public bool Contains(State s)
+    public bool Contains(Node s)
     {
         int i;
         if (!m_hash.TryGetValue(s, out i))
@@ -119,9 +106,9 @@ public class Heap //minheap
     {
         HeapElement temp = m_heap[i];
         m_heap[i] = m_heap[j];
-        m_hash[m_heap[j].State] = i;
+        m_hash[m_heap[j].Node] = i;
         m_heap[j] = temp;
-        m_hash[temp.State] = j;
+        m_hash[temp.Node] = j;
     }
 
     private void increaseCap()

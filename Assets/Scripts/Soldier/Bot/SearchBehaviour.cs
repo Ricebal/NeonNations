@@ -23,7 +23,7 @@ public class SearchBehaviour : MonoBehaviour, IDStarLiteEnvironment
         m_dStarLite = new DStarLite();
         m_dStarLite.GenerateEmptyMap(m_tileMap.Length, m_tileMap[0].Length, this);
         StartCoordinates = ConvertGameObjectToCoordinates(Bot.transform);
-        FindNewDestination(StartCoordinates.X, StartCoordinates.Y);
+        GenerateNewDestination(StartCoordinates.X, StartCoordinates.Y);
         m_bot = GetComponent<Bot>();
     }
 
@@ -38,7 +38,7 @@ public class SearchBehaviour : MonoBehaviour, IDStarLiteEnvironment
         }
         else
         {
-            FindNewDestination(currentCoordinates.X, currentCoordinates.Y);
+            GenerateNewDestination(currentCoordinates.X, currentCoordinates.Y);
         }
     }
 
@@ -47,7 +47,7 @@ public class SearchBehaviour : MonoBehaviour, IDStarLiteEnvironment
     /// </summary>
     /// <param name="currentX">The current x-position of the entity</param>
     /// <param name="currentY">The current y-position of the entity</param>
-    private void FindNewDestination(int currentX, int currentY)
+    private void GenerateNewDestination(int currentX, int currentY)
     {
         bool found = false;
         int mapX = 0;
@@ -72,7 +72,7 @@ public class SearchBehaviour : MonoBehaviour, IDStarLiteEnvironment
         float horizontal = s.X - Bot.transform.position.x;
         float vertical = s.Y - Bot.transform.position.z;
         // The clamp normalizes the input to a value between -1 and 1 (To represent the players input)
-        m_bot.Move(Mathf.Clamp((float)horizontal, -1f, 1f), Mathf.Clamp((float)vertical, -1f, 1f));
+        m_bot.Move(Mathf.Clamp(horizontal, -1f, 1f), Mathf.Clamp(vertical, -1f, 1f));
     }
 
     // Return the obstacles the bot should be able to see
@@ -144,7 +144,7 @@ public class SearchBehaviour : MonoBehaviour, IDStarLiteEnvironment
     }
 
     /// <summary>
-    /// returns the positino of the bot
+    /// returns the position of the bot
     /// </summary>
     public Coordinates GetPosition()
     {
