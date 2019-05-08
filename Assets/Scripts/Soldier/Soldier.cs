@@ -12,7 +12,7 @@ public class Soldier : NetworkBehaviour
     protected bool m_isDead = false;
     protected float m_remainingRespawnTime;
 
-    [SyncVar] protected Color m_initialColor;
+    [SyncVar] public Color InitialColor;
     protected Vector3 m_initialPosition;
     protected Stats m_stats;
 
@@ -58,7 +58,7 @@ public class Soldier : NetworkBehaviour
     public void SetInitialColor(Color color)
     {
         Color newColor = new Color(color.r, color.g, color.b, 1f);
-        m_initialColor = newColor;
+        InitialColor = newColor;
         CmdColor(this.gameObject, newColor);
     }
 
@@ -89,8 +89,8 @@ public class Soldier : NetworkBehaviour
     protected virtual void Respawn()
     {
         m_isDead = false;
-        Debug.Log("Soldier died, returning to default color \n" + m_initialColor);
-        CmdColor(this.gameObject, m_initialColor);
+        Debug.Log("Soldier died, returning to default color \n" + InitialColor);
+        CmdColor(this.gameObject, InitialColor);
         this.transform.position = m_initialPosition;
         m_stats.Reset();
         CmdLayer(gameObject, 10);

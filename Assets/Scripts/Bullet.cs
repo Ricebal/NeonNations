@@ -40,6 +40,24 @@ public class Bullet : NetworkBehaviour
         }
     }
 
+    public void SetColor()
+    {
+        Color color = m_shooter.GetComponent<Soldier>().InitialColor;
+        Light light = GetComponentsInChildren<Light>()[0];
+        light.color = color;
+
+        MeshRenderer[] renderers = GetComponentsInChildren<MeshRenderer>();
+        if (renderers.Length < 1)
+        {
+            return;
+        }
+        MeshRenderer renderer = GetComponentsInChildren<MeshRenderer>()[0];
+        renderer.material.SetColor("_EmissionColor", color * 3);
+
+        TrailRenderer trail = GetComponent<TrailRenderer>();
+        trail.material.SetColor("_EmissionColor", color * 3);
+    }
+
     public void OnTriggerEnter(Collider collider)
     {
         if (!isServer)
@@ -93,6 +111,7 @@ public class Bullet : NetworkBehaviour
         // Instantiate explosion
         GameObject explosion = Instantiate(HitPrefab, pos, gameObject.transform.rotation);
         explosion.transform.Translate(0, 0, -WallOffset);
+        explosion.GetComponentsInChildren<Light>()[0].color = m_shooter.GetComponent<Soldier>().InitialColor;
 
         // Instanciate the explosion on the network for all players 
         NetworkServer.Spawn(explosion);
@@ -101,6 +120,7 @@ public class Bullet : NetworkBehaviour
     public void SetShooter(GameObject shooter)
     {
         m_shooter = shooter;
+        SetColor();
     }
 
     public GameObject GetShooter()
