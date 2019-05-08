@@ -673,21 +673,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 262fd08e365fcbf47a888b69b8188b15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  map: {fileID: 6182289135420230192, guid: 1e44135debb4a9a41a46d373ce5d9c91, type: 3}
-  mapWidth: 50
-  mapHeight: 50
-  outerWallWidth: 14
-  maxRoomAmount: 15
-  maxShortcutAmount: 10
-  maxRoomSize: 80
-  minRoomSize: 36
-  minRoomLength: 6
-  maxPlaceAttempts: 10
-  maxBuildAttempts: 250
-  maxShortcutAttempts: 250
-  minTunnelLength: 1
-  maxTunnelLength: 7
-  tunnelWidth: 2
+  m_mapPrefab: {fileID: 6182289135420230192, guid: 1e44135debb4a9a41a46d373ce5d9c91,
+    type: 3}
+  m_mapWidth: 50
+  m_mapHeight: 50
+  m_outerWallWidth: 14
+  m_maxRoomAmount: 100
+  m_maxShortcutAmount: 10
+  m_maxRoomSize: 80
+  m_minRoomSize: 36
+  m_minRoomLength: 6
+  m_maxPlaceAttempts: 10
+  m_maxBuildAttempts: 250
+  m_maxShortcutAttempts: 250
+  m_minTunnelLength: 1
+  m_maxTunnelLength: 7
+  m_tunnelWidth: 2
 --- !u!114 &817318511
 MonoBehaviour:
   m_ObjectHideFlags: 0
