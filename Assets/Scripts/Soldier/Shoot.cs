@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Networking;
 
 public class Shoot : NetworkBehaviour
@@ -31,7 +29,7 @@ public class Shoot : NetworkBehaviour
     public void CmdShoot()
     {
         GameObject prefab = Instantiate(Prefab, Spawn.position, Spawn.rotation);
-        prefab.GetComponent<Bullet>().SetShooter(this.gameObject);
+        prefab.GetComponent<Bullet>().SetShooterId(transform.name);
 
         // Instanciate the bullet on the network for all players 
         NetworkServer.Spawn(prefab);

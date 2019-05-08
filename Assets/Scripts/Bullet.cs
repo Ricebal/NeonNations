@@ -18,7 +18,7 @@ public class Bullet : NetworkBehaviour
 
     // The player that shot the bullet
     [SyncVar]
-    private GameObject m_shooter;
+    private string m_shooterId;
 
     public void Start()
     {
@@ -38,7 +38,7 @@ public class Bullet : NetworkBehaviour
             return;
         }
 
-        if (collider.gameObject != m_shooter)
+        if (collider.transform.name != m_shooterId)
         {
             if (HitPrefab != null)
             {
@@ -89,14 +89,14 @@ public class Bullet : NetworkBehaviour
         NetworkServer.Spawn(explosion);
     }
 
-    public void SetShooter(GameObject shooter)
+    public void SetShooterId(string shooterId)
     {
-        m_shooter = shooter;
+        m_shooterId = shooterId;
     }
 
-    public GameObject GetShooter()
+    public string GetShooterId()
     {
-        return m_shooter;
+        return m_shooterId;
     }
 
 }

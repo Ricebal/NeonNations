@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Networking;
 
 public class Sonar : NetworkBehaviour
@@ -31,11 +29,11 @@ public class Sonar : NetworkBehaviour
     public void CmdSonar()
     {
         float amount = 360 / Rays;
-        for (int i = 0; i < 360; i += (int) amount)
+        for (int i = 0; i < 360; i += (int)amount)
         {
             GameObject prefab = Instantiate(Prefab, this.transform.position, Quaternion.Euler(0, i, 0));
             prefab.transform.Translate(new Vector3(0, 0, this.transform.localScale.z / 2f), Space.Self);
-            prefab.GetComponent<Bullet>().SetShooter(this.gameObject);
+            prefab.GetComponent<Bullet>().SetShooterId(transform.name);
 
             // Instanciate the bullet on the network for all players 
             NetworkServer.Spawn(prefab);

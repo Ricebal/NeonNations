@@ -93,7 +93,7 @@ public class Soldier : NetworkBehaviour
     {
         if (collider.gameObject.tag == "Bullet") {
             Bullet bullet = collider.gameObject.GetComponent<Bullet>();
-            if(bullet.GetShooter() != this.gameObject)
+            if(bullet.GetShooterId() != transform.name)
             {
                 m_stats.TakeDamage(bullet.Damage);
                 return true;
