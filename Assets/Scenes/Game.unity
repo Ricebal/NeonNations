@@ -485,46 +485,6 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 331448661032197343, guid: 3f543ce0544b7344b8f77a3ae4ea9157,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4953255002806404969, guid: 3f543ce0544b7344b8f77a3ae4ea9157,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3827413887347027392, guid: 3f543ce0544b7344b8f77a3ae4ea9157,
-        type: 3}
-      propertyPath: m_havePropertiesChanged
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3827413887347027392, guid: 3f543ce0544b7344b8f77a3ae4ea9157,
-        type: 3}
-      propertyPath: m_isInputParsingRequired
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2253450236709716278, guid: 3f543ce0544b7344b8f77a3ae4ea9157,
-        type: 3}
-      propertyPath: m_havePropertiesChanged
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2253450236709716278, guid: 3f543ce0544b7344b8f77a3ae4ea9157,
-        type: 3}
-      propertyPath: m_isInputParsingRequired
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2253450236709716278, guid: 3f543ce0544b7344b8f77a3ae4ea9157,
-        type: 3}
-      propertyPath: m_fontColor.g
-      value: 0.18039216
-      objectReference: {fileID: 0}
-    - target: {fileID: 2253450236709716278, guid: 3f543ce0544b7344b8f77a3ae4ea9157,
-        type: 3}
-      propertyPath: m_fontColor.a
-      value: 0.27450982
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3f543ce0544b7344b8f77a3ae4ea9157, type: 3}
 --- !u!1 &534669902
@@ -673,22 +633,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 262fd08e365fcbf47a888b69b8188b15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_mapPrefab: {fileID: 6182289135420230192, guid: 1e44135debb4a9a41a46d373ce5d9c91,
-    type: 3}
-  m_mapWidth: 50
-  m_mapHeight: 50
-  m_outerWallWidth: 14
-  m_maxRoomAmount: 100
-  m_maxShortcutAmount: 10
-  m_maxRoomSize: 80
-  m_minRoomSize: 36
-  m_minRoomLength: 6
-  m_maxPlaceAttempts: 10
-  m_maxBuildAttempts: 250
-  m_maxShortcutAttempts: 250
-  m_minTunnelLength: 1
-  m_maxTunnelLength: 7
-  m_tunnelWidth: 2
+  Columns: 30
+  Rows: 22
+  OuterWallWidth: 14
+  Map: {fileID: 6182289135420230192, guid: 1e44135debb4a9a41a46d373ce5d9c91, type: 3}
 --- !u!114 &817318511
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -896,11 +844,6 @@ PrefabInstance:
         type: 3}
       propertyPath: NetworkManager
       value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 7375908384395104213, guid: ff6331ee681933a49a95f9bcbb22c5ce,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ff6331ee681933a49a95f9bcbb22c5ce, type: 3}
