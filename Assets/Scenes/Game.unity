@@ -689,8 +689,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 371f18629be778f4ab67a230d11c3ae3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ColorTeam1: {r: 1, g: 0, b: 0.82725763, a: 0}
-  ColorTeam2: {r: 0.0025007725, g: 1, b: 0, a: 0}
+  Teams:
+  - Id: 1
+    Color: {r: 0, g: 1, b: 0.92101526, a: 0}
+    PlayerCount: 0
+  - Id: 2
+    Color: {r: 1, g: 0, b: 0, a: 0}
+    PlayerCount: 0
 --- !u!114 &817318515
 MonoBehaviour:
   m_ObjectHideFlags: 0
