@@ -44,6 +44,7 @@ GameObject:
   - component: {fileID: 8638977763130829897}
   - component: {fileID: 8638977763130829898}
   - component: {fileID: 2465073526135938245}
+  - component: {fileID: 5669433615254091130}
   - component: {fileID: 2656307798546998540}
   - component: {fileID: 2189273758118548216}
   - component: {fileID: 4860999457290938284}
@@ -188,6 +189,19 @@ MonoBehaviour:
     i15: 0
   m_ServerOnly: 0
   m_LocalPlayerAuthority: 1
+--- !u!114 &5669433615254091130
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6654271199680664771}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81579b530304e134aba3a346fd5cbd08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PlayerUniqueIdentity: 
 --- !u!114 &2656307798546998540
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -351,8 +365,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7614d91b0fce1ba4c92591a5e636bf17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LerpRate: 15
+  Threshold: 0.5
+  NormalLerpRate: 24
+  FasterLerpRate: 40
   Transform: {fileID: 8638977763130829894}
+  UseHistoricalLerp: 1
+  CloseEnough: 0.18
 --- !u!114 &629880366995975402
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -365,8 +383,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23ded658d92cfa94d97edd329e4aad5e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LerpRate: 15
+  Threshold: 1
   Transform: {fileID: 8638977763130829894}
+  LerpRate: 15
+  UseHistoricalInterpolation: 1
+  CloseEnough: 0.4
 --- !u!1 &6716781768823966986
 GameObject:
   m_ObjectHideFlags: 0
