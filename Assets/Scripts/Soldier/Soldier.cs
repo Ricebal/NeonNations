@@ -18,7 +18,7 @@ public class Soldier : NetworkBehaviour
     protected void Start()
     {
         m_initialColor = GetComponent<MeshRenderer>().material.color;
-        m_initialPosition = this.transform.position;
+        m_initialPosition = transform.position;
         m_stats = GetComponent<Stats>();
     }
 
@@ -91,9 +91,10 @@ public class Soldier : NetworkBehaviour
     // If the Soldier gets hit by a bullet, it will take damage. Will return true if the collider was a Bullet and the Soldier took damage.
     protected bool OnTriggerEnter(Collider collider)
     {
-        if (collider.gameObject.tag == "Bullet") {
+        if (collider.gameObject.tag == "Bullet")
+        {
             Bullet bullet = collider.gameObject.GetComponent<Bullet>();
-            if(bullet.GetShooterId() != transform.name)
+            if (bullet.GetShooterId() != transform.name)
             {
                 m_stats.TakeDamage(bullet.Damage);
                 return true;

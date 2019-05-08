@@ -7,9 +7,8 @@ public class PlayerController : NetworkBehaviour
     private Player m_player;
     private Action m_action;
     private Dash m_playerDash;
-    private bool m_isEnabled;
 
-    public void Start()
+    void Start()
     {
         if (!isLocalPlayer)
         {
@@ -20,12 +19,11 @@ public class PlayerController : NetworkBehaviour
         m_player = GetComponent<Player>();
         m_action = GetComponent<Action>();
         m_playerDash = GetComponent<Dash>();
-        SetEnabled(true);
     }
 
-    public void Update()
+    void Update()
     {
-        if (!isLocalPlayer || !m_isEnabled)
+        if (!isLocalPlayer)
         {
             return;
         }
@@ -49,36 +47,30 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
-    public void FixedUpdate()
+    void FixedUpdate()
     {
         if (!isLocalPlayer)
         {
             return;
         }
 
-        Vector3 movement = new Vector3();
-        // If player controller is enabled, take into account user's inputs
-        if (m_isEnabled)
-        {
-            float moveHorizontal = Input.GetAxis("Horizontal");
-            float moveVertical = Input.GetAxis("Vertical");
+        float moveHorizontal = Input.GetAxis("Horizontal");
+        float moveVertical = Input.GetAxis("Vertical");
 
-            movement = new Vector3(moveHorizontal, 0, moveVertical);
-            
-            // If dashing, normalize movement vector so you are always at max speed
-            if (m_playerDash.IsDashing())
-            {
-                movement.Normalize();
-            }
+        Vector3 movement = new Vector3(moveHorizontal, 0, moveVertical);
+
+        // If dashing, normalize movement vector so you are always at max speed
+        if (m_playerDash.IsDashing())
+        {
+            movement.Normalize();
         }
 
         m_rigidbody.velocity = movement * m_player.Speed * m_playerDash.GetMultiplier();
     }
 
-    // Enable / disable player's movements
-    public void SetEnabled(bool isEnabled)
+    void OnDisable()
     {
-        m_isEnabled = isEnabled;
+        m_rigidbody.velocity = new Vector3(0, 0, 0);
     }
 
 }
