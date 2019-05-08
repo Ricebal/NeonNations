@@ -368,7 +368,7 @@ MonoBehaviour:
   NormalLerpRate: 24
   FasterLerpRate: 40
   Transform: {fileID: 8638977763130829894}
-  UseHistoricalLerp: 1
+  UseHistoricalLerp: 0
   CloseEnough: 0.18
 --- !u!114 &629880366995975402
 MonoBehaviour:
@@ -385,7 +385,7 @@ MonoBehaviour:
   Threshold: 1
   Transform: {fileID: 8638977763130829894}
   LerpRate: 15
-  UseHistoricalInterpolation: 1
+  UseHistoricalInterpolation: 0
   CloseEnough: 0.4
 --- !u!1 &6716781768823966986
 GameObject:

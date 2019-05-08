@@ -5,17 +5,17 @@ using UnityEngine.Networking;
 public class SyncRotation : NetworkBehaviour
 {
     // Send a command to the server every Threshold degrees
-    public float Threshold = 1;
+    public float Threshold;
     // Player's transform
     public Transform Transform;
     // Interpolation factor
-    public float LerpRate = 20;
+    public float LerpRate;
     // This value is used to define if the player should 'leave in the past'
     // when lag occurres, seeing old player's rotation
-    public bool UseHistoricalInterpolation = true;
+    public bool UseHistoricalInterpolation;
     // When UseHistoricalLerp is true, this value is used to consider that
     // the rotation is correct when the difference is inferior than this value
-    public float CloseEnough = 0.4f;
+    public float CloseEnough;
 
     [SyncVar(hook = "OnRotationSynced")]
     private float m_syncRotation;

@@ -5,19 +5,19 @@ using UnityEngine.Networking;
 public class SyncPosition : NetworkBehaviour
 {
     // Send a command to the server every Threshold meters
-    public float Threshold = 0.5f;
+    public float Threshold;
     // Interpolation factors
     // TODO: These values need to be tested with dash
-    public float NormalLerpRate = 24;
-    public float FasterLerpRate = 40;
+    public float NormalLerpRate;
+    public float FasterLerpRate;
     // Player's transform
     public Transform Transform;
     // This value is used to define if the player should 'leave in the past'
     // when lag occurres, seeing old other player's positions
-    public bool UseHistoricalLerp = true;
+    public bool UseHistoricalLerp;
     // When UseHistoricalLerp is true, this value is used to consider the 
     // position correct when the difference is inferior than this value
-    public float CloseEnough = 0.18f;
+    public float CloseEnough;
 
     // Current interpolation factor
     private float m_lerpRate;
@@ -98,8 +98,7 @@ public class SyncPosition : NetworkBehaviour
                 m_syncPosList.RemoveAt(0);
             }
 
-            // If there are to many positions stored, 
-            // the player is way too far in the past so we accelerate his movements
+            // If there are to many positions stored, the player is way too far in the past so we accelerate his movements
             if (m_syncPosList.Count > 10)
             {
                 m_lerpRate = FasterLerpRate;
