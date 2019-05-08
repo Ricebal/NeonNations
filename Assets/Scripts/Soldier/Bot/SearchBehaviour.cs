@@ -3,17 +3,14 @@ using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SearchBehavior : MonoBehaviour, IDStarLiteEnvironment
+public class SearchBehaviour : MonoBehaviour, IDStarLiteEnvironment
 {
     public GameObject Bot;
 
     //These variables can be deleted after the map is integrated
-    public const int Columns = 30;
-    public const int Rows = 22;
-    
     private Coordinates GoalCoordinates = new Coordinates();
     private Coordinates StartCoordinates;
-    private bool[,] m_tileMap = new bool[Columns, Rows];
+    private int[][] m_tileMap;
     private bool m_completed = false;
     private DStarLite m_dStarLite;
     private Bot m_bot;
@@ -21,14 +18,13 @@ public class SearchBehavior : MonoBehaviour, IDStarLiteEnvironment
     // Start is called before the first frame update
     void Start()
     {
-        GenerateMap();    // used temperarly to get the right map-layout. This should later be replaced by a getMapLayout in the BoardManager or something like that
+        m_tileMap = GameObject.Find("GameManager").GetComponent<BoardManager>().GetTileMap();
         UnityEngine.Random.InitState((int)System.DateTime.Now.Ticks);
         m_dStarLite = new DStarLite();
-        m_dStarLite.GenerateEmptyMap(Columns, Rows, this);
+        m_dStarLite.GenerateEmptyMap(m_tileMap.Length, m_tileMap[0].Length, this);
         StartCoordinates = ConvertGameObjectToCoordinates(Bot.transform);
         FindNewDestination(StartCoordinates.X, StartCoordinates.Y);
         m_bot = GetComponent<Bot>();
-        m_dStarLite.RunDStarLite(StartCoordinates.X, StartCoordinates.Y, GoalCoordinates.X, GoalCoordinates.Y);
     }
 
     // Update is called once per frame
@@ -58,9 +54,9 @@ public class SearchBehavior : MonoBehaviour, IDStarLiteEnvironment
         int mapY = 0;
         while (!found)
         {
-            mapX = UnityEngine.Random.Range(0, Columns);
-            mapY = UnityEngine.Random.Range(0, Rows);
-            if (m_tileMap[mapX, mapY])
+            mapX = UnityEngine.Random.Range(0, m_tileMap.Length);
+            mapY = UnityEngine.Random.Range(0, m_tileMap[0].Length);
+            if (m_tileMap[mapX][mapY] == 0)
             {
                 found = true;
             }
@@ -68,44 +64,6 @@ public class SearchBehavior : MonoBehaviour, IDStarLiteEnvironment
         GoalCoordinates.X = mapX;
         GoalCoordinates.Y = mapY;
         m_dStarLite.RunDStarLite(currentX, currentY, GoalCoordinates.X, GoalCoordinates.Y);
-    }
-
-    void GenerateMap()
-    {
-        m_tileMap = new bool[Columns, Rows];
-
-        for (int x = 0; x < Columns; x++)
-        {
-            for (int y = 0; y < Rows; y++)
-            {
-                if (// rooms
-                    x == 0 && y == 0
-                    || x >= 0 && x <= 9 && y >= 16 && y <= 21
-                    || x >= 1 && x <= 7 && y >= 0 && y <= 5
-                    || x >= 11 && x <= 15 && y >= 4 && y <= 10
-                    || x >= 16 && x <= 20 && y >= 13 && y <= 18
-                    || x >= 23 && x <= 29 && y >= 3 && y <= 10
-                    || x >= 24 && x <= 27 && y >= 17 && y <= 21
-                    //|| x >= 0 && x <= 20 && y >= 7 && y <= 20
-                    // corridors
-                    || x >= 1 && x <= 2 && y >= 12 && y <= 15
-                    || x >= 3 && x <= 6 && y >= 12 && y <= 13
-                    || x >= 5 && x <= 6 && y >= 6 && y <= 13
-                    || x >= 7 && x <= 10 && y >= 8 && y <= 9
-                    || x >= 8 && x <= 24 && y >= 0 && y <= 1
-                    || x >= 10 && x <= 15 && y >= 17 && y <= 18
-                    || x >= 13 && x <= 14 && y >= 2 && y <= 3
-                    || x >= 16 && x <= 22 && y >= 8 && y <= 9
-                    || x >= 17 && x <= 18 && y >= 19 && y <= 21
-                    || x >= 17 && x <= 18 && y >= 10 && y <= 12
-                    || x >= 19 && x <= 25 && y >= 20 && y <= 21
-                    || x >= 23 && x <= 24 && y == 2
-                    || x >= 25 && x <= 26 && y >= 11 && y <= 16)
-                {
-                    m_tileMap[x, y] = true;
-                }
-            }
-        }
     }
 
     // Moves the bot to the next Coordinate
@@ -138,13 +96,13 @@ public class SearchBehavior : MonoBehaviour, IDStarLiteEnvironment
         foreach (Coordinates coordinate in coordinates)
         {
             // If the coordinates are outside the map they shouldn't be checked (to prevent out of index exception)
-            if(coordinate.X < 0 || coordinate.Y < 0 || coordinate.X >= Columns || coordinate.Y >= Rows)
+            if(coordinate.X < 0 || coordinate.Y < 0 || coordinate.X >= m_tileMap.Length || coordinate.Y >= m_tileMap[0].Length)
             {
                 coordinatesToDelete.AddLast(coordinate);
                 continue;
             }
             // If the coordinates are inside the map, check if the coordinate contains an obstacle
-            if(m_tileMap[coordinate.X, coordinate.Y])
+            if(m_tileMap[coordinate.X][coordinate.Y] == 0)
             {
                 coordinatesToDelete.AddLast(coordinate);
             }
@@ -246,7 +204,7 @@ public class SearchBehavior : MonoBehaviour, IDStarLiteEnvironment
         for (int i = 0; i < pointLights.Count(); i++)
         {
             string tag = pointLights[i].transform.parent.tag;
-            Console.WriteLine(tag);//
+            Console.WriteLine(tag);
         }
         return pointLights.Where(light => light.transform.parent.tag != "Player").ToList();
     }

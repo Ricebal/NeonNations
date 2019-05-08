@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class DStarLite
 {
-    public State[,] Map;
+    public State[][] Map;
 
     private Heap m_heap;
     private double m_km;
@@ -30,24 +30,24 @@ public class DStarLite
         m_goal.X = goalX;
         m_goal.Y = goalY;
         m_last = m_start;
-        Initialize();
+        Reset();
         ComputeShortestPath();
     }
 
-    private void Initialize()
+    private void Reset()
     {
         //Creates an heap the size of the map
-        m_heap = new Heap(Map.GetLength(0)*Map.GetLength(1));
-        for(int i = 0; i < Map.GetLength(0); i++)
+        m_heap = new Heap(Map.Length * Map[0].Length);
+        for(int i = 0; i < Map.Length; i++)
         {
-            for (int j = 0; j<Map.GetLength(1); j++)
+            for (int j = 0; j < Map[0].Length; j++)
             {
-                Map[i, j].CostFromStartingPoint = double.PositiveInfinity;
-                Map[i, j].Rhs = double.PositiveInfinity;
+                Map[i][j].CostFromStartingPoint = double.PositiveInfinity;
+                Map[i][j].Rhs = double.PositiveInfinity;
             }
         }
-        m_goal = Map[m_goal.X, m_goal.Y];
-        m_start = Map[m_start.X, m_start.Y];
+        m_goal = Map[m_goal.X][m_goal.Y];
+        m_start = Map[m_start.X][m_start.Y];
         m_goal.Rhs = 0;
         m_km = 0;
         m_heap.Insert(m_goal, CalculatePriority(m_goal));
@@ -57,22 +57,26 @@ public class DStarLite
     /// Needs to be called before the RunDStarLite-function.
     /// Generates an empty map for the bot
     /// </summary>
-    /// <param name="x">The amount of columns of the map</param>
-    /// <param name="y">The amount of rows of the map</param>
+    /// <param name="width">The amount of columns of the map</param>
+    /// <param name="height">The amount of rows of the map</param>
     /// <param name="env">Any class that extends IDStarLiteEnvironment. Used for moving the entity and getting the surroundings</param>
-    public void GenerateEmptyMap(int x, int y, IDStarLiteEnvironment env)
+    public void GenerateEmptyMap(int width, int height, IDStarLiteEnvironment env)
     {
-        Map = new State[x, y];
-        this.m_environment = env;
-        for (int i = 0; i < x; i++)
+        Map = new State[width][];
+        for (int i = 0; i < width; i++)
         {
-            for (int j = 0; j < y; j++)
+            Map[i] = new State[height];
+        }
+        this.m_environment = env;
+        for (int i = 0; i < width; i++)
+        {
+            for (int j = 0; j < height; j++)
             {
-                Map[i, j] = new State(this);
-                Map[i, j].X = i;
-                Map[i, j].Y = j;
-                Map[i, j].CostFromStartingPoint = double.PositiveInfinity;
-                Map[i, j].Rhs = double.PositiveInfinity;
+                Map[i][j] = new State(this);
+                Map[i][j].X = i;
+                Map[i][j].Y = j;
+                Map[i][j].CostFromStartingPoint = double.PositiveInfinity;
+                Map[i][j].Rhs = double.PositiveInfinity;
             }
         }
     }
@@ -95,7 +99,7 @@ public class DStarLite
         bool change = false;
         foreach (Coordinates c in obstacleCoord)
         {
-            State state = Map[c.X, c.Y];
+            State state = Map[c.X][c.Y];
             if (state.Obstacle)// The obstacle is already known
             {
                 continue;
@@ -115,23 +119,23 @@ public class DStarLite
         DebugMap(Map);
         ComputeShortestPath();
         Coordinates botCoordinates = m_environment.GetPosition();
-        m_start = Map[botCoordinates.X, botCoordinates.Y];
+        m_start = Map[botCoordinates.X][botCoordinates.Y];
     }
 
     // --------------------------------------------------------------------------------------------
     // Debug functions
     // --------------------------------------------------------------------------------------------
 
-    private void DebugMap(State[,] map)
+    private void DebugMap(State[][] map)
     {
         Coordinates botCoordinates = m_environment.GetPosition();
         StringBuilder builder = new StringBuilder();
         builder.Append('\n');
-        for (int y = map.GetLength(1) - 1; y >= 0; y--)
+        for (int y = map[0].Length - 1; y >= 0; y--)
         {
-            for (int x = 0; x < map.GetLength(0); x++)
+            for (int x = 0; x < map.Length; x++)
             {
-                if (map[x, y].Obstacle)
+                if (map[x][y].Obstacle)
                 {
                     builder.Append("#");
                     continue;

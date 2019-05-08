@@ -141,6 +141,7 @@ public class BoardManager : MonoBehaviour
 
         // set seed to be used by generation
         string seed = GenerateSeed();
+        seed = "xuwajkivhpmuukriikpa";
 
         // display seed on the hud
         GameObject hud = GameObject.FindGameObjectWithTag("HUD");
@@ -623,7 +624,7 @@ public class BoardManager : MonoBehaviour
 
                     instance.transform.GetComponent<MeshFilter>().sharedMesh = generateNewMesh(walls);
 
-                    instance.transform.position = new Vector3(i, 0f, j);
+                    instance.transform.position = new Vector3(i - 0.5f, 0f, j - 0.5f);
                     instance.transform.SetParent(m_map.transform);
                 }
             }
