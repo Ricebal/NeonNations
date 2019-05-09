@@ -11,8 +11,8 @@ public class DStarLite
     private double m_travelledDistance;
     private Node m_goal;
     
-    private Node m_botPosition;
-    private Node m_previousBotPosition;
+    private Node m_start;
+    private Node m_previousStart;
     private IDStarLiteEnvironment m_environment;
 
     /// <summary>
@@ -42,8 +42,8 @@ public class DStarLite
             }
         }
         m_goal = Map[goalX][goalY];
-        m_botPosition = Map[startX][startY];
-        m_previousBotPosition = m_botPosition;
+        m_start = Map[startX][startY];
+        m_previousStart = m_start;
         m_goal.Rhs = 0;
         m_heap.Insert(m_goal, CalculatePriority(m_goal));
         m_travelledDistance = 0;
@@ -56,23 +56,29 @@ public class DStarLite
     /// <param name="width">The amount of columns of the map</param>
     /// <param name="height">The amount of rows of the map</param>
     /// <param name="env">Any class that extends IDStarLiteEnvironment. Used for moving the entity and getting the surroundings</param>
-    public void GenerateEmptyMap(int width, int height, IDStarLiteEnvironment env)
+    /// <param name="knowObjects">Set to true if the algorithm should know the full map</param>
+    public void GenerateNodeMap(int[][] map, IDStarLiteEnvironment env, bool knowObjects)
     {
-        Map = new Node[width][];
-        for (int i = 0; i < width; i++)
+        Map = new Node[map.Length][];
+        for (int i = 0; i < Map.Length; i++)
         {
-            Map[i] = new Node[height];
+            Map[i] = new Node[map[0].Length];
         }
         m_environment = env;
-        for (int i = 0; i < width; i++)
+        for (int i = 0; i < Map.Length; i++)
         {
-            for (int j = 0; j < height; j++)
+            for (int j = 0; j < Map[0].Length; j++)
             {
                 Map[i][j] = new Node(this);
                 Map[i][j].X = i;
                 Map[i][j].Y = j;
                 Map[i][j].CostFromStartingPoint = double.PositiveInfinity;
                 Map[i][j].Rhs = double.PositiveInfinity;
+
+                if (knowObjects && map[i][j] == 1)
+                {
+                    Map[i][j].Obstacle = true;
+                }
             }
         }
     }
@@ -85,16 +91,16 @@ public class DStarLite
     public void NextMove()
     {
         // Update position of bot
-        m_botPosition = MinCostNode(m_botPosition);
-        m_environment.MoveTo(new Coordinates(m_botPosition.X, m_botPosition.Y));
+        m_start = MinCostNode(m_start);
+        m_environment.MoveTo(new Coordinates(m_start.X, m_start.Y));
 
         // Check if bot sees new obstacles
         LinkedList<Coordinates> obstacleCoord = m_environment.GetObstaclesInVision();
 
         double oldTravelledDistance = m_travelledDistance;
-        Node oldPreviousBotPosition = m_previousBotPosition;
-        m_travelledDistance += Heuristic(m_botPosition, m_previousBotPosition);
-        m_previousBotPosition = m_botPosition;
+        Node oldPreviousStart = m_previousStart;
+        m_travelledDistance += Heuristic(m_start, m_previousStart);
+        m_previousStart = m_start;
 
         bool change = false;
         foreach (Coordinates c in obstacleCoord)
@@ -114,7 +120,7 @@ public class DStarLite
         if (!change)
         {
             m_travelledDistance = oldTravelledDistance;
-            m_previousBotPosition = oldPreviousBotPosition;
+            m_previousStart = oldPreviousStart;
         }
 
         DebugMap(Map);
@@ -122,7 +128,7 @@ public class DStarLite
 
         // Get current position on the map (might be different than calculated position)
         Coordinates botCoordinates = m_environment.GetPosition();
-        m_botPosition = Map[botCoordinates.X][botCoordinates.Y];
+        m_start = Map[botCoordinates.X][botCoordinates.Y];
     }
 
     // --------------------------------------------------------------------------------------------
@@ -148,7 +154,7 @@ public class DStarLite
                     builder.Append("@");
                     continue;
                 }
-                if (x == m_botPosition.X && y == m_botPosition.Y)
+                if (x == m_start.X && y == m_start.Y)
                 {
                     builder.Append("%");
                     continue;
@@ -174,15 +180,15 @@ public class DStarLite
     /// k1(s) = min(g(s), rhs(s)) + h(s, sstart) + km.
     /// k2(s) = min(g(s), rhs(s)).
     ///</summary>
-    public PriorityKey CalculatePriority(Node node)
+    private PriorityKey CalculatePriority(Node node)
     {
-        return new PriorityKey(Math.Min(node.CostFromStartingPoint, node.Rhs) + Heuristic(node, m_botPosition) + m_travelledDistance, Math.Min(node.CostFromStartingPoint, node.Rhs));
+        return new PriorityKey(Math.Min(node.CostFromStartingPoint, node.Rhs) + Heuristic(node, m_start) + m_travelledDistance, Math.Min(node.CostFromStartingPoint, node.Rhs));
     }
 
     /// <summary>
     /// Calculates the Heuristics for traveling between two points
     /// </summary>
-    public double Heuristic(Node pointA, Node pointB)
+    private double Heuristic(Node pointA, Node pointB)
     {
         return Math.Sqrt(Math.Pow(Math.Abs(pointA.X - pointB.X), 2) + Math.Pow(Math.Abs(pointA.Y - pointB.Y), 2));
     }
@@ -190,7 +196,7 @@ public class DStarLite
     /// <summary>
     /// Re-evaluates the Rhs-value of a State
     /// </summary>
-    public void UpdateVertex(Node node)
+    private void UpdateVertex(Node node)
     {
         if (!node.Equals(m_goal))
         {
@@ -209,7 +215,10 @@ public class DStarLite
     /// <summary>
     /// Returns the node that has the lowest cost
     /// </summary>
-    public Node MinCostNode(Node node)
+    /// <returns>
+    /// The lowest cost node
+    /// </returns>
+    private Node MinCostNode(Node node)
     {
         double min = double.PositiveInfinity;
         Node returnNode = null;
@@ -231,7 +240,7 @@ public class DStarLite
     /// <returns>
     /// Double containing the minimum distance
     /// </returns>
-    public double MinCost(Node node)
+    private double MinCost(Node node)
     {
         double min = double.PositiveInfinity;
         foreach (Node n in node.GetSurroundingOpenSpaces())
@@ -245,10 +254,10 @@ public class DStarLite
         return min;
     }
 
-    public void ComputeShortestPath()
+    private void ComputeShortestPath()
     {
         // While the top state of the Heap has a higher priority than the start state OR start.rhs is not the cost of start
-        while (m_heap.TopKey().CompareTo(CalculatePriority(m_botPosition)) < 0 || m_botPosition.Rhs != m_botPosition.CostFromStartingPoint)
+        while (m_heap.TopKey().CompareTo(CalculatePriority(m_start)) < 0 || m_start.Rhs != m_start.CostFromStartingPoint)
         {
             // Gets the priority key op the top
             PriorityKey oldKey = m_heap.TopKey();

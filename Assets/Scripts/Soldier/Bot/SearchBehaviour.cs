@@ -11,7 +11,6 @@ public class SearchBehaviour : MonoBehaviour, IDStarLiteEnvironment
     private Coordinates GoalCoordinates = new Coordinates();
     private Coordinates StartCoordinates;
     private int[][] m_tileMap;
-    private bool m_completed = false;
     private DStarLite m_dStarLite;
     private Bot m_bot;
 
@@ -19,9 +18,9 @@ public class SearchBehaviour : MonoBehaviour, IDStarLiteEnvironment
     void Start()
     {
         m_tileMap = GameObject.Find("GameManager").GetComponent<BoardManager>().GetTileMap();
-        UnityEngine.Random.InitState((int)System.DateTime.Now.Ticks);
+        UnityEngine.Random.InitState((int)DateTime.Now.Ticks);
         m_dStarLite = new DStarLite();
-        m_dStarLite.GenerateEmptyMap(m_tileMap.Length, m_tileMap[0].Length, this);
+        m_dStarLite.GenerateNodeMap(m_tileMap, this, false);
         StartCoordinates = ConvertGameObjectToCoordinates(Bot.transform);
         GenerateNewDestination(StartCoordinates.X, StartCoordinates.Y);
         m_bot = GetComponent<Bot>();
