@@ -1,4 +1,7 @@
-﻿public class Soldier : NetworkBehaviour
+﻿using UnityEngine;
+using UnityEngine.Networking;
+
+public class Soldier : NetworkBehaviour
 {
     [SyncVar]
     public int Team;
