@@ -16,6 +16,19 @@ namespace Assets.Scripts.Soldier.Bot.DStar
         {
             m_map = GameObject.Find("GameManager").GetComponent<BoardManager>().GetTileMap();
             m_bot = bot;
+
+        }
+
+        /// <summary>
+        /// Checks if it's possible to travel straight from one note to the other
+        /// </summary>
+        /// <param name="currentPosition">The start-position on the map to check</param>
+        /// <param name="newPosition">The end-position on the map to check</param>
+        /// <returns></returns>
+        public bool PossibleToMoveBetween(Node currentPosition, Node newPosition)
+        {
+
+            return true;
         }
 
         /// <summary>

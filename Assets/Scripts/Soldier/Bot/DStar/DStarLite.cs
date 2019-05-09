@@ -97,16 +97,21 @@ public class DStarLite
     /// </summary>
     public Coordinates NextMove()
     {
+        Node oldPreviousStart = m_previousStart;
         // Update position of bot
-        m_start = MinCostNode(m_start);
+        while(true/*PossibleToMoveBetween(oldPreviousStart, m_start) && m_start != m_goal*/)
+        {
+            m_previousStart = m_start;
+            m_start = MinCostNode(m_start);
+        }
+        m_start = m_previousStart;
 
+        m_previousStart = m_start;
         // Check if bot sees new obstacles
         LinkedList<Coordinates> obstacleCoord = m_environment.GetObstaclesInVision();
 
         double oldTravelledDistance = m_travelledDistance;
-        Node oldPreviousStart = m_previousStart;
         m_travelledDistance += Heuristic(m_start, m_previousStart);
-        m_previousStart = m_start;
 
         bool change = false;
         foreach (Coordinates c in obstacleCoord)
@@ -136,6 +141,17 @@ public class DStarLite
     }
 
     /// <summary>
+    /// Checks if it's possible to travel straight from one note to the other
+    /// </summary>
+    /// <param name="currentPosition">The start-position on the map to check</param>
+    /// <param name="newPosition">The end-position on the map to check</param>
+    /// <returns></returns>
+    private bool PossibleToMoveBetween(Node currentPosition, Node newPosition)
+    {
+        return m_environment.PossibleToMoveBetween(currentPosition, newPosition);
+    }
+
+    /// <summary>
     /// Set's the right position of the bot for m_start.
     /// </summary>
     /// <param name="botCoordinates">The current coordinates of the bot</param>
@@ -156,7 +172,7 @@ public class DStarLite
         builder.Append($"BotPosition = {m_start.X}, {m_start.Y}\n");
         builder.Append('\n');
         builder.Append(m_heap.ToString());
- 
+        Debug.Log(builder.ToString());
     }
     private void DebugMap(Node[][] map)
     {
