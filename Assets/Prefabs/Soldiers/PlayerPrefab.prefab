@@ -332,8 +332,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 279162d81d13c1647a233c8821b60b53, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Team: 0
   Speed: 7.5
   RespawnTime: 5
+  InitialColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!114 &5337140830429242400
 MonoBehaviour:
   m_ObjectHideFlags: 0

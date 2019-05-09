@@ -14,7 +14,7 @@ public class Sonar : NetworkBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        transform.Find("Particle System").parent = null;
+        // transform.Find("Particle System").parent = null;
         m_light.intensity = 0;
         m_light.range = 0;
         m_growing = true;
