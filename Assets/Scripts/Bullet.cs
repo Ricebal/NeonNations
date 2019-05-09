@@ -79,6 +79,47 @@ public class Bullet : MonoBehaviour
         // Instantiate explosion
         GameObject explosion = Instantiate(HitPrefab, pos, transform.rotation);
         explosion.transform.Translate(0, 0, -WallOffset);
+
+        Color color = GameObject.Find(m_shooterId).GetComponent<Soldier>().InitialColor;
+        ExplosionLight script = explosion.GetComponent<ExplosionLight>();
+        script.SetColor(color);
+    }
+
+    public void SetBulletColor()
+    {
+        // Get the colour for the bullet
+        Color color = GameObject.Find(m_shooterId).GetComponent<Soldier>().InitialColor;
+
+        // Change the light's colour
+        Light light = GetComponentsInChildren<Light>()[0];
+        light.color = color;
+
+        // Check if there is a Meshrenderer
+        MeshRenderer[] renderers = GetComponentsInChildren<MeshRenderer>();
+        if (renderers.Length > 0)
+        {
+            MeshRenderer renderer = renderers[0];
+            // Set the emission color of the renderer to the new color times 3 for intensity
+            renderer.material.SetColor("_EmissionColor", color * 3);
+        }
+
+        // Check if there is a TrailRenderer
+        TrailRenderer[] trails = GetComponentsInChildren<TrailRenderer>();
+        if (trails.Length > 0)
+        {
+            TrailRenderer trail = trails[0];
+            // Set the emission color of the trail to the new color times 3 for intensity
+            trail.material.SetColor("_EmissionColor", color * 3);
+        }
+
+        // Check if there is a Particlesystem
+        ParticleSystemRenderer[] particleSystemRenderers = GetComponentsInChildren<ParticleSystemRenderer>();
+        if (particleSystemRenderers.Length > 0)
+        {
+            ParticleSystemRenderer particleSystemRenderer = particleSystemRenderers[0];
+            // Set the emission color of the particle trail to the new color times 3 for intensity
+            particleSystemRenderer.trailMaterial.SetColor("_EmissionColor", color * 3);
+        }
     }
 
     public void SetShooterId(string shooterId)

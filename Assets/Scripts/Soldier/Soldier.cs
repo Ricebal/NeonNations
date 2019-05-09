@@ -3,6 +3,10 @@ using UnityEngine.Networking;
 
 public class Soldier : NetworkBehaviour
 {
+    [SyncVar]
+    public int Team;
+    [SyncVar]
+    public Color InitialColor;
     // The speed of the entity
     public float Speed;
     // The respawn time of the soldier
@@ -10,7 +14,6 @@ public class Soldier : NetworkBehaviour
 
     protected bool m_isDead = false;
     protected float m_deathTime;
-    protected Color m_initialColor;
     protected Vector3 m_initialPosition;
     protected Stats m_stats;
 
@@ -23,7 +26,6 @@ public class Soldier : NetworkBehaviour
         m_sphereCollider = GetComponent<SphereCollider>();
         m_meshRenderer = GetComponent<MeshRenderer>();
         m_renderer = GetComponent<Renderer>();
-        m_initialColor = m_meshRenderer.material.color;
         m_initialPosition = transform.position;
         m_stats = GetComponent<Stats>();
     }
@@ -63,6 +65,25 @@ public class Soldier : NetworkBehaviour
         CmdSendDeathState(false);
     }
 
+    public void SetInitialColor(Color color)
+    {
+        Color newColor = new Color(color.r, color.g, color.b, 1f);
+        InitialColor = newColor;
+        CmdColor(this.gameObject, newColor);
+    }
+
+    [ClientRpc]
+    protected void RpcColor(GameObject obj, Color color)
+    {
+        obj.GetComponent<Renderer>().material.color = color;
+    }
+
+    [Command]
+    protected void CmdColor(GameObject obj, Color color)
+    {
+        RpcColor(obj, color);
+    }
+
     [Command]
     private void CmdSendDeathState(bool isDead)
     {
@@ -82,7 +103,7 @@ public class Soldier : NetworkBehaviour
         else
         {
             m_sphereCollider.enabled = true;
-            m_renderer.material.color = m_initialColor;
+            m_renderer.material.color = InitialColor;
             transform.position = m_initialPosition;
             m_stats.Reset();
         }
@@ -90,17 +111,12 @@ public class Soldier : NetworkBehaviour
 
     void OnTriggerEnter(Collider collider)
     {
-        if (!isServer)
-        {
-            return;
-        }
-
         if (collider.gameObject.tag == "Bullet")
         {
             Bullet bullet = collider.gameObject.GetComponent<Bullet>();
-            if (bullet.GetShooterId() != transform.name)
+            if (bullet.GetShooterId() != transform.name && GameObject.Find(bullet.GetShooterId()).GetComponent<Soldier>().Team != this.Team)
             {
-                RpcTakeDamage(bullet.Damage);
+                m_stats.TakeDamage(collider.gameObject.GetComponent<Bullet>().Damage);
             }
         }
     }

@@ -16,5 +16,6 @@ public class BotManager : NetworkBehaviour
         }
         GameObject bot = Instantiate(Bot, new Vector3(13, 0, 13), new Quaternion(0, 0, 0, 0));
         NetworkServer.Spawn(bot);
+        GameObject.Find("GameManager").GetComponent<GameManager>().AddPlayer(bot.GetComponent<Bot>());
     }
 }

@@ -35,4 +35,10 @@ public class ExplosionLight : NetworkBehaviour
             Light.intensity -= IntensityMultiplier * Time.deltaTime;
         }
     }
+
+    public void SetColor(Color color)
+    {
+        Light.color = color;
+        GetComponentsInChildren<ParticleSystemRenderer>()[0].trailMaterial.SetColor("_EmissionColor", color * 3);
+    }
 }

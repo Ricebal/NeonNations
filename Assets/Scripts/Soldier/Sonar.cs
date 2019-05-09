@@ -33,10 +33,13 @@ public class Sonar : NetworkBehaviour
         {
             GameObject prefab = Instantiate(Prefab, this.transform.position, Quaternion.Euler(0, i, 0));
             prefab.transform.Translate(new Vector3(0, 0, this.transform.localScale.z / 2f), Space.Self);
-            prefab.GetComponent<Bullet>().SetShooterId(transform.name);
+
+            Bullet bullet = prefab.GetComponent<Bullet>();
+            bullet.SetShooterId(transform.name);
 
             // Instanciate the bullet on the network for all players 
             NetworkServer.Spawn(prefab);
+            bullet.SetBulletColor();
         }
     }
 }

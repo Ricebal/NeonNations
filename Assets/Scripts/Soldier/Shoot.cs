@@ -13,6 +13,8 @@ public class Shoot : NetworkBehaviour
     public float Rate;
     // The next time the entity will be able to shoot, in seconds
     private float m_next;
+    // Bullet color
+    private Color m_color;
 
     public bool CanShoot(int energy)
     {
@@ -36,5 +38,6 @@ public class Shoot : NetworkBehaviour
     {
         GameObject prefab = Instantiate(Prefab, Spawn.position, Spawn.rotation);
         prefab.GetComponent<Bullet>().SetShooterId(shooterId);
+        prefab.GetComponent<Bullet>().SetBulletColor();
     }
 }
