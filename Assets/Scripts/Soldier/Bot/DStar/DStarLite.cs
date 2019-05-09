@@ -129,7 +129,7 @@ public class DStarLite
             m_previousStart = oldPreviousStart;
         }
 
-        DebugMap(Map);
+        //DebugMap(Map);
         ComputeShortestPath();
 
         return new Coordinates(m_start.X, m_start.Y);
@@ -148,6 +148,16 @@ public class DStarLite
     // Debug functions
     // --------------------------------------------------------------------------------------------
 
+    private void DebugHeap()
+    {
+        StringBuilder builder = new StringBuilder();
+        builder.Append('\n');
+        builder.Append($"Goal = {m_goal.X}, {m_goal.Y}\n");
+        builder.Append($"BotPosition = {m_start.X}, {m_start.Y}\n");
+        builder.Append('\n');
+        builder.Append(m_heap.ToString());
+ 
+    }
     private void DebugMap(Node[][] map)
     {
         Coordinates botCoordinates = new Coordinates(m_start.X, m_start.Y);
@@ -302,5 +312,6 @@ public class DStarLite
                 }
             }
         }
+        DebugHeap();
     }
 }

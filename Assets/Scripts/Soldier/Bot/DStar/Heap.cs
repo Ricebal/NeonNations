@@ -14,6 +14,16 @@ public class Heap // minheap
         m_hash = new Dictionary<Node, int>();
     }
 
+    public override string ToString()
+    {
+        string s = "";
+        foreach(Node n in m_hash.Keys)
+        {
+            s += $"{n.X}, {n.Y} \n";
+        }
+        return s;
+    }
+
     public PriorityKey TopKey()
     {
         if (m_count == 0) return new PriorityKey(double.PositiveInfinity, double.PositiveInfinity);

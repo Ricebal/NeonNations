@@ -1,4 +1,7 @@
-﻿public class PriorityKey
+﻿/// <summary>
+/// Entries are ordered by k1 (which corresponds directly to the f-values used in A*), then by k2.
+/// </summary>
+public class PriorityKey
 {
     public double Key1;
     public double Key2;
