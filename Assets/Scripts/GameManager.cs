@@ -6,10 +6,12 @@ public class GameManager : NetworkBehaviour
     [SyncVar]
     public string Seed;
     public BoardManager BoardScript;
+    public BotManager BotManager;
 
     void Start()
     {
         BoardScript = GetComponent<BoardManager>();
+        BotManager = GetComponent<BotManager>();
         InitGame();
     }
 
@@ -21,5 +23,6 @@ public class GameManager : NetworkBehaviour
             Seed = BoardScript.GenerateSeed();
         }
         BoardScript.SetupScene(Seed);
+        BotManager.SetupBots();
     }
 }

@@ -25,8 +25,6 @@ public class BoardManager : MonoBehaviour
     [SerializeField]
     private int m_maxRoomSize = 80;
     [SerializeField]
-    private int m_minRoomSize = 36;
-    [SerializeField]
     private int m_minRoomLength = 6;
     [SerializeField]
     private int m_maxPlaceAttempts = 10;
@@ -86,6 +84,24 @@ public class BoardManager : MonoBehaviour
             builder.Append(ch);
         }
         return builder.ToString();
+    }
+
+    /// <summary>
+    /// Gets a random floor tile
+    /// </summary>
+    /// <returns>Vector2 containing the position of the floortile</returns>
+    public Vector2 GetRandomFloorTile()
+    {
+        while (true)
+        {
+            // get a random tile in the map
+            Vector2 randomTile = new Vector2(UnityEngine.Random.Range(1, m_mapWidth - 1), UnityEngine.Random.Range(1, m_mapHeight - 1));
+
+            if (m_tileMap[(int)randomTile.x][(int)randomTile.y] == 0)
+            {
+                return randomTile;
+            }
+        }
     }
 
     // --------------------------------------------------------------------------------------------
@@ -389,7 +405,7 @@ public class BoardManager : MonoBehaviour
     {
         while (true)
         {
-            // generate a random tile in the map
+            // get a random tile in the map
             Vector2 randomTile = new Vector2(UnityEngine.Random.Range(1, m_mapWidth - m_tunnelWidth), UnityEngine.Random.Range(1, m_mapHeight - m_tunnelWidth));
 
             if (CheckWallTile(randomTile, direction))

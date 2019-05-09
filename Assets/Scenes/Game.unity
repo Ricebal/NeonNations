@@ -650,10 +650,12 @@ GameObject:
   m_Component:
   - component: {fileID: 817318512}
   - component: {fileID: 817318511}
-  - component: {fileID: 817318510}
+  - component: {fileID: 817318517}
   - component: {fileID: 817318513}
   - component: {fileID: 817318514}
   - component: {fileID: 817318515}
+  - component: {fileID: 817318516}
+  - component: {fileID: 817318510}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -661,34 +663,14 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &817318510
-MonoBehaviour:
+--- !u!33 &817318510
+MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 817318509}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 262fd08e365fcbf47a888b69b8188b15, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_mapPrefab: {fileID: 6182289135420230192, guid: 1e44135debb4a9a41a46d373ce5d9c91,
-    type: 3}
-  m_mapWidth: 50
-  m_mapHeight: 50
-  m_outerWallWidth: 14
-  m_maxRoomAmount: 100
-  m_maxShortcutAmount: 10
-  m_maxRoomSize: 80
-  m_minRoomSize: 36
-  m_minRoomLength: 6
-  m_maxPlaceAttempts: 10
-  m_maxBuildAttempts: 250
-  m_maxShortcutAttempts: 250
-  m_minTunnelLength: 1
-  m_maxTunnelLength: 7
-  m_tunnelWidth: 2
+  m_Mesh: {fileID: 0}
 --- !u!114 &817318511
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -701,6 +683,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 964e321cfd277184fba4affa04ff21d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Seed: 
   BoardScript: {fileID: 0}
 --- !u!4 &817318512
 Transform:
@@ -775,6 +758,70 @@ MonoBehaviour:
     i15: 0
   m_ServerOnly: 0
   m_LocalPlayerAuthority: 0
+--- !u!23 &817318516
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 817318509}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 0}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 0
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+--- !u!114 &817318517
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 817318509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 262fd08e365fcbf47a888b69b8188b15, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_mapPrefab: {fileID: 6182289135420230192, guid: 1e44135debb4a9a41a46d373ce5d9c91,
+    type: 3}
+  m_mapWidth: 50
+  m_mapHeight: 50
+  m_outerWallWidth: 14
+  m_maxRoomAmount: 100
+  m_maxShortcutAmount: 10
+  m_maxRoomSize: 80
+  m_minRoomLength: 6
+  m_maxPlaceAttempts: 10
+  m_maxBuildAttempts: 250
+  m_maxShortcutAttempts: 250
+  m_minTunnelLength: 1
+  m_maxTunnelLength: 7
+  m_tunnelWidth: 2
 --- !u!1001 &1679541086
 PrefabInstance:
   m_ObjectHideFlags: 0
