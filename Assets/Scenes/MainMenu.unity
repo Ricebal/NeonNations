@@ -360,6 +360,46 @@ PrefabInstance:
       propertyPath: FullScreenToggle
       value: 
       objectReference: {fileID: 1121744054}
+    - target: {fileID: 311277274872747675, guid: 35155a5dd90250645b97a4c417d4f235,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 311277274872747675, guid: 35155a5dd90250645b97a4c417d4f235,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 311277274872747675, guid: 35155a5dd90250645b97a4c417d4f235,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 311277274872747675, guid: 35155a5dd90250645b97a4c417d4f235,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 311277274872747675, guid: 35155a5dd90250645b97a4c417d4f235,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 311277274872747675, guid: 35155a5dd90250645b97a4c417d4f235,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 311277274872747675, guid: 35155a5dd90250645b97a4c417d4f235,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7126621587789703767, guid: 35155a5dd90250645b97a4c417d4f235,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 35155a5dd90250645b97a4c417d4f235, type: 3}
 --- !u!114 &116523770 stripped
