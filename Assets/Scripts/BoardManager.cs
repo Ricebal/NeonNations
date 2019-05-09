@@ -9,6 +9,7 @@ using TMPro;
 [RequireComponent(typeof(MeshRenderer))]
 public class BoardManager : MonoBehaviour
 {
+
     [SerializeField]
     private GameObject m_mapPrefab;
     [SerializeField]
@@ -40,6 +41,7 @@ public class BoardManager : MonoBehaviour
     [SerializeField]
     private int m_tunnelWidth = 2;
 
+    private string m_seed;
     private int[][] m_tileMap;
     private GameObject m_map;
     private List<GameObject> m_mapParts = new List<GameObject>();
@@ -51,8 +53,9 @@ public class BoardManager : MonoBehaviour
     /// <summary>
     /// Creates a random map object 
     /// </summary>
-    public void SetupScene()
+    public void SetupScene(string seed)
     {
+        m_seed = seed;
         GenerateRandomMap();
         LoadFloor();
         LoadMap();
@@ -69,10 +72,26 @@ public class BoardManager : MonoBehaviour
         return m_tileMap;
     }
 
+    /// <summary>
+    /// Generate a random seed
+    /// </summary>
+    /// <returns>A string containing the random seed</returns>
+    public string GenerateSeed()
+    {
+        StringBuilder builder = new StringBuilder();
+        char ch;
+        for (int i = 0; i < 20; i++)
+        {
+            ch = (char)UnityEngine.Random.Range('a', 'z');
+            builder.Append(ch);
+        }
+        return builder.ToString();
+    }
+
     // --------------------------------------------------------------------------------------------
     // Generate maps
     // --------------------------------------------------------------------------------------------
-    
+
     /// <summary>
     /// Generates a map based on the content
     /// </summary>
@@ -135,19 +154,18 @@ public class BoardManager : MonoBehaviour
     /// </summary>
     private void GenerateRandomMap()
     {
-        // create level with only walls
+        // Create level with only walls
         GenerateEmptyMap(1);
 
-        // set seed to be used by generation
-        string seed = GenerateSeed();
-
-        // display seed on the hud
+        // Display seed on the hud
         GameObject hud = GameObject.FindGameObjectWithTag("HUD");
         TextMeshProUGUI text = hud.GetComponent<TextMeshProUGUI>();
-        text.text = seed;
-        UnityEngine.Random.InitState(seed.GetHashCode());
+        text.text = m_seed;
 
-        // generate first room (in the middle) and add it to the map
+        // Change seed of randomizer
+        UnityEngine.Random.InitState(m_seed.GetHashCode());
+
+        // Generate first room (in the middle) and add it to the map
         Room room = GenerateRandomRoom();
         room.Pos = new Vector2(m_mapWidth / 2 - room.Roommap.Length / 2, m_mapHeight / 2 - room.Roommap[0].Length / 2);
         AddRoom(room);
@@ -157,11 +175,11 @@ public class BoardManager : MonoBehaviour
 
         while (currentBuildAttempt < m_maxBuildAttempts && currentRoomAmount < m_maxRoomAmount)
         {
-            // generate a room
+            // Generate a room
             room = GenerateRandomRoom();
-            // try to place the room
+            // Try to place the room
             bool placed = PlaceRoom(room);
-            // if succeeded
+            // If succeeded
             if (placed)
             {
                 currentRoomAmount++;
@@ -171,9 +189,12 @@ public class BoardManager : MonoBehaviour
 
         DebugMap(m_tileMap);
 
-        // add shortcuts
+        // Add shortcuts
         AddShortcuts();
         DebugMap(m_tileMap);
+
+        // Set seed to random again
+        UnityEngine.Random.InitState((int)DateTime.Now.Ticks);
     }
 
     // --------------------------------------------------------------------------------------------
@@ -553,22 +574,6 @@ public class BoardManager : MonoBehaviour
             }
             currentShortcutAttempt++;
         }
-    }
-
-    /// <summary>
-    /// Generate a random seed
-    /// </summary>
-    /// <returns>A string containing the random seed</returns>
-    private string GenerateSeed()
-    {
-        StringBuilder builder = new StringBuilder();
-        char ch;
-        for (int i = 0; i < 20; i++)
-        {
-            ch = (char)UnityEngine.Random.Range('a', 'z');
-            builder.Append(ch);
-        }
-        return builder.ToString();
     }
 
     // --------------------------------------------------------------------------------------------

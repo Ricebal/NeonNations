@@ -1,10 +1,13 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 
-public class GameManager : MonoBehaviour
+public class GameManager : NetworkBehaviour
 {
+    [SyncVar]
+    public string Seed;
     public BoardManager BoardScript;
 
-    void Awake()
+    void Start()
     {
         BoardScript = GetComponent<BoardManager>();
         InitGame();
@@ -12,6 +15,11 @@ public class GameManager : MonoBehaviour
 
     void InitGame()
     {
-        BoardScript.SetupScene();
+        if (isServer)
+        {
+            // set seed to be used by generation
+            Seed = BoardScript.GenerateSeed();
+        }
+        BoardScript.SetupScene(Seed);
     }
 }
