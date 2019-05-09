@@ -67,8 +67,15 @@ public class SyncRotation : NetworkBehaviour
 
     private void LerpRotation(float rotation)
     {
-        Vector3 newRotation = new Vector3(0, rotation, 0);
-        Transform.rotation = Quaternion.Lerp(Transform.rotation, Quaternion.Euler(newRotation), LerpRate * Time.deltaTime);
+        Quaternion newRotation = Quaternion.Euler(new Vector3(0, rotation, 0));
+        if (Mathf.Abs(Transform.localEulerAngles.y - rotation) < CloseEnough)
+        {
+            Transform.rotation = newRotation;
+        }
+        else
+        {
+            Transform.rotation = Quaternion.Lerp(Transform.rotation, newRotation, LerpRate * Time.deltaTime);
+        }
     }
 
     [Command]
@@ -92,7 +99,7 @@ public class SyncRotation : NetworkBehaviour
     private void OnRotationSynced(float latestRotation)
     {
         m_syncRotation = latestRotation;
-        m_syncRotationList.Add(m_syncRotation);
+        //m_syncRotationList.Add(m_syncRotation);
     }
 
 }

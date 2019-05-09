@@ -60,14 +60,14 @@ public class SyncPosition : NetworkBehaviour
 
     private void OrdinaryLerping()
     {
-        Transform.position = Vector3.Lerp(Transform.position, m_syncPos, Time.deltaTime * m_lerpRate);
+        LerpPosition(m_syncPos);
     }
 
     private void HistoricalLerping()
     {
         if (m_syncPosList.Count > 0)
         {
-            Transform.position = Vector3.Lerp(Transform.position, m_syncPosList[0], Time.deltaTime * m_lerpRate);
+            LerpPosition(m_syncPosList[0]);
             // If the player is close enough from the last position, remove the last position from the synced list
             if (Vector3.Distance(Transform.position, m_syncPosList[0]) < CloseEnough)
             {
@@ -85,6 +85,19 @@ public class SyncPosition : NetworkBehaviour
             }
         }
     }
+
+    private void LerpPosition(Vector3 pos)
+    {
+        if (Vector3.Distance(Transform.position, pos) < CloseEnough)
+        {
+            Transform.position = pos;
+        }
+        else
+        {
+            Transform.position = Vector3.Lerp(Transform.position, pos, Time.deltaTime * m_lerpRate);
+        }
+    }
+
     [Command]
     private void CmdProvidePositionToServer(Vector3 pos)
     {

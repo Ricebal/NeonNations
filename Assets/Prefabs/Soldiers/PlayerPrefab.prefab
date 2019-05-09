@@ -324,6 +324,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 279162d81d13c1647a233c8821b60b53, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Team: 0
+  InitialColor: {r: 0, g: 0, b: 0, a: 0}
   Speed: 7.5
   RespawnTime: 5
 --- !u!114 &5337140830429242400
@@ -364,12 +366,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7614d91b0fce1ba4c92591a5e636bf17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Threshold: 0.1
+  Threshold: 0.75
   Transform: {fileID: 8638977763130829894}
   NormalLerpRate: 7
   FasterLerpRate: 15
   UseHistoricalLerp: 0
-  CloseEnough: 0.18
+  CloseEnough: 0.5
 --- !u!114 &629880366995975402
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -382,11 +384,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23ded658d92cfa94d97edd329e4aad5e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Threshold: 1
+  Threshold: 1.5
   Transform: {fileID: 8638977763130829894}
   LerpRate: 15
   UseHistoricalLerp: 0
-  CloseEnough: 0.4
+  CloseEnough: 1
 --- !u!1 &6716781768823966986
 GameObject:
   m_ObjectHideFlags: 0
