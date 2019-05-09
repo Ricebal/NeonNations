@@ -74,9 +74,6 @@ public class SyncPosition : NetworkBehaviour
                 m_syncPosList.RemoveAt(0);
             }
 
-            // TODO: Remove (used to debug)
-            Debug.Log("Size: " + m_syncPosList.Count);
-
             // If there are to many positions stored, the player is way too far in the past so we accelerate his movements
             if (m_syncPosList.Count > 10)
             {

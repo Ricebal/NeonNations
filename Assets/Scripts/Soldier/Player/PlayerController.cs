@@ -47,20 +47,8 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
-    // TODO: Remove (used to debug)
-    Vector3 oldPos;
-
     void FixedUpdate()
     {
-
-        // TODO: Remove (used to debug)
-        float speed = Vector3.Distance(transform.position, oldPos) / Time.deltaTime;
-        if (speed > 0)
-        {
-            Debug.Log(transform.name + " : " + speed);
-        }
-        oldPos = transform.position;
-
         if (!isLocalPlayer)
         {
             return;
