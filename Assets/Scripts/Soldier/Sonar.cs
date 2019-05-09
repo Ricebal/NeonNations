@@ -22,23 +22,26 @@ public class Sonar : NetworkBehaviour
     public void Fire()
     {
         m_next = Time.time + Rate;
-        CmdSonar();
+        CmdSonar(transform.name);
     }
 
     [Command]
-    public void CmdSonar()
+    public void CmdSonar(string shooterId)
+    {
+        RpcSonar(shooterId);
+    }
+
+    [ClientRpc]
+    private void RpcSonar(string shooterId)
     {
         float amount = 360 / Rays;
         for (int i = 0; i < 360; i += (int)amount)
         {
-            GameObject prefab = Instantiate(Prefab, this.transform.position, Quaternion.Euler(0, i, 0));
-            prefab.transform.Translate(new Vector3(0, 0, this.transform.localScale.z / 2f), Space.Self);
+            GameObject prefab = Instantiate(Prefab, transform.position, Quaternion.Euler(0, i, 0));
+            prefab.transform.Translate(new Vector3(0, 0, transform.localScale.z / 2f), Space.Self);
 
             Bullet bullet = prefab.GetComponent<Bullet>();
-            bullet.SetShooterId(transform.name);
-
-            // Instanciate the bullet on the network for all players 
-            NetworkServer.Spawn(prefab);
+            bullet.SetShooterId(shooterId);
             bullet.SetBulletColor();
         }
     }
