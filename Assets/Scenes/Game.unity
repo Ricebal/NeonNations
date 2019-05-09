@@ -485,26 +485,6 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 331448661032197343, guid: 3f543ce0544b7344b8f77a3ae4ea9157,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4953255002806404969, guid: 3f543ce0544b7344b8f77a3ae4ea9157,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3827413887347027392, guid: 3f543ce0544b7344b8f77a3ae4ea9157,
-        type: 3}
-      propertyPath: m_havePropertiesChanged
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3827413887347027392, guid: 3f543ce0544b7344b8f77a3ae4ea9157,
-        type: 3}
-      propertyPath: m_isInputParsingRequired
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 2253450236709716278, guid: 3f543ce0544b7344b8f77a3ae4ea9157,
         type: 3}
       propertyPath: m_havePropertiesChanged
@@ -524,6 +504,26 @@ PrefabInstance:
         type: 3}
       propertyPath: m_fontColor.a
       value: 0.27450982
+      objectReference: {fileID: 0}
+    - target: {fileID: 331448661032197343, guid: 3f543ce0544b7344b8f77a3ae4ea9157,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4953255002806404969, guid: 3f543ce0544b7344b8f77a3ae4ea9157,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3827413887347027392, guid: 3f543ce0544b7344b8f77a3ae4ea9157,
+        type: 3}
+      propertyPath: m_havePropertiesChanged
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3827413887347027392, guid: 3f543ce0544b7344b8f77a3ae4ea9157,
+        type: 3}
+      propertyPath: m_isInputParsingRequired
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3f543ce0544b7344b8f77a3ae4ea9157, type: 3}
@@ -656,6 +656,7 @@ GameObject:
   - component: {fileID: 817318515}
   - component: {fileID: 817318516}
   - component: {fileID: 817318510}
+  - component: {fileID: 817318518}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -684,7 +685,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Seed: 
-  BoardScript: {fileID: 0}
+  BotManager: {fileID: 0}
 --- !u!4 &817318512
 Transform:
   m_ObjectHideFlags: 0
@@ -822,6 +823,28 @@ MonoBehaviour:
   m_minTunnelLength: 1
   m_maxTunnelLength: 7
   m_tunnelWidth: 2
+--- !u!114 &817318518
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 817318509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 371f18629be778f4ab67a230d11c3ae3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Teams:
+  - Id: 1
+    Color: {r: 0.9433962, g: 0, b: 0.7984193, a: 0}
+    PlayerCount: 0
+  - Id: 2
+    Color: {r: 1, g: 0, b: 0, a: 0}
+    PlayerCount: 0
+  - Id: 3
+    Color: {r: 0.040236473, g: 1, b: 0, a: 0}
+    PlayerCount: 0
 --- !u!1001 &1679541086
 PrefabInstance:
   m_ObjectHideFlags: 0

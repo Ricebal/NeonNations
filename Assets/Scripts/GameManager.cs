@@ -5,13 +5,19 @@ public class GameManager : NetworkBehaviour
 {
     [SyncVar]
     public string Seed;
-    public BoardManager BoardScript;
-    public BotManager BotManager;
+    private BoardManager m_boardManager;
+    private BotManager m_botManager;
+    private TeamManager m_teamManager;
 
-    void Start()
+    void Awake()
     {
-        BoardScript = GetComponent<BoardManager>();
-        BotManager = GetComponent<BotManager>();
+        m_boardManager = GetComponent<BoardManager>();
+        m_teamManager = GetComponent<TeamManager>();
+        m_botManager = GetComponent<BotManager>();
+    }
+
+    private void Start()
+    {
         InitGame();
     }
 
@@ -20,9 +26,19 @@ public class GameManager : NetworkBehaviour
         if (isServer)
         {
             // set seed to be used by generation
-            Seed = BoardScript.GenerateSeed();
+            Seed = m_boardManager.GenerateSeed();
         }
-        BoardScript.SetupScene(Seed);
-        BotManager.SetupBots();
+        m_boardManager.SetupScene(Seed);
+        m_botManager.SetupBots();
+    }
+
+    public void AddPlayer(Soldier player)
+    {
+        player.Team = m_teamManager.AddPlayer(player);
+    }
+
+    public void RemovePlayer(Soldier player)
+    {
+        m_teamManager.RemovePlayer(player);
     }
 }
