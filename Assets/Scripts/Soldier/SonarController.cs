@@ -36,5 +36,6 @@ public class SonarController : NetworkBehaviour
 
         // Instanciate the bullet on the network for all players 
         NetworkServer.Spawn(prefab);
+        script.RpcSetColor(GetComponent<Soldier>().InitialColor);
     }
 }

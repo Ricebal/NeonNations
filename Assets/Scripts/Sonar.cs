@@ -21,6 +21,12 @@ public class Sonar : NetworkBehaviour
         Destroy(this.gameObject, m_lifeSpan);
     }
 
+    [ClientRpc]
+    public void RpcSetColor(Color color)
+    {
+        m_light.color = color;
+    }
+
     // Update is called once per frame
     void Update()
     {
