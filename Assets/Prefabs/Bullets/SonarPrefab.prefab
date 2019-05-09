@@ -81,6 +81,7 @@ GameObject:
   - component: {fileID: 8253390180041620419}
   - component: {fileID: 2826513337032882244}
   - component: {fileID: 6587786285906454183}
+  - component: {fileID: 1351710692696188369}
   - component: {fileID: 5439118275043155726}
   - component: {fileID: 7810844292074717741}
   m_Layer: 9
@@ -152,6 +153,18 @@ MonoBehaviour:
   Damage: 0
   HitPrefab: {fileID: 0}
   WallOffset: 0
+--- !u!114 &1351710692696188369
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4647958490886930736}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81579b530304e134aba3a346fd5cbd08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &5439118275043155726
 MonoBehaviour:
   m_ObjectHideFlags: 0
