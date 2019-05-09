@@ -20,8 +20,6 @@ public class Soldier : NetworkBehaviour
 
     public override void OnStartClient()
     {
-        base.OnStartClient();
-
         m_sphereCollider = GetComponent<SphereCollider>();
         m_meshRenderer = GetComponent<MeshRenderer>();
         m_renderer = GetComponent<Renderer>();
@@ -36,7 +34,6 @@ public class Soldier : NetworkBehaviour
         if (m_isDead)
         {
             float newAlpha = (RespawnTime - (Time.time - m_deathTime)) / RespawnTime;
-            Debug.Log(m_deathTime + " : " + newAlpha);
             m_renderer.material.color = new Color(1, 0.39f, 0.28f, newAlpha);
         }
 
@@ -91,19 +88,27 @@ public class Soldier : NetworkBehaviour
         }
     }
 
-    // If the Soldier gets hit by a bullet, it will take damage. Will return true if the collider was a Bullet and the Soldier took damage.
-    protected bool OnTriggerEnter(Collider collider)
+    void OnTriggerEnter(Collider collider)
     {
+        if (!isServer)
+        {
+            return;
+        }
+
         if (collider.gameObject.tag == "Bullet")
         {
             Bullet bullet = collider.gameObject.GetComponent<Bullet>();
             if (bullet.GetShooterId() != transform.name)
             {
-                m_stats.TakeDamage(bullet.Damage);
-                return true;
+                RpcTakeDamage(bullet.Damage);
             }
         }
-        return false;
+    }
+
+    [ClientRpc]
+    private void RpcTakeDamage(int damage)
+    {
+        m_stats.TakeDamage(damage);
     }
 
 }

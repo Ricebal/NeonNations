@@ -1,10 +1,7 @@
 ﻿using UnityEngine;
-using UnityEngine.Networking;
 
-public class Bullet : NetworkBehaviour
+public class Bullet : MonoBehaviour
 {
-    // Start position
-    private Vector3 m_startPosition;
     // Bullet speed
     public float Speed;
     // Time in seconds before the bullet is destroyed
@@ -17,13 +14,15 @@ public class Bullet : NetworkBehaviour
     public float WallOffset;
 
     // The player that shot the bullet
-    [SyncVar]
     private string m_shooterId;
+    // Start position
+    private Vector3 m_startPosition;
 
     public void Start()
     {
         m_startPosition = transform.position;
         Rigidbody rigidbody = GetComponent<Rigidbody>();
+
         // Move the bullet straight ahead with constant speed
         rigidbody.velocity = transform.forward * Speed;
 
@@ -33,33 +32,17 @@ public class Bullet : NetworkBehaviour
 
     public void OnTriggerEnter(Collider collider)
     {
-        if (!isServer)
-        {
-            return;
-        }
-
+        // If the bullet does not collide with its shooter
         if (collider.transform.name != m_shooterId)
         {
             if (HitPrefab != null)
             {
-                // Get tag of collider
-                int id = collider.GetInstanceID();
-                // Get impact-position
-                RaycastHit trueHit = default(RaycastHit);
-                RaycastHit[] hits = Physics.RaycastAll(m_startPosition, transform.forward, 80);
-                foreach (RaycastHit hit in hits)
+                Vector3 impactPos = GetBulletImpactPosition(collider.GetInstanceID());
+                // If an impact point has been found
+                if (!impactPos.Equals(default))
                 {
-                    if (hit.collider.GetInstanceID() == id)
-                    {
-                        trueHit = hit;
-                        break;
-                    }
-                }
-                if (!trueHit.Equals(default(RaycastHit)))
-                {
-                    Vector3 pos = trueHit.point;
                     // Create explosion on impact
-                    CmdCreateExplosion(pos);
+                    CreateExplosion(impactPos);
                 }
             }
 
@@ -70,23 +53,32 @@ public class Bullet : NetworkBehaviour
                 trail.parent = null;
 
                 // Destroy the particles after 0.5 seconds, the max lifetime of a particle
-                NetworkBehaviour.Destroy(trail.gameObject, 0.5f);
+                Destroy(trail.gameObject, 0.5f);
             }
 
             // The bullet is destroyed on collision
-            NetworkBehaviour.Destroy(gameObject);
+            Destroy(gameObject);
         }
     }
 
-    [Command]
-    private void CmdCreateExplosion(Vector3 pos)
+    private Vector3 GetBulletImpactPosition(int id)
+    {
+        RaycastHit[] hits = Physics.RaycastAll(m_startPosition, transform.forward, 80);
+        foreach (RaycastHit hit in hits)
+        {
+            if (hit.collider.GetInstanceID() == id)
+            {
+                return hit.point;
+            }
+        }
+        return default;
+    }
+
+    private void CreateExplosion(Vector3 pos)
     {
         // Instantiate explosion
-        GameObject explosion = Instantiate(HitPrefab, pos, gameObject.transform.rotation);
+        GameObject explosion = Instantiate(HitPrefab, pos, transform.rotation);
         explosion.transform.Translate(0, 0, -WallOffset);
-
-        // Instanciate the explosion on the network for all players 
-        NetworkServer.Spawn(explosion);
     }
 
     public void SetShooterId(string shooterId)

@@ -22,16 +22,19 @@ public class Shoot : NetworkBehaviour
     public void Fire()
     {
         m_next = Time.time + Rate;
-        CmdShoot();
+        CmdShoot(transform.name);
     }
 
     [Command]
-    public void CmdShoot()
+    private void CmdShoot(string shooterId)
+    {
+        RpcShoot(shooterId);
+    }
+
+    [ClientRpc]
+    private void RpcShoot(string shooterId)
     {
         GameObject prefab = Instantiate(Prefab, Spawn.position, Spawn.rotation);
-        prefab.GetComponent<Bullet>().SetShooterId(transform.name);
-
-        // Instanciate the bullet on the network for all players 
-        NetworkServer.Spawn(prefab);
+        prefab.GetComponent<Bullet>().SetShooterId(shooterId);
     }
 }

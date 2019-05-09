@@ -67,23 +67,7 @@ public class Player : Soldier
             m_gameOverMenu.Deactivate();
             m_playerController.enabled = true;
         }
-        m_hud.UpdateHUD();
         base.Respawn();
-    }
-
-    // If the player is hit by a bullet, the player gets damaged
-    void OnTriggerEnter(Collider collider)
-    {
-        if (!isLocalPlayer)
-        {
-            return;
-        }
-
-        // If the player is hit by a bullet, update the HUD to show the new HP
-        if (base.OnTriggerEnter(collider))
-        {
-            m_hud.UpdateHUD();
-        }
     }
 
     void OnDestroy()

@@ -57,13 +57,4 @@ public class Bot : Soldier
         transform.rotation = Quaternion.LookRotation(newDirection);
     }
 
-    // If the bot is hit by a bullet, the bot gets damaged
-    void OnTriggerEnter(Collider collider)
-    {
-        if (!isServer)
-        {
-            return;
-        }
-        base.OnTriggerEnter(collider);
-    }
 }
