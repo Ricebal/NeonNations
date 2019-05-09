@@ -106,7 +106,7 @@ public class SyncPosition : NetworkBehaviour
     private void OnPositionSynced(Vector3 latestPos)
     {
         m_syncPos = latestPos;
-        m_syncPosList.Add(m_syncPos);
+        //m_syncPosList.Add(m_syncPos);
     }
 
 }
