@@ -10,6 +10,7 @@ public class Sonar : NetworkBehaviour
     [SerializeField] private float m_maxRange;
     [SerializeField] private float m_lifeSpan;
     private bool m_growing;
+    private GameObject m_shooter;
 
     // Start is called before the first frame update
     void Start()
@@ -18,13 +19,13 @@ public class Sonar : NetworkBehaviour
         m_light.intensity = 0;
         m_light.range = 0;
         m_growing = true;
-        Destroy(this.gameObject, m_lifeSpan);
     }
 
     [ClientRpc]
     public void RpcSetColor(Color color)
     {
         m_light.color = color;
+        GetComponentInChildren<ParticleSystemRenderer>().trailMaterial.SetColor("_EmissionColor", color * 3f);
     }
 
     // Update is called once per frame
@@ -40,13 +41,23 @@ public class Sonar : NetworkBehaviour
 
         if (m_growing)
         {
-            m_light.intensity += intensityAmount;
-            m_light.range += rangeAmount;
+            m_light.intensity += intensityAmount * 2f;
+            m_light.range += rangeAmount * 2f;
         }
         else
         {
-            m_light.intensity -= intensityAmount;
-            m_light.range -= rangeAmount;
+            m_light.intensity -= intensityAmount * 0.75f;
+            m_light.range -= rangeAmount * 0.75f;
         }
+
+        if (m_light.intensity <= 0 && m_light.range <= 0)
+        {
+            Destroy(this.gameObject);
+        }
+    }
+
+    public void SetShooter(GameObject value)
+    {
+        m_shooter = value;
     }
 }

@@ -15,8 +15,6 @@ public class ShootController : NetworkBehaviour
     public float Rate;
     // The next time the entity will be able to shoot, in seconds
     private float m_next;
-    // Bullet color
-    private Color m_color;
 
     public bool CanShoot(int energy)
     {
