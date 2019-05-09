@@ -205,7 +205,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_light: {fileID: 6603363976743742941}
   m_maxIntensity: 2
-  m_maxRange: 64
+  m_maxRange: 32
   m_lifeSpan: 0.85
 --- !u!1 &9064639803660721582
 GameObject:
