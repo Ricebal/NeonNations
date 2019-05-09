@@ -12,7 +12,7 @@ public class SyncRotation : NetworkBehaviour
     public float LerpRate;
     // This value is used to define if the player should 'leave in the past'
     // when lag occurres, seeing old player's rotation
-    public bool UseHistoricalInterpolation;
+    public bool UseHistoricalLerp;
     // When UseHistoricalLerp is true, this value is used to consider that
     // the rotation is correct when the difference is inferior than this value
     public float CloseEnough;
@@ -36,7 +36,7 @@ public class SyncRotation : NetworkBehaviour
     {
         if (!isLocalPlayer)
         {
-            if (UseHistoricalInterpolation)
+            if (UseHistoricalLerp)
             {
                 HistoricalLerping();
             }
@@ -52,22 +52,23 @@ public class SyncRotation : NetworkBehaviour
         LerpRotation(m_syncRotation);
     }
 
+    private void HistoricalLerping()
+    {
+        if (m_syncRotationList.Count > 0)
+        {
+            LerpRotation(m_syncRotationList[0]);
+            // If the Y rotation is close enough from the last rotation, remove the last rotation from the synced list
+            if (Mathf.Abs(Transform.localEulerAngles.y - m_syncRotationList[0]) < CloseEnough)
+            {
+                m_syncRotationList.RemoveAt(0);
+            }
+        }
+    }
+
     private void LerpRotation(float rotation)
     {
         Vector3 newRotation = new Vector3(0, rotation, 0);
         Transform.rotation = Quaternion.Lerp(Transform.rotation, Quaternion.Euler(newRotation), LerpRate * Time.deltaTime);
-    }
-
-    private void HistoricalLerping()
-    {
-        if(m_syncRotationList.Count > 0)
-        {
-            LerpRotation(m_syncRotationList[0]);
-            // If the player's Y rotation is close enough from the last rotation, remove the last rotation from the synced list
-            if (Mathf.Abs(Transform.localEulerAngles.y - m_syncRotationList[0]) < CloseEnough) {
-                m_syncRotationList.RemoveAt(0);
-            }
-        }
     }
 
     [Command]

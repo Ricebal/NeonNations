@@ -6,12 +6,12 @@ public class SyncPosition : NetworkBehaviour
 {
     // Send a command to the server every Threshold meters
     public float Threshold;
+    // Player's transform
+    public Transform Transform;
     // Interpolation factors
     // TODO: These values need to be tested with dash
     public float NormalLerpRate;
     public float FasterLerpRate;
-    // Player's transform
-    public Transform Transform;
     // This value is used to define if the player should 'leave in the past'
     // when lag occurres, seeing old other player's positions
     public bool UseHistoricalLerp;
@@ -21,8 +21,8 @@ public class SyncPosition : NetworkBehaviour
 
     // Current interpolation factor
     private float m_lerpRate;
-    [SyncVar(hook = "OnPlayerPositionSynced")]
     // Player's position
+    [SyncVar(hook = "OnPositionSynced")]
     private Vector3 m_syncPos;
     // Last player's position synced across the Network
     private Vector3 m_lastPos;
@@ -58,30 +58,6 @@ public class SyncPosition : NetworkBehaviour
         }
     }
 
-    [Command]
-    private void CmdProvidePositionToServer(Vector3 pos)
-    {
-        m_syncPos = pos;
-    }
-
-    [ClientCallback]
-    private void TransmitPosition()
-    {
-        // If the player's has moved more than the threshold value, send his new position through the network
-        if (isLocalPlayer && Vector3.Distance(Transform.position, m_lastPos) > Threshold)
-        {
-            CmdProvidePositionToServer(Transform.position);
-            m_lastPos = Transform.position;
-        }
-    }
-
-    [Client]
-    private void OnPlayerPositionSynced(Vector3 latestPos)
-    {
-        m_syncPos = latestPos;
-        m_syncPosList.Add(m_syncPos);
-    }
-
     private void OrdinaryLerping()
     {
         Transform.position = Vector3.Lerp(Transform.position, m_syncPos, Time.deltaTime * m_lerpRate);
@@ -98,6 +74,9 @@ public class SyncPosition : NetworkBehaviour
                 m_syncPosList.RemoveAt(0);
             }
 
+            // TODO: Remove (used to debug)
+            Debug.Log("Size: " + m_syncPosList.Count);
+
             // If there are to many positions stored, the player is way too far in the past so we accelerate his movements
             if (m_syncPosList.Count > 10)
             {
@@ -108,6 +87,29 @@ public class SyncPosition : NetworkBehaviour
                 m_lerpRate = NormalLerpRate;
             }
         }
+    }
+    [Command]
+    private void CmdProvidePositionToServer(Vector3 pos)
+    {
+        m_syncPos = pos;
+    }
+
+    [Client]
+    private void TransmitPosition()
+    {
+        // If the player's has moved more than the threshold value, send his new position through the network
+        if (isLocalPlayer && Vector3.Distance(Transform.position, m_lastPos) > Threshold)
+        {
+            m_lastPos = Transform.position;
+            CmdProvidePositionToServer(m_lastPos);
+        }
+    }
+
+    [Client]
+    private void OnPositionSynced(Vector3 latestPos)
+    {
+        m_syncPos = latestPos;
+        m_syncPosList.Add(m_syncPos);
     }
 
 }
