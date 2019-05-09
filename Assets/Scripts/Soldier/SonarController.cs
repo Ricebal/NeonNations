@@ -32,7 +32,7 @@ public class SonarController : NetworkBehaviour
     {
         GameObject prefab = Instantiate(Prefab, this.transform.position, Quaternion.Euler(0, 0, 0));
         prefab.transform.Translate(new Vector3(0, 0, this.transform.localScale.z / 2f), Space.Self);
-        // prefab.GetComponent<Bullet>().SetShooter(this.gameObject);
+        Sonar script = prefab.GetComponent<Sonar>();
 
         // Instanciate the bullet on the network for all players 
         NetworkServer.Spawn(prefab);

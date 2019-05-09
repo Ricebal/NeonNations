@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
-public class AfterImage : MonoBehaviour
+public class AfterImage : NetworkBehaviour
 {
     public Renderer MyRenderer;
     public Light MyLight;
@@ -14,6 +15,13 @@ public class AfterImage : MonoBehaviour
     {
         m_initialIntensity = MyLight.intensity;
         Destroy(this.gameObject, LIFESPAN);
+    }
+
+    [ClientRpc]
+    public void RpcSetColor(Color color)
+    {
+        MyRenderer.material.color = color;
+        MyLight.color = new Color(color.r, color.g, color.b, 1);
     }
 
     // Update is called once per frame
