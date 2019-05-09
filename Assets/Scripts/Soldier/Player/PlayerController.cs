@@ -53,29 +53,28 @@ public class PlayerController : NetworkBehaviour
 
     public void FixedUpdate()
     {
-        if (!isLocalPlayer || !m_isEnabled)
+        if (!isLocalPlayer)
         {
             return;
         }
 
-        float moveHorizontal = Input.GetAxis("Horizontal");
-        float moveVertical = Input.GetAxis("Vertical");
-
-        Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
-
-        // If dashing normalize movement vector so you are always at max speed
-        if (m_playerDash.IsDashing())
+        Vector3 movement = new Vector3();
+        // If player controller is enabled, take into account user's inputs
+        if (m_isEnabled)
         {
-            movement.Normalize();
+            float moveHorizontal = Input.GetAxis("Horizontal");
+            float moveVertical = Input.GetAxis("Vertical");
+
+            movement = new Vector3(moveHorizontal, 0, moveVertical);
+            
+            // If dashing, normalize movement vector so you are always at max speed
+            if (m_playerDash.IsDashing())
+            {
+                movement.Normalize();
+            }
         }
 
         m_rigidbody.velocity = movement * m_player.Speed * m_playerDash.GetMultiplier();
-    }
-
-    // Set player's speed to 0
-    public void Freeze()
-    {
-        m_rigidbody.velocity = new Vector3(0, 0, 0);
     }
 
     // Enable / disable player's movements

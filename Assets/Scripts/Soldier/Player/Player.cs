@@ -31,11 +31,10 @@ public class Player : Soldier
             return;
         }
 
-        // If the escape menu or the game over menu is displayed, disable player's movements and set his velocity to 0
+        // If the escape menu or the game over menu is displayed, disable player's movements
         if (m_escapeMenu.IsPaused() || m_gameOverMenu.IsActive())
         {
             m_playerController.SetEnabled(false);
-            m_playerController.Freeze();
         }
         else
         {
