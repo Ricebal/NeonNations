@@ -31,6 +31,7 @@ public class Sonar : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
+        // Times two for half the lifespan
         float intensityAmount = Time.deltaTime / m_lifeSpan * m_maxIntensity * 2f;
         float rangeAmount = Time.deltaTime / m_lifeSpan * m_maxRange * 2f;
 
@@ -41,11 +42,13 @@ public class Sonar : NetworkBehaviour
 
         if (m_growing)
         {
+            // Times two because it should grow faster
             m_light.intensity += intensityAmount * 2f;
             m_light.range += rangeAmount * 2f;
         }
         else
         {
+            // Times 0.75 because it should shrink slower
             m_light.intensity -= intensityAmount * 0.75f;
             m_light.range -= rangeAmount * 0.75f;
         }
