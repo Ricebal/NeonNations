@@ -89,7 +89,6 @@ public class Soldier : NetworkBehaviour
     protected virtual void Respawn()
     {
         m_isDead = false;
-        Debug.Log("Soldier died, returning to default color \n" + InitialColor);
         CmdColor(this.gameObject, InitialColor);
         this.transform.position = m_initialPosition;
         m_stats.Reset();
