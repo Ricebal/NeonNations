@@ -43,7 +43,7 @@ public class BoardManager : MonoBehaviour
     private GameObject m_map;
     private List<GameObject> m_mapParts = new List<GameObject>();
     // so that a position is in the middle of a tile
-    private float mapOffset = -0.5f;
+    private const float MAP_OFFSET = -0.5f;
 
     // --------------------------------------------------------------------------------------------
     // Public functions
@@ -603,7 +603,7 @@ public class BoardManager : MonoBehaviour
         m_map.name = "Map";
         GameObject floor = GameObject.CreatePrimitive(PrimitiveType.Plane);
 
-        floor.transform.position = new Vector3((float)m_mapWidth / 2, mapOffset, (float)m_mapHeight / 2);
+        floor.transform.position = new Vector3((float)m_mapWidth / 2, MAP_OFFSET, (float)m_mapHeight / 2);
         floor.transform.localScale = new Vector3((float)(m_mapWidth + m_outerWallWidth * 2) / 10, 1, (float)(m_mapHeight + m_outerWallWidth * 2) / 10);
         floor.transform.SetParent(m_map.transform);
     }
@@ -642,7 +642,7 @@ public class BoardManager : MonoBehaviour
 
                     instance.transform.GetComponent<MeshFilter>().sharedMesh = generateNewMesh(walls);
 
-                    instance.transform.position = new Vector3(i + mapOffset, 0f, j + mapOffset);
+                    instance.transform.position = new Vector3(i + MAP_OFFSET, 0f, j + MAP_OFFSET);
                     instance.transform.SetParent(m_map.transform);
                 }
             }
