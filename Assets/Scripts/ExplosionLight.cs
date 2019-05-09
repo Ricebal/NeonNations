@@ -13,7 +13,6 @@ public class ExplosionLight : NetworkBehaviour
 
     void Start()
     {
-        GetComponentInChildren<ParticleSystem>().gameObject.parent = null;
         //Destroys explosion after certain time
         NetworkBehaviour.Destroy(gameObject, Lifetime * 2);
     }
