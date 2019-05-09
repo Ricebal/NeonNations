@@ -19,6 +19,9 @@ public class PlayerController : NetworkBehaviour
         m_player = GetComponent<Player>();
         m_action = GetComponent<Action>();
         m_playerDash = GetComponent<Dash>();
+
+        Vector2 spawnPoint = GameObject.Find("GameManager").GetComponent<BoardManager>().GetRandomFloorTile();
+        transform.position = new Vector3(spawnPoint.x, 0, spawnPoint.y);
     }
 
     void Update()

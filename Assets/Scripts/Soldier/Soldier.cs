@@ -1,7 +1,4 @@
-﻿using UnityEngine;
-using UnityEngine.Networking;
-
-public class Soldier : NetworkBehaviour
+﻿public class Soldier : NetworkBehaviour
 {
     [SyncVar]
     public int Team;
@@ -14,7 +11,6 @@ public class Soldier : NetworkBehaviour
 
     protected bool m_isDead = false;
     protected float m_deathTime;
-    protected Vector3 m_initialPosition;
     protected Stats m_stats;
 
     private SphereCollider m_sphereCollider;
@@ -26,7 +22,6 @@ public class Soldier : NetworkBehaviour
         m_sphereCollider = GetComponent<SphereCollider>();
         m_meshRenderer = GetComponent<MeshRenderer>();
         m_renderer = GetComponent<Renderer>();
-        m_initialPosition = transform.position;
         m_stats = GetComponent<Stats>();
     }
 
@@ -104,7 +99,8 @@ public class Soldier : NetworkBehaviour
         {
             m_sphereCollider.enabled = true;
             m_renderer.material.color = InitialColor;
-            transform.position = m_initialPosition;
+            Vector2 spawnPoint = GameObject.Find("GameManager").GetComponent<BoardManager>().GetRandomFloorTile();
+            transform.position = new Vector3(spawnPoint.x, 0, spawnPoint.y);
             m_stats.Reset();
         }
     }
