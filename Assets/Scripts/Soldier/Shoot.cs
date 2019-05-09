@@ -37,7 +37,8 @@ public class Shoot : NetworkBehaviour
     private void RpcShoot(string shooterId)
     {
         GameObject prefab = Instantiate(Prefab, Spawn.position, Spawn.rotation);
-        prefab.GetComponent<Bullet>().SetShooterId(shooterId);
-        prefab.GetComponent<Bullet>().SetBulletColor();
+        Bullet bullet = prefab.GetComponent<Bullet>();
+        bullet.SetShooterId(shooterId);
+        bullet.SetBulletColor();
     }
 }

@@ -75,7 +75,7 @@ public class PlayerController : NetworkBehaviour
             return;
         }
 
-        m_rigidbody.velocity = new Vector3(0, 0, 0);
+        m_rigidbody.velocity = Vector3.zero;
     }
 
 }

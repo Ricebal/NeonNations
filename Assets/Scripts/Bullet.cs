@@ -80,9 +80,10 @@ public class Bullet : MonoBehaviour
         GameObject explosion = Instantiate(HitPrefab, pos, transform.rotation);
         explosion.transform.Translate(0, 0, -WallOffset);
 
+        // Set explosion light color to the player's color
         Color color = GameObject.Find(m_shooterId).GetComponent<Soldier>().InitialColor;
-        ExplosionLight script = explosion.GetComponent<ExplosionLight>();
-        script.SetColor(color);
+        ExplosionLight explosionLight = explosion.GetComponent<ExplosionLight>();
+        explosionLight.SetColor(color);
     }
 
     public void SetBulletColor()
