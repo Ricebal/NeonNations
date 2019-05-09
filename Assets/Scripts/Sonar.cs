@@ -10,7 +10,6 @@ public class Sonar : NetworkBehaviour
     [SerializeField] private float m_maxRange;
     [SerializeField] private float m_lifeSpan;
     private bool m_growing;
-    private GameObject m_shooter;
 
     // Start is called before the first frame update
     void Start()
@@ -54,10 +53,5 @@ public class Sonar : NetworkBehaviour
         {
             Destroy(this.gameObject);
         }
-    }
-
-    public void SetShooter(GameObject value)
-    {
-        m_shooter = value;
     }
 }
