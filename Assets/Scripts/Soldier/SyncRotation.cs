@@ -13,8 +13,7 @@ public class SyncRotation : NetworkBehaviour
     // This value is used to define if the player should 'leave in the past'
     // when lag occurres, seeing old player's rotation
     public bool UseHistoricalLerp;
-    // When UseHistoricalLerp is true, this value is used to consider that
-    // the rotation is correct when the difference is inferior than this value
+    // This value is used to consider the rotation correct when the difference is inferior than this value
     public float CloseEnough;
 
     [SyncVar(hook = "OnRotationSynced")]
