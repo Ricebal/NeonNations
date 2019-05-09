@@ -345,11 +345,21 @@ PrefabInstance:
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
+    - target: {fileID: 4946594327920172262, guid: 35155a5dd90250645b97a4c417d4f235,
+        type: 3}
+      propertyPath: m_IsOn
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2771366236682828820, guid: 35155a5dd90250645b97a4c417d4f235,
         type: 3}
       propertyPath: ResolutionDropdown
       value: 
       objectReference: {fileID: 492433057}
+    - target: {fileID: 2771366236682828820, guid: 35155a5dd90250645b97a4c417d4f235,
+        type: 3}
+      propertyPath: FullScreenToggle
+      value: 
+      objectReference: {fileID: 1121744054}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 35155a5dd90250645b97a4c417d4f235, type: 3}
 --- !u!114 &116523770 stripped
@@ -596,6 +606,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 853051423, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1121744054 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4946594327920172262, guid: 35155a5dd90250645b97a4c417d4f235,
+    type: 3}
+  m_PrefabInstance: {fileID: 116523769}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 2109663825, guid: f70555f144d8491a825f0804e09c671c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1853833357
