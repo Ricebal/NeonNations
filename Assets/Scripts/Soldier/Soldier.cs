@@ -13,12 +13,10 @@ public class Soldier : NetworkBehaviour
     protected float m_remainingRespawnTime;
 
     [SyncVar] public Color InitialColor;
-    protected Vector3 m_initialPosition;
     protected Stats m_stats;
 
     protected void Start()
     {
-        m_initialPosition = this.transform.position;
         m_stats = GetComponent<Stats>();
     }
 
@@ -89,8 +87,9 @@ public class Soldier : NetworkBehaviour
     protected virtual void Respawn()
     {
         m_isDead = false;
-        CmdColor(this.gameObject, InitialColor);
-        this.transform.position = m_initialPosition;
+        CmdColor(gameObject, InitialColor);
+        Vector2 spawnPoint = GameObject.Find("GameManager").GetComponent<BoardManager>().GetRandomFloorTile();
+        transform.position = new Vector3(spawnPoint.x, 0, spawnPoint.y);
         m_stats.Reset();
         CmdLayer(gameObject, 10);
     }
