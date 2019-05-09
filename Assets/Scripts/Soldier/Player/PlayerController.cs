@@ -6,7 +6,7 @@ public class PlayerController : NetworkBehaviour
     private Rigidbody m_rigidbody;
     private Player m_player;
     private Action m_action;
-    private Dash m_playerDash;
+    private DashController m_playerDash;
     private bool m_isEnabled;
 
     public void Start()
@@ -19,7 +19,7 @@ public class PlayerController : NetworkBehaviour
         m_rigidbody = GetComponent<Rigidbody>();
         m_player = GetComponent<Player>();
         m_action = GetComponent<Action>();
-        m_playerDash = GetComponent<Dash>();
+        m_playerDash = GetComponent<DashController>();
         SetEnabled(true);
     }
 
@@ -64,7 +64,7 @@ public class PlayerController : NetworkBehaviour
             float moveVertical = Input.GetAxis("Vertical");
 
             movement = new Vector3(moveHorizontal, 0, moveVertical);
-            
+
             // If dashing, normalize movement vector so you are always at max speed
             if (m_playerDash.IsDashing())
             {
