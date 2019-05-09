@@ -35,4 +35,11 @@ public class ExplosionLight : NetworkBehaviour
             Light.intensity -= IntensityMultiplier * Time.deltaTime;
         }
     }
+
+    [ClientRpc]
+    public void RpcSetColor(Color color)
+    {
+        Light.color = color;
+        GetComponentsInChildren<ParticleSystemRenderer>()[0].trailMaterial.SetColor("_EmissionColor", color * 3);
+    }
 }
