@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Scripts.Soldier.Bot.DStar;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
@@ -7,13 +8,19 @@ public class DStarLite
 {
     public Node[][] Map;
 
+    private GameEnvironment m_environment;
     private Heap m_heap;
     private double m_travelledDistance;
     private Node m_goal;
     
     private Node m_start;
     private Node m_previousStart;
-    private IDStarLiteEnvironment m_environment;
+    
+    /// <param name="map">The complete map</param>
+    public DStarLite(GameEnvironment environment)
+    {
+        m_environment = environment;
+    }
 
     /// <summary>
     /// Set's up the Algorithm.
@@ -56,15 +63,15 @@ public class DStarLite
     /// <param name="width">The amount of columns of the map</param>
     /// <param name="height">The amount of rows of the map</param>
     /// <param name="env">Any class that extends IDStarLiteEnvironment. Used for moving the entity and getting the surroundings</param>
-    /// <param name="knowObjects">Set to true if the algorithm should know the full map</param>
-    public void GenerateNodeMap(int[][] map, IDStarLiteEnvironment env, bool knowObjects)
+    /// <param name="knowMap">Set to true if the algorithm should know the full map</param>
+    public void GenerateNodeMap(bool knowMap)
     {
-        Map = new Node[map.Length][];
+        int[][] completeMap = m_environment.GetMap();
+        Map = new Node[completeMap.Length][];
         for (int i = 0; i < Map.Length; i++)
         {
-            Map[i] = new Node[map[0].Length];
+            Map[i] = new Node[completeMap[0].Length];
         }
-        m_environment = env;
         for (int i = 0; i < Map.Length; i++)
         {
             for (int j = 0; j < Map[0].Length; j++)
@@ -75,7 +82,7 @@ public class DStarLite
                 Map[i][j].CostFromStartingPoint = double.PositiveInfinity;
                 Map[i][j].Rhs = double.PositiveInfinity;
 
-                if (knowObjects && map[i][j] == 1)
+                if (knowMap && completeMap[i][j] == 1)
                 {
                     Map[i][j].Obstacle = true;
                 }
