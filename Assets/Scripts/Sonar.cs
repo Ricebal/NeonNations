@@ -24,6 +24,7 @@ public class Sonar : NetworkBehaviour
     public void RpcSetColor(Color color)
     {
         m_light.color = color;
+        // color times three for intensity
         GetComponentInChildren<ParticleSystemRenderer>().trailMaterial.SetColor("_EmissionColor", color * 3f);
     }
 
