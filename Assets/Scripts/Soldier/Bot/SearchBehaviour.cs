@@ -33,12 +33,18 @@ public class SearchBehaviour : MonoBehaviour, IDStarLiteEnvironment
         // If the goal hasn't been reached
         if (currentCoordinates.X != GoalCoordinates.X || currentCoordinates.Y != GoalCoordinates.Y)
         {
-            m_dStarLite.NextMove();
+            NextMove();
         }
         else
         {
             GenerateNewDestination(currentCoordinates.X, currentCoordinates.Y);
         }
+    }
+
+    private void NextMove()
+    {
+        MoveTo(m_dStarLite.NextMove());
+        m_dStarLite.SyncBotPosition(ConvertGameObjectToCoordinates(Bot.transform));
     }
 
     /// <summary>
@@ -65,8 +71,12 @@ public class SearchBehaviour : MonoBehaviour, IDStarLiteEnvironment
         m_dStarLite.RunDStarLite(currentX, currentY, GoalCoordinates.X, GoalCoordinates.Y);
     }
 
-    // Moves the bot to the next Coordinate
     void IDStarLiteEnvironment.MoveTo(Coordinates s)
+    {
+
+    }
+    // Moves the bot to the next Coordinate
+    private void MoveTo(Coordinates s)
     {
         float horizontal = s.X - Bot.transform.position.x;
         float vertical = s.Y - Bot.transform.position.z;

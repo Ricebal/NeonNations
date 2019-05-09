@@ -88,11 +88,10 @@ public class DStarLite
     /// Calculate the (new) shortest path.
     /// Tells the entity where to move next.
     /// </summary>
-    public void NextMove()
+    public Coordinates NextMove()
     {
         // Update position of bot
         m_start = MinCostNode(m_start);
-        m_environment.MoveTo(new Coordinates(m_start.X, m_start.Y));
 
         // Check if bot sees new obstacles
         LinkedList<Coordinates> obstacleCoord = m_environment.GetObstaclesInVision();
@@ -126,8 +125,15 @@ public class DStarLite
         DebugMap(Map);
         ComputeShortestPath();
 
-        // Get current position on the map (might be different than calculated position)
-        Coordinates botCoordinates = m_environment.GetPosition();
+        return new Coordinates(m_start.X, m_start.Y);
+    }
+
+    /// <summary>
+    /// Set's the right position of the bot for m_start.
+    /// </summary>
+    /// <param name="botCoordinates">The current coordinates of the bot</param>
+    public void SyncBotPosition(Coordinates botCoordinates)
+    {
         m_start = Map[botCoordinates.X][botCoordinates.Y];
     }
 
@@ -137,7 +143,7 @@ public class DStarLite
 
     private void DebugMap(Node[][] map)
     {
-        Coordinates botCoordinates = m_environment.GetPosition();
+        Coordinates botCoordinates = new Coordinates(m_start.X, m_start.Y);
         StringBuilder builder = new StringBuilder();
         builder.Append('\n');
         for (int y = map[0].Length - 1; y >= 0; y--)
