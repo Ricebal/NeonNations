@@ -40,43 +40,6 @@ public class Bullet : NetworkBehaviour
         }
     }
 
-    public void SetColor()
-    {
-        // Get the colour for the bullet
-        Color color = m_shooter.GetComponent<Soldier>().InitialColor;
-
-        // Change the light's colour
-        Light light = GetComponentsInChildren<Light>()[0];
-        light.color = color;
-
-        // Check if there is a Meshrenderer
-        MeshRenderer[] renderers = GetComponentsInChildren<MeshRenderer>();
-        if (renderers.Length > 0)
-        {
-            MeshRenderer renderer = renderers[0];
-            // Set the emission color of the renderer to the new color times 3 for intensity
-            renderer.material.SetColor("_EmissionColor", color * 3);
-        }
-
-        // Check if there is a TrailRenderer
-        TrailRenderer[] trails = GetComponentsInChildren<TrailRenderer>();
-        if (trails.Length > 0)
-        {
-            TrailRenderer trail = trails[0];
-            // Set the emission color of the trail to the new color times 3 for intensity
-            trail.material.SetColor("_EmissionColor", color * 3);
-        }
-
-        // Check if there is a Particlesystem
-        ParticleSystemRenderer[] particleSystemRenderers = GetComponentsInChildren<ParticleSystemRenderer>();
-        if (particleSystemRenderers.Length > 0)
-        {
-            ParticleSystemRenderer particleSystemRenderer = particleSystemRenderers[0];
-            // Set the emission color of the particle trail to the new color times 3 for intensity
-            particleSystemRenderer.trailMaterial.SetColor("_EmissionColor", color * 3);
-        }
-    }
-
     public void OnTriggerEnter(Collider collider)
     {
         if (!isServer)
@@ -130,16 +93,55 @@ public class Bullet : NetworkBehaviour
         // Instantiate explosion
         GameObject explosion = Instantiate(HitPrefab, pos, gameObject.transform.rotation);
         explosion.transform.Translate(0, 0, -WallOffset);
-        explosion.GetComponentsInChildren<Light>()[0].color = m_shooter.GetComponent<Soldier>().InitialColor;
 
-        // Instanciate the explosion on the network for all players 
+        // Instantiate the explosion on the network for all players 
         NetworkServer.Spawn(explosion);
+        Color color = m_shooter.GetComponent<Soldier>().InitialColor;
+        ExplosionLight script = explosion.GetComponent<ExplosionLight>();
+        script.RpcSetColor(color);
+    }
+
+    [ClientRpc]
+    public void RpcSetBulletColor()
+    {
+        // Get the colour for the bullet
+        Color color = m_shooter.GetComponent<Soldier>().InitialColor;
+
+        // Change the light's colour
+        Light light = GetComponentsInChildren<Light>()[0];
+        light.color = color;
+
+        // Check if there is a Meshrenderer
+        MeshRenderer[] renderers = GetComponentsInChildren<MeshRenderer>();
+        if (renderers.Length > 0)
+        {
+            MeshRenderer renderer = renderers[0];
+            // Set the emission color of the renderer to the new color times 3 for intensity
+            renderer.material.SetColor("_EmissionColor", color * 3);
+        }
+
+        // Check if there is a TrailRenderer
+        TrailRenderer[] trails = GetComponentsInChildren<TrailRenderer>();
+        if (trails.Length > 0)
+        {
+            TrailRenderer trail = trails[0];
+            // Set the emission color of the trail to the new color times 3 for intensity
+            trail.material.SetColor("_EmissionColor", color * 3);
+        }
+
+        // Check if there is a Particlesystem
+        ParticleSystemRenderer[] particleSystemRenderers = GetComponentsInChildren<ParticleSystemRenderer>();
+        if (particleSystemRenderers.Length > 0)
+        {
+            ParticleSystemRenderer particleSystemRenderer = particleSystemRenderers[0];
+            // Set the emission color of the particle trail to the new color times 3 for intensity
+            particleSystemRenderer.trailMaterial.SetColor("_EmissionColor", color * 3);
+        }
     }
 
     public void SetShooter(GameObject shooter)
     {
         m_shooter = shooter;
-        SetColor();
     }
 
     public GameObject GetShooter()

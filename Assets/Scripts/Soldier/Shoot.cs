@@ -38,5 +38,7 @@ public class Shoot : NetworkBehaviour
 
         // Instanciate the bullet on the network for all players 
         NetworkServer.Spawn(prefab);
+
+        script.RpcSetBulletColor();
     }
 }
