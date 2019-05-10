@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
-public class Shoot : NetworkBehaviour
+public class ShootController : NetworkBehaviour
 {
     // Prefab representing the bullet
     public GameObject Prefab;
@@ -15,8 +15,6 @@ public class Shoot : NetworkBehaviour
     public float Rate;
     // The next time the entity will be able to shoot, in seconds
     private float m_next;
-    // Bullet color
-    private Color m_color;
 
     public bool CanShoot(int energy)
     {

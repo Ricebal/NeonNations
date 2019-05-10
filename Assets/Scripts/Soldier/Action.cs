@@ -3,17 +3,17 @@ using UnityEngine.Networking;
 
 public class Action : NetworkBehaviour
 {
-    private Shoot m_playerShoot;
-    private Sonar m_playerSonar;
+    private ShootController m_playerShoot;
+    private SonarController m_playerSonar;
     private Stats m_playerStats;
-    private Dash m_playerDash;
+    private DashController m_playerDash;
 
     private void Start()
     {
-        m_playerShoot = GetComponent<Shoot>();
-        m_playerSonar = GetComponent<Sonar>();
+        m_playerShoot = GetComponent<ShootController>();
+        m_playerSonar = GetComponent<SonarController>();
         m_playerStats = GetComponent<Stats>();
-        m_playerDash = GetComponent<Dash>();
+        m_playerDash = GetComponent<DashController>();
     }
 
     public void Sonar()
