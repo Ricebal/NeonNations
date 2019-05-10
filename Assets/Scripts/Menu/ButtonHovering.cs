@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using TMPro;
 
 public class ButtonHovering : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
@@ -17,7 +18,7 @@ public class ButtonHovering : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     {
         if(m_button.IsInteractable())
         {
-            GetComponentsInChildren<Text>()[0].fontStyle = FontStyle.Bold;
+            GetComponentsInChildren<TextMeshProUGUI>()[0].fontStyle = FontStyles.Bold;
         }
     }
 
@@ -26,7 +27,12 @@ public class ButtonHovering : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     {
         if(m_button.IsInteractable())
         {
-            GetComponentsInChildren<Text>()[0].fontStyle = FontStyle.Normal;
+            GetComponentsInChildren<TextMeshProUGUI>()[0].fontStyle = FontStyles.Normal;
         }
+    }
+
+    public void OnDisable()
+    {
+        GetComponentsInChildren<TextMeshProUGUI>()[0].fontStyle = FontStyles.Normal;
     }
 }
