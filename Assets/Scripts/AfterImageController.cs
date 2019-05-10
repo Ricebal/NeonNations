@@ -5,10 +5,11 @@ using UnityEngine.Networking;
 
 public class AfterImageController : NetworkBehaviour
 {
-    public GameObject Prefab;
-    public Transform SpawnLocation;
-    private const float INTERVAL = 0.005f;
-    private float m_lastSpawnTime;
+    [SerializeField] private GameObject m_prefab;
+    [SerializeField] private float m_distance = 1f;
+    [SerializeField] private float m_linger = 0.1f;
+    private float m_endTime;
+    private Vector3 m_lastPosition;
     private bool m_generateImages;
     [SyncVar] private Color m_color;
 
@@ -21,30 +22,43 @@ public class AfterImageController : NetworkBehaviour
     public void StartAfterImages()
     {
         m_generateImages = true;
+        m_lastPosition = transform.position;
     }
 
     public void StopAfterImages()
     {
         m_generateImages = false;
+        m_endTime = Time.time;
     }
 
     // Update is called once per frame
     void Update()
     {
-        // If the time since last image is greater than interval and generate images is true spawn an image
-        if (Time.time > m_lastSpawnTime + INTERVAL && m_generateImages)
+        // Exit if not generating images and linger time is over
+        if (!m_generateImages && Time.time >= m_endTime + m_linger)
         {
-            CmdSpawnImage();
-            m_lastSpawnTime = Time.time;
+            return;
+        }
+
+        // If the player moved a certain distance from the last image spawn a new one
+        if (m_lastPosition == null || Vector3.Distance(transform.position, m_lastPosition) > m_distance)
+        {
+            CmdSpawnImage(transform.position, transform.rotation.y);
+            m_lastPosition = transform.position;
         }
     }
 
     [Command]
-    private void CmdSpawnImage()
+    private void CmdSpawnImage(Vector3 position, float rotationY)
     {
-        GameObject afterImage = Instantiate(Prefab, SpawnLocation.position, SpawnLocation.rotation);
-        NetworkServer.Spawn(afterImage);
-        afterImage.GetComponent<AfterImage>().RpcSetColor(m_color);
+        RpcSpawnImage(position, rotationY);
+    }
+
+    [ClientRpc]
+    private void RpcSpawnImage(Vector3 position, float rotationY)
+    {
+        GameObject afterImage = Instantiate(m_prefab, position, Quaternion.Euler(new Vector3(0, rotationY, 0)));
+        afterImage.GetComponent<AfterImage>().SetColor(m_color);
     }
 
     public bool IsGenerating()

@@ -308,9 +308,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 421888c4585966b489533fd75af27991, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Multiplier: 10
+  Multiplier: 7.5
   Cost: 20
-  Duration: 0.05
+  Duration: 0.1
   Cooldown: 1
 --- !u!114 &8217748938549719913
 MonoBehaviour:
@@ -352,8 +352,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0223991d6e74d5e43bbe073c9693bb0e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Prefab: {fileID: 4278105648758884905, guid: b7ef729de582b5a469c6774727d3dca1, type: 3}
-  SpawnLocation: {fileID: 8638977763130829894}
+  m_prefab: {fileID: 4278105648758884905, guid: b7ef729de582b5a469c6774727d3dca1,
+    type: 3}
+  m_distance: 1
+  m_linger: 0.1
+--- !u!1 &6716781768823966986
 --- !u!114 &3409436682290840765
 MonoBehaviour:
   m_ObjectHideFlags: 0
