@@ -366,12 +366,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7614d91b0fce1ba4c92591a5e636bf17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Threshold: 0.5
+  Threshold: 0.1
   Transform: {fileID: 8638977763130829894}
   NormalLerpRate: 7
   FasterLerpRate: 15
   UseHistoricalLerp: 0
-  CloseEnough: 0.75
+  CloseEnough: 0.2
 --- !u!114 &629880366995975402
 MonoBehaviour:
   m_ObjectHideFlags: 0
