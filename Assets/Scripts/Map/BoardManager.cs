@@ -2,10 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
 [RequireComponent(typeof(MeshFilter))]
 [RequireComponent(typeof(MeshRenderer))]
-public class BoardManager : MonoBehaviour
+public class BoardManager : NetworkBehaviour
 {
     [SerializeField]
     private GameObject m_mapPrefab;
@@ -119,13 +120,14 @@ public class BoardManager : MonoBehaviour
 
                     instance.transform.position = new Vector3(i + MAP_OFFSET, 0f, j + MAP_OFFSET);
                     instance.transform.SetParent(m_map.transform);
-                }
+                } 
                 // if 2, build breakable wall
-                else if (m_tileMap[i][j] == 2)
+                else if (m_tileMap[i][j] == 2 && isServer)
                 {
                     GameObject instance = Instantiate(m_breakableWallPrefab, new Vector3(i, 0f, j), Quaternion.identity);
                     instance.name = "BreakableWall";
                     instance.transform.SetParent(m_map.transform);
+                    NetworkServer.Spawn(instance);
                 }
             }
         }
