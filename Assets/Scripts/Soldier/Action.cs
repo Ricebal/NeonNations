@@ -1,19 +1,18 @@
-﻿using UnityEngine;
-using UnityEngine.Networking;
+﻿using UnityEngine.Networking;
 
 public class Action : NetworkBehaviour
 {
     private ShootController m_playerShoot;
     private SonarController m_playerSonar;
-    private Stats m_playerStats;
     private DashController m_playerDash;
+    private Stats m_playerStats;
 
     private void Start()
     {
         m_playerShoot = GetComponent<ShootController>();
         m_playerSonar = GetComponent<SonarController>();
-        m_playerStats = GetComponent<Stats>();
         m_playerDash = GetComponent<DashController>();
+        m_playerStats = GetComponent<Stats>();
     }
 
     public void Sonar()

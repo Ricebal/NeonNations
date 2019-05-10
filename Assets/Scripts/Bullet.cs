@@ -1,10 +1,7 @@
 ﻿using UnityEngine;
-using UnityEngine.Networking;
 
-public class Bullet : NetworkBehaviour
+public class Bullet : MonoBehaviour
 {
-    // Start position
-    private Vector3 m_startPosition;
     // Bullet speed
     public float Speed;
     // Time in seconds before the bullet is destroyed
@@ -17,58 +14,35 @@ public class Bullet : NetworkBehaviour
     public float WallOffset;
 
     // The player that shot the bullet
-    [SyncVar]
-    private GameObject m_shooter;
-    private float m_spawnTime;
+    private string m_shooterId;
+    // Start position
+    private Vector3 m_startPosition;
 
     public void Start()
     {
         m_startPosition = transform.position;
         Rigidbody rigidbody = GetComponent<Rigidbody>();
+
         // Move the bullet straight ahead with constant speed
         rigidbody.velocity = transform.forward * Speed;
 
-        m_spawnTime = Time.time;
-    }
-
-    public void Update()
-    {
         // Destroy the bullet when the LivingTime is elapsed
-        if (Time.time - m_spawnTime > LivingTime)
-        {
-            Destroy(this.gameObject);
-        }
+        Destroy(gameObject, LivingTime);
     }
 
     public void OnTriggerEnter(Collider collider)
     {
-        if (!isServer)
-        {
-            return;
-        }
-
-        if (collider.gameObject != m_shooter)
+        // If the bullet does not collide with its shooter
+        if (collider.transform.name != m_shooterId)
         {
             if (HitPrefab != null)
             {
-                // Get tag of collider
-                int id = collider.GetInstanceID();
-                // Get impact-position
-                RaycastHit trueHit = default(RaycastHit);
-                RaycastHit[] hits = Physics.RaycastAll(m_startPosition, transform.forward, 80);
-                foreach (RaycastHit hit in hits)
+                Vector3 impactPos = GetBulletImpactPosition(collider.GetInstanceID());
+                // If an impact point has been found
+                if (!impactPos.Equals(default))
                 {
-                    if (hit.collider.GetInstanceID() == id)
-                    {
-                        trueHit = hit;
-                        break;
-                    }
-                }
-                if (!trueHit.Equals(default(RaycastHit)))
-                {
-                    Vector3 pos = trueHit.point;
                     // Create explosion on impact
-                    CmdCreateExplosion(pos);
+                    CreateExplosion(impactPos);
                 }
             }
 
@@ -79,33 +53,43 @@ public class Bullet : NetworkBehaviour
                 trail.parent = null;
 
                 // Destroy the particles after 0.5 seconds, the max lifetime of a particle
-                NetworkBehaviour.Destroy(trail.gameObject, 0.5f);
+                Destroy(trail.gameObject, 0.5f);
             }
 
             // The bullet is destroyed on collision
-            NetworkBehaviour.Destroy(gameObject);
+            Destroy(gameObject);
         }
     }
 
-    [Command]
-    private void CmdCreateExplosion(Vector3 pos)
+    private Vector3 GetBulletImpactPosition(int id)
     {
-        // Instantiate explosion
-        GameObject explosion = Instantiate(HitPrefab, pos, gameObject.transform.rotation);
-        explosion.transform.Translate(0, 0, -WallOffset);
-
-        // Instantiate the explosion on the network for all players 
-        NetworkServer.Spawn(explosion);
-        Color color = m_shooter.GetComponent<Soldier>().InitialColor;
-        ExplosionLight script = explosion.GetComponent<ExplosionLight>();
-        script.RpcSetColor(color);
+        RaycastHit[] hits = Physics.RaycastAll(m_startPosition, transform.forward, 80);
+        foreach (RaycastHit hit in hits)
+        {
+            if (hit.collider.GetInstanceID() == id)
+            {
+                return hit.point;
+            }
+        }
+        return default;
     }
 
-    [ClientRpc]
-    public void RpcSetBulletColor()
+    private void CreateExplosion(Vector3 pos)
+    {
+        // Instantiate explosion
+        GameObject explosion = Instantiate(HitPrefab, pos, transform.rotation);
+        explosion.transform.Translate(0, 0, -WallOffset);
+
+        // Set explosion light color to the player's color
+        Color color = GameObject.Find(m_shooterId).GetComponent<Soldier>().InitialColor;
+        ExplosionLight explosionLight = explosion.GetComponent<ExplosionLight>();
+        explosionLight.SetColor(color);
+    }
+
+    public void SetBulletColor()
     {
         // Get the colour for the bullet
-        Color color = m_shooter.GetComponent<Soldier>().InitialColor;
+        Color color = GameObject.Find(m_shooterId).GetComponent<Soldier>().InitialColor;
 
         // Make new material
         Material mat;
@@ -148,14 +132,14 @@ public class Bullet : NetworkBehaviour
         }
     }
 
-    public void SetShooter(GameObject shooter)
+    public void SetShooterId(string shooterId)
     {
-        m_shooter = shooter;
+        m_shooterId = shooterId;
     }
 
-    public GameObject GetShooter()
+    public string GetShooterId()
     {
-        return m_shooter;
+        return m_shooterId;
     }
 
 }

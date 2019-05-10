@@ -16,7 +16,7 @@ public class GameOverMenu : MonoBehaviour
 
     void Update()
     {
-        if (IsActive())
+        if (Panel.gameObject.activeSelf)
         {
             m_remainingTime -= Time.deltaTime;
             if (m_remainingTime < 0)
@@ -43,12 +43,6 @@ public class GameOverMenu : MonoBehaviour
     {
         Cursor.visible = false;
         Panel.gameObject.SetActive(false);
-    }
-
-    // Return true if the game over menu is currently displayed, false otherwise
-    public bool IsActive()
-    {
-        return Panel.gameObject.activeSelf;
     }
 
 }
