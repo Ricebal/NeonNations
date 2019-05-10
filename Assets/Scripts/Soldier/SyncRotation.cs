@@ -4,20 +4,27 @@ using UnityEngine.Networking;
 
 public class SyncRotation : NetworkBehaviour
 {
-    // Send a command to the server every Threshold degrees
-    public float Threshold;
+    // Send a command to the server every m_threshold degrees
+    [SerializeField]
+    private float m_threshold;
     // Player's transform
-    public Transform Transform;
+    [SerializeField]
+    private Transform m_transform;
     // Interpolation factor
-    public float LerpRate;
+    [SerializeField]
+    private float m_lerpRate;
     // This value is used to define if the player should 'leave in the past'
     // when lag occurres, seeing old player's rotation
-    public bool UseHistoricalLerp;
+    // Deprecated [SerializeField]
+    private bool m_useHistoricalLerp;
     // This value is used to consider the rotation correct when the difference is inferior than this value
-    public float CloseEnough;
+    [SerializeField]
+    private float m_closeEnough;
 
+    // Player's rotation
     [SyncVar(hook = "OnRotationSynced")]
     private float m_syncRotation;
+    // Last player's rotation synced across the network
     private float m_lastRotation;
     private List<float> m_syncRotationList = new List<float>();
 
@@ -35,7 +42,7 @@ public class SyncRotation : NetworkBehaviour
     {
         if (!isLocalPlayer)
         {
-            if (UseHistoricalLerp)
+            if (m_useHistoricalLerp)
             {
                 HistoricalLerping();
             }
@@ -56,8 +63,8 @@ public class SyncRotation : NetworkBehaviour
         if (m_syncRotationList.Count > 0)
         {
             LerpRotation(m_syncRotationList[0]);
-            // If the Y rotation is close enough from the last rotation, remove the last rotation from the synced list
-            if (Mathf.Abs(Transform.localEulerAngles.y - m_syncRotationList[0]) < CloseEnough)
+            // If the Y rotation is close enough from the last rotation, remove the it from the synced list
+            if (Mathf.Abs(m_transform.localEulerAngles.y - m_syncRotationList[0]) < m_closeEnough)
             {
                 m_syncRotationList.RemoveAt(0);
             }
@@ -67,13 +74,13 @@ public class SyncRotation : NetworkBehaviour
     private void LerpRotation(float rotation)
     {
         Quaternion newRotation = Quaternion.Euler(new Vector3(0, rotation, 0));
-        if (Mathf.Abs(Transform.localEulerAngles.y - rotation) < CloseEnough)
+        if (Mathf.Abs(m_transform.localEulerAngles.y - rotation) < m_closeEnough)
         {
-            Transform.rotation = newRotation;
+            m_transform.rotation = newRotation;
         }
         else
         {
-            Transform.rotation = Quaternion.Lerp(Transform.rotation, newRotation, LerpRate * Time.deltaTime);
+            m_transform.rotation = Quaternion.Lerp(m_transform.rotation, newRotation, m_lerpRate * Time.deltaTime);
         }
     }
 
@@ -87,9 +94,9 @@ public class SyncRotation : NetworkBehaviour
     private void TransmitRotation()
     {
         // If the player's has rotated more than the threshold value, send his new Y rotation through the network
-        if (isLocalPlayer && Mathf.Abs(Transform.localEulerAngles.y - m_lastRotation) > Threshold)
+        if (isLocalPlayer && Mathf.Abs(m_transform.localEulerAngles.y - m_lastRotation) > m_threshold)
         {
-            m_lastRotation = Transform.localEulerAngles.y;
+            m_lastRotation = m_transform.localEulerAngles.y;
             CmdProvideRotationToServer(m_lastRotation);
         }
     }
@@ -98,7 +105,7 @@ public class SyncRotation : NetworkBehaviour
     private void OnRotationSynced(float latestRotation)
     {
         m_syncRotation = latestRotation;
-        //m_syncRotationList.Add(m_syncRotation);
+        // Deprecated m_syncRotationList.Add(m_syncRotation);
     }
 
 }
