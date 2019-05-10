@@ -40,7 +40,7 @@ public class BoardManager : MonoBehaviour
     [SerializeField]
     private int m_tunnelWidth = 2;
     [SerializeField]
-    private int m_chanceForBreakableTunnel = 100;
+    private int m_chanceForBreakableTunnel = 20;
 
 
     private string m_seed;
@@ -208,7 +208,6 @@ public class BoardManager : MonoBehaviour
             }
             currentBuildAttempt++;
         }
-        DebugMap(m_tileMap);
         // Add shortcuts
         AddShortcuts();
         DebugMap(m_tileMap);

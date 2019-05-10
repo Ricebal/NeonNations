@@ -4,7 +4,7 @@ using UnityEngine.Networking;
 public class GameManager : NetworkBehaviour
 {
     [SyncVar]
-    public string Seed;
+    public string Seed = "";
     private BoardManager m_boardManager;
     private BotManager m_botManager;
     private TeamManager m_teamManager;
@@ -23,7 +23,7 @@ public class GameManager : NetworkBehaviour
 
     void InitGame()
     {
-        if (isServer)
+        if (isServer && string.IsNullOrEmpty(Seed))
         {
             // set seed to be used by generation
             Seed = m_boardManager.GenerateSeed();
