@@ -6,7 +6,7 @@ public class PlayerController : NetworkBehaviour
     private Rigidbody m_rigidbody;
     private Player m_player;
     private Action m_action;
-    private Dash m_playerDash;
+    private DashController m_playerDash;
 
     void Start()
     {
@@ -18,7 +18,7 @@ public class PlayerController : NetworkBehaviour
         m_rigidbody = GetComponent<Rigidbody>();
         m_player = GetComponent<Player>();
         m_action = GetComponent<Action>();
-        m_playerDash = GetComponent<Dash>();
+        m_playerDash = GetComponent<DashController>();
 
         Vector2 spawnPoint = GameObject.Find("GameManager").GetComponent<BoardManager>().GetRandomFloorTile();
         transform.position = new Vector3(spawnPoint.x, 0, spawnPoint.y);

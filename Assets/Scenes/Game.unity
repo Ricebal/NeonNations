@@ -725,6 +725,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cb5d8c00e723a44da5e49a1df25899d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Teams:
+  - Id: 1
+    Color: {r: 1, g: 0, b: 0.9815202, a: 0}
+    PlayerCount: 0
+  - Id: 2
+    Color: {r: 0, g: 0.98080873, b: 1, a: 0}
+    PlayerCount: 0
+  - Id: 3
+    Color: {r: 0, g: 1, b: 0.089500666, a: 0}
+    PlayerCount: 0
   Bot: {fileID: 6654271199680664771, guid: e2a0c09fe58275743a21d2b5cd539eb5, type: 3}
 --- !u!114 &817318515
 MonoBehaviour:

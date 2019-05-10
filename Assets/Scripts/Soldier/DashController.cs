@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Dash : MonoBehaviour
+public class DashController : MonoBehaviour
 {
     public float Multiplier = 10f;
     public int Cost = 20;
