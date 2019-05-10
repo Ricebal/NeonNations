@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Text;
+using TMPro;
+using UnityEngine;
 using UnityEngine.Networking;
 
 public class GameManager : NetworkBehaviour
@@ -26,9 +28,16 @@ public class GameManager : NetworkBehaviour
         if (isServer && string.IsNullOrEmpty(Seed))
         {
             // set seed to be used by generation
-            Seed = m_boardManager.GenerateSeed();
+            Seed = GenerateSeed();
         }
-        m_boardManager.SetupScene(Seed);
+
+        // Display seed on the hud
+        GameObject hud = GameObject.FindGameObjectWithTag("HUD");
+        TextMeshProUGUI text = hud.GetComponent<TextMeshProUGUI>();
+        text.text = Seed;
+
+        MapGenerator mapGenerator = new MapGenerator();
+        m_boardManager.SetupScene(mapGenerator.GenerateRandomMap(Seed));
         m_botManager.SetupBots();
     }
 
@@ -40,5 +49,23 @@ public class GameManager : NetworkBehaviour
     public void RemovePlayer(Soldier player)
     {
         m_teamManager.RemovePlayer(player);
+    }
+
+
+
+    /// <summary>
+    /// Generate a random seed
+    /// </summary>
+    /// <returns>A string containing the random seed</returns>
+    private string GenerateSeed()
+    {
+        StringBuilder builder = new StringBuilder();
+        char ch;
+        for (int i = 0; i < 20; i++)
+        {
+            ch = (char)UnityEngine.Random.Range('a', 'z');
+            builder.Append(ch);
+        }
+        return builder.ToString();
     }
 }
