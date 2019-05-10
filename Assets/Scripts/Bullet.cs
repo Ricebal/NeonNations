@@ -107,6 +107,9 @@ public class Bullet : NetworkBehaviour
         // Get the colour for the bullet
         Color color = m_shooter.GetComponent<Soldier>().InitialColor;
 
+        // Make new material
+        Material mat;
+
         // Change the light's colour
         Light light = GetComponentsInChildren<Light>()[0];
         light.color = color;
@@ -117,7 +120,9 @@ public class Bullet : NetworkBehaviour
         {
             MeshRenderer renderer = renderers[0];
             // Set the emission color of the renderer to the new color times 3 for intensity
-            renderer.material.SetColor("_EmissionColor", color * 3);
+            mat = Material.Instantiate(renderer.material);
+            mat.SetColor("_EmissionColor", color * 3);
+            renderer.material = mat;
         }
 
         // Check if there is a TrailRenderer
@@ -126,7 +131,9 @@ public class Bullet : NetworkBehaviour
         {
             TrailRenderer trail = trails[0];
             // Set the emission color of the trail to the new color times 3 for intensity
-            trail.material.SetColor("_EmissionColor", color * 3);
+            mat = Material.Instantiate(trail.material);
+            mat.SetColor("_EmissionColor", color * 3);
+            trail.material = mat;
         }
 
         // Check if there is a Particlesystem
@@ -135,7 +142,9 @@ public class Bullet : NetworkBehaviour
         {
             ParticleSystemRenderer particleSystemRenderer = particleSystemRenderers[0];
             // Set the emission color of the particle trail to the new color times 3 for intensity
-            particleSystemRenderer.trailMaterial.SetColor("_EmissionColor", color * 3);
+            mat = Material.Instantiate(particleSystemRenderer.material);
+            mat.SetColor("_EmissionColor", color * 3);
+            particleSystemRenderer.trailMaterial = mat;
         }
     }
 
