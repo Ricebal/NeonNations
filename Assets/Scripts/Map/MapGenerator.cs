@@ -441,6 +441,7 @@ public class MapGenerator
             for (int y = 0; y < map[0].Length; y++)
             {
                 if (map[x][y] == 0 && // check if position in room equals zero
+                    // TODO check this
                     !entranceTiles.Contains(new Vector2(x, y)) && // check if the tile isn't an entrance
                     (m_tileMap[x + (int)pos.x][y + (int)pos.y] == 0 || // if so, check if the same position on map is zero
                     m_tileMap[x + (int)pos.x][y + (int)pos.y + 1] == 0 || // and check all tiles around the position on the map is zero, starting with north

@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 4136794266597227520}
   - component: {fileID: 8597429118052604184}
   - component: {fileID: 899422198185278236}
-  - component: {fileID: 3993046969560699004}
+  - component: {fileID: 4322378072120809266}
   m_Layer: 0
   m_Name: BreakableWall
   m_TagString: Untagged
@@ -89,7 +89,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7737746882760392655}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
@@ -120,7 +120,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Max: 50
   m_current: 0
---- !u!114 &3993046969560699004
+--- !u!114 &4322378072120809266
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
