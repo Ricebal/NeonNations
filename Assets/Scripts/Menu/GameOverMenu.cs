@@ -4,20 +4,19 @@ using UnityEngine.UI;
 
 public class GameOverMenu : MonoBehaviour
 {
-    public float RespawnDelay;
     public GameObject Panel;
     public Text RespawnText;
-
+    
     private float m_remainingTime;
 
     void Start()
     {
-        SetActive(false);
+        Deactivate();
     }
 
     void Update()
     {
-        if (IsActive())
+        if (Panel.gameObject.activeSelf)
         {
             m_remainingTime -= Time.deltaTime;
             if (m_remainingTime < 0)
@@ -30,30 +29,20 @@ public class GameOverMenu : MonoBehaviour
 
     public void Respawn()
     {
-        m_remainingTime = 0;
+        //m_remainingTime = 0;
     }
 
-    // Return the remaining time in seconds before the player's respawn
-    public float GetRemainingTime()
+    public void Activate(float respawnTime)
     {
-        return m_remainingTime;
+        Cursor.visible = true;
+        Panel.gameObject.SetActive(true);
+        m_remainingTime = respawnTime;
     }
 
-    // Active or not the game over menu
-    public void SetActive(bool active)
+    public void Deactivate()
     {
-        Panel.gameObject.SetActive(active);
-        // Reset the timer when the game over menu is disabled
-        if (!active)
-        {
-            m_remainingTime = RespawnDelay;
-        }
-    }
-
-    // Return true if the game over menu is currently displayed, false otherwise
-    public bool IsActive()
-    {
-        return Panel.gameObject.activeSelf;
+        Cursor.visible = false;
+        Panel.gameObject.SetActive(false);
     }
 
 }

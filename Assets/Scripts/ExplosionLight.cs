@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
-using UnityEngine.Networking;
 
-public class ExplosionLight : NetworkBehaviour
+public class ExplosionLight : MonoBehaviour
 {
     public float RangeMultiplier;
     public float IntensityMultiplier;
@@ -14,7 +13,7 @@ public class ExplosionLight : NetworkBehaviour
     void Start()
     {
         //Destroys explosion after certain time
-        NetworkBehaviour.Destroy(gameObject, Lifetime * 2);
+        Destroy(gameObject, Lifetime * 2);
     }
 
     void Update()
@@ -34,5 +33,11 @@ public class ExplosionLight : NetworkBehaviour
             Light.range -= RangeMultiplier * Time.deltaTime;
             Light.intensity -= IntensityMultiplier * Time.deltaTime;
         }
+    }
+
+    public void SetColor(Color color)
+    {
+        Light.color = color;
+        GetComponentsInChildren<ParticleSystemRenderer>()[0].trailMaterial.SetColor("_EmissionColor", color * 3);
     }
 }
