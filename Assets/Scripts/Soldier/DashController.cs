@@ -8,7 +8,6 @@ public class DashController : MonoBehaviour
     public int Cost = 20;
     [SerializeField] private float m_duration = 0.1f;
     [SerializeField] private float m_cooldown = 1f;
-    private float m_start;
     private float m_currentMultiplier = 1f;
     private AfterImageController m_afterImageController;
 
@@ -20,7 +19,6 @@ public class DashController : MonoBehaviour
     // Start the dash, set speed multiplier and afterimages
     public void StartDash()
     {
-        m_start = Time.time;
         m_currentMultiplier = Multiplier;
         m_afterImageController.StartAfterImages();
     }

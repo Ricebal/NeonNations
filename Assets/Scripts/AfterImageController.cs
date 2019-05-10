@@ -13,8 +13,6 @@ public class AfterImageController : NetworkBehaviour
     private bool m_generateImages;
     [SyncVar] private Color m_color;
 
-    private int m_counter = 0;
-
     private void Start()
     {
         Color color = GetComponent<Soldier>().InitialColor;
@@ -25,7 +23,6 @@ public class AfterImageController : NetworkBehaviour
     {
         m_generateImages = true;
         m_lastPosition = transform.position;
-        m_counter = 0;
     }
 
     public void StopAfterImages()
@@ -37,17 +34,13 @@ public class AfterImageController : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
-        // If the time since last image is greater than interval and generate images is true spawn an image
-        // if (Time.time > m_lastSpawnTime + INTERVAL && m_generateImages)
-        // {
-        //     CmdSpawnImage();
-        //     m_lastSpawnTime = Time.time;
-        // }
+        // Exit if not generating images and linger time is over
         if (!(m_generateImages || Time.time < m_endTime + m_linger))
         {
             return;
         }
 
+        // If the player moved a certain distance from the last image spawn a new one
         if (Vector3.Distance(transform.position, m_lastPosition) > m_distance || m_lastPosition == null)
         {
             CmdSpawnImage(transform.position, transform.rotation);
