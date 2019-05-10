@@ -260,6 +260,26 @@ PrefabInstance:
       propertyPath: SavingText
       value: 
       objectReference: {fileID: 116523772}
+    - target: {fileID: 2771366236682828820, guid: 35155a5dd90250645b97a4c417d4f235,
+        type: 3}
+      propertyPath: m_resolutionDropdown
+      value: 
+      objectReference: {fileID: 492433057}
+    - target: {fileID: 2771366236682828820, guid: 35155a5dd90250645b97a4c417d4f235,
+        type: 3}
+      propertyPath: m_fullScreenToggle
+      value: 
+      objectReference: {fileID: 1121744054}
+    - target: {fileID: 2771366236682828820, guid: 35155a5dd90250645b97a4c417d4f235,
+        type: 3}
+      propertyPath: m_qualityDropdown
+      value: 
+      objectReference: {fileID: 116523771}
+    - target: {fileID: 2771366236682828820, guid: 35155a5dd90250645b97a4c417d4f235,
+        type: 3}
+      propertyPath: m_savingText
+      value: 
+      objectReference: {fileID: 116523772}
     - target: {fileID: 311277274872747675, guid: 35155a5dd90250645b97a4c417d4f235,
         type: 3}
       propertyPath: m_AnchoredPosition.x

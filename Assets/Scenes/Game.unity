@@ -320,6 +320,26 @@ PrefabInstance:
       propertyPath: SavingText
       value: 
       objectReference: {fileID: 138083451}
+    - target: {fileID: 2771366236682828820, guid: 35155a5dd90250645b97a4c417d4f235,
+        type: 3}
+      propertyPath: m_resolutionDropdown
+      value: 
+      objectReference: {fileID: 138083448}
+    - target: {fileID: 2771366236682828820, guid: 35155a5dd90250645b97a4c417d4f235,
+        type: 3}
+      propertyPath: m_fullScreenToggle
+      value: 
+      objectReference: {fileID: 138083447}
+    - target: {fileID: 2771366236682828820, guid: 35155a5dd90250645b97a4c417d4f235,
+        type: 3}
+      propertyPath: m_qualityDropdown
+      value: 
+      objectReference: {fileID: 138083450}
+    - target: {fileID: 2771366236682828820, guid: 35155a5dd90250645b97a4c417d4f235,
+        type: 3}
+      propertyPath: m_savingText
+      value: 
+      objectReference: {fileID: 138083451}
     - target: {fileID: 518148038780793553, guid: 35155a5dd90250645b97a4c417d4f235,
         type: 3}
       propertyPath: m_IsActive
@@ -815,6 +835,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 331448661032197343, guid: 3f543ce0544b7344b8f77a3ae4ea9157,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2253450236709716278, guid: 3f543ce0544b7344b8f77a3ae4ea9157,
         type: 3}
       propertyPath: m_havePropertiesChanged
@@ -834,11 +859,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_fontColor.a
       value: 0.27450982
-      objectReference: {fileID: 0}
-    - target: {fileID: 331448661032197343, guid: 3f543ce0544b7344b8f77a3ae4ea9157,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4953255002806404969, guid: 3f543ce0544b7344b8f77a3ae4ea9157,
         type: 3}
@@ -1015,7 +1035,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Seed: 
-  BotManager: {fileID: 0}
 --- !u!4 &817318512
 Transform:
   m_ObjectHideFlags: 0
@@ -1055,16 +1074,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cb5d8c00e723a44da5e49a1df25899d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Teams:
-  - Id: 1
-    Color: {r: 1, g: 0, b: 0.9815202, a: 0}
-    PlayerCount: 0
-  - Id: 2
-    Color: {r: 0, g: 0.98080873, b: 1, a: 0}
-    PlayerCount: 0
-  - Id: 3
-    Color: {r: 0, g: 1, b: 0.089500666, a: 0}
-    PlayerCount: 0
   Bot: {fileID: 6654271199680664771, guid: e2a0c09fe58275743a21d2b5cd539eb5, type: 3}
 --- !u!114 &817318515
 MonoBehaviour:
