@@ -12,6 +12,8 @@ public class BoardManager : MonoBehaviour
     [SerializeField]
     private GameObject m_mapPrefab;
     [SerializeField]
+    private GameObject m_breakableWallPrefab;
+    [SerializeField]
     private int m_mapWidth = 50;
     [SerializeField]
     private int m_mapHeight = 50;
@@ -37,6 +39,9 @@ public class BoardManager : MonoBehaviour
     private int m_maxTunnelLength = 7;
     [SerializeField]
     private int m_tunnelWidth = 2;
+    [SerializeField]
+    private int m_chanceForBreakableTunnel = 100;
+
 
     private string m_seed;
     private int[][] m_tileMap;
@@ -203,9 +208,10 @@ public class BoardManager : MonoBehaviour
             }
             currentBuildAttempt++;
         }
-
+        DebugMap(m_tileMap);
         // Add shortcuts
         AddShortcuts();
+        DebugMap(m_tileMap);
 
         // Set seed to random again
         UnityEngine.Random.InitState((int)DateTime.Now.Ticks);
@@ -513,7 +519,7 @@ public class BoardManager : MonoBehaviour
             for (int y = 0; y < map[0].Length; y++)
             {
                 if (map[x][y] == 0 && // check if position in room equals zero
-                    !entranceTiles.Contains(new Vector2(x,y)) && // check if the tile isn't an entrance
+                    !entranceTiles.Contains(new Vector2(x, y)) && // check if the tile isn't an entrance
                     (m_tileMap[x + (int)pos.x][y + (int)pos.y] == 0 || // if so, check if the same position on map is zero
                     m_tileMap[x + (int)pos.x][y + (int)pos.y + 1] == 0 || // and check all tiles around the position on the map is zero, starting with north
                     m_tileMap[x + (int)pos.x + 1][y + (int)pos.y + 1] == 0 || // northeast
@@ -538,7 +544,7 @@ public class BoardManager : MonoBehaviour
         int currentShortcutAttempt = 0;
         int currentShortcutAmount = 0;
         while (currentShortcutAttempt < m_maxShortcutAttempts && currentShortcutAmount < m_maxShortcutAmount)
-            {
+        {
             // get random direction to create a shortcut
             Vector2 direction = GenerateRandomDirection();
 
@@ -548,8 +554,8 @@ public class BoardManager : MonoBehaviour
 
             for (int i = m_minTunnelLength; i < m_maxTunnelLength; i++)
             {
-                otherWallTile = new Vector2(wallTile.x + direction.x * (i-1), (int)(wallTile.y + direction.y * (i-1)));
-                if (!(otherWallTile.x <= 1 || otherWallTile.x >= m_mapWidth - 1 || otherWallTile.y <= 1 || otherWallTile.y >= m_mapHeight - 1) && CheckWallTile(otherWallTile, new Vector2(direction.x*-1, direction.y*-1)))
+                otherWallTile = new Vector2(wallTile.x + direction.x * (i - 1), (int)(wallTile.y + direction.y * (i - 1)));
+                if (!(otherWallTile.x <= 1 || otherWallTile.x >= m_mapWidth - 1 || otherWallTile.y <= 1 || otherWallTile.y >= m_mapHeight - 1) && CheckWallTile(otherWallTile, new Vector2(direction.x * -1, direction.y * -1)))
                 {
                     // generate tunnel
                     int[][] tunnel = new int[(int)(m_tunnelWidth * Math.Abs(direction.y) + i * Math.Abs(direction.x))][];
@@ -574,13 +580,24 @@ public class BoardManager : MonoBehaviour
                     List<Vector2> entranceTiles = new List<Vector2>();
                     for (int j = 0; j < m_tunnelWidth; j++)
                     {
-                        entranceTiles.Add(new Vector2(direction.y*j, direction.x*j));
+                        entranceTiles.Add(new Vector2(direction.y * j, direction.x * j));
                         // TODO check this
                         entranceTiles.Add(new Vector2(direction.y * j + direction.x * (tunnel[0].Length - 1), direction.y * (tunnel[0].Length - 1) + direction.x * j));
                     }
 
                     // check if placeable
-                    if (CanPlace(tunnel, pos, entranceTiles)) {
+                    if (CanPlace(tunnel, pos, entranceTiles))
+                    {
+                        // if breakable, make entrance tiles a breakable block
+                        if (IsBreakable())
+                        {
+                            for (int j = 0; j < entranceTiles.Count; j++)
+                            {
+                                // change the according tile on the map
+                                tunnel[(int)entranceTiles[j].x][(int)entranceTiles[j].y] = 2;
+                            }
+                        }
+
                         PasteTileMap(tunnel, m_tileMap, pos);
                         currentShortcutAmount++;
                     }
@@ -588,6 +605,12 @@ public class BoardManager : MonoBehaviour
             }
             currentShortcutAttempt++;
         }
+    }
+
+    private bool IsBreakable()
+    {
+        int i = UnityEngine.Random.Range(1, 101);
+        return i <= m_chanceForBreakableTunnel;
     }
 
     // --------------------------------------------------------------------------------------------
@@ -623,19 +646,19 @@ public class BoardManager : MonoBehaviour
 
                     // calculate walls
                     Walls walls = Walls.None;
-                    if (j + 1 < m_tileMap[0].Length && m_tileMap[i][j + 1] == 0)
+                    if (j + 1 < m_tileMap[0].Length && m_tileMap[i][j + 1] != 1)
                     {
                         walls = walls | Walls.Up;
                     }
-                    if (i + 1 < m_tileMap.Length && m_tileMap[i + 1][j] == 0)
+                    if (i + 1 < m_tileMap.Length && m_tileMap[i + 1][j] != 1)
                     {
                         walls = walls | Walls.Right;
                     }
-                    if (j - 1 >= 0 && m_tileMap[i][j - 1] == 0)
+                    if (j - 1 >= 0 && m_tileMap[i][j - 1] != 1)
                     {
                         walls = walls | Walls.Down;
                     }
-                    if (i - 1 >= 0 && m_tileMap[i - 1][j] == 0)
+                    if (i - 1 >= 0 && m_tileMap[i - 1][j] != 1)
                     {
                         walls = walls | Walls.Left;
                     }
@@ -643,6 +666,13 @@ public class BoardManager : MonoBehaviour
                     instance.transform.GetComponent<MeshFilter>().sharedMesh = generateNewMesh(walls);
 
                     instance.transform.position = new Vector3(i + MAP_OFFSET, 0f, j + MAP_OFFSET);
+                    instance.transform.SetParent(m_map.transform);
+                }
+                // if 2, build breakable wall
+                else if (m_tileMap[i][j] == 2)
+                {
+                    GameObject instance = Instantiate(m_breakableWallPrefab, new Vector3(i, 0f, j), Quaternion.identity);
+                    instance.name = "BreakableWall";
                     instance.transform.SetParent(m_map.transform);
                 }
             }
@@ -664,7 +694,7 @@ public class BoardManager : MonoBehaviour
 
                     instance.transform.GetComponent<MeshFilter>().sharedMesh = generateNewMesh(Walls.None);
 
-                    instance.transform.position = new Vector3(i, 0f, j);
+                    instance.transform.position = new Vector3(i + MAP_OFFSET, 0f, j + MAP_OFFSET);
                     instance.transform.SetParent(m_map.transform);
                 }
             }
@@ -763,12 +793,20 @@ public class BoardManager : MonoBehaviour
         // initialize
         int vertexLimit = 30000;
         int verticesSoFar = 0;
-        MeshFilter[] meshFilters = m_map.GetComponentsInChildren<MeshFilter>();
+        List<MeshFilter> meshFilters = new List<MeshFilter>();
+        foreach (Transform child in m_map.transform)
+        {
+            if (child.gameObject.name != "BreakableWall")
+            {
+                meshFilters.Add(child.GetComponent<MeshFilter>());
+            }
+        }
+
         List<CombineInstance> combiners = new List<CombineInstance>();
         CombineInstance combine = new CombineInstance();
 
         // for all the objects within the map
-        for (int i = 0; i < meshFilters.Length; i++)
+        for (int i = 0; i < meshFilters.Count; i++)
         {
             // if the amount of vertices till now would be over the limit
             if (verticesSoFar + meshFilters[i].mesh.vertexCount > vertexLimit)
@@ -793,7 +831,10 @@ public class BoardManager : MonoBehaviour
         // destroy all the objects the map was made up of
         foreach (Transform child in m_map.transform)
         {
-            Destroy(child.gameObject);
+            if (child.gameObject.name != "BreakableWall")
+            {
+                Destroy(child.gameObject);
+            }
         }
 
         // add all the map parts to the map
