@@ -28,7 +28,7 @@ public class OptionsMenu : MonoBehaviour
 
     void Awake()
     {
-        LoadSavedValues();
+        //LoadSavedValues();
     }
 
     void Start()
@@ -81,12 +81,15 @@ public class OptionsMenu : MonoBehaviour
     }
 
     // Save the settings selected by the user
-    public void Save()
+    public void Apply()
     {
-        PlayerPrefs.SetInt(s_resolutionWidth, Screen.width);
+        SetResolution(m_resolutionDropdown.value);
+        SetFullScreen(m_fullScreenToggle.isOn);
+        SetQuality(m_qualityDropdown.value);
+        /*PlayerPrefs.SetInt(s_resolutionWidth, Screen.width);
         PlayerPrefs.SetInt(s_resolutionHeight, Screen.height);
         PlayerPrefs.SetInt(s_quality, QualitySettings.GetQualityLevel());
-        PlayerPrefs.SetInt(s_fullScreen, m_isFullScreen);
+        PlayerPrefs.SetInt(s_fullScreen, m_isFullScreen);*/
         StartCoroutine(ShowMessage("Options saved", 1));
     }
 
