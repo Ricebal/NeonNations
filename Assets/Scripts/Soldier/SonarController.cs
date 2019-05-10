@@ -5,12 +5,10 @@ using UnityEngine.Networking;
 
 public class SonarController : NetworkBehaviour
 {
-    // Prefab representing the sonar bullet
-    public GameObject Prefab;
-    // Amount of bullets spawned by sonar
-    public float Rays;
-    // Sonar rate in seconds
-    public float Rate;
+    // Prefab representing the sonar
+    [SerializedField] private GameObject m_prefab;
+    // Sonar cooldown in seconds
+    [SerializedField] private float m_cooldown;
     // Amount of energy a sonar will consume
     public int Cost;
     // The next time the entity will be able to use the sonar, in seconds
@@ -23,7 +21,7 @@ public class SonarController : NetworkBehaviour
 
     public void Fire()
     {
-        m_next = Time.time + Rate;
+        m_next = Time.time + m_cooldown;
         CmdSonar();
     }
 
@@ -33,7 +31,7 @@ public class SonarController : NetworkBehaviour
         GameObject prefab = Instantiate(Prefab, transform.position, Quaternion.identity);
         Sonar script = prefab.GetComponent<Sonar>();
 
-        // Instanciate the bullet on the network for all players 
+        // Instantiate the sonar on the network for all players 
         NetworkServer.Spawn(prefab);
         script.RpcSetColor(GetComponent<Soldier>().InitialColor);
     }
