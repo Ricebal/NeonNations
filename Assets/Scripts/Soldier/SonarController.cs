@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Networking;
 
 public class SonarController : NetworkBehaviour
@@ -22,17 +20,17 @@ public class SonarController : NetworkBehaviour
     public void Fire()
     {
         m_next = Time.time + m_cooldown;
-        CmdSonar(transform.name);
+        CmdSonar();
     }
 
     [Command]
-    private void CmdSonar(string shooterId)
+    private void CmdSonar()
     {
-        RpcSonar(shooterId);
+        RpcSonar();
     }
 
     [ClientRpc]
-    private void RpcSonar(string shooterId)
+    private void RpcSonar()
     {
         GameObject prefab = Instantiate(m_prefab, transform.position, Quaternion.identity);
 

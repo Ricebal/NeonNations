@@ -9,7 +9,6 @@ public class SyncPosition : NetworkBehaviour
     // Player's transform
     public Transform Transform;
     // Interpolation factors
-    // TODO: These values need to be tested with dash
     public float NormalLerpRate;
     public float FasterLerpRate;
     // This value is used to define if the player should 'leave in the past'

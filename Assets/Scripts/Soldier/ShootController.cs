@@ -9,8 +9,8 @@ public class ShootController : NetworkBehaviour
     public Transform Spawn;
     // Amount of energy a bullet will consume
     public int Cost;
-    // Fire rate in seconds
-    public float Rate;
+    // Fire cooldown in seconds
+    public float Cooldown;
     // The next time the entity will be able to shoot, in seconds
     private float m_next;
 
@@ -21,7 +21,7 @@ public class ShootController : NetworkBehaviour
 
     public void Fire()
     {
-        m_next = Time.time + Rate;
+        m_next = Time.time + Cooldown;
         CmdShoot(transform.name);
     }
 
