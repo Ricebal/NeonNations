@@ -6,9 +6,9 @@ using UnityEngine.Networking;
 public class SonarController : NetworkBehaviour
 {
     // Prefab representing the sonar
-    [SerializedField] private GameObject m_prefab;
+    [SerializeField] private GameObject m_prefab;
     // Sonar cooldown in seconds
-    [SerializedField] private float m_cooldown;
+    [SerializeField] private float m_cooldown;
     // Amount of energy a sonar will consume
     public int Cost;
     // The next time the entity will be able to use the sonar, in seconds
@@ -28,7 +28,7 @@ public class SonarController : NetworkBehaviour
     [Command]
     public void CmdSonar()
     {
-        GameObject prefab = Instantiate(Prefab, transform.position, Quaternion.identity);
+        GameObject prefab = Instantiate(m_prefab, transform.position, Quaternion.identity);
         Sonar script = prefab.GetComponent<Sonar>();
 
         // Instantiate the sonar on the network for all players 

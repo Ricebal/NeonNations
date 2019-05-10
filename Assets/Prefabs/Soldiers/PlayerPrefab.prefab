@@ -300,9 +300,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee5757a1517d3534f9de5f69d549ccdb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Prefab: {fileID: 4647958490886930736, guid: be7e8cfbb92a8f44b857f951d2f36f60, type: 3}
-  Rays: 60
-  Rate: 1
+  m_prefab: {fileID: 4647958490886930736, guid: be7e8cfbb92a8f44b857f951d2f36f60,
+    type: 3}
+  m_cooldown: 1
   Cost: 50
 --- !u!114 &5442535361888930886
 MonoBehaviour:
