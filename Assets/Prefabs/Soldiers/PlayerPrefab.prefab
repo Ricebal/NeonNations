@@ -51,7 +51,7 @@ GameObject:
   - component: {fileID: 4592339017705222691}
   - component: {fileID: 7305227545255766034}
   - component: {fileID: 878025824821367766}
-  - component: {fileID: 696097138422065991}
+  - component: {fileID: 1183313429465019345}
   - component: {fileID: 5442535361888930886}
   - component: {fileID: 8217748938549719913}
   - component: {fileID: 5337140830429242400}
@@ -280,7 +280,7 @@ MonoBehaviour:
   Spawn: {fileID: 8830476281594632761}
   Cost: 10
   Rate: 0.25
---- !u!114 &696097138422065991
+--- !u!114 &1183313429465019345
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -289,7 +289,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6654271199680664771}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ee5757a1517d3534f9de5f69d549ccdb, type: 3}
+  m_Script: {fileID: 11500000, guid: 3fde16f02c5ab324a8ce14c90d494b5e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_prefab: {fileID: 4647958490886930736, guid: be7e8cfbb92a8f44b857f951d2f36f60,
@@ -328,7 +328,6 @@ MonoBehaviour:
   InitialColor: {r: 0, g: 0, b: 0, a: 0}
   Speed: 7.5
   RespawnTime: 5
-  InitialColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!114 &5337140830429242400
 MonoBehaviour:
   m_ObjectHideFlags: 0

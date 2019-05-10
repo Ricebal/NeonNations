@@ -22,17 +22,22 @@ public class SonarController : NetworkBehaviour
     public void Fire()
     {
         m_next = Time.time + m_cooldown;
-        CmdSonar();
+        CmdSonar(transform.name);
     }
 
     [Command]
-    public void CmdSonar()
+    private void CmdSonar(string shooterId)
+    {
+        RpcSonar(shooterId);
+    }
+
+    [ClientRpc]
+    private void RpcSonar(string shooterId)
     {
         GameObject prefab = Instantiate(m_prefab, transform.position, Quaternion.identity);
-        Sonar script = prefab.GetComponent<Sonar>();
 
-        // Instantiate the sonar on the network for all players 
-        NetworkServer.Spawn(prefab);
-        script.RpcSetColor(GetComponent<Soldier>().InitialColor);
+        Sonar script = prefab.GetComponent<Sonar>();
+        Soldier soldier = GetComponent<Soldier>();
+        script.SetColor(soldier.InitialColor);
     }
 }
