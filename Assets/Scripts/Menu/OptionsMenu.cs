@@ -13,7 +13,7 @@ public class OptionsMenu : MonoBehaviour
     public TextMeshProUGUI SavingText;
 
     // List of resolutions
-    Resolution[] resolutions;
+    private Resolution[] m_resolutions;
 
     private static string s_resolutionWidth = "resolutionWidth";
     private static string s_resolutionHeight = "resolutionHeight";
@@ -35,16 +35,16 @@ public class OptionsMenu : MonoBehaviour
         int currentResolutionIndex = 0;
 
         // Resolutions available for the screen
-        resolutions = Screen.resolutions;
+        m_resolutions = Screen.resolutions;
 
         ResolutionDropdown.ClearOptions();
 
         // Convert resolutions into strings and add them to the options list
-        for (int i = 0; i < resolutions.Length; i++)
+        for (int i = 0; i < m_resolutions.Length; i++)
         {
-            options.Add(resolutions[i].width + " x " + resolutions[i].height);
+            options.Add(m_resolutions[i].width + " x " + m_resolutions[i].height);
 
-            if (resolutions[i].width == Screen.width && resolutions[i].height == Screen.height)
+            if (m_resolutions[i].width == Screen.width && m_resolutions[i].height == Screen.height)
             {
                 currentResolutionIndex = i;
             }
@@ -61,7 +61,7 @@ public class OptionsMenu : MonoBehaviour
 
     public void SetResolution(int resolutionIndex)
     {
-        Resolution resolution = resolutions[resolutionIndex];
+        Resolution resolution = m_resolutions[resolutionIndex];
         Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
     }
 
@@ -101,6 +101,7 @@ public class OptionsMenu : MonoBehaviour
         }
     }
 
+    // Show the given message for the given delay in seconds
     IEnumerator ShowMessage(string message, float delay)
     {
         SavingText.text = message;
