@@ -1,21 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace Assets.Scripts.Soldier.Bot.DStar
 {
     public static class BresenhamPathSmoothing
     {
-        public static Coordinates FarthestNodeToReach(Coordinates currentNode, List<Node> nodesToTraverse, Node[][] map)
+        public static Coordinates FarthestNodeToReach(PointF currentPosition, List<Node> nodesToTraverse, Node[][] map, float xOffset, float yOffset)
         {
             int nextNode = 0;
             int previousNextNode = nextNode;
             int goalNode = nodesToTraverse.Count - 1;
 
             // When it's possible to move from current position and the new position AND the new position is not the final destination
-            while (PossibleToMoveBetween(currentNode, nodesToTraverse[nextNode], map) && nextNode != goalNode)
+            while (PossibleToMoveBetween(currentPosition, new PointF(nodesToTraverse[nextNode].X, nodesToTraverse[nextNode].Y), map, xOffset, yOffset) && nextNode != goalNode)
             {
                 // Save current new point for if the next one fails.
                 previousNextNode = nextNode;
@@ -37,10 +39,18 @@ namespace Assets.Scripts.Soldier.Bot.DStar
         /// </summary>
         /// <param name="currentPosition">The start-position on the map to check</param>
         /// <param name="newPosition">The end-position on the map to check</param>
+        /// <param name="map">The map on which to check the positions</param>
         /// <returns></returns>
-        private static bool PossibleToMoveBetween(Coordinates currentPosition, Node newPosition, Node[][] map)
+        private static bool PossibleToMoveBetween(PointF currentPosition, PointF newPosition, Node[][] map, float xOffset, float yOffset)
         {
-            List<Coordinates> passingCoordinates = BresenhamLine(currentPosition.X, currentPosition.Y, newPosition.X, newPosition.Y);
+            // Top of bot
+            List<Coordinates> passingCoordinates = TilesIntersectedByLine(currentPosition.X + (xOffset / 2), currentPosition.Y + yOffset, newPosition.X + 0.5f, newPosition.Y + 0.5f);
+            // Left of bot
+            passingCoordinates.AddRange(TilesIntersectedByLine(currentPosition.X, currentPosition.Y + (yOffset/2), newPosition.X + 0.5f, newPosition.Y + 0.5f));
+            // Right of bot
+            passingCoordinates.AddRange(TilesIntersectedByLine(currentPosition.X + xOffset, currentPosition.Y + (yOffset / 2), newPosition.X + 0.5f, newPosition.Y + 0.5f));
+            // Bottom of bot
+            passingCoordinates.AddRange(TilesIntersectedByLine(currentPosition.X + (xOffset/2), currentPosition.Y, newPosition.X + 0.5f, newPosition.Y + 0.5f));
             foreach (Coordinates coordinate in passingCoordinates)
             {
                 if (map[coordinate.X][coordinate.Y].Obstacle)
@@ -51,6 +61,84 @@ namespace Assets.Scripts.Soldier.Bot.DStar
             }
             // No wall is found between these coordinates
             return true;
+        }
+
+        public static bool LineIntersectsRect(PointF currentPosition, PointF nextPosition, RectangleF tile)
+        {
+            return LineIntersectsLine(currentPosition, nextPosition, new PointF(tile.X, tile.Y), new PointF(tile.X + tile.Width, tile.Y)) ||
+                   LineIntersectsLine(currentPosition, nextPosition, new PointF(tile.X + tile.Width, tile.Y), new PointF(tile.X + tile.Width, tile.Y + tile.Height)) ||
+                   LineIntersectsLine(currentPosition, nextPosition, new PointF(tile.X + tile.Width, tile.Y + tile.Height), new PointF(tile.X, tile.Y + tile.Height)) ||
+                   LineIntersectsLine(currentPosition, nextPosition, new PointF(tile.X, tile.Y + tile.Height), new PointF(tile.X, tile.Y)) ||
+                   (tile.Contains(currentPosition) && tile.Contains(nextPosition));
+        }
+
+        private static bool LineIntersectsLine(PointF currentPosition, PointF nextPosition, PointF rectanglePoint1, PointF rectanglePoint2)
+        {
+            float q = (currentPosition.Y - rectanglePoint1.Y) * (rectanglePoint2.X - rectanglePoint1.X) - (currentPosition.X - rectanglePoint1.X) * (rectanglePoint2.Y - rectanglePoint1.Y);
+            float d = (nextPosition.X - currentPosition.X) * (rectanglePoint2.Y - rectanglePoint1.Y) - (nextPosition.Y - currentPosition.Y) * (rectanglePoint2.X - rectanglePoint1.X);
+
+            if (d == 0)
+            {
+                return false;
+            }
+
+            float r = q / d;
+
+            q = (currentPosition.Y - rectanglePoint1.Y) * (nextPosition.X - currentPosition.X) - (currentPosition.X - rectanglePoint1.X) * (nextPosition.Y - currentPosition.Y);
+            float s = q / d;
+
+            if (r < 0 || r > 1 || s < 0 || s > 1)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Returns a List of Coordinates that will be intersected by a line
+        /// </summary>
+        private static List<Coordinates> TilesIntersectedByLine(float startPointX, float startPointY, float endPointX, float endPointY)
+        {
+            List<Coordinates> results = new List<Coordinates>();
+            float leftX = startPointX;
+            float rightX = endPointX;
+            float downY = startPointY;
+            float upY = endPointY;
+
+            // Set's the most left position to leftX
+            if (startPointX > endPointX)
+            {
+                leftX = endPointX;
+                rightX = startPointX;
+            }
+            // Set's the lowest position to downY
+            if (startPointY > endPointY)
+            {
+                downY = endPointY;
+                upY = startPointY;
+            }
+            // Round numbers to prevent weird detections
+            downY = Mathf.Floor(downY);
+            leftX = Mathf.Floor(leftX);
+            upY = Mathf.Ceil(upY);
+            rightX = Mathf.Ceil(rightX);
+
+            // For each Tile in the Rectangle
+            for (float i = leftX; i <= rightX; i++)
+            {
+                for(float j = downY; j <= upY; j++)
+                {
+                    RectangleF tile = new RectangleF(i,j,1,1);
+                    // Check if it is intersected by the line
+                    if (LineIntersectsRect(new PointF(startPointX, startPointY), new PointF(endPointX, endPointY), tile))
+                    {
+                        results.Add(new Coordinates((int)i, (int)j));
+                    }
+                }
+            }
+
+            return results;
         }
 
         /// <summary>

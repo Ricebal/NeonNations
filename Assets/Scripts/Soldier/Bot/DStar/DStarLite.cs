@@ -89,6 +89,11 @@ public class DStarLite
         }
     }
 
+    public Node NextNodeToTraverse()
+    {
+        return NextMove();
+    }
+
     /// <summary>
     /// Returns a list of all the nodes that need to be traversed to reach the goal
     /// </summary>

@@ -4,11 +4,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using Assets.Scripts.Soldier.Bot.DStar;
 using System.Text;
+using System.Drawing;
 
 public class SearchBehaviour : MonoBehaviour
 {
     public GameObject Bot;
-    
+    public float offsetForLineCalculationX = 1f;
+    public float offsetForLineCalculationY = 1f;
+
     private Coordinates GoalCoordinates = new Coordinates();
     private GameEnvironment m_environment;
     private DStarLite m_dStarLite;
@@ -20,7 +23,7 @@ public class SearchBehaviour : MonoBehaviour
         m_environment = new GameEnvironment(Bot);
         UnityEngine.Random.InitState((int)DateTime.Now.Ticks);
         m_dStarLite = new DStarLite(m_environment);
-        m_dStarLite.GenerateNodeMap(false);
+        m_dStarLite.GenerateNodeMap(true);
         Coordinates startCoordinates = m_environment.ConvertGameObjectToCoordinates(Bot.transform);
         GenerateNewDestination(startCoordinates.X, startCoordinates.Y);
         m_bot = GetComponent<Bot>();
@@ -40,16 +43,42 @@ public class SearchBehaviour : MonoBehaviour
             GenerateNewDestination(currentCoordinates.X, currentCoordinates.Y);
         }
     }
-
+    private int m_samePositionCount = 0;
+    private int m_magicNumber = 6;
+    private bool gettingBackToRightPosition = false;
+    private Coordinates m_previousBotCoordinates = new Coordinates(0, 0);
     /// <summary>
     /// Makes the DStarLite calculate where the bot should move next and than moves the bot in that direction.
     /// </summary>
     private void NextMove()
     {
+        bool skipList = false;
+        List<Node> nodesToTraverse = new List<Node>();
         Coordinates botCoordinate = m_environment.ConvertGameObjectToCoordinates(Bot.transform);
-        List<Node> nodesToTraverse = m_dStarLite.NodesToTraverse();
-        Coordinates farthestReachableNode = BresenhamPathSmoothing.FarthestNodeToReach(botCoordinate, nodesToTraverse, m_dStarLite.Map);
-        DebugMap(m_dStarLite.Map, farthestReachableNode);
+        if(botCoordinate.X == m_previousBotCoordinates.X && botCoordinate.Y == m_previousBotCoordinates.Y)
+        {
+            m_samePositionCount++;
+            if(m_samePositionCount >= m_magicNumber)
+            {
+                gettingBackToRightPosition = true;
+                if (gettingBackToRightPosition)
+                {
+                    nodesToTraverse.Add(m_dStarLite.NextNodeToTraverse());
+                    skipList = true;
+                }
+            }
+            else
+            {
+                m_samePositionCount = 0;
+            }
+        }
+        m_previousBotCoordinates = botCoordinate;
+        if (!skipList)
+        {
+            nodesToTraverse.AddRange(m_dStarLite.NodesToTraverse());
+        }
+        Coordinates farthestReachableNode = BresenhamPathSmoothing.FarthestNodeToReach(new PointF(Bot.transform.position.x, Bot.transform.position.z), nodesToTraverse, m_dStarLite.Map, offsetForLineCalculationX, offsetForLineCalculationY);
+        DebugMap(m_dStarLite.Map, farthestReachableNode, nodesToTraverse);
         MoveTo(farthestReachableNode);
         m_dStarLite.SyncBotPosition(botCoordinate);
     }
@@ -91,7 +120,7 @@ public class SearchBehaviour : MonoBehaviour
         m_bot.Move(heading.x, heading.y);
     }
 
-    private void DebugMap(Node[][] map, Coordinates nodeToReach)
+    private void DebugMap(Node[][] map, Coordinates nodeToReach, List<Node> nodesToTraverse)
     {
         Coordinates botCoordinates = m_environment.ConvertGameObjectToCoordinates(Bot.transform);
         StringBuilder builder = new StringBuilder();
@@ -110,14 +139,28 @@ public class SearchBehaviour : MonoBehaviour
                     builder.Append("@");
                     continue;
                 }
+                if (x == GoalCoordinates.X && y == GoalCoordinates.Y)
+                {
+                    builder.Append("X");
+                    continue;
+                }
                 if (x == nodeToReach.X && y == nodeToReach.Y)
                 {
                     builder.Append("%");
                     continue;
                 }
-                if (x == GoalCoordinates.X && y == GoalCoordinates.Y)
+                bool foundInNodes = false;
+                foreach(Node n in nodesToTraverse)
                 {
-                    builder.Append("X");
+                    if(x == n.X && y == n.Y)
+                    {
+                        foundInNodes = true;
+                        builder.Append("Q");
+                        continue;
+                    }
+                }
+                if (foundInNodes)
+                {
                     continue;
                 }
                 builder.Append("O");
