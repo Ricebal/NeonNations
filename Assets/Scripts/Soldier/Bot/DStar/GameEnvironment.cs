@@ -18,75 +18,7 @@ namespace Assets.Scripts.Soldier.Bot.DStar
             m_bot = bot;
 
         }
-
-        //CheckForCollision();
-
-        /// <summary>
-        ///Swap the values of A and B
-        /// </summary>
-        private void Swap<T>(ref T a, ref T b)
-        {
-            T c = a;
-            a = b;
-            b = c;
-        }
-
-        /// <summary>
-        /// Returns a List of Coordinates which collide with the line between a startpoint and an endpoint
-        /// </summary>
-        /// <param name="startPointX">The x coordinate of the startpoint</param>
-        /// <param name="startPointY">The y coordinate of the startpoint</param>
-        /// <param name="endPointX">The x coordinate of the endpoint</param>
-        /// <param name="endPointY">The y coordinate of the endpoint</param>
-        /// <returns>List of intersecting Coordinates</returns>
-        private List<Coordinates> BresenhamLine(int startPointX, int startPointY, int endPointX, int endPointY)
-        {
-            List<Coordinates> result = new List<Coordinates>();
-
-            // If the differnce in hight of the line is higher than the differnce of width, it will be a steep line.
-            bool steep = Math.Abs(endPointY - startPointY) > Math.Abs(endPointX - startPointX);
-            if (steep)
-            {
-                Swap(ref startPointX, ref startPointY);
-                Swap(ref endPointX, ref endPointY);
-            }
-            if (startPointX > endPointX)
-            {
-                Swap(ref startPointX, ref endPointX);
-                Swap(ref startPointY, ref endPointY);
-            }
-
-            int deltax = endPointX - startPointX;
-            int deltay = Math.Abs(endPointY - startPointY);
-            int error = 0;
-            int ystep;
-            int y = startPointY;
-            if (startPointY < endPointY) ystep = 1; else ystep = -1;
-            for (int x = startPointX; x <= endPointX; x++)
-            {
-                if (steep) result.Add(new Coordinates(y, x));
-                else result.Add(new Coordinates(x, y));
-                error += deltay;
-                if (2 * error >= deltax)
-                {
-                    y += ystep;
-                    error -= deltax;
-                }
-            }
-            return result;
-        }
-
-        /// <summary>
-        /// Checks if it's possible to travel straight from one note to the other
-        /// </summary>
-        /// <param name="currentPosition">The start-position on the map to check</param>
-        /// <param name="newPosition">The end-position on the map to check</param>
-        /// <returns></returns>
-        public bool PossibleToMoveBetween(Node currentPosition, Node newPosition)
-        {
-
-            return true;
-        }
+        
 
         /// <summary>
         /// Gives the current map

@@ -7,14 +7,16 @@ public class BotManager : NetworkBehaviour
 {
     // Prefab representing the bot
     public GameObject Bot;
-    // Start is called before the first frame update
-    void Start()
+
+    public void SetupBots()
     {
         if (!isServer)
         {
             return;
         }
-        GameObject bot = Instantiate(Bot, new Vector3(5, 0, 6), new Quaternion(0, 0, 0, 0));
+        Vector2 spawnPoint = GameObject.Find("GameManager").GetComponent<BoardManager>().GetRandomFloorTile();
+        GameObject bot = Instantiate(Bot, new Vector3(spawnPoint.x, 0, spawnPoint.y), Quaternion.identity);
         NetworkServer.Spawn(bot);
+        GameObject.Find("GameManager").GetComponent<GameManager>().AddPlayer(bot.GetComponent<Bot>());
     }
 }

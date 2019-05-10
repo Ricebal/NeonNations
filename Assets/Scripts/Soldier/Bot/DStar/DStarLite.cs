@@ -16,7 +16,6 @@ public class DStarLite
     private Node m_start;
     private Node m_previousStart;
     
-    /// <param name="map">The complete map</param>
     public DStarLite(GameEnvironment environment)
     {
         m_environment = environment;
@@ -91,27 +90,40 @@ public class DStarLite
     }
 
     /// <summary>
+    /// Returns a list of all the nodes that need to be traversed to reach the goal
+    /// </summary>
+    public List<Node> NodesToTraverse()
+    {
+        List<Node> nodesToTraverse = new List<Node>();
+        do
+        {
+            nodesToTraverse.Add(NextMove());
+        } while (nodesToTraverse[nodesToTraverse.Count-1] != m_goal);
+        return nodesToTraverse;
+    }
+
+    /// <summary>
     /// Retrieve the new surrounding knowledge and applies this to the map.
     /// Calculate the (new) shortest path.
     /// Tells the entity where to move next.
     /// </summary>
-    public Coordinates NextMove()
+    private Node NextMove()
     {
-        Node oldPreviousStart = m_previousStart;
         // Update position of bot
-        while(true/*PossibleToMoveBetween(oldPreviousStart, m_start) && m_start != m_goal*/)
-        {
-            m_previousStart = m_start;
-            m_start = MinCostNode(m_start);
-        }
-        m_start = m_previousStart;
+        m_start = MinCostNode(m_start);
 
-        m_previousStart = m_start;
         // Check if bot sees new obstacles
         LinkedList<Coordinates> obstacleCoord = m_environment.GetObstaclesInVision();
 
+        // Saves the oldTravelledDistance for if nothing has changed
         double oldTravelledDistance = m_travelledDistance;
+        // Saves the oldPreviousStart for if nothing has changed
+        Node oldPreviousStart = m_previousStart;
+
+        // Calculates a new TravelDistance
         m_travelledDistance += Heuristic(m_start, m_previousStart);
+        // Saves the new start for calculating the Heuristics
+        m_previousStart = m_start;
 
         bool change = false;
         foreach (Coordinates c in obstacleCoord)
@@ -128,27 +140,17 @@ public class DStarLite
                 }
             }
         }
+        // If nothing has changed
         if (!change)
         {
+            // Restore the travelledDistance and the previousStart
             m_travelledDistance = oldTravelledDistance;
             m_previousStart = oldPreviousStart;
         }
 
-        //DebugMap(Map);
         ComputeShortestPath();
 
-        return new Coordinates(m_start.X, m_start.Y);
-    }
-
-    /// <summary>
-    /// Checks if it's possible to travel straight from one note to the other
-    /// </summary>
-    /// <param name="currentPosition">The start-position on the map to check</param>
-    /// <param name="newPosition">The end-position on the map to check</param>
-    /// <returns></returns>
-    private bool PossibleToMoveBetween(Node currentPosition, Node newPosition)
-    {
-        return m_environment.PossibleToMoveBetween(currentPosition, newPosition);
+        return m_start;
     }
 
     /// <summary>
@@ -174,42 +176,6 @@ public class DStarLite
         builder.Append(m_heap.ToString());
         Debug.Log(builder.ToString());
     }
-    private void DebugMap(Node[][] map)
-    {
-        Coordinates botCoordinates = new Coordinates(m_start.X, m_start.Y);
-        StringBuilder builder = new StringBuilder();
-        builder.Append('\n');
-        for (int y = map[0].Length - 1; y >= 0; y--)
-        {
-            for (int x = 0; x < map.Length; x++)
-            {
-                if (map[x][y].Obstacle)
-                {
-                    builder.Append("#");
-                    continue;
-                }
-                if(x == botCoordinates.X && y == botCoordinates.Y)
-                {
-                    builder.Append("@");
-                    continue;
-                }
-                if (x == m_start.X && y == m_start.Y)
-                {
-                    builder.Append("%");
-                    continue;
-                }
-                if (x == m_goal.X && y == m_goal.Y)
-                {
-                    builder.Append("X");
-                    continue;
-                }
-                builder.Append("O");
-            }
-            builder.Append('\n');
-        }
-        string s = builder.ToString();
-        Debug.Log(s);
-    }
     
     ///<summary>
     /// Calculates the key.
@@ -229,7 +195,9 @@ public class DStarLite
     /// </summary>
     private double Heuristic(Node pointA, Node pointB)
     {
-        return Math.Sqrt(Math.Pow(Math.Abs(pointA.X - pointB.X), 2) + Math.Pow(Math.Abs(pointA.Y - pointB.Y), 2));
+        float xDistance = Math.Abs(pointA.X - pointB.X);
+        float yDistance = Math.Abs(pointA.Y - pointB.Y);
+        return xDistance + yDistance;
     }
 
     /// <summary>
@@ -328,6 +296,5 @@ public class DStarLite
                 }
             }
         }
-        DebugHeap();
     }
 }

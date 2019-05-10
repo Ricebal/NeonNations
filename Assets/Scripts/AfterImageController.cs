@@ -10,6 +10,13 @@ public class AfterImageController : NetworkBehaviour
     private const float INTERVAL = 0.005f;
     private float m_lastSpawnTime;
     private bool m_generateImages;
+    [SyncVar] private Color m_color;
+
+    private void Start()
+    {
+        Color color = GetComponent<Soldier>().InitialColor;
+        m_color = new Color(color.r, color.g, color.b, 0.5f);
+    }
 
     public void StartAfterImages()
     {
@@ -37,6 +44,7 @@ public class AfterImageController : NetworkBehaviour
     {
         GameObject afterImage = Instantiate(Prefab, SpawnLocation.position, SpawnLocation.rotation);
         NetworkServer.Spawn(afterImage);
+        afterImage.GetComponent<AfterImage>().RpcSetColor(m_color);
     }
 
     public bool IsGenerating()

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using Assets.Scripts.Soldier.Bot.DStar;
+using System.Text;
 
 public class SearchBehaviour : MonoBehaviour
 {
@@ -45,8 +46,12 @@ public class SearchBehaviour : MonoBehaviour
     /// </summary>
     private void NextMove()
     {
-        MoveTo(m_dStarLite.NextMove());
-        m_dStarLite.SyncBotPosition(m_environment.ConvertGameObjectToCoordinates(Bot.transform));
+        Coordinates botCoordinate = m_environment.ConvertGameObjectToCoordinates(Bot.transform);
+        List<Node> nodesToTraverse = m_dStarLite.NodesToTraverse();
+        Coordinates farthestReachableNode = BresenhamPathSmoothing.FarthestNodeToReach(botCoordinate, nodesToTraverse, m_dStarLite.Map);
+        DebugMap(m_dStarLite.Map, farthestReachableNode);
+        MoveTo(farthestReachableNode);
+        m_dStarLite.SyncBotPosition(botCoordinate);
     }
 
     /// <summary>
@@ -79,7 +84,47 @@ public class SearchBehaviour : MonoBehaviour
     {
         float horizontal = s.X - Bot.transform.position.x;
         float vertical = s.Y - Bot.transform.position.z;
+
+        Vector2 heading = new Vector2(horizontal, vertical);
+        heading.Normalize();
         // The clamp normalizes the input to a value between -1 and 1 (To represent the players input)
-        m_bot.Move(Mathf.Clamp(horizontal, -1f, 1f), Mathf.Clamp(vertical, -1f, 1f));
+        m_bot.Move(heading.x, heading.y);
+    }
+
+    private void DebugMap(Node[][] map, Coordinates nodeToReach)
+    {
+        Coordinates botCoordinates = m_environment.ConvertGameObjectToCoordinates(Bot.transform);
+        StringBuilder builder = new StringBuilder();
+        builder.Append('\n');
+        for (int y = map[0].Length - 1; y >= 0; y--)
+        {
+            for (int x = 0; x < map.Length; x++)
+            {
+                if (map[x][y].Obstacle)
+                {
+                    builder.Append("#");
+                    continue;
+                }
+                if (x == botCoordinates.X && y == botCoordinates.Y)
+                {
+                    builder.Append("@");
+                    continue;
+                }
+                if (x == nodeToReach.X && y == nodeToReach.Y)
+                {
+                    builder.Append("%");
+                    continue;
+                }
+                if (x == GoalCoordinates.X && y == GoalCoordinates.Y)
+                {
+                    builder.Append("X");
+                    continue;
+                }
+                builder.Append("O");
+            }
+            builder.Append('\n');
+        }
+        string s = builder.ToString();
+        Debug.Log(s);
     }
 }

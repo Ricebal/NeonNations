@@ -3,22 +3,20 @@ using UnityEngine.Networking;
 
 public class Soldier : NetworkBehaviour
 {
+    [SyncVar] public int Team;
     // The speed of the entity
     public float Speed;
     // The respawn time of the soldier
     public float RespawnTime;
-    
+
     protected bool m_isDead = false;
     protected float m_remainingRespawnTime;
 
-    protected Color m_initialColor;
-    protected Vector3 m_initialPosition;
+    [SyncVar] public Color InitialColor;
     protected Stats m_stats;
 
     protected void Start()
     {
-        m_initialColor = GetComponent<MeshRenderer>().material.color;
-        m_initialPosition = this.transform.position;
         m_stats = GetComponent<Stats>();
     }
 
@@ -55,6 +53,13 @@ public class Soldier : NetworkBehaviour
         CmdLayer(gameObject, 11);
     }
 
+    public void SetInitialColor(Color color)
+    {
+        Color newColor = new Color(color.r, color.g, color.b, 1f);
+        InitialColor = newColor;
+        CmdColor(this.gameObject, newColor);
+    }
+
     [ClientRpc]
     protected void RpcColor(GameObject obj, Color color)
     {
@@ -82,8 +87,9 @@ public class Soldier : NetworkBehaviour
     protected virtual void Respawn()
     {
         m_isDead = false;
-        CmdColor(this.gameObject, m_initialColor);
-        this.transform.position = m_initialPosition;
+        CmdColor(gameObject, InitialColor);
+        Vector2 spawnPoint = GameObject.Find("GameManager").GetComponent<BoardManager>().GetRandomFloorTile();
+        transform.position = new Vector3(spawnPoint.x, 0, spawnPoint.y);
         m_stats.Reset();
         CmdLayer(gameObject, 10);
     }
@@ -91,10 +97,14 @@ public class Soldier : NetworkBehaviour
     // If the Soldier gets hit by a bullet, it will take damage. Will return true if the collider was a Bullet and the Soldier took damage.
     protected bool OnTriggerEnter(Collider collider)
     {
-        if (collider.gameObject.tag == "Bullet" && collider.gameObject.GetComponent<Bullet>().GetShooter() != this.gameObject)
+        if (collider.gameObject.tag == "Bullet")
         {
-            m_stats.TakeDamage(collider.gameObject.GetComponent<Bullet>().Damage);
-            return true;
+            Bullet bullet = collider.gameObject.GetComponent<Bullet>();
+            if (bullet.GetShooter() != this.gameObject && bullet.GetShooter().GetComponent<Soldier>().Team != this.Team)
+            {
+                m_stats.TakeDamage(collider.gameObject.GetComponent<Bullet>().Damage);
+                return true;
+            }
         }
         return false;
     }
