@@ -7,14 +7,14 @@ using TMPro;
 public class OptionsMenu : MonoBehaviour
 {
     [SerializeField]
-    private Dropdown ResolutionDropdown;
+    private Dropdown m_resolutionDropdown;
     [SerializeField]
-    private Toggle FullScreenToggle;
+    private Toggle m_fullScreenToggle;
     [SerializeField]
-    private Dropdown QualityDropdown;
+    private Dropdown m_qualityDropdown;
     // Text displayed when the settings are saved
     [SerializeField]
-    private TextMeshProUGUI SavingText;
+    private TextMeshProUGUI m_savingText;
 
     // List of resolutions
     private Resolution[] m_resolutions;
@@ -41,7 +41,7 @@ public class OptionsMenu : MonoBehaviour
         // Resolutions available for the screen
         m_resolutions = Screen.resolutions;
 
-        ResolutionDropdown.ClearOptions();
+        m_resolutionDropdown.ClearOptions();
 
         // Convert resolutions into strings and add them to the options list
         for (int i = 0; i < m_resolutions.Length; i++)
@@ -54,13 +54,13 @@ public class OptionsMenu : MonoBehaviour
             }
         }
 
-        ResolutionDropdown.AddOptions(options);
-        ResolutionDropdown.value = currentResolutionIndex;
-        ResolutionDropdown.RefreshShownValue();
+        m_resolutionDropdown.AddOptions(options);
+        m_resolutionDropdown.value = currentResolutionIndex;
+        m_resolutionDropdown.RefreshShownValue();
 
-        FullScreenToggle.isOn = Screen.fullScreen;
+        m_fullScreenToggle.isOn = Screen.fullScreen;
 
-        QualityDropdown.value = QualitySettings.GetQualityLevel();
+        m_qualityDropdown.value = QualitySettings.GetQualityLevel();
     }
 
     public void SetResolution(int resolutionIndex)
@@ -108,9 +108,9 @@ public class OptionsMenu : MonoBehaviour
     // Show the given message for the given delay in seconds
     IEnumerator ShowMessage(string message, float delay)
     {
-        SavingText.text = message;
-        SavingText.enabled = true;
+        m_savingText.text = message;
+        m_savingText.enabled = true;
         yield return new WaitForSeconds(delay);
-        SavingText.enabled = false;
+        m_savingText.enabled = false;
     }
 }
