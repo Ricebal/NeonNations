@@ -36,21 +36,6 @@ public class EscapeMenu : NetworkBehaviour
         SceneManager.LoadScene(2);
     }
 
-    public void MainMenu()
-    {
-        TogglePause();
-        if (isServer)
-        {
-            NetworkManager.singleton.StopHost();
-        }
-        else
-        {
-            NetworkManager.singleton.StopClient();
-        }
-        Cursor.visible = true;
-        SceneManager.LoadScene(0);
-    }
-
     public void TogglePause()
     {
         m_paused = !m_paused;
