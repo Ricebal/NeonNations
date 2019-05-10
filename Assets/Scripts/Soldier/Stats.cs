@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
 
 public class Stats : MonoBehaviour
 {
@@ -16,27 +15,15 @@ public class Stats : MonoBehaviour
     public void TakeDamage(int amount)
     {
         m_currentHealth -= amount;
-        if (m_currentHealth > MaxHealth)
-        {
-            m_currentHealth = MaxHealth;
-        }
-        if (m_currentHealth < 0)
-        {
-            m_currentHealth = 0;
-        }
+        // Life is bounded between 0 and MaxHealth
+        m_currentHealth = Mathf.Max(0, Mathf.Min(m_currentHealth, MaxHealth));
     }
 
     public void AddEnergy(int value)
     {
         m_currentEnergy += value;
-        if (m_currentEnergy > MaxEnergy)
-        {
-            m_currentEnergy = MaxEnergy;
-        }
-        if (m_currentEnergy < 0)
-        {
-            m_currentEnergy = 0;
-        }
+        // Energy is bounded between 0 and MaxEnergy
+        m_currentEnergy = Mathf.Max(0, Mathf.Min(m_currentEnergy, MaxEnergy));
     }
 
     public void Reset()
