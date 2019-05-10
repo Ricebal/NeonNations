@@ -35,29 +35,29 @@ public class AfterImageController : NetworkBehaviour
     void Update()
     {
         // Exit if not generating images and linger time is over
-        if (!(m_generateImages || Time.time < m_endTime + m_linger))
+        if (!m_generateImages && Time.time >= m_endTime + m_linger)
         {
             return;
         }
 
         // If the player moved a certain distance from the last image spawn a new one
-        if (Vector3.Distance(transform.position, m_lastPosition) > m_distance || m_lastPosition == null)
+        if (m_lastPosition == null || Vector3.Distance(transform.position, m_lastPosition) > m_distance)
         {
-            CmdSpawnImage(transform.position, transform.rotation);
+            CmdSpawnImage(transform.position, transform.rotation.y);
             m_lastPosition = transform.position;
         }
     }
 
     [Command]
-    private void CmdSpawnImage(Vector3 position, Quaternion rotation)
+    private void CmdSpawnImage(Vector3 position, float rotationY)
     {
-        RpcSpawnImage(position, rotation);
+        RpcSpawnImage(position, rotationY);
     }
 
     [ClientRpc]
-    private void RpcSpawnImage(Vector3 position, Quaternion rotation)
+    private void RpcSpawnImage(Vector3 position, float rotationY)
     {
-        GameObject afterImage = Instantiate(m_prefab, position, rotation);
+        GameObject afterImage = Instantiate(m_prefab, position, Quaternion.Euler(new Vector3(0, rotationY, 0)));
         afterImage.GetComponent<AfterImage>().SetColor(m_color);
     }
 
