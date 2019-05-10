@@ -162,8 +162,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6b12304012292444b9b89a2210cbfc0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MyRenderer: {fileID: 2399466285092204019}
-  MyLight: {fileID: 8573210478504206487}
+  m_renderer: {fileID: 2399466285092204019}
+  m_light: {fileID: 8573210478504206487}
+  m_lifespan: 1
 --- !u!114 &4944682971316328230
 MonoBehaviour:
   m_ObjectHideFlags: 0
