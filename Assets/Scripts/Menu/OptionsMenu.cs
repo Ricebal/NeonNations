@@ -26,11 +26,6 @@ public class OptionsMenu : MonoBehaviour
 
     private int m_isFullScreen;
 
-    void Awake()
-    {
-        //LoadSavedValues();
-    }
-
     void Start()
     {
         // List of resolutions converted to string in order to add them to the dropdown
@@ -63,49 +58,30 @@ public class OptionsMenu : MonoBehaviour
         m_qualityDropdown.value = QualitySettings.GetQualityLevel();
     }
 
-    public void SetResolution(int resolutionIndex)
+    private void SetResolution(int resolutionIndex)
     {
         Resolution resolution = m_resolutions[resolutionIndex];
         Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
     }
 
-    public void SetQuality(int qualityIndex)
+    private void SetQuality(int qualityIndex)
     {
         QualitySettings.SetQualityLevel(qualityIndex);
     }
 
-    public void SetFullScreen(bool isFullScreen)
+    private void SetFullScreen(bool isFullScreen)
     {
         Screen.fullScreen = isFullScreen;
         m_isFullScreen = isFullScreen ? 1 : 0;
     }
 
-    // Save the settings selected by the user
+    // Apply the settings selected by the user
     public void Apply()
     {
         SetResolution(m_resolutionDropdown.value);
         SetFullScreen(m_fullScreenToggle.isOn);
         SetQuality(m_qualityDropdown.value);
-        /*PlayerPrefs.SetInt(s_resolutionWidth, Screen.width);
-        PlayerPrefs.SetInt(s_resolutionHeight, Screen.height);
-        PlayerPrefs.SetInt(s_quality, QualitySettings.GetQualityLevel());
-        PlayerPrefs.SetInt(s_fullScreen, m_isFullScreen);*/
         StartCoroutine(ShowMessage("Options saved", 1));
-    }
-
-    // Load and apply the settings saved by the user
-    public void LoadSavedValues()
-    {
-        if (PlayerPrefs.HasKey(s_fullScreen) && PlayerPrefs.HasKey(s_resolutionWidth) && PlayerPrefs.HasKey(s_resolutionHeight) && PlayerPrefs.HasKey(s_quality))
-        {
-            bool isFullScreen;
-
-            m_isFullScreen = PlayerPrefs.GetInt(s_fullScreen);
-            isFullScreen = m_isFullScreen != 0;
-
-            Screen.SetResolution(PlayerPrefs.GetInt(s_resolutionWidth), PlayerPrefs.GetInt(s_resolutionHeight), isFullScreen);
-            QualitySettings.SetQualityLevel(PlayerPrefs.GetInt(s_quality));
-        }
     }
 
     // Show the given message for the given delay in seconds
