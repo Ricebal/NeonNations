@@ -20,7 +20,10 @@ public class Sonar : MonoBehaviour
     {
         m_light.color = color;
         // color times three for intensity
-        GetComponentInChildren<ParticleSystemRenderer>().trailMaterial.SetColor("_EmissionColor", color * 3f);
+        ParticleSystemRenderer particleSystemRenderer = GetComponentInChildren<ParticleSystemRenderer>();
+        Material mat = Material.Instantiate(particleSystemRenderer.trailMaterial);
+        mat.SetColor("_EmissionColor", color * 3f);
+        particleSystemRenderer.trailMaterial = mat;
     }
 
     // Update is called once per frame
