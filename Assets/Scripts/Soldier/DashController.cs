@@ -44,7 +44,7 @@ public class DashController : MonoBehaviour
 
     public bool IsDashing()
     {
-        return !(Time.time > m_start + Duration);
+        return !(Time.time > m_start + m_duration);
     }
 
     private void FixedUpdate()
