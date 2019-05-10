@@ -6,11 +6,15 @@ using TMPro;
 
 public class OptionsMenu : MonoBehaviour
 {
-    public Dropdown ResolutionDropdown;
-    public Toggle FullScreenToggle;
-    public Dropdown QualityDropdown;
+    [SerializeField]
+    private Dropdown ResolutionDropdown;
+    [SerializeField]
+    private Toggle FullScreenToggle;
+    [SerializeField]
+    private Dropdown QualityDropdown;
     // Text displayed when the settings are saved
-    public TextMeshProUGUI SavingText;
+    [SerializeField]
+    private TextMeshProUGUI SavingText;
 
     // List of resolutions
     private Resolution[] m_resolutions;
