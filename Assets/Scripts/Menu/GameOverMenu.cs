@@ -6,7 +6,7 @@ public class GameOverMenu : MonoBehaviour
 {
     public GameObject Panel;
     public Text RespawnText;
-    
+
     private float m_remainingTime;
 
     void Start()

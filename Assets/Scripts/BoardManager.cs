@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Text;
-using UnityEngine;
 using TMPro;
+using UnityEngine;
 
 [RequireComponent(typeof(MeshFilter))]
 [RequireComponent(typeof(MeshRenderer))]
@@ -513,7 +512,7 @@ public class BoardManager : MonoBehaviour
             for (int y = 0; y < map[0].Length; y++)
             {
                 if (map[x][y] == 0 && // check if position in room equals zero
-                    !entranceTiles.Contains(new Vector2(x,y)) && // check if the tile isn't an entrance
+                    !entranceTiles.Contains(new Vector2(x, y)) && // check if the tile isn't an entrance
                     (m_tileMap[x + (int)pos.x][y + (int)pos.y] == 0 || // if so, check if the same position on map is zero
                     m_tileMap[x + (int)pos.x][y + (int)pos.y + 1] == 0 || // and check all tiles around the position on the map is zero, starting with north
                     m_tileMap[x + (int)pos.x + 1][y + (int)pos.y + 1] == 0 || // northeast
@@ -524,7 +523,9 @@ public class BoardManager : MonoBehaviour
                     m_tileMap[x + (int)pos.x - 1][y + (int)pos.y] == 0 || // west
                     m_tileMap[x + (int)pos.x - 1][y + (int)pos.y + 1] == 0 // northwest
                     ))
+                {
                     return false;
+                }
             }
         }
         return true;
@@ -538,7 +539,7 @@ public class BoardManager : MonoBehaviour
         int currentShortcutAttempt = 0;
         int currentShortcutAmount = 0;
         while (currentShortcutAttempt < m_maxShortcutAttempts && currentShortcutAmount < m_maxShortcutAmount)
-            {
+        {
             // get random direction to create a shortcut
             Vector2 direction = GenerateRandomDirection();
 
@@ -548,8 +549,8 @@ public class BoardManager : MonoBehaviour
 
             for (int i = m_minTunnelLength; i < m_maxTunnelLength; i++)
             {
-                otherWallTile = new Vector2(wallTile.x + direction.x * (i-1), (int)(wallTile.y + direction.y * (i-1)));
-                if (!(otherWallTile.x <= 1 || otherWallTile.x >= m_mapWidth - 1 || otherWallTile.y <= 1 || otherWallTile.y >= m_mapHeight - 1) && CheckWallTile(otherWallTile, new Vector2(direction.x*-1, direction.y*-1)))
+                otherWallTile = new Vector2(wallTile.x + direction.x * (i - 1), (int)(wallTile.y + direction.y * (i - 1)));
+                if (!(otherWallTile.x <= 1 || otherWallTile.x >= m_mapWidth - 1 || otherWallTile.y <= 1 || otherWallTile.y >= m_mapHeight - 1) && CheckWallTile(otherWallTile, new Vector2(direction.x * -1, direction.y * -1)))
                 {
                     // generate tunnel
                     int[][] tunnel = new int[(int)(m_tunnelWidth * Math.Abs(direction.y) + i * Math.Abs(direction.x))][];
@@ -574,13 +575,14 @@ public class BoardManager : MonoBehaviour
                     List<Vector2> entranceTiles = new List<Vector2>();
                     for (int j = 0; j < m_tunnelWidth; j++)
                     {
-                        entranceTiles.Add(new Vector2(direction.y*j, direction.x*j));
+                        entranceTiles.Add(new Vector2(direction.y * j, direction.x * j));
                         // TODO check this
                         entranceTiles.Add(new Vector2(direction.y * j + direction.x * (tunnel[0].Length - 1), direction.y * (tunnel[0].Length - 1) + direction.x * j));
                     }
 
                     // check if placeable
-                    if (CanPlace(tunnel, pos, entranceTiles)) {
+                    if (CanPlace(tunnel, pos, entranceTiles))
+                    {
                         PasteTileMap(tunnel, m_tileMap, pos);
                         currentShortcutAmount++;
                     }

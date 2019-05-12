@@ -1,7 +1,7 @@
-﻿using UnityEngine;
+﻿using TMPro;
+using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using TMPro;
 
 public class ButtonHovering : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
@@ -16,7 +16,7 @@ public class ButtonHovering : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     // Method triggered when the mouse cursor entered the button area
     public void OnPointerEnter(PointerEventData pointerEvent)
     {
-        if(m_button.IsInteractable())
+        if (m_button.IsInteractable())
         {
             GetComponentsInChildren<TextMeshProUGUI>()[0].fontStyle = FontStyles.Bold;
         }
@@ -25,7 +25,7 @@ public class ButtonHovering : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     // Method triggered when the mouse cursor exited the button area
     public void OnPointerExit(PointerEventData pointerEvent)
     {
-        if(m_button.IsInteractable())
+        if (m_button.IsInteractable())
         {
             GetComponentsInChildren<TextMeshProUGUI>()[0].fontStyle = FontStyles.Normal;
         }
