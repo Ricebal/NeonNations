@@ -34,7 +34,6 @@ public class EscapeMenu : NetworkBehaviour
         {
             NetworkManager.singleton.StopClient();
         }
-        Cursor.visible = true;
         SceneManager.LoadScene(2);
     }
 
