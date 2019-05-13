@@ -1,13 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class Dash : MonoBehaviour
+public class DashController : MonoBehaviour
 {
-    public float Multiplier = 10f;
+    public float Multiplier = 7.5f;
     public int Cost = 20;
-    public float Duration = 0.05f;
-    public float Cooldown = 1f;
+    [SerializeField] private float m_duration = 0.1f;
+    [SerializeField] private float m_cooldown = 1f;
     private float m_start;
     private float m_currentMultiplier = 1f;
     private AfterImageController m_afterImageController;
@@ -34,7 +32,7 @@ public class Dash : MonoBehaviour
 
     public bool CanDash(int energy)
     {
-        return energy >= Cost && Time.time > m_start + Cooldown;
+        return energy >= Cost && Time.time > m_start + m_cooldown;
     }
 
     public float GetMultiplier()
@@ -44,7 +42,7 @@ public class Dash : MonoBehaviour
 
     public bool IsDashing()
     {
-        return !(Time.time > m_start + Duration);
+        return !(Time.time > m_start + m_duration);
     }
 
     private void FixedUpdate()

@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.Networking;
 
 public class Bot : Soldier
 {
@@ -11,7 +10,6 @@ public class Bot : Soldier
         {
             return;
         }
-        base.Start();
         m_rigidbody = GetComponent<Rigidbody>();
     }
 
@@ -61,13 +59,4 @@ public class Bot : Soldier
         transform.rotation = Quaternion.LookRotation(newDirection);
     }
 
-    // If the bot is hit by a bullet, the bot gets damaged
-    void OnTriggerEnter(Collider collider)
-    {
-        if (!isServer)
-        {
-            return;
-        }
-        base.OnTriggerEnter(collider);
-    }
 }

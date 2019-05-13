@@ -6,10 +6,9 @@ public class PlayerController : NetworkBehaviour
     private Rigidbody m_rigidbody;
     private Player m_player;
     private Action m_action;
-    private Dash m_playerDash;
-    private bool m_isEnabled;
+    private DashController m_playerDash;
 
-    public void Start()
+    void Start()
     {
         if (!isLocalPlayer)
         {
@@ -19,15 +18,19 @@ public class PlayerController : NetworkBehaviour
         m_rigidbody = GetComponent<Rigidbody>();
         m_player = GetComponent<Player>();
         m_action = GetComponent<Action>();
-        m_playerDash = GetComponent<Dash>();
+        m_playerDash = GetComponent<DashController>();
+
         Vector2 spawnPoint = GameObject.Find("GameManager").GetComponent<BoardManager>().GetRandomFloorTile();
         transform.position = new Vector3(spawnPoint.x, 0, spawnPoint.y);
-        SetEnabled(true);
+
+        // By default, everything is freezed to avoid weird player collisions but the local player needs 
+        // to move using the rigidbody velocity so his position is only frozen on Y.
+        m_rigidbody.constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionY;
     }
 
-    public void Update()
+    void Update()
     {
-        if (!isLocalPlayer || !m_isEnabled)
+        if (!isLocalPlayer)
         {
             return;
         }
@@ -51,36 +54,35 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
-    public void FixedUpdate()
+    void FixedUpdate()
     {
         if (!isLocalPlayer)
         {
             return;
         }
 
-        Vector3 movement = new Vector3();
-        // If player controller is enabled, take into account user's inputs
-        if (m_isEnabled)
-        {
-            float moveHorizontal = Input.GetAxis("Horizontal");
-            float moveVertical = Input.GetAxis("Vertical");
+        float moveHorizontal = Input.GetAxis("Horizontal");
+        float moveVertical = Input.GetAxis("Vertical");
 
-            movement = new Vector3(moveHorizontal, 0, moveVertical);
-            
-            // If dashing, normalize movement vector so you are always at max speed
-            if (m_playerDash.IsDashing())
-            {
-                movement.Normalize();
-            }
+        Vector3 movement = new Vector3(moveHorizontal, 0, moveVertical);
+
+        // If dashing, normalize movement vector so you are always at max speed
+        if (m_playerDash.IsDashing())
+        {
+            movement.Normalize();
         }
 
         m_rigidbody.velocity = movement * m_player.Speed * m_playerDash.GetMultiplier();
     }
 
-    // Enable / disable player's movements
-    public void SetEnabled(bool isEnabled)
+    void OnDisable()
     {
-        m_isEnabled = isEnabled;
+        if (!isLocalPlayer)
+        {
+            return;
+        }
+
+        m_rigidbody.velocity = Vector3.zero;
     }
 
 }
