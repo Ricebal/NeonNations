@@ -9,8 +9,8 @@ using System.Drawing;
 public class SearchBehaviour : MonoBehaviour
 {
     public GameObject Bot;
-    public float offsetForLineCalculationX = 1f;
-    public float offsetForLineCalculationY = 1f;
+    private float offsetForLineCalculationX = .95f;
+    private float offsetForLineCalculationY = .95f;
 
     private Coordinates GoalCoordinates = new Coordinates();
     private GameEnvironment m_environment;
