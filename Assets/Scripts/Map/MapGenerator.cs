@@ -275,7 +275,7 @@ public class MapGenerator
             }
 
             // if it can be placed, return the room
-            if (CanPlace(tempMap, room.Pos, entranceTiles))
+            if (CanPlace(tempMap, room.Pos, entranceTiles, direction))
             {
                 room.RoomMap = tempMap;
                 return room;
@@ -426,8 +426,9 @@ public class MapGenerator
     /// <param name="map">Small map to be added</param>
     /// <param name="pos">Position of the small map within the m_tilemap</param>
     /// <param name="entranceTiles">Tiles that should be excluded of checking</param>
+    /// <param name="direction">Direction of entrance</param>
     /// <returns>True if the map can indeed be placed inside the m_tilemap</returns>
-    private bool CanPlace(int[][] map, Vector2 pos, List<Vector2> entranceTiles)
+    private bool CanPlace(int[][] map, Vector2 pos, List<Vector2> entranceTiles, Vector2 direction)
     {
         // check out of bounds
         if (pos.x <= 0 || pos.x > m_mapWidth - map.Length - 1 || pos.y <= 0 || pos.y > m_mapHeight - map[0].Length - 1)
@@ -509,7 +510,7 @@ public class MapGenerator
                     }
 
                     // check if placeable
-                    if (CanPlace(tunnel, pos, entranceTiles))
+                    if (CanPlace(tunnel, pos, entranceTiles, direction))
                     {
                         // if breakable, make entrance tiles a breakable block
                         if (IsBreakable())
