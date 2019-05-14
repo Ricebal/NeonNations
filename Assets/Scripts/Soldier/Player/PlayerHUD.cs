@@ -7,12 +7,10 @@ public class PlayerHUD : MonoBehaviour
     private Slider m_energySlider;
     private Stats m_playerStats;
 
-
     // Start is called before the first frame update
     void Start()
     {
         m_playerStats = GetComponent<Stats>();
-
         m_healthSlider = GameObject.Find("HealthSlider").GetComponent<Slider>();
         m_energySlider = GameObject.Find("EnergySlider").GetComponent<Slider>();
     }
