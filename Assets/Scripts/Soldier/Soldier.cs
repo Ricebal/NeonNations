@@ -38,7 +38,7 @@ public class Soldier : NetworkBehaviour
         }
 
         // If the Soldier's health is below or equal to 0
-        if (isLocalPlayer && m_stats.GetCurrentHealth() <= 0)
+        if (isServer && m_stats.GetCurrentHealth() <= 0)
         {
             // If the Soldier is not yet dead, the Soldier will die
             if (!m_isDead)

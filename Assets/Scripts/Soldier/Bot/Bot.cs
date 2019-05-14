@@ -15,6 +15,8 @@ public class Bot : Soldier
 
     void Update()
     {
+        base.Update();
+
         if (!isServer)
         {
             return;
@@ -25,7 +27,6 @@ public class Bot : Soldier
         {
             m_rigidbody.velocity = new Vector3(0, 0, 0);
         }
-        base.Update();
     }
 
     void FixedUpdate()
