@@ -33,7 +33,7 @@ public class Soldier : NetworkBehaviour
         // If the Soldier is respawning, make him fade away
         if (m_isDead)
         {
-            float newAlpha = (RespawnTime - (Time.time - m_deathTime)) / RespawnTime;
+            float newAlpha = Mathf.Max(0, (RespawnTime - (Time.time - m_deathTime)) / RespawnTime);
             m_renderer.material.color = new Color(1, 0.39f, 0.28f, newAlpha);
         }
 
