@@ -78,6 +78,12 @@ namespace Assets.Scripts.Soldier.Bot.DStar
             return true;
         }
 
+        /// <summary>
+        /// Check if line intersects a triangle
+        /// </summary>
+        /// <param name="currentPosition">The start-position of the line</param>
+        /// <param name="nextPosition">The end-position of the line</param>
+        /// <param name="tile">The rectangle you want to check for collision</param>
         public static bool LineIntersectsRect(PointF currentPosition, PointF nextPosition, RectangleF tile)
         {
             bool lineCrossesTile = LineIntersectsLine(currentPosition, nextPosition, new PointF(tile.X, tile.Y), new PointF(tile.X + tile.Width, tile.Y)) ||
@@ -101,20 +107,25 @@ namespace Assets.Scripts.Soldier.Bot.DStar
             return lineCrossesTile;
         }
 
+        /// <summary>
+        /// Checks if two lines intersect with each other
+        /// </summary>
         private static bool LineIntersectsLine(PointF currentPosition, PointF nextPosition, PointF rectanglePoint1, PointF rectanglePoint2)
         {
+            // 
             float q = (currentPosition.Y - rectanglePoint1.Y) * (rectanglePoint2.X - rectanglePoint1.X) - (currentPosition.X - rectanglePoint1.X) * (rectanglePoint2.Y - rectanglePoint1.Y);
-            float d = (nextPosition.X - currentPosition.X) * (rectanglePoint2.Y - rectanglePoint1.Y) - (nextPosition.Y - currentPosition.Y) * (rectanglePoint2.X - rectanglePoint1.X);
+            // 
+            float delta = (nextPosition.X - currentPosition.X) * (rectanglePoint2.Y - rectanglePoint1.Y) - (nextPosition.Y - currentPosition.Y) * (rectanglePoint2.X - rectanglePoint1.X);
 
-            if (d == 0)
+            if (delta == 0)
             {
                 return false;
             }
 
-            float r = q / d;
+            float r = q / delta;
 
             q = (currentPosition.Y - rectanglePoint1.Y) * (nextPosition.X - currentPosition.X) - (currentPosition.X - rectanglePoint1.X) * (nextPosition.Y - currentPosition.Y);
-            float s = q / d;
+            float s = q / delta;
 
             if (r < 0 || r > 1 || s < 0 || s > 1)
             {

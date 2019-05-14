@@ -42,40 +42,15 @@ public class SearchBehaviour : MonoBehaviour
             GenerateNewDestination(currentCoordinates.X, currentCoordinates.Y);
         }
     }
-    private int m_samePositionCount = 0;
-    private int m_magicNumber = 6;
-    private bool gettingBackToRightPosition = false;
-    private Coordinates m_previousBotCoordinates = new Coordinates(0, 0);
+
     /// <summary>
     /// Makes the DStarLite calculate where the bot should move next and than moves the bot in that direction.
     /// </summary>
     private void NextMove()
     {
-        bool skipList = false;
         List<Node> nodesToTraverse = new List<Node>();
         Coordinates botCoordinate = m_environment.ConvertGameObjectToCoordinates(Bot.transform);
-        if(botCoordinate.X == m_previousBotCoordinates.X && botCoordinate.Y == m_previousBotCoordinates.Y)
-        {
-            m_samePositionCount++;
-            if(m_samePositionCount >= m_magicNumber)
-            {
-                gettingBackToRightPosition = true;
-                if (gettingBackToRightPosition)
-                {
-                    nodesToTraverse.Add(m_dStarLite.NextNodeToTraverse());
-                    skipList = true;
-                }
-            }
-            else
-            {
-                m_samePositionCount = 0;
-            }
-        }
-        m_previousBotCoordinates = botCoordinate;
-        if (!skipList)
-        {
-            nodesToTraverse.AddRange(m_dStarLite.NodesToTraverse());
-        }
+        nodesToTraverse.AddRange(m_dStarLite.NodesToTraverse());
         Coordinates farthestReachableNode = BresenhamPathSmoothing.FarthestNodeToReach(new PointF(Bot.transform.position.x, Bot.transform.position.z), nodesToTraverse, m_dStarLite.Map, m_offsetForLineCalculation);
         DebugMap(m_dStarLite.Map, farthestReachableNode, nodesToTraverse);
         MoveTo(farthestReachableNode);
