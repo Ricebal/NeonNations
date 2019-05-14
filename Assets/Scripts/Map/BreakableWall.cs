@@ -4,19 +4,19 @@ using UnityEngine;
 
 public class BreakableWall : MonoBehaviour
 {
-    protected Stat m_healthStat;
+    protected Stats m_stats;
 
     protected void Start()
     {
-        m_healthStat = GetComponent<Stat>();
-        m_healthStat.Max = 50;
-        m_healthStat.Reset();
+        m_stats = GetComponent<Stats>();
+        m_stats.MaxHealth = 50;
+        m_stats.Reset();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (m_healthStat.GetCurrent() <= 0)
+        if (m_stats.GetCurrentHealth() <= 0)
         {
             Destroy(gameObject);
         }
@@ -27,7 +27,7 @@ public class BreakableWall : MonoBehaviour
     {
         if (collider.gameObject.tag == "Bullet")
         {
-            m_healthStat.ChangeCurrent(-collider.gameObject.GetComponent<Bullet>().Damage);
+            m_stats.TakeDamage(collider.gameObject.GetComponent<Bullet>().Damage);
             return true;
         }
         return false;

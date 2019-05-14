@@ -51,7 +51,7 @@ public class Player : Soldier
             return;
         }
 
-        base.FixedUpdate();
+        m_stats.AddEnergy(1);
         m_hud.UpdateHUD();
     }
 

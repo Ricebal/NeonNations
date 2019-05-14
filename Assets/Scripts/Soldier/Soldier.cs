@@ -13,19 +13,17 @@ public class Soldier : NetworkBehaviour
     protected float m_remainingRespawnTime;
 
     [SyncVar] public Color InitialColor;
-    protected Stat m_healthStat;
-    protected Stat m_energyStat;
+    protected Stats m_stats;
 
     protected void Start()
     {
-        m_healthStat = GetComponents<Stat>()[0];
-        m_energyStat = GetComponents<Stat>()[1];
+        m_stats = GetComponent<Stats>();
     }
 
     protected void Update()
     {
         // If the Soldier's health is below or equal to 0...
-        if (m_healthStat.GetCurrent() <= 0)
+        if (m_stats.GetCurrentHealth() <= 0)
         {
             // ...and the Soldier is not yet dead, the Soldier will die
             if (!m_isDead)
@@ -46,11 +44,6 @@ public class Soldier : NetworkBehaviour
                 Respawn();
             }
         }
-    }
-
-    protected void FixedUpdate()
-    {
-        m_energyStat.ChangeCurrent(1);
     }
 
     protected virtual void Die()
@@ -97,8 +90,7 @@ public class Soldier : NetworkBehaviour
         CmdColor(gameObject, InitialColor);
         Vector2 spawnPoint = GameObject.Find("GameManager").GetComponent<BoardManager>().GetRandomFloorTile();
         transform.position = new Vector3(spawnPoint.x, 0, spawnPoint.y);
-        m_healthStat.Reset();
-        m_energyStat.Reset();
+        m_stats.Reset();
         CmdLayer(gameObject, 10);
     }
 
@@ -110,7 +102,7 @@ public class Soldier : NetworkBehaviour
             Bullet bullet = collider.gameObject.GetComponent<Bullet>();
             if (bullet.GetShooter() != gameObject && bullet.GetShooter().GetComponent<Soldier>().Team != Team)
             {
-                m_healthStat.ChangeCurrent(-bullet.Damage);
+                m_stats.TakeDamage(bullet.Damage);
                 return true;
             }
         }
