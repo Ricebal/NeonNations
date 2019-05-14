@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using TMPro;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -9,7 +10,7 @@ public class NetworkMenu : MonoBehaviour
     public Button ButtonBack;
     public InputField IpAddressField;
     // Text displayed when there is a client connection or disconnection
-    public Text ConnectionText;
+    public TextMeshProUGUI ConnectionText;
 
     private NetworkManagerCustom m_networkManagerCustom;
 
@@ -26,7 +27,7 @@ public class NetworkMenu : MonoBehaviour
         ButtonStartHost.interactable = !m_networkManagerCustom.IsConnecting();
 
         // Trigger join game button click when the user presses 'enter' and the ip address is specified
-        if(Input.GetKey(KeyCode.Return) && IpAddressField.text.Length != 0)
+        if (Input.GetKey(KeyCode.Return) && IpAddressField.text.Length != 0)
         {
             ButtonJoingGame.onClick.Invoke();
         }

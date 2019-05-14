@@ -1,9 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.Networking;
+﻿using UnityEngine;
 
-public class Sonar : NetworkBehaviour
+public class Sonar : MonoBehaviour
 {
     [SerializeField] private Light m_light;
     [SerializeField] private float m_maxIntensity;
@@ -19,12 +16,14 @@ public class Sonar : NetworkBehaviour
         m_growing = true;
     }
 
-    [ClientRpc]
-    public void RpcSetColor(Color color)
+    public void SetColor(Color color)
     {
         m_light.color = color;
         // color times three for intensity
-        GetComponentInChildren<ParticleSystemRenderer>().trailMaterial.SetColor("_EmissionColor", color * 3f);
+        ParticleSystemRenderer particleSystemRenderer = GetComponentInChildren<ParticleSystemRenderer>();
+        Material mat = Material.Instantiate(particleSystemRenderer.trailMaterial);
+        mat.SetColor("_EmissionColor", color * 3f);
+        particleSystemRenderer.trailMaterial = mat;
     }
 
     // Update is called once per frame
