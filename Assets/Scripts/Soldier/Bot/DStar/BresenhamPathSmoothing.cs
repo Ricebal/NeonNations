@@ -170,107 +170,32 @@ namespace Assets.Scripts.Soldier.Bot.DStar
             {
                 for(float j = downY; j <= upY; j++)
                 {
-                    
-                    RectangleF tile = new RectangleF(i-tileOffset,j-tileOffset,1,1);
-                    // Draw debug rectangle
-                    // Top
-                    Debug.DrawLine(new Vector3(tile.Left, 0, tile.Top), new Vector3(tile.Right, 0, tile.Top), UnityEngine.Color.gray, 0.01f, true);
-                    // Left
-                    Debug.DrawLine(new Vector3(tile.Left, 0, tile.Bottom), new Vector3(tile.Left, 0, tile.Top), UnityEngine.Color.gray, 0.01f, true);
-                    // Right
-                    Debug.DrawLine(new Vector3(tile.Right, 0, tile.Bottom), new Vector3(tile.Right, 0, tile.Top), UnityEngine.Color.gray, 0.01f, true);
-                    // Bottom
-                    Debug.DrawLine(new Vector3(tile.Left, 0, tile.Bottom), new Vector3(tile.Right, 0, tile.Bottom), UnityEngine.Color.gray, 0.01f, true);
-
-                    // Check if it is intersected by the line
-                    if (LineIntersectsRect(new PointF(startPointX, startPointY), new PointF(endPointX, endPointY), tile))
+                    // If the coordinate isn't know already
+                    if(!passingCoordinates.Any(c => c.X == i && c.Y == j))
                     {
-                        // If the coordinate isn't know already
-                        if(!passingCoordinates.Any(c => c.X == i && c.Y == j))
+                        RectangleF tile = new RectangleF(i-tileOffset,j-tileOffset,1,1);
+                        //DebugRectangle(tile);
+
+                        // Check if it is intersected by the line
+                        if (LineIntersectsRect(new PointF(startPointX, startPointY), new PointF(endPointX, endPointY), tile))
                         {
-                            passingCoordinates.Add(new Coordinates((int)i, (int)j));
+                                passingCoordinates.Add(new Coordinates((int)i, (int)j));
                         }
                     }
                 }
             }
         }
-
-        /// <summary>
-        /// Returns a List of Coordinates which collide with the line between a startpoint and an endpoint
-        /// </summary>
-        /// <param name="startPointX">The x coordinate of the startpoint</param>
-        /// <param name="startPointY">The y coordinate of the startpoint</param>
-        /// <param name="endPointX">The x coordinate of the endpoint</param>
-        /// <param name="endPointY">The y coordinate of the endpoint</param>
-        /// <returns>List of intersecting Coordinates</returns>
-        private static List<Coordinates> BresenhamLine(int startPointX, int startPointY, int endPointX, int endPointY)
+        // Debug methods
+        private static void DebugRectangle(RectangleF tile)
         {
-            List<Coordinates> result = new List<Coordinates>();
-
-            // If the difference in height of the line is higher than the difference of width, it will be a steep line.
-            bool steep = Math.Abs(endPointY - startPointY) > Math.Abs(endPointX - startPointX);
-            if (steep)
-            {
-                Swap(ref startPointX, ref startPointY);
-                Swap(ref endPointX, ref endPointY);
-            }
-            if (startPointX > endPointX)
-            {
-                Swap(ref startPointX, ref endPointX);
-                Swap(ref startPointY, ref endPointY);
-            }
-
-            int deltax = endPointX - startPointX;
-            int deltay = Math.Abs(endPointY - startPointY);
-            int error = 0;
-            int ystep;
-            int y = startPointY;
-            if (startPointY < endPointY)
-            {
-                ystep = 1;
-            }
-            else
-            {
-                ystep = -1;
-            }
-
-            for (int x = startPointX; x <= endPointX; x++)
-            {
-                if (steep)
-                {
-                    result.Add(new Coordinates(y, x));
-                }
-                else
-                {
-                    result.Add(new Coordinates(x, y));
-                }
-                error += deltay;
-                if (2 * error >= deltax)
-                {
-                    if (steep)
-                    {
-                        result.Add(new Coordinates(y, x+1));
-                    }
-                    else
-                    {
-                        result.Add(new Coordinates(x+1, y));
-                    }
-
-                    y += ystep;
-                    error -= deltax;
-                }
-            }
-            return result;
-        }
-
-        /// <summary>
-        ///Swap the values of A and B
-        /// </summary>
-        private static void Swap<T>(ref T a, ref T b)
-        {
-            T c = a;
-            a = b;
-            b = c;
+            // Top
+            Debug.DrawLine(new Vector3(tile.Left, 0, tile.Top), new Vector3(tile.Right, 0, tile.Top), UnityEngine.Color.gray, 0.01f, true);
+            // Left
+            Debug.DrawLine(new Vector3(tile.Left, 0, tile.Bottom), new Vector3(tile.Left, 0, tile.Top), UnityEngine.Color.gray, 0.01f, true);
+            // Right
+            Debug.DrawLine(new Vector3(tile.Right, 0, tile.Bottom), new Vector3(tile.Right, 0, tile.Top), UnityEngine.Color.gray, 0.01f, true);
+            // Bottom
+            Debug.DrawLine(new Vector3(tile.Left, 0, tile.Bottom), new Vector3(tile.Right, 0, tile.Bottom), UnityEngine.Color.gray, 0.01f, true);
         }
     }
 }

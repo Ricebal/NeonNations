@@ -10,7 +10,7 @@ public class SearchBehaviour : MonoBehaviour
 {
     public GameObject Bot;
 
-    private float m_offsetForLineCalculation = .95f; // A little less than 1. This will prevent the bot from thinking it will collide with an obstacle directly next to it when moving parallel to ithat obstacle.
+    private const float m_offsetForLineCalculation = .95f; // A little less than 1. This will prevent the bot from thinking it will collide with an obstacle directly next to it when moving parallel to ithat obstacle.
     private Coordinates GoalCoordinates = new Coordinates();
     private GameEnvironment m_environment;
     private DStarLite m_dStarLite;
