@@ -22,6 +22,9 @@ public class SyncPosition : NetworkBehaviour
     // This value is used to consider the position correct when the difference is inferior than this value
     [SerializeField]
     private float m_closeEnough;
+    // This value is used to consider the position too far when the difference is superior than this value
+    [SerializeField]
+    private float m_tooFar;
 
     // Current interpolation factor
     private float m_lerpRate;
@@ -92,7 +95,7 @@ public class SyncPosition : NetworkBehaviour
 
     private void LerpPosition(Vector3 pos)
     {
-        if (Vector3.Distance(m_transform.position, pos) < m_closeEnough)
+        if (Vector3.Distance(m_transform.position, pos) < m_closeEnough || Vector3.Distance(m_transform.position, pos) > m_tooFar)
         {
             m_transform.position = pos;
         }
