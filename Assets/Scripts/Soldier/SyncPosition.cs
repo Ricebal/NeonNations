@@ -95,7 +95,9 @@ public class SyncPosition : NetworkBehaviour
 
     private void LerpPosition(Vector3 pos)
     {
-        if (Vector3.Distance(m_transform.position, pos) < m_closeEnough || Vector3.Distance(m_transform.position, pos) > m_tooFar)
+        // If the player is close enough or too far from his real position, teleport him
+        float distance = Vector3.Distance(m_transform.position, pos);
+        if (distance < m_closeEnough || distance > m_tooFar)
         {
             m_transform.position = pos;
         }

@@ -4,17 +4,20 @@ public class Bot : Soldier
 {
     private Rigidbody m_rigidbody;
 
-    void Start()
+    private void Start()
     {
         if (!isServer)
         {
             return;
         }
+
         m_rigidbody = GetComponent<Rigidbody>();
     }
 
-    void Update()
+    protected new void Update()
     {
+        base.Update();
+
         if (!isServer)
         {
             return;
@@ -25,15 +28,15 @@ public class Bot : Soldier
         {
             m_rigidbody.velocity = new Vector3(0, 0, 0);
         }
-        base.Update();
     }
 
-    void FixedUpdate()
+    private void FixedUpdate()
     {
         if (!isServer)
         {
             return;
         }
+
         m_stats.AddEnergy(1);
     }
 
@@ -52,6 +55,7 @@ public class Bot : Soldier
         {
             return;
         }
+
         Vector3 newDirection = new Vector3(x, transform.forward.y, z);
         // Change the rotation
         transform.rotation = Quaternion.LookRotation(newDirection);
