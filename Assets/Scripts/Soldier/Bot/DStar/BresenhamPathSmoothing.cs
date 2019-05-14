@@ -10,7 +10,7 @@ namespace Assets.Scripts.Soldier.Bot.DStar
 {
     public static class BresenhamPathSmoothing
     {
-        public static Coordinates FarthestNodeToReach(PointF currentPosition, List<Node> nodesToTraverse, Node[][] map, float xOffset, float yOffset)
+        public static Coordinates FarthestNodeToReach(PointF currentPosition, List<Node> nodesToTraverse, Node[][] map, float entityWidth)
         {
             int nextNode = 0;
             int previousNextNode = nextNode;
@@ -25,7 +25,7 @@ namespace Assets.Scripts.Soldier.Bot.DStar
                 // Get new point that is closer to the destination.
                 nextNode++;
                 // Check if it's possible to move to the next position
-                possibleToMoveHere = PossibleToMoveBetween(currentPosition, new PointF(nodesToTraverse[nextNode].X, nodesToTraverse[nextNode].Y), map, xOffset, yOffset);
+                possibleToMoveHere = PossibleToMoveBetween(currentPosition, new PointF(nodesToTraverse[nextNode].X, nodesToTraverse[nextNode].Y), map, entityWidth, entityWidth);
             }
 
             // If it's not possible to move to the next position
@@ -46,28 +46,26 @@ namespace Assets.Scripts.Soldier.Bot.DStar
         /// <returns></returns>
         private static bool PossibleToMoveBetween(PointF currentPosition, PointF newPosition, Node[][] map, float xOffset, float yOffset)
         {
-            float tileOffset = 0;
-            float leftSideFromBot = -(xOffset / 2);
-            float rightSideFromBot = +(xOffset / 2);
-            float upperSideFromBot = +(yOffset / 2);
-            float lowerSideFromBot = -(yOffset / 2);
+            float leftSideFromEntity = -(xOffset / 2);
+            float rightSideFromEntity = +(xOffset / 2);
+            float upperSideFromEntity = +(yOffset / 2);
+            float lowerSideFromEntity = -(yOffset / 2);
 
-            // Top of bot
-            // draw a 5-unit red line from the origin for .01 seconds
-            Debug.DrawLine(new Vector3(currentPosition.X , 0, currentPosition.Y + upperSideFromBot), new Vector3(newPosition.X + tileOffset, 0, newPosition.Y + tileOffset + upperSideFromBot), UnityEngine.Color.red, 0.01f);
-            List<Coordinates> passingCoordinates = TilesIntersectedByLine(currentPosition.X, currentPosition.Y + upperSideFromBot, newPosition.X + tileOffset, newPosition.Y + tileOffset + upperSideFromBot);
-            // Left of bot
-            // draw a 5-unit red line from the origin for .01 seconds
-            Debug.DrawLine(new Vector3(currentPosition.X + leftSideFromBot, 0, currentPosition.Y  ), new Vector3(newPosition.X + tileOffset + leftSideFromBot, 0, newPosition.Y + tileOffset), UnityEngine.Color.yellow, 0.01f);
-            passingCoordinates.AddRange(TilesIntersectedByLine(currentPosition.X + leftSideFromBot, currentPosition.Y  , newPosition.X + tileOffset, newPosition.Y + tileOffset));
-            // Right of bot
-            // draw a 5-unit red line from the origin for .01 seconds
-            Debug.DrawLine(new Vector3(currentPosition.X + rightSideFromBot, 0, currentPosition.Y  ), new Vector3(newPosition.X + tileOffset + rightSideFromBot, 0, newPosition.Y + tileOffset  ), UnityEngine.Color.green, 0.01f);
-            passingCoordinates.AddRange(TilesIntersectedByLine(currentPosition.X + rightSideFromBot, currentPosition.Y  , newPosition.X + tileOffset + rightSideFromBot, newPosition.Y + tileOffset  ));
-            // Bottom of bot
-            // draw a 5-unit red line from the origin for .01 seconds
-            Debug.DrawLine(new Vector3(currentPosition.X , 0, currentPosition.Y + lowerSideFromBot), new Vector3(newPosition.X + tileOffset, 0, newPosition.Y + tileOffset + lowerSideFromBot), UnityEngine.Color.blue, 0.01f);
-            passingCoordinates.AddRange(TilesIntersectedByLine(currentPosition.X , currentPosition.Y + lowerSideFromBot, newPosition.X + tileOffset , newPosition.Y + tileOffset + lowerSideFromBot));
+            // Draw the lines that are checked by the bot (top, left, right, bottom)
+            //Debug.DrawLine(new Vector3(currentPosition.X, 0, currentPosition.Y + upperSideFromEntity), new Vector3(newPosition.X, 0, newPosition.Y + upperSideFromEntity), UnityEngine.Color.red, 0.01f);
+            //Debug.DrawLine(new Vector3(currentPosition.X + leftSideFromEntity, 0, currentPosition.Y), new Vector3(newPosition.X + leftSideFromEntity, 0, newPosition.Y), UnityEngine.Color.yellow, 0.01f);
+            //Debug.DrawLine(new Vector3(currentPosition.X + rightSideFromEntity, 0, currentPosition.Y), new Vector3(newPosition.X + rightSideFromEntity, 0, newPosition.Y), UnityEngine.Color.green, 0.01f);
+            //Debug.DrawLine(new Vector3(currentPosition.X, 0, currentPosition.Y + lowerSideFromEntity), new Vector3(newPosition.X, 0, newPosition.Y + lowerSideFromEntity), UnityEngine.Color.blue, 0.01f);;
+
+            List<Coordinates> passingCoordinates = new List<Coordinates>();
+            // Top of entity
+            TilesIntersectedByLine(currentPosition.X, currentPosition.Y + upperSideFromEntity, newPosition.X, newPosition.Y + upperSideFromEntity, ref passingCoordinates);
+            // Left of entity
+            TilesIntersectedByLine(currentPosition.X + leftSideFromEntity, currentPosition.Y, newPosition.X + leftSideFromEntity, newPosition.Y, ref passingCoordinates);
+            // Right of entity
+            TilesIntersectedByLine(currentPosition.X + rightSideFromEntity, currentPosition.Y, newPosition.X + rightSideFromEntity, newPosition.Y, ref passingCoordinates);
+            // Bottom of entity
+            TilesIntersectedByLine(currentPosition.X, currentPosition.Y + lowerSideFromEntity, newPosition.X, newPosition.Y + lowerSideFromEntity, ref passingCoordinates);
             foreach (Coordinates coordinate in passingCoordinates)
             {
                 if (map[coordinate.X][coordinate.Y].Obstacle)
@@ -88,18 +86,18 @@ namespace Assets.Scripts.Soldier.Bot.DStar
                    LineIntersectsLine(currentPosition, nextPosition, new PointF(tile.X, tile.Y + tile.Height), new PointF(tile.X, tile.Y)) ||
                    (tile.Contains(currentPosition) && tile.Contains(nextPosition));
 
-            if (lineCrossesTile)
-            {
-                // Draw debug rectangle
-                // Top
-                Debug.DrawLine(new Vector3(tile.Left, 0.1f, tile.Top), new Vector3(tile.Right, 0.1f, tile.Top), UnityEngine.Color.white, 0.01f);
-                // Left
-                Debug.DrawLine(new Vector3(tile.Left, 0.1f, tile.Bottom), new Vector3(tile.Left, 0.1f, tile.Top), UnityEngine.Color.white, 0.01f);
-                // Right
-                Debug.DrawLine(new Vector3(tile.Right, 0.1f, tile.Bottom), new Vector3(tile.Right, 0.1f, tile.Top), UnityEngine.Color.white, 0.01f);
-                // Bottom
-                Debug.DrawLine(new Vector3(tile.Left, 0.1f, tile.Bottom), new Vector3(tile.Right, 0.1f, tile.Bottom), UnityEngine.Color.white, 0.01f);
-            }
+            //if (lineCrossesTile)
+            //{
+            //    // Draw debug rectangle
+            //    // Top
+            //    Debug.DrawLine(new Vector3(tile.Left, 0.1f, tile.Top), new Vector3(tile.Right, 0.1f, tile.Top), UnityEngine.Color.white, 0.01f);
+            //    // Left
+            //    Debug.DrawLine(new Vector3(tile.Left, 0.1f, tile.Bottom), new Vector3(tile.Left, 0.1f, tile.Top), UnityEngine.Color.white, 0.01f);
+            //    // Right
+            //    Debug.DrawLine(new Vector3(tile.Right, 0.1f, tile.Bottom), new Vector3(tile.Right, 0.1f, tile.Top), UnityEngine.Color.white, 0.01f);
+            //    // Bottom
+            //    Debug.DrawLine(new Vector3(tile.Left, 0.1f, tile.Bottom), new Vector3(tile.Right, 0.1f, tile.Bottom), UnityEngine.Color.white, 0.01f);
+            //}
             return lineCrossesTile;
         }
 
@@ -129,9 +127,8 @@ namespace Assets.Scripts.Soldier.Bot.DStar
         /// <summary>
         /// Returns a List of Coordinates that will be intersected by a line
         /// </summary>
-        private static List<Coordinates> TilesIntersectedByLine(float startPointX, float startPointY, float endPointX, float endPointY)
+        private static void TilesIntersectedByLine(float startPointX, float startPointY, float endPointX, float endPointY, ref List<Coordinates> passingCoordinates)
         {
-            List<Coordinates> results = new List<Coordinates>();
             float leftX = startPointX;
             float rightX = endPointX;
             float downY = startPointY;
@@ -177,12 +174,14 @@ namespace Assets.Scripts.Soldier.Bot.DStar
                     // Check if it is intersected by the line
                     if (LineIntersectsRect(new PointF(startPointX, startPointY), new PointF(endPointX, endPointY), tile))
                     {
-                        results.Add(new Coordinates((int)i, (int)j));
+                        // If the coordinate isn't know already
+                        if(!passingCoordinates.Any(c => c.X == i && c.Y == j))
+                        {
+                            passingCoordinates.Add(new Coordinates((int)i, (int)j));
+                        }
                     }
                 }
             }
-
-            return results;
         }
 
         /// <summary>

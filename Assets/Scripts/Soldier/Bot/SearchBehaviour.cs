@@ -9,9 +9,8 @@ using System.Drawing;
 public class SearchBehaviour : MonoBehaviour
 {
     public GameObject Bot;
-    private float offsetForLineCalculationX = .95f;
-    private float offsetForLineCalculationY = .95f;
 
+    private float m_offsetForLineCalculation = .95f; // A little less than 1. This will prevent the bot from thinking it will collide with an obstacle directly next to it when moving parallel to ithat obstacle.
     private Coordinates GoalCoordinates = new Coordinates();
     private GameEnvironment m_environment;
     private DStarLite m_dStarLite;
@@ -23,7 +22,7 @@ public class SearchBehaviour : MonoBehaviour
         m_environment = new GameEnvironment(Bot);
         UnityEngine.Random.InitState((int)DateTime.Now.Ticks);
         m_dStarLite = new DStarLite(m_environment);
-        m_dStarLite.GenerateNodeMap(true);
+        m_dStarLite.GenerateNodeMap(false);
         Coordinates startCoordinates = m_environment.ConvertGameObjectToCoordinates(Bot.transform);
         GenerateNewDestination(startCoordinates.X, startCoordinates.Y);
         m_bot = GetComponent<Bot>();
@@ -77,7 +76,7 @@ public class SearchBehaviour : MonoBehaviour
         {
             nodesToTraverse.AddRange(m_dStarLite.NodesToTraverse());
         }
-        Coordinates farthestReachableNode = BresenhamPathSmoothing.FarthestNodeToReach(new PointF(Bot.transform.position.x, Bot.transform.position.z), nodesToTraverse, m_dStarLite.Map, offsetForLineCalculationX, offsetForLineCalculationY);
+        Coordinates farthestReachableNode = BresenhamPathSmoothing.FarthestNodeToReach(new PointF(Bot.transform.position.x, Bot.transform.position.z), nodesToTraverse, m_dStarLite.Map, m_offsetForLineCalculation);
         DebugMap(m_dStarLite.Map, farthestReachableNode, nodesToTraverse);
         MoveTo(farthestReachableNode);
         m_dStarLite.SyncBotPosition(botCoordinate);

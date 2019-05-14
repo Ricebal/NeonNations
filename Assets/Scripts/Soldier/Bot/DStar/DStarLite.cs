@@ -1,6 +1,7 @@
 ﻿using Assets.Scripts.Soldier.Bot.DStar;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using UnityEngine;
 
@@ -11,7 +12,9 @@ public class DStarLite
     private GameEnvironment m_environment;
     private Heap m_heap;
     private double m_travelledDistance;
+    private List<Node> m_previousNodesToTraverse = new List<Node>();
     private Node m_goal;
+    private Node m_previousGoal;
     
     private Node m_start;
     private Node m_previousStart;
@@ -91,44 +94,13 @@ public class DStarLite
 
     public Node NextNodeToTraverse()
     {
-        return NextMove();
+        return NextMove(CheckForMapChanges());
     }
 
-    /// <summary>
-    /// Returns a list of all the nodes that need to be traversed to reach the goal
-    /// </summary>
-    public List<Node> NodesToTraverse()
+    private bool CheckForMapChanges()
     {
-        List<Node> nodesToTraverse = new List<Node>();
-        do
-        {
-            nodesToTraverse.Add(NextMove());
-        } while (nodesToTraverse[nodesToTraverse.Count-1] != m_goal);
-        return nodesToTraverse;
-    }
-
-    /// <summary>
-    /// Retrieve the new surrounding knowledge and applies this to the map.
-    /// Calculate the (new) shortest path.
-    /// Tells the entity where to move next.
-    /// </summary>
-    private Node NextMove()
-    {
-        // Update position of bot
-        m_start = MinCostNode(m_start);
-
         // Check if bot sees new obstacles
         LinkedList<Coordinates> obstacleCoord = m_environment.GetObstaclesInVision();
-
-        // Saves the oldTravelledDistance for if nothing has changed
-        double oldTravelledDistance = m_travelledDistance;
-        // Saves the oldPreviousStart for if nothing has changed
-        Node oldPreviousStart = m_previousStart;
-
-        // Calculates a new TravelDistance
-        m_travelledDistance += Heuristic(m_start, m_previousStart);
-        // Saves the new start for calculating the Heuristics
-        m_previousStart = m_start;
 
         bool change = false;
         foreach (Coordinates c in obstacleCoord)
@@ -139,21 +111,61 @@ public class DStarLite
             {
                 change = true;
                 node.Obstacle = true;
-                foreach (Node surroundingState in node.GetSurroundingOpenSpaces())
+                foreach (Node surroundingNode in node.GetSurroundingOpenSpaces())
                 {
-                    UpdateVertex(surroundingState);
+                    UpdateVertex(surroundingNode);
                 }
             }
         }
-        // If nothing has changed
-        if (!change)
-        {
-            // Restore the travelledDistance and the previousStart
-            m_travelledDistance = oldTravelledDistance;
-            m_previousStart = oldPreviousStart;
-        }
 
         ComputeShortestPath();
+        return change;
+    }
+
+    /// <summary>
+    /// Returns a list of all the nodes that need to be traversed to reach the goal
+    /// </summary>
+    public List<Node> NodesToTraverse()
+    {
+        List<Node> nodesToTraverse = new List<Node>();
+        // Check if the map has changed
+        bool mapHasChanged = CheckForMapChanges();
+
+        Node previousFirstNode = m_previousNodesToTraverse.FirstOrDefault();
+        // If nothing has changed AND 
+        // The bot is still in the same tile AND
+        // The goal hasn't been reached THAN
+        // The shortest path does not need to be recalculated.
+        if(!mapHasChanged && m_start == previousFirstNode && m_goal == m_previousGoal)
+        {
+            return m_previousNodesToTraverse;
+        }
+        m_previousGoal = m_goal;
+        do
+        {
+            nodesToTraverse.Add(NextMove(mapHasChanged));
+        } while (nodesToTraverse[nodesToTraverse.Count-1] != m_goal);
+        m_previousNodesToTraverse = nodesToTraverse;
+        return nodesToTraverse;
+    }
+
+    /// <summary>
+    /// Retrieve the new surrounding knowledge and applies this to the map.
+    /// Calculate the (new) shortest path.
+    /// Tells the entity where to move next.
+    /// </summary>
+    private Node NextMove(bool mapHasChanged)
+    {
+        // Update position of bot
+        m_start = MinCostNode(m_start);
+
+        if (mapHasChanged)
+        {
+            // Calculates a new TravelDistance
+            m_travelledDistance += Heuristic(m_start, m_previousStart);
+            // Saves the new start for calculating the Heuristics
+            m_previousStart = m_start;
+        }
 
         return m_start;
     }
@@ -283,7 +295,7 @@ public class DStarLite
             {
                 m_heap.Insert(node, newKey);
             }
-            else if (node.CostFromStartingPoint > node.Rhs)
+            else if (node.CostFromStartingPoint > node.Rhs) // The g-value wasn't optimally calculated
             {
                 node.CostFromStartingPoint = node.Rhs;
                 foreach (Node surroundingState in node.GetSurroundingOpenSpaces())
