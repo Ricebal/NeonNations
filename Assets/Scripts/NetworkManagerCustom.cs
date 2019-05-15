@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using UnityEngine.Networking;
+using Mirror;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class NetworkManagerCustom : NetworkManager
@@ -7,9 +7,18 @@ public class NetworkManagerCustom : NetworkManager
     private bool m_isConnecting;
     private string m_connectionText;
 
-    void Start()
+    // Instantiate the NetworkManager when the game starts
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    private static void OnGameStart()
     {
-        connectionConfig.MaxConnectionAttempt = 2;
+        Object obj = Resources.Load("NetworkManager");
+        GameObject networkManager = Instantiate(obj) as GameObject;
+        // Rename NetworkManager(Clone) to NetworkManager
+        networkManager.name = obj.name;
+    }
+
+    public override void Start()
+    {
         m_isConnecting = false;
         m_connectionText = "";
     }
@@ -22,7 +31,6 @@ public class NetworkManagerCustom : NetworkManager
             m_connectionText = "Disconnecting";
             StopClient();
         }
-        SetPort();
         StartHost();
     }
 
@@ -42,28 +50,21 @@ public class NetworkManagerCustom : NetworkManager
             m_connectionText = "Connecting...";
 
             SetIPAddress(ipAddress);
-            SetPort();
             StartClient();
         }
     }
 
-    public override void OnClientDisconnect(NetworkConnection conn)
+    public override void OnClientError(NetworkConnection conn, int errorCode)
     {
-        StopClient();
-
         // If the client is not properly disconnected...
-        if (conn.lastError != NetworkError.Ok)
+        if ((UnityEngine.Networking.NetworkError)errorCode != UnityEngine.Networking.NetworkError.Ok)
         {
             // and if it is a timeout error, print "impossible to connect"
-            if (conn.lastError == NetworkError.Timeout)
+            if ((UnityEngine.Networking.NetworkError)errorCode == UnityEngine.Networking.NetworkError.Timeout)
             {
                 m_connectionText = "Connection failed";
             }
-            // otherwise print the error in the console
-            if (LogFilter.logError)
-            {
-                Debug.LogError("ClientDisconnected due to error: " + conn.lastError);
-            }
+            Debug.LogError("ClientDisconnected due to error: " + (UnityEngine.Networking.NetworkError)errorCode);
         }
 
         Debug.Log("Client disconnected from server: " + conn);
@@ -73,15 +74,15 @@ public class NetworkManagerCustom : NetworkManager
     public override void OnServerDisconnect(NetworkConnection conn)
     {
         // Remove disconnecting player from team
-        GameObject.Find("GameManager").GetComponent<GameManager>().RemovePlayer(conn.playerControllers[0].gameObject.GetComponent<Player>());
+        GameObject.Find("GameManager").GetComponent<GameManager>().RemovePlayer(conn.playerController.gameObject.GetComponent<Player>());
         base.OnServerDisconnect(conn);
     }
 
-    public override void OnServerAddPlayer(NetworkConnection conn, short playerControllerId)
+    public override void OnServerAddPlayer(NetworkConnection conn, AddPlayerMessage extraMessage)
     {
         // Instantiate new player and assign a team
         GameObject player = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
-        NetworkServer.AddPlayerForConnection(conn, player, playerControllerId);
+        NetworkServer.AddPlayerForConnection(conn, player);
         GameObject.Find("GameManager").GetComponent<GameManager>().AddPlayer(player.GetComponent<Player>());
     }
 
@@ -93,15 +94,9 @@ public class NetworkManagerCustom : NetworkManager
     }
 
     // Set the IP address of the network manager for the StartClient function
-    void SetIPAddress(string ipAddress)
+    private void SetIPAddress(string ipAddress)
     {
         NetworkManager.singleton.networkAddress = ipAddress;
-    }
-
-    // Set the port of the network manager for the StartClient function
-    void SetPort()
-    {
-        NetworkManager.singleton.networkPort = 7777;
     }
 
     public bool IsConnecting()
