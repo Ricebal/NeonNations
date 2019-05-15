@@ -64,6 +64,15 @@ public class Soldier : NetworkBehaviour
     protected void RpcColor(GameObject obj, Color color)
     {
         obj.GetComponent<Renderer>().material.color = color;
+        GetComponentsInChildren<ParticleSystem>().ForEach(ps =>
+        {
+
+        });
+
+        GetComponentsInChildren<ParticleSystemRenderer>().ForEach(psr =>
+        {
+
+        });
     }
 
     [Command]
