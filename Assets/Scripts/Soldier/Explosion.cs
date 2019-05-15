@@ -48,6 +48,7 @@ public class Explosion : MonoBehaviour
 
     private void Update()
     {
+        // If the effect hasn't started yet or is over, exit the method
         if (Time.time > m_start + LIFESPAN + DELAY || Time.time < m_start + DELAY)
         {
             return;
