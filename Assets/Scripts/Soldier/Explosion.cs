@@ -13,13 +13,14 @@ public class Explosion : MonoBehaviour
     private bool m_growing = true;
     private float m_start;
 
-    public void ActivateLight()
+    public void Fire()
     {
         m_light.gameObject.SetActive(true);
         m_light.intensity = 0;
         m_light.range = 0;
         m_growing = true;
         m_start = Time.time;
+        GetComponentInChildren<ParticleSystem>().Play();
     }
 
     public void SetColor(Color color)

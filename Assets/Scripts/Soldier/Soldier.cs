@@ -75,16 +75,11 @@ public abstract class Soldier : NetworkBehaviour
         m_isDead = true;
         m_sphereCollider.enabled = false;
         m_deathTime = Time.time;
-        ParticleSystem ps = GetComponentInChildren<ParticleSystem>();
-        if (ps != null)
-        {
-            ps.Play();
-        }
 
         Explosion ex = GetComponentInChildren<Explosion>();
         if (ex != null)
         {
-            ex.ActivateLight();
+            ex.Fire();
         }
     }
 
