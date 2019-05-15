@@ -45,28 +45,28 @@ public abstract class Soldier : NetworkBehaviour
                 // If the Soldier is not yet dead, the Soldier will die
                 if (!m_isDead)
                 {
-                    RpcDeathState(true);
+                    RpcDead();
                 }
                 // If the Soldier is dead, but is able to respawn
                 else if (Time.time - m_deathTime >= RespawnTime)
                 {
-                    RpcDeathState(false);
+                    Vector2 spawnPoint = GameObject.Find("GameManager").GetComponent<BoardManager>().GetRandomFloorTile();
+                    RpcRespawn(spawnPoint);
                 }
             }
         }
     }
 
     [ClientRpc]
-    private void RpcDeathState(bool isDead)
+    private void RpcDead()
     {
-        if (isDead)
-        {
-            Die();
-        }
-        else
-        {
-            Respawn();
-        }
+        Die();
+    }
+
+    [ClientRpc]
+    private void RpcRespawn(Vector2 spawnPoint)
+    {
+        Respawn(spawnPoint);
     }
 
     protected virtual void Die()
@@ -76,17 +76,13 @@ public abstract class Soldier : NetworkBehaviour
         m_deathTime = Time.time;
     }
 
-    protected virtual void Respawn()
+    protected virtual void Respawn(Vector2 spawnPoint)
     {
-        m_isDead = false;
+        transform.position = new Vector3(spawnPoint.x, 0, spawnPoint.y);
         m_sphereCollider.enabled = true;
+        m_renderer.material.color = InitialColor;
         m_stats.Reset();
-        if (isLocalPlayer)
-        {
-            Vector2 spawnPoint = GameObject.Find("GameManager").GetComponent<BoardManager>().GetRandomFloorTile();
-            transform.position = new Vector3(spawnPoint.x, 0, spawnPoint.y);
-            CmdColor(gameObject, InitialColor);
-        }
+        m_isDead = false;
     }
 
     public void SetInitialColor(Color color)
