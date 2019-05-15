@@ -61,7 +61,7 @@ public class Player : Soldier
         base.Die();
     }
 
-    protected override void Respawn()
+    protected override void Respawn(Vector2 respawnPoint)
     {
         if (isLocalPlayer)
         {
@@ -69,7 +69,7 @@ public class Player : Soldier
             m_playerController.enabled = true;
         }
 
-        base.Respawn();
+        base.Respawn(respawnPoint);
     }
 
     private void OnDestroy()
