@@ -101,6 +101,8 @@ public class MapGenerator
     /// <summary>
     /// Generates a random map, based on the settings
     /// </summary>
+    /// <param name="seed">Seed to be used with the generation</param>
+    /// <returns>A jagged array of ints representing the tilemap</returns>
     public int[][] GenerateRandomMap(string seed)
     {
         // Create level with only walls
@@ -116,7 +118,6 @@ public class MapGenerator
 
         int currentRoomAmount = 1;
         int currentBuildAttempt = 0;
-
         while (currentBuildAttempt < m_maxBuildAttempts && currentRoomAmount < m_maxRoomAmount)
         {
             // Generate a room
@@ -130,6 +131,7 @@ public class MapGenerator
             }
             currentBuildAttempt++;
         }
+
         // Add shortcuts
         AddShortcuts();
 
@@ -177,12 +179,12 @@ public class MapGenerator
     /// <param name="pos">Position of where the small map should be pasted within the big map</param>
     private void PasteTileMap(int[][] smallMap, int[][] bigMap, Vector2 pos)
     {
-        // for every tile in the room
+        // for every tile in the small map
         for (int x = 0; x < smallMap.Length; x++)
         {
             for (int y = 0; y < smallMap[0].Length; y++)
             {
-                // change the according tile on the map
+                // change the according tile on the big map
                 if (smallMap[x][y] != 1)
                 {
                     bigMap[x + (int)pos.x][y + (int)pos.y] = smallMap[x][y];
@@ -200,8 +202,7 @@ public class MapGenerator
     {
         for (int i = 1; i <= m_maxPlaceAttempts; i++)
         {
-            room = TryPlacement(room);
-            if (room.Pos.x != -1 && room.Pos.y != -1)
+            if (TryPlacement(room))
             {
                 // add room to the map
                 AddRoom(room);
@@ -215,8 +216,8 @@ public class MapGenerator
     /// Generates a random position on the map to add a room, and sees if the room fits there
     /// </summary>
     /// <param name="room">Room to be added</param>
-    /// <returns>The room, position is (-1,-1) if this attempt didn't succeed</returns>
-    private Room TryPlacement(Room room)
+    /// <returns>True if succeeded</returns>
+    private bool TryPlacement(Room room)
     {
         // get random direction to attach the room to the map
         Vector2 direction = GenerateRandomDirection();
@@ -278,13 +279,12 @@ public class MapGenerator
             if (CanPlace(tempMap, room.Pos, entranceTiles, direction))
             {
                 room.RoomMap = tempMap;
-                return room;
+                return true;
             }
         }
 
-        // for every length of the tunnel, this room doesn't fit. set the pos to -1,-1 and return
-        room.Pos = new Vector2(-1, -1);
-        return room;
+        // for every length of the tunnel, this room doesn't fit. return false
+        return false;
     }
 
     /// <summary>
@@ -443,22 +443,22 @@ public class MapGenerator
             {
                 if (map[x][y] == 0 && // check if position in room equals zero
                     (!entranceTiles.Contains(new Vector2(x, y)) && // if the tile isn't an entrance
-                    (m_tileMap[x + (int)pos.x][y + (int)pos.y] == 0 || // if so, check if the same position on map is zero
-                    m_tileMap[x + (int)pos.x][y + (int)pos.y + 1] == 0 || // and check all tiles around the position on the map is zero, starting with north
-                    m_tileMap[x + (int)pos.x + 1][y + (int)pos.y + 1] == 0 || // northeast
-                    m_tileMap[x + (int)pos.x + 1][y + (int)pos.y] == 0 || // east
-                    m_tileMap[x + (int)pos.x + 1][y + (int)pos.y - 1] == 0 || // southeast
-                    m_tileMap[x + (int)pos.x][y + (int)pos.y - 1] == 0 || // south
-                    m_tileMap[x + (int)pos.x - 1][y + (int)pos.y - 1] == 0 || // southwest
-                    m_tileMap[x + (int)pos.x - 1][y + (int)pos.y] == 0 || // west
-                    m_tileMap[x + (int)pos.x - 1][y + (int)pos.y + 1] == 0 // northwest
+                    (m_tileMap[x + (int)pos.x][y + (int)pos.y] != 1 || // if so, check if the same position on map isn't a wall
+                    m_tileMap[x + (int)pos.x][y + (int)pos.y + 1] != 1 || // and check all tiles around the position on the map, starting with north
+                    m_tileMap[x + (int)pos.x + 1][y + (int)pos.y + 1] != 1 || // northeast
+                    m_tileMap[x + (int)pos.x + 1][y + (int)pos.y] != 1 || // east
+                    m_tileMap[x + (int)pos.x + 1][y + (int)pos.y - 1] != 1 || // southeast
+                    m_tileMap[x + (int)pos.x][y + (int)pos.y - 1] != 1 || // south
+                    m_tileMap[x + (int)pos.x - 1][y + (int)pos.y - 1] != 1 || // southwest
+                    m_tileMap[x + (int)pos.x - 1][y + (int)pos.y] != 1 || // west
+                    m_tileMap[x + (int)pos.x - 1][y + (int)pos.y + 1] != 1 // northwest
                     )) ||
                     (entranceTiles.Contains(new Vector2(x, y)) && // if the tile is an entrance
-                    (m_tileMap[x + (int)pos.x][y + (int)pos.y] == 0 || // if so, check if the same position on map is zero
-                    (Math.Abs(direction.x) == 1 && m_tileMap[x + (int)pos.x][y + (int)pos.y + 1] == 0) || // and check all tiles around the position on the map is zero, starting with north
-                    (Math.Abs(direction.y) == 1 && m_tileMap[x + (int)pos.x + 1][y + (int)pos.y] == 0) || // east
-                    (Math.Abs(direction.x) == 1 && m_tileMap[x + (int)pos.x][y + (int)pos.y - 1] == 0) || // south
-                    (Math.Abs(direction.y) == 1 && m_tileMap[x + (int)pos.x - 1][y + (int)pos.y] == 0)))) // west
+                    (m_tileMap[x + (int)pos.x][y + (int)pos.y] == 0 || // if so, check if the same position on map isn't a wall
+                    (Math.Abs(direction.x) == 1 && m_tileMap[x + (int)pos.x][y + (int)pos.y + 1] != 1) || // and check all tiles around the position on the map, starting with north
+                    (Math.Abs(direction.y) == 1 && m_tileMap[x + (int)pos.x + 1][y + (int)pos.y] != 1) || // east
+                    (Math.Abs(direction.x) == 1 && m_tileMap[x + (int)pos.x][y + (int)pos.y - 1] != 1) || // south
+                    (Math.Abs(direction.y) == 1 && m_tileMap[x + (int)pos.x - 1][y + (int)pos.y] != 1)))) // west
                 {
                     return false;
                 }
