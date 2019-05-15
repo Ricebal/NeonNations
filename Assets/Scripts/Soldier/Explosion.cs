@@ -25,6 +25,24 @@ public class Explosion : MonoBehaviour
     public void SetColor(Color color)
     {
         m_light.color = color;
+        ParticleSystem[] particleSystems = GetComponentsInChildren<ParticleSystem>();
+        for (int i = 0; i < particleSystems.Length; i++)
+        {
+            var main = particleSystems[i].main;
+            main.startColor = color;
+        }
+
+        ParticleSystemRenderer[] particleSystemRenderers = GetComponentsInChildren<ParticleSystemRenderer>();
+        for (int i = 0; i < particleSystemRenderers.Length; i++)
+        {
+            if (particleSystemRenderers[i].trailMaterial != null)
+            {
+                Material mat = Material.Instantiate(particleSystemRenderers[i].trailMaterial);
+                mat.SetColor("_EmissionColor", color * 3);
+                particleSystemRenderers[i].trailMaterial = mat;
+            }
+        }
+
     }
 
     private void Update()
@@ -45,13 +63,11 @@ public class Explosion : MonoBehaviour
 
         if (m_growing)
         {
-            // Times two because it should grow faster
             m_light.intensity += intensityAmount;
             m_light.range += rangeAmount;
         }
         else
         {
-            // Times 0.75 because it should shrink slower
             m_light.intensity -= intensityAmount;
             m_light.range -= rangeAmount;
         }
