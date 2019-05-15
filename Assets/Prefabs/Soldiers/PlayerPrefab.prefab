@@ -310,8 +310,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Multiplier: 7.5
   Cost: 20
-  Duration: 0.1
-  Cooldown: 1
+  m_duration: 0.1
+  m_cooldown: 1
 --- !u!114 &8217748938549719913
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -356,7 +356,6 @@ MonoBehaviour:
     type: 3}
   m_distance: 1
   m_linger: 0.1
---- !u!1 &6716781768823966986
 --- !u!114 &3409436682290840765
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -374,6 +373,7 @@ MonoBehaviour:
   m_normalLerpRate: 7
   m_fasterLerpRate: 15
   m_closeEnough: 0.2
+  m_tooFar: 10
 --- !u!114 &629880366995975402
 MonoBehaviour:
   m_ObjectHideFlags: 0

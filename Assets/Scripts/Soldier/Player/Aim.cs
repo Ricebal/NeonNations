@@ -10,6 +10,11 @@ public class Aim : NetworkBehaviour
         Cursor.visible = false;
     }
 
+    private void OnDisable()
+    {
+        Cursor.visible = true;
+    }
+
     void Update()
     {
         if (!isLocalPlayer)
