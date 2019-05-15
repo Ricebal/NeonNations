@@ -5,19 +5,19 @@ public class Heap // minheap
 {
     private int m_count;
     private HeapElement[] m_heap;
-    private Dictionary<Node, int> m_hash;
+    private Dictionary<Coordinates, int> m_hash;
 
     public Heap(int cap)
     {
         m_count = 0;
         m_heap = new HeapElement[cap];
-        m_hash = new Dictionary<Node, int>();
+        m_hash = new Dictionary<Coordinates, int>();
     }
 
     public override string ToString()
     {
         string s = "";
-        foreach(Node n in m_hash.Keys)
+        foreach(Coordinates n in m_hash.Keys)
         {
             s += $"{n.X}, {n.Y} \n";
         }
@@ -30,19 +30,19 @@ public class Heap // minheap
         return m_heap[1].Key;
     }
 
-    public Node Pop()
+    public Coordinates Pop()
     {
         if (m_count == 0) return null;
-        Node s = m_heap[1].Node;
+        Coordinates s = m_heap[1].Coordinates;
         m_heap[1] = m_heap[m_count];
-        m_hash[m_heap[1].Node] = 1;
+        m_hash[m_heap[1].Coordinates] = 1;
         m_hash[s] = 0;
         m_count--;
         moveDown(1);
         return s;
     }
 
-    public void Insert(Node s, PriorityKey k)
+    public void Insert(Coordinates s, PriorityKey k)
     {
         HeapElement e = new HeapElement(s, k);
         m_count++;
@@ -55,18 +55,18 @@ public class Heap // minheap
         moveUp(m_count);
     }
 
-    public void Remove(Node s)
+    public void Remove(Coordinates s)
     {
         int i = m_hash[s];
         if (i == 0) return;
         m_hash[s] = 0;
         m_heap[i] = m_heap[m_count];
-        m_hash[m_heap[i].Node] = i;
+        m_hash[m_heap[i].Coordinates] = i;
         m_count--;
         moveDown(i);
     }
 
-    public bool Contains(Node s)
+    public bool Contains(Coordinates s)
     {
         int i;
         if (!m_hash.TryGetValue(s, out i))
@@ -116,9 +116,9 @@ public class Heap // minheap
     {
         HeapElement temp = m_heap[i];
         m_heap[i] = m_heap[j];
-        m_hash[m_heap[j].Node] = i;
+        m_hash[m_heap[j].Coordinates] = i;
         m_heap[j] = temp;
-        m_hash[temp.Node] = j;
+        m_hash[temp.Coordinates] = j;
     }
 
     private void increaseCap()

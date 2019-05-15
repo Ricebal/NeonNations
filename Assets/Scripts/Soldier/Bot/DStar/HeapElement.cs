@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class HeapElement
 {
-    public Node Node;
+    public Coordinates Coordinates;
     public PriorityKey Key;
 
-    public HeapElement(Node node, PriorityKey key)
+    public HeapElement(Coordinates coordinates, PriorityKey key)
     {
-        Node = node;
+        Coordinates = coordinates;
         Key = key;
     }
 }

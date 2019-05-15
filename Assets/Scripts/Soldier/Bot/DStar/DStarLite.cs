@@ -48,7 +48,7 @@ public class DStarLite
         m_previousStart = m_start;
         Node goalNode = Map.GetNode(m_goal);
         goalNode.Rhs = 0;
-        m_heap.Insert(goalNode, CalculatePriority(goalNode));
+        m_heap.Insert(m_goal, CalculatePriority(goalNode));
         m_travelledDistance = 0;
     }
 
@@ -208,13 +208,14 @@ public class DStarLite
         {
             node.Rhs = MinCost(node);
         }
-        if (m_heap.Contains(node))   // To prevent any copies
+        Coordinates coordinates = new Coordinates(node.X, node.Y);
+        if (m_heap.Contains(coordinates))   // To prevent any copies
         {
-            m_heap.Remove(node);
+            m_heap.Remove(coordinates);
         }
         if (node.CostFromStartingPoint != node.Rhs)
         {
-            m_heap.Insert(node, CalculatePriority(node));
+            m_heap.Insert(coordinates, CalculatePriority(node));
         }
     }
 
@@ -269,14 +270,15 @@ public class DStarLite
             // Gets the priority key op the top
             PriorityKey oldKey = m_heap.TopKey();
             // Gets the node of the top
-            Node node = m_heap.Pop();
+            Coordinates coordinates = m_heap.Pop();
+            Node node = Map.GetNode(coordinates);
             if (node == null) break; // Heap is empty
 
             // Gets new key based on current position that's being calculated
             PriorityKey newKey = CalculatePriority(node);
             if (oldKey.CompareTo(newKey) < 0) // The node has a lower priority than before
             {
-                m_heap.Insert(node, newKey);
+                m_heap.Insert(coordinates, newKey);
             }
             else if (node.CostFromStartingPoint > node.Rhs) // The g-value wasn't optimally calculated
             {
