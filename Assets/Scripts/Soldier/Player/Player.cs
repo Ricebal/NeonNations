@@ -8,7 +8,7 @@ public class Player : Soldier
     private GameOverMenu m_gameOverMenu;
     private PlayerHUD m_hud;
 
-    void Start()
+    private void Start()
     {
         if (!isLocalPlayer)
         {
@@ -24,7 +24,7 @@ public class Player : Soldier
         m_hud = GetComponent<PlayerHUD>();
     }
 
-    void OnDisable()
+    private void OnDisable()
     {
         if (!isLocalPlayer)
         {
@@ -34,7 +34,7 @@ public class Player : Soldier
         m_escapeMenu.EventPauseToggled -= PauseToggled;
     }
 
-    void FixedUpdate()
+    private void FixedUpdate()
     {
         if (!isLocalPlayer)
         {
@@ -57,6 +57,7 @@ public class Player : Soldier
             m_gameOverMenu.Activate(RespawnTime);
             m_playerController.enabled = false;
         }
+
         base.Die();
     }
 
@@ -67,10 +68,11 @@ public class Player : Soldier
             m_gameOverMenu.Deactivate();
             m_playerController.enabled = true;
         }
+
         base.Respawn();
     }
 
-    void OnDestroy()
+    private void OnDestroy()
     {
         if (!isLocalPlayer)
         {
