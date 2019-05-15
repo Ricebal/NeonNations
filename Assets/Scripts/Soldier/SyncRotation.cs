@@ -15,6 +15,9 @@ public class SyncRotation : NetworkBehaviour
     // The soldier is instantly rotated when the difference between his current rotation and the real one is higher than this value
     [SerializeField]
     private float m_tooFar = 90;
+    // Wether or not the GameObject is a bot
+    [SerializeField]
+    private bool m_isBot;
 
     private float m_syncRotation;
     private float m_lastRotation;
@@ -27,7 +30,7 @@ public class SyncRotation : NetworkBehaviour
 
     private void Update()
     {
-        if (isLocalPlayer)
+        if (m_isBot || isLocalPlayer)
         {
             TransmitRotation();
         }

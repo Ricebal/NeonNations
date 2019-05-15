@@ -15,6 +15,9 @@ public class SyncPosition : NetworkBehaviour
     // The soldier is teleported when the difference between his current position and the real one is higher than this value
     [SerializeField]
     private float m_tooFar = 10;
+    // Wether or not the GameObject is a bot
+    [SerializeField]
+    private bool m_isBot = false;
 
     private Vector3 m_syncPos;
     private Vector3 m_lastPos;
@@ -27,7 +30,7 @@ public class SyncPosition : NetworkBehaviour
 
     private void Update()
     {
-        if (isLocalPlayer)
+        if (m_isBot || isLocalPlayer)
         {
             TransmitPosition();
         }
