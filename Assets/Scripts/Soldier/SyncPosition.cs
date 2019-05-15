@@ -1,134 +1,76 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Networking;
 
 public class SyncPosition : NetworkBehaviour
 {
-    // Send a command to the server every m_threshold meters
+    // Threshold in meters
     [SerializeField]
-    private float m_threshold;
-    // Player's transform
+    private float m_threshold = 0.1f;
+    // Interpolation factor
     [SerializeField]
-    private Transform m_transform;
-    // Interpolation factors
+    private float m_lerpRate = 7;
+    // The soldier is teleported when the difference between his current position and the real one is lower than this value
     [SerializeField]
-    private float m_normalLerpRate;
+    private float m_closeEnough = 0.2f;
+    // The soldier is teleported when the difference between his current position and the real one is higher than this value
     [SerializeField]
-    private float m_fasterLerpRate;
-    // This value is used to define if the player should 'leave in the past'
-    // when lag occurres, seeing old other player's positions
-    // Deprecated [SerializeField]
-    private bool m_useHistoricalLerp;
-    // This value is used to consider the position correct when the difference is inferior than this value
-    [SerializeField]
-    private float m_closeEnough;
-    // This value is used to consider the position too far when the difference is superior than this value
-    [SerializeField]
-    private float m_tooFar;
+    private float m_tooFar = 10;
 
-    // Current interpolation factor
-    private float m_lerpRate;
-    // Player's position
-    [SyncVar(hook = "OnPositionSynced")]
     private Vector3 m_syncPos;
-    // Last player's position synced across the Network
     private Vector3 m_lastPos;
-    private List<Vector3> m_syncPosList = new List<Vector3>();
+    private Transform m_transform;
 
-    void Start()
+    private void Start()
     {
-        m_lerpRate = m_normalLerpRate;
+        m_transform = GetComponent<Transform>();
     }
 
-    void Update()
+    private void Update()
     {
-        LerpPosition();
-    }
-
-    void FixedUpdate()
-    {
-        TransmitPosition();
+        if (isLocalPlayer)
+        {
+            TransmitPosition();
+        }
+        else
+        {
+            LerpPosition();
+        }
     }
 
     private void LerpPosition()
     {
-        if (!isLocalPlayer)
-        {
-            if (m_useHistoricalLerp)
-            {
-                HistoricalLerping();
-            }
-            else
-            {
-                OrdinaryLerping();
-            }
-        }
-    }
-
-    private void OrdinaryLerping()
-    {
-        LerpPosition(m_syncPos);
-    }
-
-    private void HistoricalLerping()
-    {
-        if (m_syncPosList.Count > 0)
-        {
-            LerpPosition(m_syncPosList[0]);
-            // If the player is close enough from the last position, remove it from the synced list
-            if (Vector3.Distance(m_transform.position, m_syncPosList[0]) < m_closeEnough)
-            {
-                m_syncPosList.RemoveAt(0);
-            }
-
-            // If there are to many positions stored, the player is way too far in the past so we accelerate his movements
-            if (m_syncPosList.Count > 10)
-            {
-                m_lerpRate = m_fasterLerpRate;
-            }
-            else
-            {
-                m_lerpRate = m_normalLerpRate;
-            }
-        }
-    }
-
-    private void LerpPosition(Vector3 pos)
-    {
         // If the player is close enough or too far from his real position, teleport him
-        float distance = Vector3.Distance(m_transform.position, pos);
+        float distance = Vector3.Distance(m_transform.position, m_syncPos);
         if (distance < m_closeEnough || distance > m_tooFar)
         {
-            m_transform.position = pos;
+            m_transform.position = m_syncPos;
         }
         else
         {
-            m_transform.position = Vector3.Lerp(m_transform.position, pos, Time.deltaTime * m_lerpRate);
+            m_transform.position = Vector3.Lerp(m_transform.position, m_syncPos, Time.deltaTime * m_lerpRate);
+        }
+    }
+
+    private void TransmitPosition()
+    {
+        // If the player's has moved more than the threshold value, send his new position through the network
+        if (Vector3.Distance(m_transform.position, m_lastPos) > m_threshold)
+        {
+            m_lastPos = m_transform.position;
+            CmdPosition(m_lastPos);
         }
     }
 
     [Command]
-    private void CmdProvidePositionToServer(Vector3 pos)
+    private void CmdPosition(Vector3 pos)
+    {
+        RpcPosition(pos);
+    }
+
+    [ClientRpc]
+    private void RpcPosition(Vector3 pos)
     {
         m_syncPos = pos;
-    }
-
-    [Client]
-    private void TransmitPosition()
-    {
-        // If the player's has moved more than the threshold value, send his new position through the network
-        if (isLocalPlayer && Vector3.Distance(m_transform.position, m_lastPos) > m_threshold)
-        {
-            m_lastPos = m_transform.position;
-            CmdProvidePositionToServer(m_lastPos);
-        }
-    }
-
-    [Client]
-    private void OnPositionSynced(Vector3 latestPos)
-    {
-        m_syncPos = latestPos;
-        //m_syncPosList.Add(m_syncPos);
     }
 
 }

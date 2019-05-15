@@ -369,9 +369,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_threshold: 0.1
-  m_transform: {fileID: 8638977763130829894}
-  m_normalLerpRate: 7
-  m_fasterLerpRate: 15
+  m_lerpRate: 7
   m_closeEnough: 0.2
   m_tooFar: 10
 --- !u!114 &629880366995975402
@@ -387,9 +385,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_threshold: 1
-  m_transform: {fileID: 8638977763130829894}
   m_lerpRate: 15
   m_closeEnough: 1.5
+  m_tooFar: 90
 --- !u!1 &6716781768823966986
 GameObject:
   m_ObjectHideFlags: 0
