@@ -12,7 +12,7 @@ public class DStarLite
     private GameEnvironment m_environment;
     private Heap m_heap;
     private double m_travelledDistance;
-    private List<Node> m_previousNodesToTraverse = new List<Node>();
+    private List<Coordinates> m_previousCoordinatesToTraverse = new List<Coordinates>();
     private Coordinates m_goal;
     private Coordinates m_previousGoal;
     
@@ -46,9 +46,8 @@ public class DStarLite
         m_goal = new Coordinates(goalX, goalY);
         m_start = new Coordinates(startX, startY);
         m_previousStart = m_start;
-        Node goalNode = Map.GetNode(m_goal);
-        goalNode.Rhs = 0;
-        m_heap.Insert(m_goal, CalculatePriority(goalNode));
+        Map.GetNode(m_goal).Rhs = 0;
+        m_heap.Insert(m_goal, CalculatePriority(m_goal));
         m_travelledDistance = 0;
     }
 
@@ -66,28 +65,23 @@ public class DStarLite
         Map = new NavigationGraph(completeMap, knowMap);
     }
 
-    public Node NextNodeToTraverse()
-    {
-        return NextMove(CheckForMapChanges());
-    }
-
     private bool CheckForMapChanges()
     {
         // Check if bot sees new obstacles
         LinkedList<Coordinates> obstacleCoord = m_environment.GetObstaclesInVision();
 
         bool change = false;
-        foreach (Coordinates c in obstacleCoord)
+        foreach (Coordinates coordinates in obstacleCoord)
         {
-            Node node = Map.GetNode(c.X, c.Y);
+            Node node = Map.GetNode(coordinates.X, coordinates.Y);
             // If the obstacle was not previously known
             if (!node.Obstacle)
             {
                 change = true;
                 node.Obstacle = true;
-                foreach (Node surroundingNode in Map.GetSurroundingOpenSpaces(node.X, node.Y))
+                foreach (Coordinates surroundingCoordinates in Map.GetSurroundingOpenSpaces(coordinates))
                 {
-                    UpdateVertex(surroundingNode);
+                    UpdateVertex(surroundingCoordinates);
                 }
             }
         }
@@ -99,29 +93,30 @@ public class DStarLite
     /// <summary>
     /// Returns a list of all the nodes that need to be traversed to reach the goal
     /// </summary>
-    public List<Node> NodesToTraverse()
+    public List<Coordinates> CoordinatesToTraverse()
     {
-        List<Node> nodesToTraverse = new List<Node>();
+        List<Coordinates> CoordinatesToTraverse = new List<Coordinates>();
         // Check if the map has changed
         bool mapHasChanged = CheckForMapChanges();
 
-        Node previousFirstNode = m_previousNodesToTraverse.FirstOrDefault();
+        Coordinates previousFirstCoordinates = m_previousCoordinatesToTraverse.FirstOrDefault();
         // If nothing has changed AND 
         // The bot is still in the same tile AND
         // The goal hasn't been reached THAN
         // The shortest path does not need to be recalculated.
-        if(!mapHasChanged && Map.GetNode(m_start) == previousFirstNode && m_goal == m_previousGoal)
+        if(!mapHasChanged && m_start == previousFirstCoordinates && m_goal == m_previousGoal)
         {
-            return m_previousNodesToTraverse;
+            return m_previousCoordinatesToTraverse;
         }
         m_previousGoal = m_goal;
-        Node goalNode = Map.GetNode(m_goal);
+        Coordinates coordinateToTraverse = new Coordinates();
         do
         {
-            nodesToTraverse.Add(NextMove(mapHasChanged));
-        } while (nodesToTraverse[nodesToTraverse.Count-1] != goalNode);
-        m_previousNodesToTraverse = nodesToTraverse;
-        return nodesToTraverse;
+            coordinateToTraverse = NextMove(mapHasChanged);
+            CoordinatesToTraverse.Add(coordinateToTraverse);
+        } while (!coordinateToTraverse.Equals(m_goal));
+        m_previousCoordinatesToTraverse = CoordinatesToTraverse;
+        return CoordinatesToTraverse;
     }
 
     /// <summary>
@@ -129,26 +124,20 @@ public class DStarLite
     /// Calculate the (new) shortest path.
     /// Tells the entity where to move next.
     /// </summary>
-    private Node NextMove(bool mapHasChanged)
+    private Coordinates NextMove(bool mapHasChanged)
     {
         // Update position of bot
-        Node startNode = Map.GetNode(m_start);
-        startNode = MinCostNode(startNode);
-        if(startNode.X != m_start.X || startNode.Y != m_start.Y)
-        {
-            m_start.X = startNode.X;
-            m_start.Y = startNode.Y;
-        }
+        m_start = MinCostCoordinates(m_start);
 
         if (mapHasChanged)
         {
             // Calculates a new TravelDistance
-            m_travelledDistance += Heuristic(startNode, Map.GetNode(m_previousStart));
+            m_travelledDistance += Heuristic(m_start, m_previousStart);
             // Saves the new start for calculating the Heuristics
             m_previousStart = m_start;
         }
 
-        return startNode;
+        return m_start;
     }
 
     /// <summary>
@@ -183,16 +172,16 @@ public class DStarLite
     /// k1(s) = min(g(s), rhs(s)) + h(s, sstart) + km.
     /// k2(s) = min(g(s), rhs(s)).
     ///</summary>
-    private PriorityKey CalculatePriority(Node node)
+    private PriorityKey CalculatePriority(Coordinates coordinates)
     {
-        Node startNode = Map.GetNode(m_start);
-        return new PriorityKey(Math.Min(node.CostFromStartingPoint, node.Rhs) + Heuristic(node, startNode) + m_travelledDistance, Math.Min(node.CostFromStartingPoint, node.Rhs));
+        Node node = Map.GetNode(coordinates);
+        return new PriorityKey(Math.Min(node.CostFromStartingPoint, node.Rhs) + Heuristic(coordinates, m_start) + m_travelledDistance, Math.Min(node.CostFromStartingPoint, node.Rhs));
     }
 
     /// <summary>
     /// Calculates the Heuristics for traveling between two points
     /// </summary>
-    private double Heuristic(Node pointA, Node pointB)
+    private double Heuristic(Coordinates pointA, Coordinates pointB)
     {
         float xDistance = Math.Abs(pointA.X - pointB.X);
         float yDistance = Math.Abs(pointA.Y - pointB.Y);
@@ -202,20 +191,20 @@ public class DStarLite
     /// <summary>
     /// Re-evaluates the Rhs-value of a State
     /// </summary>
-    private void UpdateVertex(Node node)
+    private void UpdateVertex(Coordinates coordinates)
     {
-        if (!node.Equals(Map.GetNode(m_goal)))
+        Node node = Map.GetNode(coordinates);
+        if (!coordinates.Equals(m_goal))
         {
-            node.Rhs = MinCost(node);
+            node.Rhs = MinCost(coordinates);
         }
-        Coordinates coordinates = new Coordinates(node.X, node.Y);
         if (m_heap.Contains(coordinates))   // To prevent any copies
         {
             m_heap.Remove(coordinates);
         }
         if (node.CostFromStartingPoint != node.Rhs)
         {
-            m_heap.Insert(coordinates, CalculatePriority(node));
+            m_heap.Insert(coordinates, CalculatePriority(coordinates));
         }
     }
 
@@ -225,20 +214,21 @@ public class DStarLite
     /// <returns>
     /// The lowest cost node
     /// </returns>
-    private Node MinCostNode(Node node)
+    private Coordinates MinCostCoordinates(Coordinates coordinates)
     {
         double min = double.PositiveInfinity;
-        Node returnNode = null;
-        foreach (Node s in Map.GetSurroundingOpenSpaces(node.X, node.Y))
+        Coordinates returnCoordinates = null;
+        foreach (Coordinates surroundingCoordinates in Map.GetSurroundingOpenSpaces(coordinates))
         {
-            double val = 1 + s.CostFromStartingPoint;
+            Node node = Map.GetNode(surroundingCoordinates);
+            double val = 1 + node.CostFromStartingPoint;
             if (val <= min)
             {
                 min = val;
-                returnNode = s;
+                returnCoordinates = surroundingCoordinates;
             }
         }
-        return returnNode;
+        return returnCoordinates;
     }
 
     /// <summary>
@@ -247,12 +237,13 @@ public class DStarLite
     /// <returns>
     /// Double containing the minimum distance
     /// </returns>
-    private double MinCost(Node node)
+    private double MinCost(Coordinates coordinates)
     {
         double min = double.PositiveInfinity;
-        foreach (Node n in Map.GetSurroundingOpenSpaces(node.X, node.Y))
+        foreach (Coordinates surroundingCoordinates in Map.GetSurroundingOpenSpaces(coordinates))
         {
-            double val = 1 + n.CostFromStartingPoint; // Add's 1 to the CostFromStartingPoint since it's one more move
+            Node node = Map.GetNode(surroundingCoordinates);
+            double val = 1 + node.CostFromStartingPoint; // Add's 1 to the CostFromStartingPoint since it's one more move
             if (val < min) // If the value is smaller than the minimum value found
             {
                 min = val;
@@ -265,17 +256,20 @@ public class DStarLite
     {
         Node startNode = Map.GetNode(m_start);
         // While the top state of the Heap has a higher priority than the start state OR start.rhs is not the cost of start
-        while (m_heap.TopKey().CompareTo(CalculatePriority(startNode)) < 0 || startNode.Rhs != startNode.CostFromStartingPoint)
+        while (m_heap.TopKey().CompareTo(CalculatePriority(m_start)) < 0 || startNode.Rhs != startNode.CostFromStartingPoint)
         {
             // Gets the priority key op the top
             PriorityKey oldKey = m_heap.TopKey();
             // Gets the node of the top
             Coordinates coordinates = m_heap.Pop();
+            if (coordinates == null)
+            {
+                break; // Heap is empty
+            }
             Node node = Map.GetNode(coordinates);
-            if (node == null) break; // Heap is empty
 
             // Gets new key based on current position that's being calculated
-            PriorityKey newKey = CalculatePriority(node);
+            PriorityKey newKey = CalculatePriority(coordinates);
             if (oldKey.CompareTo(newKey) < 0) // The node has a lower priority than before
             {
                 m_heap.Insert(coordinates, newKey);
@@ -283,18 +277,18 @@ public class DStarLite
             else if (node.CostFromStartingPoint > node.Rhs) // The g-value wasn't optimally calculated
             {
                 node.CostFromStartingPoint = node.Rhs;
-                foreach (Node surroundingState in Map.GetSurroundingOpenSpaces(node.X, node.Y))
+                foreach (Coordinates surroundingCoordinates in Map.GetSurroundingOpenSpaces(coordinates))
                 {
-                    UpdateVertex(surroundingState);
+                    UpdateVertex(surroundingCoordinates);
                 }
             }
             else
             {
                 node.CostFromStartingPoint = double.PositiveInfinity;
-                UpdateVertex(node);
-                foreach (Node surroundingState in Map.GetSurroundingOpenSpaces(node.X, node.Y))
+                UpdateVertex(coordinates);
+                foreach (Coordinates surroundingNodes in Map.GetSurroundingOpenSpaces(coordinates))
                 {
-                    UpdateVertex(surroundingState);
+                    UpdateVertex(surroundingNodes);
                 }
             }
         }

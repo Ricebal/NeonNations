@@ -48,19 +48,12 @@ public class SearchBehaviour : MonoBehaviour
     /// </summary>
     private void NextMove()
     {
-        List<Node> nodesToTraverse = new List<Node>();
+        List<Coordinates> coordinatesToTraverse = new List<Coordinates>();
         Coordinates botCoordinate = m_environment.ConvertGameObjectToCoordinates(Bot.transform);
-        nodesToTraverse.AddRange(m_dStarLite.NodesToTraverse());
+        coordinatesToTraverse.AddRange(m_dStarLite.CoordinatesToTraverse());
 
-        // Temperary list of coordinates conversion
-        List<Coordinates> coord = new List<Coordinates>();
-        foreach(Node n in nodesToTraverse)
-        {
-            coord.Add(new Coordinates(n.X, n.Y));
-        }
-
-        Coordinates farthestReachableNode = PathSmoothing.FarthestCoordinateToReach(new PointF(Bot.transform.position.x, Bot.transform.position.z), coord, m_dStarLite.Map, m_offsetForLineCalculation);
-        DebugMap(m_dStarLite.Map, farthestReachableNode, nodesToTraverse);
+        Coordinates farthestReachableNode = PathSmoothing.FarthestCoordinateToReach(new PointF(Bot.transform.position.x, Bot.transform.position.z), coordinatesToTraverse, m_dStarLite.Map, m_offsetForLineCalculation);
+        DebugMap(m_dStarLite.Map, farthestReachableNode, coordinatesToTraverse);
         MoveTo(farthestReachableNode);
         m_dStarLite.SyncBotPosition(botCoordinate);
     }
@@ -102,7 +95,7 @@ public class SearchBehaviour : MonoBehaviour
         m_bot.Move(heading.x, heading.y);
     }
 
-    private void DebugMap(NavigationGraph map, Coordinates nodeToReach, List<Node> nodesToTraverse)
+    private void DebugMap(NavigationGraph map, Coordinates nodeToReach, List<Coordinates> coordinatesToTraverse)
     {
         Coordinates botCoordinates = m_environment.ConvertGameObjectToCoordinates(Bot.transform);
         StringBuilder builder = new StringBuilder();
@@ -132,9 +125,9 @@ public class SearchBehaviour : MonoBehaviour
                     continue;
                 }
                 bool foundInNodes = false;
-                foreach(Node n in nodesToTraverse)
+                foreach(Coordinates coordinates in coordinatesToTraverse)
                 {
-                    if(x == n.X && y == n.Y)
+                    if(x == coordinates.X && y == coordinates.Y)
                     {
                         foundInNodes = true;
                         builder.Append("Q");

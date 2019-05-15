@@ -21,7 +21,7 @@ namespace Assets.Scripts.Soldier.Bot.DStar
             {
                 for (int j = 0; j < Map[0].Length; j++)
                 {
-                    Map[i][j] = new Node(i,j);
+                    Map[i][j] = new Node();
                     Map[i][j].CostFromStartingPoint = double.PositiveInfinity;
                     Map[i][j].Rhs = double.PositiveInfinity;
 
@@ -63,11 +63,13 @@ namespace Assets.Scripts.Soldier.Bot.DStar
         /// <summary>
         /// Search for surrounding positions 
         /// </summary>
-        public LinkedList<Node> GetSurroundingOpenSpaces(int x, int y)
+        public LinkedList<Coordinates> GetSurroundingOpenSpaces(Coordinates coordinates)
         {
+            int x = coordinates.X;
+            int y = coordinates.Y;
             int width = Map.Length;
             int height = Map[0].Length;
-            LinkedList<Node> openPositionsAroundEntity = new LinkedList<Node>();
+            LinkedList<Coordinates> openPositionsAroundEntity = new LinkedList<Coordinates>();
             Node tempState;
             for (int i = -1; i < 2; i++)
             {
@@ -84,8 +86,8 @@ namespace Assets.Scripts.Soldier.Bot.DStar
                         // If it's no obstacle
                         if (!tempState.Obstacle)
                         {
-                            openPositionsAroundEntity.AddFirst(tempState);
-                            //openPositionsAroundEntity.AddFirst(new Coordinates(x + i, y + j));
+                            //openPositionsAroundEntity.AddFirst(tempState);
+                            openPositionsAroundEntity.AddFirst(new Coordinates(x + i, y + j));
                         }
                     }
                 }
