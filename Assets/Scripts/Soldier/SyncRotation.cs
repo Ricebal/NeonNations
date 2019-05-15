@@ -17,7 +17,7 @@ public class SyncRotation : NetworkBehaviour
     private float m_tooFar = 90;
     // Wether or not the GameObject is a bot
     [SerializeField]
-    private bool m_isBot;
+    private bool m_isBot = false;
 
     private float m_syncRotation;
     private float m_lastRotation;
@@ -30,7 +30,7 @@ public class SyncRotation : NetworkBehaviour
 
     private void Update()
     {
-        if (m_isBot || isLocalPlayer)
+        if (isLocalPlayer || isServer && m_isBot)
         {
             TransmitRotation();
         }
@@ -42,8 +42,15 @@ public class SyncRotation : NetworkBehaviour
 
     private void LerpRotation()
     {
-        // If the player is close enough or too far from his real rotation, instantly rotate him
         Quaternion newRotation = Quaternion.Euler(new Vector3(0, m_syncRotation, 0));
+
+        // If the rotation has not yet been synchronized (identity) or is already synchronized, do nothing
+        if (newRotation == Quaternion.identity || m_transform.rotation == newRotation)
+        {
+            return;
+        }
+
+        // If the player is close enough or too far from his real rotation, instantly rotate him
         float angle = Mathf.Abs(m_transform.localEulerAngles.y - m_syncRotation);
         if (angle < m_closeEnough || angle > m_tooFar)
         {

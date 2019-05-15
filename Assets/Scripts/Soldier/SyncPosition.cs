@@ -30,7 +30,7 @@ public class SyncPosition : NetworkBehaviour
 
     private void Update()
     {
-        if (m_isBot || isLocalPlayer)
+        if (isLocalPlayer || isServer && m_isBot)
         {
             TransmitPosition();
         }
@@ -42,6 +42,12 @@ public class SyncPosition : NetworkBehaviour
 
     private void LerpPosition()
     {
+        // If the position has not yet been synchronized (zero) or is already synchronized, do nothing
+        if (m_syncPos == Vector3.zero || m_transform.position == m_syncPos)
+        {
+            return;
+        }
+
         // If the player is close enough or too far from his real position, teleport him
         float distance = Vector3.Distance(m_transform.position, m_syncPos);
         if (distance < m_closeEnough || distance > m_tooFar)
