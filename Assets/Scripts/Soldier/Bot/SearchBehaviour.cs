@@ -51,7 +51,15 @@ public class SearchBehaviour : MonoBehaviour
         List<Node> nodesToTraverse = new List<Node>();
         Coordinates botCoordinate = m_environment.ConvertGameObjectToCoordinates(Bot.transform);
         nodesToTraverse.AddRange(m_dStarLite.NodesToTraverse());
-        Coordinates farthestReachableNode = BresenhamPathSmoothing.FarthestNodeToReach(new PointF(Bot.transform.position.x, Bot.transform.position.z), nodesToTraverse, m_dStarLite.Map, m_offsetForLineCalculation);
+
+        // Temperary list of coordinates conversion
+        List<Coordinates> coord = new List<Coordinates>();
+        foreach(Node n in nodesToTraverse)
+        {
+            coord.Add(new Coordinates(n.X, n.Y));
+        }
+
+        Coordinates farthestReachableNode = PathSmoothing.FarthestCoordinateToReach(new PointF(Bot.transform.position.x, Bot.transform.position.z), coord, m_dStarLite.Map, m_offsetForLineCalculation);
         DebugMap(m_dStarLite.Map, farthestReachableNode, nodesToTraverse);
         MoveTo(farthestReachableNode);
         m_dStarLite.SyncBotPosition(botCoordinate);
@@ -94,16 +102,16 @@ public class SearchBehaviour : MonoBehaviour
         m_bot.Move(heading.x, heading.y);
     }
 
-    private void DebugMap(Node[][] map, Coordinates nodeToReach, List<Node> nodesToTraverse)
+    private void DebugMap(NavigationGraph map, Coordinates nodeToReach, List<Node> nodesToTraverse)
     {
         Coordinates botCoordinates = m_environment.ConvertGameObjectToCoordinates(Bot.transform);
         StringBuilder builder = new StringBuilder();
         builder.Append('\n');
-        for (int y = map[0].Length - 1; y >= 0; y--)
+        for (int y = map.Map[0].Length - 1; y >= 0; y--)
         {
-            for (int x = 0; x < map.Length; x++)
+            for (int x = 0; x < map.Map.Length; x++)
             {
-                if (map[x][y].Obstacle)
+                if (map.Map[x][y].Obstacle)
                 {
                     builder.Append("#");
                     continue;

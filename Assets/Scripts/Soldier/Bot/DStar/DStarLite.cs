@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class DStarLite
 {
-    public Node[][] Map;
+    public NavigationGraph Map;
 
     private GameEnvironment m_environment;
     private Heap m_heap;
@@ -41,17 +41,10 @@ public class DStarLite
     private void Reset(int startX, int startY, int goalX, int goalY)
     {
         //Creates an heap the size of the map
-        m_heap = new Heap(Map.Length * Map[0].Length);
-        for(int i = 0; i < Map.Length; i++)
-        {
-            for (int j = 0; j < Map[0].Length; j++)
-            {
-                Map[i][j].CostFromStartingPoint = double.PositiveInfinity;
-                Map[i][j].Rhs = double.PositiveInfinity;
-            }
-        }
-        m_goal = Map[goalX][goalY];
-        m_start = Map[startX][startY];
+        m_heap = new Heap(Map.GetSize());
+        Map.Reset();
+        m_goal = Map.GetNode(goalX, goalY);
+        m_start = Map.GetNode(startX, startY);
         m_previousStart = m_start;
         m_goal.Rhs = 0;
         m_heap.Insert(m_goal, CalculatePriority(m_goal));
@@ -69,27 +62,7 @@ public class DStarLite
     public void GenerateNodeMap(bool knowMap)
     {
         int[][] completeMap = m_environment.GetMap();
-        Map = new Node[completeMap.Length][];
-        for (int i = 0; i < Map.Length; i++)
-        {
-            Map[i] = new Node[completeMap[0].Length];
-        }
-        for (int i = 0; i < Map.Length; i++)
-        {
-            for (int j = 0; j < Map[0].Length; j++)
-            {
-                Map[i][j] = new Node(this);
-                Map[i][j].X = i;
-                Map[i][j].Y = j;
-                Map[i][j].CostFromStartingPoint = double.PositiveInfinity;
-                Map[i][j].Rhs = double.PositiveInfinity;
-
-                if (knowMap && completeMap[i][j] == 1)
-                {
-                    Map[i][j].Obstacle = true;
-                }
-            }
-        }
+        Map = new NavigationGraph(completeMap, knowMap);
     }
 
     public Node NextNodeToTraverse()
@@ -105,13 +78,13 @@ public class DStarLite
         bool change = false;
         foreach (Coordinates c in obstacleCoord)
         {
-            Node node = Map[c.X][c.Y];
+            Node node = Map.GetNode(c.X, c.Y);
             // If the obstacle was not previously known
             if (!node.Obstacle)
             {
                 change = true;
                 node.Obstacle = true;
-                foreach (Node surroundingNode in node.GetSurroundingOpenSpaces())
+                foreach (Node surroundingNode in Map.GetSurroundingOpenSpaces(node.X, node.Y))
                 {
                     UpdateVertex(surroundingNode);
                 }
@@ -176,7 +149,7 @@ public class DStarLite
     /// <param name="botCoordinates">The current coordinates of the bot</param>
     public void SyncBotPosition(Coordinates botCoordinates)
     {
-        m_start = Map[botCoordinates.X][botCoordinates.Y];
+        m_start = Map.GetNode(botCoordinates.X, botCoordinates.Y);
     }
 
     // --------------------------------------------------------------------------------------------
@@ -246,7 +219,7 @@ public class DStarLite
     {
         double min = double.PositiveInfinity;
         Node returnNode = null;
-        foreach (Node s in node.GetSurroundingOpenSpaces())
+        foreach (Node s in Map.GetSurroundingOpenSpaces(node.X, node.Y))
         {
             double val = 1 + s.CostFromStartingPoint;
             if (val <= min)
@@ -267,7 +240,7 @@ public class DStarLite
     private double MinCost(Node node)
     {
         double min = double.PositiveInfinity;
-        foreach (Node n in node.GetSurroundingOpenSpaces())
+        foreach (Node n in Map.GetSurroundingOpenSpaces(node.X, node.Y))
         {
             double val = 1 + n.CostFromStartingPoint; // Add's 1 to the CostFromStartingPoint since it's one more move
             if (val < min) // If the value is smaller than the minimum value found
@@ -298,7 +271,7 @@ public class DStarLite
             else if (node.CostFromStartingPoint > node.Rhs) // The g-value wasn't optimally calculated
             {
                 node.CostFromStartingPoint = node.Rhs;
-                foreach (Node surroundingState in node.GetSurroundingOpenSpaces())
+                foreach (Node surroundingState in Map.GetSurroundingOpenSpaces(node.X, node.Y))
                 {
                     UpdateVertex(surroundingState);
                 }
@@ -307,7 +280,7 @@ public class DStarLite
             {
                 node.CostFromStartingPoint = double.PositiveInfinity;
                 UpdateVertex(node);
-                foreach (Node surroundingState in node.GetSurroundingOpenSpaces())
+                foreach (Node surroundingState in Map.GetSurroundingOpenSpaces(node.X, node.Y))
                 {
                     UpdateVertex(surroundingState);
                 }
