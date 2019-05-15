@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2726040954034243598}
   - component: {fileID: 2726040954034243584}
-  - component: {fileID: 2726040954034243597}
+  - component: {fileID: 3448717826135486326}
   m_Layer: 0
   m_Name: NetworkManager
   m_TagString: Untagged
@@ -51,7 +51,7 @@ MonoBehaviour:
   showDebugMessages: 0
   offlineScene: NetworkMenu
   onlineScene: Game
-  transport: {fileID: 2726040954034243597}
+  transport: {fileID: 3448717826135486326}
   networkAddress: localhost
   maxConnections: 4
   playerPrefab: {fileID: 6654271199680664771, guid: 073989fcfeb340f43b1b3ad5cb563d7a,
@@ -64,7 +64,7 @@ MonoBehaviour:
   - {fileID: 2302226259571672645, guid: 5a5341eef4aad1241958b2c797b6b2e7, type: 3}
   - {fileID: 6654271199680664771, guid: e2a0c09fe58275743a21d2b5cd539eb5, type: 3}
   - {fileID: 4278105648758884905, guid: b7ef729de582b5a469c6774727d3dca1, type: 3}
---- !u!114 &2726040954034243597
+--- !u!114 &3448717826135486326
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -73,7 +73,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2726040954034243585}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c7424c1070fad4ba2a7a96b02fbeb4bb, type: 3}
+  m_Script: {fileID: 11500000, guid: 7d79bbf2858994b48a599a16f539010c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   OnClientConnected:
@@ -114,7 +114,18 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
     m_TypeName: Mirror.UnityEventInt, Mirror, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  port: 7777
-  NoDelay: 1
-  serverMaxMessageSize: 16384
-  clientMaxMessageSize: 16384
+  m_ChannelDefinitions: 0100000002000000
+  m_TransportVerbosity: 1
+  m_UseLZ4Compression: 0
+  m_BindToAllInterfaces: 1
+  m_BindToAddress: 127.0.0.1
+  m_Port: 7777
+  m_UseCustomTimeout: 0
+  m_BasePeerTimeout: 5000
+  m_BasePeerMultiplier: 3
+  m_MaximumTotalConnections: 1000
+  m_ServerUPNPEnabled: 0
+  m_ServerUPNPTimeout: 10000
+  m_ServerUPNPMappingDescription: Ignorance
+  m_ServerUPNPIpAddress: 
+  m_ServerUPNPRuleLifetime: 600
