@@ -5,6 +5,8 @@ using UnityEngine.SceneManagement;
 public class EscapeMenu : NetworkBehaviour
 {
     public GameObject Canvas;
+    public delegate void PauseToggled();
+    public event PauseToggled EventPauseToggled;
 
     private bool m_paused = false;
 
@@ -32,23 +34,7 @@ public class EscapeMenu : NetworkBehaviour
         {
             NetworkManager.singleton.StopClient();
         }
-        Cursor.visible = true;
         SceneManager.LoadScene(2);
-    }
-
-    public void MainMenu()
-    {
-        TogglePause();
-        if (isServer)
-        {
-            NetworkManager.singleton.StopHost();
-        }
-        else
-        {
-            NetworkManager.singleton.StopClient();
-        }
-        Cursor.visible = true;
-        SceneManager.LoadScene(0);
     }
 
     public void TogglePause()
@@ -56,10 +42,10 @@ public class EscapeMenu : NetworkBehaviour
         m_paused = !m_paused;
         Cursor.visible = m_paused;
         Canvas.gameObject.SetActive(m_paused);
+        if (EventPauseToggled != null)
+        {
+            EventPauseToggled();
+        }
     }
 
-    public bool IsPaused()
-    {
-        return m_paused;
-    }
 }

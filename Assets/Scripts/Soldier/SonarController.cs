@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Networking;
 
 public class SonarController : NetworkBehaviour
@@ -26,13 +24,18 @@ public class SonarController : NetworkBehaviour
     }
 
     [Command]
-    public void CmdSonar()
+    private void CmdSonar()
+    {
+        RpcSonar();
+    }
+
+    [ClientRpc]
+    private void RpcSonar()
     {
         GameObject prefab = Instantiate(m_prefab, transform.position, Quaternion.identity);
-        Sonar script = prefab.GetComponent<Sonar>();
 
-        // Instantiate the sonar on the network for all players 
-        NetworkServer.Spawn(prefab);
-        script.RpcSetColor(GetComponent<Soldier>().InitialColor);
+        Sonar script = prefab.GetComponent<Sonar>();
+        Soldier soldier = GetComponent<Soldier>();
+        script.SetColor(soldier.InitialColor);
     }
 }
