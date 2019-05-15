@@ -13,11 +13,11 @@ public class DStarLite
     private Heap m_heap;
     private double m_travelledDistance;
     private List<Node> m_previousNodesToTraverse = new List<Node>();
-    private Node m_goal;
-    private Node m_previousGoal;
+    private Coordinates m_goal;
+    private Coordinates m_previousGoal;
     
-    private Node m_start;
-    private Node m_previousStart;
+    private Coordinates m_start;
+    private Coordinates m_previousStart;
     
     public DStarLite(GameEnvironment environment)
     {
@@ -43,11 +43,12 @@ public class DStarLite
         //Creates an heap the size of the map
         m_heap = new Heap(Map.GetSize());
         Map.Reset();
-        m_goal = Map.GetNode(goalX, goalY);
-        m_start = Map.GetNode(startX, startY);
+        m_goal = new Coordinates(goalX, goalY);
+        m_start = new Coordinates(startX, startY);
         m_previousStart = m_start;
-        m_goal.Rhs = 0;
-        m_heap.Insert(m_goal, CalculatePriority(m_goal));
+        Node goalNode = Map.GetNode(m_goal);
+        goalNode.Rhs = 0;
+        m_heap.Insert(goalNode, CalculatePriority(goalNode));
         m_travelledDistance = 0;
     }
 
@@ -109,15 +110,16 @@ public class DStarLite
         // The bot is still in the same tile AND
         // The goal hasn't been reached THAN
         // The shortest path does not need to be recalculated.
-        if(!mapHasChanged && m_start == previousFirstNode && m_goal == m_previousGoal)
+        if(!mapHasChanged && Map.GetNode(m_start) == previousFirstNode && m_goal == m_previousGoal)
         {
             return m_previousNodesToTraverse;
         }
         m_previousGoal = m_goal;
+        Node goalNode = Map.GetNode(m_goal);
         do
         {
             nodesToTraverse.Add(NextMove(mapHasChanged));
-        } while (nodesToTraverse[nodesToTraverse.Count-1] != m_goal);
+        } while (nodesToTraverse[nodesToTraverse.Count-1] != goalNode);
         m_previousNodesToTraverse = nodesToTraverse;
         return nodesToTraverse;
     }
@@ -130,17 +132,23 @@ public class DStarLite
     private Node NextMove(bool mapHasChanged)
     {
         // Update position of bot
-        m_start = MinCostNode(m_start);
+        Node startNode = Map.GetNode(m_start);
+        startNode = MinCostNode(startNode);
+        if(startNode.X != m_start.X || startNode.Y != m_start.Y)
+        {
+            m_start.X = startNode.X;
+            m_start.Y = startNode.Y;
+        }
 
         if (mapHasChanged)
         {
             // Calculates a new TravelDistance
-            m_travelledDistance += Heuristic(m_start, m_previousStart);
+            m_travelledDistance += Heuristic(startNode, Map.GetNode(m_previousStart));
             // Saves the new start for calculating the Heuristics
             m_previousStart = m_start;
         }
 
-        return m_start;
+        return startNode;
     }
 
     /// <summary>
@@ -149,7 +157,7 @@ public class DStarLite
     /// <param name="botCoordinates">The current coordinates of the bot</param>
     public void SyncBotPosition(Coordinates botCoordinates)
     {
-        m_start = Map.GetNode(botCoordinates.X, botCoordinates.Y);
+        m_start = botCoordinates;
     }
 
     // --------------------------------------------------------------------------------------------
@@ -177,7 +185,8 @@ public class DStarLite
     ///</summary>
     private PriorityKey CalculatePriority(Node node)
     {
-        return new PriorityKey(Math.Min(node.CostFromStartingPoint, node.Rhs) + Heuristic(node, m_start) + m_travelledDistance, Math.Min(node.CostFromStartingPoint, node.Rhs));
+        Node startNode = Map.GetNode(m_start);
+        return new PriorityKey(Math.Min(node.CostFromStartingPoint, node.Rhs) + Heuristic(node, startNode) + m_travelledDistance, Math.Min(node.CostFromStartingPoint, node.Rhs));
     }
 
     /// <summary>
@@ -195,7 +204,7 @@ public class DStarLite
     /// </summary>
     private void UpdateVertex(Node node)
     {
-        if (!node.Equals(m_goal))
+        if (!node.Equals(Map.GetNode(m_goal)))
         {
             node.Rhs = MinCost(node);
         }
@@ -253,8 +262,9 @@ public class DStarLite
 
     private void ComputeShortestPath()
     {
+        Node startNode = Map.GetNode(m_start);
         // While the top state of the Heap has a higher priority than the start state OR start.rhs is not the cost of start
-        while (m_heap.TopKey().CompareTo(CalculatePriority(m_start)) < 0 || m_start.Rhs != m_start.CostFromStartingPoint)
+        while (m_heap.TopKey().CompareTo(CalculatePriority(startNode)) < 0 || startNode.Rhs != startNode.CostFromStartingPoint)
         {
             // Gets the priority key op the top
             PriorityKey oldKey = m_heap.TopKey();
@@ -262,7 +272,7 @@ public class DStarLite
             Node node = m_heap.Pop();
             if (node == null) break; // Heap is empty
 
-            // Gets new key based on current botPosition
+            // Gets new key based on current position that's being calculated
             PriorityKey newKey = CalculatePriority(node);
             if (oldKey.CompareTo(newKey) < 0) // The node has a lower priority than before
             {
