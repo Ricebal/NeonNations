@@ -55,8 +55,8 @@ public class KeybindDialogBox : MonoBehaviour
             Array keyCodes = Enum.GetValues(typeof(KeyCode));
             foreach (KeyCode keyCode in keyCodes)
             {
-                // Rebind the key pressed down and its label
-                if (Input.GetKeyDown(keyCode))
+                // Rebind the key pressed down and its label. If the new key is 'Escape', do nothing
+                if (Input.GetKeyDown(keyCode) && keyCode != KeyCode.Escape)
                 {
                     string actionName = InputManager.GetActionName(keyCode);
                     // If the key is already assigned to another action set its value to none for the other action

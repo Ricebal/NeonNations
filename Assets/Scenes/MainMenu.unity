@@ -595,6 +595,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: BindingsMenu
       objectReference: {fileID: 0}
+    - target: {fileID: 997121546938248067, guid: cdc37814d97ff4147870fe6bd370661f,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 997121546938248071, guid: cdc37814d97ff4147870fe6bd370661f,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -710,21 +715,71 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Target
       value: 
       objectReference: {fileID: 2045673775}
+    - target: {fileID: 997121547034789141, guid: cdc37814d97ff4147870fe6bd370661f,
+        type: 3}
+      propertyPath: m_havePropertiesChanged
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 997121547034789141, guid: cdc37814d97ff4147870fe6bd370661f,
+        type: 3}
+      propertyPath: m_isInputParsingRequired
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1949830162833917074, guid: cdc37814d97ff4147870fe6bd370661f,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 2045673775}
+    - target: {fileID: 7324302710905405438, guid: cdc37814d97ff4147870fe6bd370661f,
+        type: 3}
+      propertyPath: m_havePropertiesChanged
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7324302710905405438, guid: cdc37814d97ff4147870fe6bd370661f,
+        type: 3}
+      propertyPath: m_isInputParsingRequired
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8091829067586725055, guid: cdc37814d97ff4147870fe6bd370661f,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 2045673775}
+    - target: {fileID: 5079420137769216870, guid: cdc37814d97ff4147870fe6bd370661f,
+        type: 3}
+      propertyPath: m_havePropertiesChanged
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5079420137769216870, guid: cdc37814d97ff4147870fe6bd370661f,
+        type: 3}
+      propertyPath: m_isInputParsingRequired
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3213667431467044899, guid: cdc37814d97ff4147870fe6bd370661f,
+        type: 3}
+      propertyPath: m_havePropertiesChanged
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3213667431467044899, guid: cdc37814d97ff4147870fe6bd370661f,
+        type: 3}
+      propertyPath: m_isInputParsingRequired
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4140264110980925567, guid: cdc37814d97ff4147870fe6bd370661f,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 88459158}
+    - target: {fileID: 6792046157066517675, guid: cdc37814d97ff4147870fe6bd370661f,
+        type: 3}
+      propertyPath: m_havePropertiesChanged
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6792046157066517675, guid: cdc37814d97ff4147870fe6bd370661f,
+        type: 3}
+      propertyPath: m_isInputParsingRequired
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cdc37814d97ff4147870fe6bd370661f, type: 3}
 --- !u!1 &1927945463 stripped
