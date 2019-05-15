@@ -13,4 +13,10 @@
         this.X = x;
         this.Y = y;
     }
+
+    public bool Equals(Coordinates that)
+    {
+        if (this.X == that.X && this.Y == that.Y) return true;
+        return false;
+    }
 }

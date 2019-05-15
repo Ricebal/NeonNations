@@ -8,13 +8,13 @@ using UnityEngine;
 
 namespace Assets.Scripts.Soldier.Bot.DStar
 {
-    public static class BresenhamPathSmoothing
+    public static class PathSmoothing
     {
-        public static Coordinates FarthestNodeToReach(PointF currentPosition, List<Node> nodesToTraverse, Node[][] map, float entityWidth)
+        public static Coordinates FarthestCoordinateToReach(PointF currentPosition, List<Coordinates> coordinatesToTraverse, NavigationGraph map, float entityWidth)
         {
             int nextNode = 0;
             int previousNextNode = nextNode;
-            int goalNode = nodesToTraverse.Count - 1;
+            int goalNode = coordinatesToTraverse.Count - 1;
             bool possibleToMoveHere = true;
 
             // When it's possible to move from current position and the new position AND the new position is not the final destination
@@ -25,7 +25,7 @@ namespace Assets.Scripts.Soldier.Bot.DStar
                 // Get new point that is closer to the destination.
                 nextNode++;
                 // Check if it's possible to move to the next position
-                possibleToMoveHere = PossibleToMoveBetween(currentPosition, new PointF(nodesToTraverse[nextNode].X, nodesToTraverse[nextNode].Y), map, entityWidth, entityWidth);
+                possibleToMoveHere = PossibleToMoveBetween(currentPosition, new PointF(coordinatesToTraverse[nextNode].X, coordinatesToTraverse[nextNode].Y), map, entityWidth, entityWidth);
             }
 
             // If it's not possible to move to the next position
@@ -34,7 +34,7 @@ namespace Assets.Scripts.Soldier.Bot.DStar
                 // Get back to previousPoint, since that's the last point that is reachable.
                 nextNode = previousNextNode;
             }
-            return new Coordinates(nodesToTraverse[nextNode].X, nodesToTraverse[nextNode].Y);
+            return new Coordinates(coordinatesToTraverse[nextNode].X, coordinatesToTraverse[nextNode].Y);
         }
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace Assets.Scripts.Soldier.Bot.DStar
         /// <param name="newPosition">The end-position on the map to check</param>
         /// <param name="map">The map on which to check the positions</param>
         /// <returns></returns>
-        private static bool PossibleToMoveBetween(PointF currentPosition, PointF newPosition, Node[][] map, float xOffset, float yOffset)
+        private static bool PossibleToMoveBetween(PointF currentPosition, PointF newPosition, NavigationGraph map, float xOffset, float yOffset)
         {
             float leftSideFromEntity = -(xOffset / 2);
             float rightSideFromEntity = +(xOffset / 2);
@@ -68,7 +68,7 @@ namespace Assets.Scripts.Soldier.Bot.DStar
             TilesIntersectedByLine(currentPosition.X, currentPosition.Y + lowerSideFromEntity, newPosition.X, newPosition.Y + lowerSideFromEntity, ref passingCoordinates);
             foreach (Coordinates coordinate in passingCoordinates)
             {
-                if (map[coordinate.X][coordinate.Y].Obstacle)
+                if (map.GetNode(coordinate.X, coordinate.Y).Obstacle)
                 {
                     // There is a wall in the colliding line
                     return false;
