@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.Networking;
 
 public class Soldier : NetworkBehaviour
@@ -74,15 +75,23 @@ public class Soldier : NetworkBehaviour
     protected void RpcColor(GameObject obj, Color color)
     {
         obj.GetComponent<Renderer>().material.color = color;
-        GetComponentsInChildren<ParticleSystem>().ForEach(ps =>
+        ParticleSystem[] particleSystems = obj.GetComponentsInChildren<ParticleSystem>();
+        for (int i = 0; i < particleSystems.Length; i++)
         {
+            var main = particleSystems[i].main;
+            main.startColor = color;
+        }
 
-        });
-
-        GetComponentsInChildren<ParticleSystemRenderer>().ForEach(psr =>
+        ParticleSystemRenderer[] particleSystemRenderers = obj.GetComponentsInChildren<ParticleSystemRenderer>();
+        for (int i = 0; i < particleSystemRenderers.Length; i++)
         {
-
-        });
+            if (particleSystemRenderers[i].trailMaterial != null)
+            {
+                Material mat = Material.Instantiate(particleSystemRenderers[i].trailMaterial);
+                mat.SetColor("_EmissionColor", color * 3);
+                particleSystemRenderers[i].trailMaterial = mat;
+            }
+        }
     }
 
     [Command]
