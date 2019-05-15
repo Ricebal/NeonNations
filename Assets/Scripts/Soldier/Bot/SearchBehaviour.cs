@@ -53,7 +53,7 @@ public class SearchBehaviour : MonoBehaviour
         coordinatesToTraverse.AddRange(m_dStarLite.CoordinatesToTraverse());
 
         Vector2Int farthestReachableNode = PathSmoothing.FarthestCoordinateToReach(new PointF(Bot.transform.position.x, Bot.transform.position.z), coordinatesToTraverse, m_dStarLite.Map, m_offsetForLineCalculation);
-        //DebugMap(m_dStarLite.Map, farthestReachableNode, coordinatesToTraverse);
+        DebugMap(m_dStarLite.Map, farthestReachableNode, coordinatesToTraverse);
         MoveTo(farthestReachableNode);
         m_dStarLite.SyncBotPosition(botCoordinate);
     }
@@ -91,8 +91,7 @@ public class SearchBehaviour : MonoBehaviour
 
         Vector2 heading = new Vector2(horizontal, vertical);
         heading.Normalize();
-        // The clamp normalizes the input to a value between -1 and 1 (To represent the players input)
-        m_bot.Move(heading.x, heading.y);
+        //m_bot.Move(heading.x, heading.y);
     }
 
     private void DebugMap(NavigationGraph map, Vector2Int nodeToReach, List<Vector2Int> coordinatesToTraverse)

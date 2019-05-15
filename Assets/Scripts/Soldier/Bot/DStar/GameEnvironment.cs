@@ -96,7 +96,7 @@ namespace Assets.Scripts.Soldier.Bot.DStar
         /// <param name="coordinatesInRange">The Coordinates that have to be checked</param>
         private LinkedList<Vector2Int> GetCoordinatesInRange(Vector2Int objectCoordinates, int range, LinkedList<Vector2Int> coordinatesInRange)
         {
-            range = Mathf.Clamp(range, 0, 3);
+            range = Mathf.Clamp(range, 0, 5);
             for (int i = -range; i < range; i++)
             {
                 for (int j = -range; j < range; j++)
@@ -119,12 +119,30 @@ namespace Assets.Scripts.Soldier.Bot.DStar
         /// <param name="illuminatedCoordinates">LinkedListist to which the illuminated Coordinates should be added</param>
         private void GetCoordinatesAroundLights(ref LinkedList<Vector2Int> illuminatedCoordinates)
         {
+            // Get all lights in sight of the bot
             List<Light> lightsInSight = GetLights();
 
             // Get all illuminated coordinates
             foreach (Light light in lightsInSight)
             {
-                GetCoordinatesInRange(ConvertGameObjectToCoordinates(light.transform), (int)Math.Floor(light.range), illuminatedCoordinates);
+                int range = 0;
+                // The specific range of the lights.
+                switch (light.transform.parent.tag)
+                {
+                    case "Sonar":
+                        range = 5;
+                        break;
+                    case "Bullet":
+                        range = 1;
+                        break;
+                    case "Impact":
+                        range = 2;
+                        break;
+                    default:
+                        range = (int)Math.Floor(light.range);
+                        break;
+                }
+                GetCoordinatesInRange(ConvertGameObjectToCoordinates(light.transform), range, illuminatedCoordinates);
             }
         }
 
@@ -136,13 +154,8 @@ namespace Assets.Scripts.Soldier.Bot.DStar
             // Get's all lights in the scene 
             Light[] lights = FindObjectsOfType<Light>();
             // Filter lights by point light and check if the position is inside the view
-            List<Light> pointLights = lights.Where(light => light.type == UnityEngine.LightType.Point && CheckIfPositionIsInsideView(light.transform.position)/* && light.transform.parent.tag != "Player"*/).ToList();
+            List<Light> pointLights = lights.Where(light => light.type == UnityEngine.LightType.Point && CheckIfPositionIsInsideView(light.transform.position)).ToList();
             // Remove point lights of the players and bots
-            for (int i = 0; i < pointLights.Count(); i++)
-            {
-                string tag = pointLights[i].transform.parent.tag;
-                Console.WriteLine(tag);
-            }
             return pointLights.Where(light => light.transform.parent.tag != "Player").ToList();
         }
 
@@ -152,10 +165,10 @@ namespace Assets.Scripts.Soldier.Bot.DStar
         /// <param name="position">The position you want to check</param>
         private bool CheckIfPositionIsInsideView(Vector3 position)
         {
-            float viewLeft = m_bot.transform.position.x - 6;
-            float viewUp = m_bot.transform.position.z + 12;
-            float viewRight = viewLeft + 12;
-            float viewDown = viewUp - 24;
+            float viewLeft = m_bot.transform.position.x - 11;
+            float viewUp = m_bot.transform.position.z + 5;
+            float viewRight = viewLeft + 22;
+            float viewDown = viewUp - 10;
             float posX = position.x;
             float posZ = position.z;
             return (viewLeft <= posX && posX <= viewRight && viewDown <= posZ && posZ <= viewUp);
