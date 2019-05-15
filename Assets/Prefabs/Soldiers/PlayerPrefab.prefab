@@ -5257,6 +5257,7 @@ MonoBehaviour:
   m_normalLerpRate: 7
   m_fasterLerpRate: 15
   m_closeEnough: 0.2
+  m_tooFar: 10
 --- !u!114 &629880366995975402
 MonoBehaviour:
   m_ObjectHideFlags: 0

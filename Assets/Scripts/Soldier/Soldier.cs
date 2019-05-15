@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.Networking;
 
-public class Soldier : NetworkBehaviour
+public abstract class Soldier : NetworkBehaviour
 {
     [SyncVar]
     public int Team;
@@ -34,34 +34,60 @@ public class Soldier : NetworkBehaviour
         // If the Soldier is respawning, make him fade away
         if (m_isDead)
         {
-            float newAlpha = (RespawnTime - (Time.time - m_deathTime)) / RespawnTime;
+            float newAlpha = Mathf.Max(0, (RespawnTime - (Time.time - m_deathTime)) / RespawnTime);
             m_renderer.material.color = new Color(1, 0.39f, 0.28f, newAlpha);
         }
 
-        // If the Soldier's health is below or equal to 0
-        if (isLocalPlayer && m_stats.GetCurrentHealth() <= 0)
+        if (isServer)
         {
-            // If the Soldier is not yet dead, the Soldier will die
-            if (!m_isDead)
+            // If the Soldier's health is below or equal to 0
+            if (m_stats.GetCurrentHealth() <= 0)
             {
-                Die();
+                // If the Soldier is not yet dead, the Soldier will die
+                if (!m_isDead)
+                {
+                    RpcDeathState(true);
+                }
+                // If the Soldier is dead, but is able to respawn
+                else if (Time.time - m_deathTime >= RespawnTime)
+                {
+                    RpcDeathState(false);
+                }
             }
-            // If the Soldier is dead, but is able to respawn
-            else if (Time.time - m_deathTime >= RespawnTime)
-            {
-                Respawn();
-            }
+        }
+    }
+
+    [ClientRpc]
+    private void RpcDeathState(bool isDead)
+    {
+        if (isDead)
+        {
+            Die();
+        }
+        else
+        {
+            Respawn();
         }
     }
 
     protected virtual void Die()
     {
-        CmdSendDeathState(true);
+        m_isDead = true;
+        m_sphereCollider.enabled = false;
+        m_deathTime = Time.time;
     }
 
     protected virtual void Respawn()
     {
-        CmdSendDeathState(false);
+        m_isDead = false;
+        m_sphereCollider.enabled = true;
+        m_stats.Reset();
+        if (isLocalPlayer)
+        {
+            Vector2 spawnPoint = GameObject.Find("GameManager").GetComponent<BoardManager>().GetRandomFloorTile();
+            transform.position = new Vector3(spawnPoint.x, 0, spawnPoint.y);
+            CmdColor(gameObject, InitialColor);
+        }
     }
 
     public void SetInitialColor(Color color)
@@ -100,33 +126,7 @@ public class Soldier : NetworkBehaviour
         RpcColor(obj, color);
     }
 
-    [Command]
-    private void CmdSendDeathState(bool isDead)
-    {
-        RpcReceiveDeathState(isDead);
-    }
-
-    [ClientRpc]
-    private void RpcReceiveDeathState(bool isDead)
-    {
-        m_isDead = isDead;
-        m_deathTime = Time.time;
-
-        if (isDead)
-        {
-            m_sphereCollider.enabled = false;
-        }
-        else
-        {
-            m_sphereCollider.enabled = true;
-            m_renderer.material.color = InitialColor;
-            Vector2 spawnPoint = GameObject.Find("GameManager").GetComponent<BoardManager>().GetRandomFloorTile();
-            transform.position = new Vector3(spawnPoint.x, 0, spawnPoint.y);
-            m_stats.Reset();
-        }
-    }
-
-    void OnTriggerEnter(Collider collider)
+    protected void OnTriggerEnter(Collider collider)
     {
         if (collider.gameObject.tag == "Bullet")
         {
@@ -136,12 +136,6 @@ public class Soldier : NetworkBehaviour
                 m_stats.TakeDamage(collider.gameObject.GetComponent<Bullet>().Damage);
             }
         }
-    }
-
-    [ClientRpc]
-    private void RpcTakeDamage(int damage)
-    {
-        m_stats.TakeDamage(damage);
     }
 
 }
