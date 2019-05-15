@@ -7,6 +7,7 @@ public class PlayerController : NetworkBehaviour
     private Player m_player;
     private Action m_action;
     private DashController m_playerDash;
+    private InputManager m_inputManager;
 
     void Start()
     {
@@ -19,6 +20,7 @@ public class PlayerController : NetworkBehaviour
         m_player = GetComponent<Player>();
         m_action = GetComponent<Action>();
         m_playerDash = GetComponent<DashController>();
+        m_inputManager = GameObject.Find("InputManager").GetComponent<InputManager>();
 
         Vector2 spawnPoint = GameObject.Find("GameManager").GetComponent<BoardManager>().GetRandomFloorTile();
         transform.position = new Vector3(spawnPoint.x, 0, spawnPoint.y);
@@ -36,19 +38,19 @@ public class PlayerController : NetworkBehaviour
         }
 
         // If a fire key is held down
-        if (Input.GetButton("Fire1"))
+        if (InputManager.GetKey("Shoot"))
         {
             m_action.Shoot();
         }
 
         // If the 'space' key is held down
-        if (Input.GetButton("Jump"))
+        if (InputManager.GetKey("Sonar"))
         {
             m_action.Sonar();
         }
 
-        // If shift or mouse3 is pressed
-        if (Input.GetButton("Fire3"))
+        // If shift is pressed
+        if (InputManager.GetKeyDown("Dash"))
         {
             m_action.Dash();
         }
@@ -61,8 +63,8 @@ public class PlayerController : NetworkBehaviour
             return;
         }
 
-        float moveHorizontal = Input.GetAxis("Horizontal");
-        float moveVertical = Input.GetAxis("Vertical");
+        float moveHorizontal = m_inputManager.GetAxis("Horizontal");
+        float moveVertical = m_inputManager.GetAxis("Vertical");
 
         Vector3 movement = new Vector3(moveHorizontal, 0, moveVertical);
 
