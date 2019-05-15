@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class HeapElement
 {
-    public Coordinates Coordinates;
+    public Vector2Int Coordinates;
     public PriorityKey Key;
 
-    public HeapElement(Coordinates coordinates, PriorityKey key)
+    public HeapElement(Vector2Int coordinates, PriorityKey key)
     {
         Coordinates = coordinates;
         Key = key;

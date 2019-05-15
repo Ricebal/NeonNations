@@ -30,10 +30,10 @@ namespace Assets.Scripts.Soldier.Bot.DStar
         }
 
         // Return the obstacles the bot should be able to see
-        public LinkedList<Coordinates> GetObstaclesInVision()
+        public LinkedList<Vector2Int> GetObstaclesInVision()
         {
             // First get all coordinates that are illuminated
-            LinkedList<Coordinates> currentCoordinatesInSight = GetIlluminatedCoordinates();
+            LinkedList<Vector2Int> currentCoordinatesInSight = GetIlluminatedCoordinates();
             // Than check the map-layout to see if the illuminated parts are walls or empty spaces
             FilterCoordinatesWithObstacle(ref currentCoordinatesInSight);
             // Return the result
@@ -44,25 +44,25 @@ namespace Assets.Scripts.Soldier.Bot.DStar
         /// Checks if the Coordinates in sight are walls or empty spaces.
         /// </summary>
         /// <param name="coordinates">The Coordinates that should be checked</param>
-        private void FilterCoordinatesWithObstacle(ref LinkedList<Coordinates> coordinates)
+        private void FilterCoordinatesWithObstacle(ref LinkedList<Vector2Int> coordinates)
         {
-            LinkedList<Coordinates> coordinatesToDelete = new LinkedList<Coordinates>();
-            foreach (Coordinates coordinate in coordinates)
+            LinkedList<Vector2Int> coordinatesToDelete = new LinkedList<Vector2Int>();
+            foreach (Vector2Int coordinate in coordinates)
             {
                 // If the coordinates are outside the map they shouldn't be checked (to prevent out of index exception)
-                if (coordinate.X < 0 || coordinate.Y < 0 || coordinate.X >= m_map.Length || coordinate.Y >= m_map[0].Length)
+                if (coordinate.x < 0 || coordinate.y < 0 || coordinate.x >= m_map.Length || coordinate.y >= m_map[0].Length)
                 {
                     coordinatesToDelete.AddLast(coordinate);
                     continue;
                 }
                 // If the coordinates are inside the map, check if the coordinate contains an obstacle
-                if (m_map[coordinate.X][coordinate.Y] == 0)
+                if (m_map[coordinate.x][coordinate.y] == 0)
                 {
                     coordinatesToDelete.AddLast(coordinate);
                 }
             }
             // Delete the coordintes that contain no obstacles
-            foreach (Coordinates coordinate in coordinatesToDelete)
+            foreach (Vector2Int coordinate in coordinatesToDelete)
             {
                 coordinates.Remove(coordinate);
             }
@@ -71,9 +71,9 @@ namespace Assets.Scripts.Soldier.Bot.DStar
         /// <summary>
         /// Get all Coordinates that are illuminated by light on the bot's screen
         /// </summary>
-        private LinkedList<Coordinates> GetIlluminatedCoordinates()
+        private LinkedList<Vector2Int> GetIlluminatedCoordinates()
         {
-            LinkedList<Coordinates> illuminatedCoordinates = GetCoordinatesAroundBot(); // Because of the spotlight around the bot
+            LinkedList<Vector2Int> illuminatedCoordinates = GetCoordinatesAroundBot(); // Because of the spotlight around the bot
             GetCoordinatesAroundLights(ref illuminatedCoordinates); // All other lights visible on screen
             return illuminatedCoordinates;
         }
@@ -81,10 +81,10 @@ namespace Assets.Scripts.Soldier.Bot.DStar
         /// <summary>
         /// Get the Coordinates that are illuminated by the spotlight on the bot
         /// </summary>
-        private LinkedList<Coordinates> GetCoordinatesAroundBot()
+        private LinkedList<Vector2Int> GetCoordinatesAroundBot()
         {
-            LinkedList<Coordinates> currentCoordinatesInSight = new LinkedList<Coordinates>();
-            Coordinates botCoordinate = ConvertGameObjectToCoordinates(m_bot.transform);
+            LinkedList<Vector2Int> currentCoordinatesInSight = new LinkedList<Vector2Int>();
+            Vector2Int botCoordinate = ConvertGameObjectToCoordinates(m_bot.transform);
             return GetCoordinatesInRange(botCoordinate, 2, currentCoordinatesInSight);
         }
 
@@ -94,19 +94,19 @@ namespace Assets.Scripts.Soldier.Bot.DStar
         /// <param name="objectCoordinates">The Coordinates of the object you want to check the light from</param>
         /// <param name="range">The range of the light that's emitted by the object</param>
         /// <param name="coordinatesInRange">The Coordinates that have to be checked</param>
-        private LinkedList<Coordinates> GetCoordinatesInRange(Coordinates objectCoordinates, int range, LinkedList<Coordinates> coordinatesInRange)
+        private LinkedList<Vector2Int> GetCoordinatesInRange(Vector2Int objectCoordinates, int range, LinkedList<Vector2Int> coordinatesInRange)
         {
             range = Mathf.Clamp(range, 0, 3);
             for (int i = -range; i < range; i++)
             {
                 for (int j = -range; j < range; j++)
                 {
-                    int x = objectCoordinates.X + i;
-                    int y = objectCoordinates.Y + j;
+                    int x = objectCoordinates.x + i;
+                    int y = objectCoordinates.y + j;
                     // Check if coordinate is already added to the list
-                    if (!coordinatesInRange.Any(coordinate => coordinate.X == x && coordinate.Y == y))
+                    if (!coordinatesInRange.Any(coordinate => coordinate.x == x && coordinate.y == y))
                     {
-                        coordinatesInRange.AddLast(new Coordinates(x, y));
+                        coordinatesInRange.AddLast(new Vector2Int(x, y));
                     }
                 }
             }
@@ -117,7 +117,7 @@ namespace Assets.Scripts.Soldier.Bot.DStar
         /// Get coordinates that are illuminated by lights
         /// </summary>
         /// <param name="illuminatedCoordinates">LinkedListist to which the illuminated Coordinates should be added</param>
-        private void GetCoordinatesAroundLights(ref LinkedList<Coordinates> illuminatedCoordinates)
+        private void GetCoordinatesAroundLights(ref LinkedList<Vector2Int> illuminatedCoordinates)
         {
             List<Light> lightsInSight = GetLights();
 
@@ -165,9 +165,9 @@ namespace Assets.Scripts.Soldier.Bot.DStar
         /// Converts the transform of a gameobject to coordinates on the map
         /// </summary>
         /// <param name="transform">The transform of the gameobject from which you want the coordinates</param>
-        public Coordinates ConvertGameObjectToCoordinates(Transform transform)
+        public Vector2Int ConvertGameObjectToCoordinates(Transform transform)
         {
-            return new Coordinates((int)Math.Round(transform.position.x, 0, MidpointRounding.AwayFromZero), (int)Math.Round(transform.position.z, 0, MidpointRounding.AwayFromZero));
+            return new Vector2Int((int)Math.Round(transform.position.x, 0, MidpointRounding.AwayFromZero), (int)Math.Round(transform.position.z, 0, MidpointRounding.AwayFromZero));
         }
     }
 }

@@ -1,39 +1,40 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 public class Heap // minheap
 {
     private int m_count;
     private HeapElement[] m_heap;
-    private Dictionary<Coordinates, int> m_hash;
+    private Dictionary<Vector2Int, int> m_hash;
 
     public Heap(int cap)
     {
         m_count = 0;
         m_heap = new HeapElement[cap];
-        m_hash = new Dictionary<Coordinates, int>();
+        m_hash = new Dictionary<Vector2Int, int>();
     }
 
-    public override string ToString()
-    {
-        string s = "";
-        foreach(Coordinates n in m_hash.Keys)
-        {
-            s += $"{n.X}, {n.Y} \n";
-        }
-        return s;
-    }
-
+    /// <summary>
+    /// Returns the key on top of the heap
+    /// </summary>
     public PriorityKey TopKey()
     {
         if (m_count == 0) return new PriorityKey(double.PositiveInfinity, double.PositiveInfinity);
         return m_heap[1].Key;
     }
 
-    public Coordinates Pop()
+    /// <summary>
+    /// Returns the coordinates on top of the heap and will remove these coorinates from the heap
+    /// </summary>
+    /// <returns>Vector2Int</returns>
+    public Vector2Int Pop()
     {
-        if (m_count == 0) return null;
-        Coordinates s = m_heap[1].Coordinates;
+        if (m_count == 0)
+        {
+            return new Vector2Int();
+        }
+        Vector2Int s = m_heap[1].Coordinates;
         m_heap[1] = m_heap[m_count];
         m_hash[m_heap[1].Coordinates] = 1;
         m_hash[s] = 0;
@@ -42,11 +43,14 @@ public class Heap // minheap
         return s;
     }
 
-    public void Insert(Coordinates s, PriorityKey k)
+    /// <summary>
+    /// Inserts an item in the Heap
+    /// </summary>
+    public void Insert(Vector2Int coordinates, PriorityKey key)
     {
-        HeapElement e = new HeapElement(s, k);
+        HeapElement e = new HeapElement(coordinates, key);
         m_count++;
-        m_hash[s] = m_count;
+        m_hash[coordinates] = m_count;
         if (m_count == m_heap.Length)
         {
             increaseCap();
@@ -55,21 +59,29 @@ public class Heap // minheap
         moveUp(m_count);
     }
 
-    public void Remove(Coordinates s)
+    /// <summary>
+    /// Removes a coordinate from the heap
+    /// </summary>
+    /// <param name="coordinates">The coordinates to be removed</param>
+    public void Remove(Vector2Int coordinates)
     {
-        int i = m_hash[s];
+        int i = m_hash[coordinates];
         if (i == 0) return;
-        m_hash[s] = 0;
+        m_hash[coordinates] = 0;
         m_heap[i] = m_heap[m_count];
         m_hash[m_heap[i].Coordinates] = i;
         m_count--;
         moveDown(i);
     }
 
-    public bool Contains(Coordinates s)
+    /// <summary>
+    /// Checks if a coordinate is already in the heap
+    /// </summary>
+    /// <param name="coordinates">The coordinates that need to be checked</param>
+    public bool Contains(Vector2Int coordinates)
     {
         int i;
-        if (!m_hash.TryGetValue(s, out i))
+        if (!m_hash.TryGetValue(coordinates, out i))
         {
             return false;
         }

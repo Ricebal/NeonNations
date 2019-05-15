@@ -12,12 +12,12 @@ public class DStarLite
     private GameEnvironment m_environment;
     private Heap m_heap;
     private double m_travelledDistance;
-    private List<Coordinates> m_previousCoordinatesToTraverse = new List<Coordinates>();
-    private Coordinates m_goal;
-    private Coordinates m_previousGoal;
+    private List<Vector2Int> m_previousCoordinatesToTraverse = new List<Vector2Int>();
+    private Vector2Int m_goal;
+    private Vector2Int m_previousGoal;
     
-    private Coordinates m_start;
-    private Coordinates m_previousStart;
+    private Vector2Int m_start;
+    private Vector2Int m_previousStart;
     
     public DStarLite(GameEnvironment environment)
     {
@@ -43,8 +43,8 @@ public class DStarLite
         //Creates an heap the size of the map
         m_heap = new Heap(Map.GetSize());
         Map.Reset();
-        m_goal = new Coordinates(goalX, goalY);
-        m_start = new Coordinates(startX, startY);
+        m_goal = new Vector2Int(goalX, goalY);
+        m_start = new Vector2Int(startX, startY);
         m_previousStart = m_start;
         Map.GetNode(m_goal).Rhs = 0;
         m_heap.Insert(m_goal, CalculatePriority(m_goal));
@@ -68,18 +68,18 @@ public class DStarLite
     private bool CheckForMapChanges()
     {
         // Check if bot sees new obstacles
-        LinkedList<Coordinates> obstacleCoord = m_environment.GetObstaclesInVision();
+        LinkedList<Vector2Int> obstacleCoord = m_environment.GetObstaclesInVision();
 
         bool change = false;
-        foreach (Coordinates coordinates in obstacleCoord)
+        foreach (Vector2Int coordinates in obstacleCoord)
         {
-            Node node = Map.GetNode(coordinates.X, coordinates.Y);
+            Node node = Map.GetNode(coordinates.x, coordinates.y);
             // If the obstacle was not previously known
             if (!node.Obstacle)
             {
                 change = true;
                 node.Obstacle = true;
-                foreach (Coordinates surroundingCoordinates in Map.GetSurroundingOpenSpaces(coordinates))
+                foreach (Vector2Int surroundingCoordinates in Map.GetSurroundingOpenSpaces(coordinates))
                 {
                     UpdateVertex(surroundingCoordinates);
                 }
@@ -93,13 +93,13 @@ public class DStarLite
     /// <summary>
     /// Returns a list of all the nodes that need to be traversed to reach the goal
     /// </summary>
-    public List<Coordinates> CoordinatesToTraverse()
+    public List<Vector2Int> CoordinatesToTraverse()
     {
-        List<Coordinates> CoordinatesToTraverse = new List<Coordinates>();
+        List<Vector2Int> CoordinatesToTraverse = new List<Vector2Int>();
         // Check if the map has changed
         bool mapHasChanged = CheckForMapChanges();
 
-        Coordinates previousFirstCoordinates = m_previousCoordinatesToTraverse.FirstOrDefault();
+        Vector2Int previousFirstCoordinates = m_previousCoordinatesToTraverse.FirstOrDefault();
         // If nothing has changed AND 
         // The bot is still in the same tile AND
         // The goal hasn't been reached THAN
@@ -109,7 +109,7 @@ public class DStarLite
             return m_previousCoordinatesToTraverse;
         }
         m_previousGoal = m_goal;
-        Coordinates coordinateToTraverse = new Coordinates();
+        Vector2Int coordinateToTraverse = new Vector2Int();
         do
         {
             coordinateToTraverse = NextMove(mapHasChanged);
@@ -124,7 +124,7 @@ public class DStarLite
     /// Calculate the (new) shortest path.
     /// Tells the entity where to move next.
     /// </summary>
-    private Coordinates NextMove(bool mapHasChanged)
+    private Vector2Int NextMove(bool mapHasChanged)
     {
         // Update position of bot
         m_start = MinCostCoordinates(m_start);
@@ -144,24 +144,9 @@ public class DStarLite
     /// Set's the right position of the bot for m_start.
     /// </summary>
     /// <param name="botCoordinates">The current coordinates of the bot</param>
-    public void SyncBotPosition(Coordinates botCoordinates)
+    public void SyncBotPosition(Vector2Int botCoordinates)
     {
         m_start = botCoordinates;
-    }
-
-    // --------------------------------------------------------------------------------------------
-    // Debug functions
-    // --------------------------------------------------------------------------------------------
-
-    private void DebugHeap()
-    {
-        StringBuilder builder = new StringBuilder();
-        builder.Append('\n');
-        builder.Append($"Goal = {m_goal.X}, {m_goal.Y}\n");
-        builder.Append($"BotPosition = {m_start.X}, {m_start.Y}\n");
-        builder.Append('\n');
-        builder.Append(m_heap.ToString());
-        Debug.Log(builder.ToString());
     }
     
     ///<summary>
@@ -172,7 +157,7 @@ public class DStarLite
     /// k1(s) = min(g(s), rhs(s)) + h(s, sstart) + km.
     /// k2(s) = min(g(s), rhs(s)).
     ///</summary>
-    private PriorityKey CalculatePriority(Coordinates coordinates)
+    private PriorityKey CalculatePriority(Vector2Int coordinates)
     {
         Node node = Map.GetNode(coordinates);
         return new PriorityKey(Math.Min(node.CostFromStartingPoint, node.Rhs) + Heuristic(coordinates, m_start) + m_travelledDistance, Math.Min(node.CostFromStartingPoint, node.Rhs));
@@ -181,17 +166,17 @@ public class DStarLite
     /// <summary>
     /// Calculates the Heuristics for traveling between two points
     /// </summary>
-    private double Heuristic(Coordinates pointA, Coordinates pointB)
+    private double Heuristic(Vector2Int pointA, Vector2Int pointB)
     {
-        float xDistance = Math.Abs(pointA.X - pointB.X);
-        float yDistance = Math.Abs(pointA.Y - pointB.Y);
+        float xDistance = Math.Abs(pointA.x - pointB.x);
+        float yDistance = Math.Abs(pointA.y - pointB.y);
         return xDistance + yDistance;
     }
 
     /// <summary>
     /// Re-evaluates the Rhs-value of a State
     /// </summary>
-    private void UpdateVertex(Coordinates coordinates)
+    private void UpdateVertex(Vector2Int coordinates)
     {
         Node node = Map.GetNode(coordinates);
         if (!coordinates.Equals(m_goal))
@@ -214,11 +199,11 @@ public class DStarLite
     /// <returns>
     /// The lowest cost node
     /// </returns>
-    private Coordinates MinCostCoordinates(Coordinates coordinates)
+    private Vector2Int MinCostCoordinates(Vector2Int coordinates)
     {
         double min = double.PositiveInfinity;
-        Coordinates returnCoordinates = null;
-        foreach (Coordinates surroundingCoordinates in Map.GetSurroundingOpenSpaces(coordinates))
+        Vector2Int returnCoordinates = new Vector2Int();
+        foreach (Vector2Int surroundingCoordinates in Map.GetSurroundingOpenSpaces(coordinates))
         {
             Node node = Map.GetNode(surroundingCoordinates);
             double val = 1 + node.CostFromStartingPoint;
@@ -237,10 +222,10 @@ public class DStarLite
     /// <returns>
     /// Double containing the minimum distance
     /// </returns>
-    private double MinCost(Coordinates coordinates)
+    private double MinCost(Vector2Int coordinates)
     {
         double min = double.PositiveInfinity;
-        foreach (Coordinates surroundingCoordinates in Map.GetSurroundingOpenSpaces(coordinates))
+        foreach (Vector2Int surroundingCoordinates in Map.GetSurroundingOpenSpaces(coordinates))
         {
             Node node = Map.GetNode(surroundingCoordinates);
             double val = 1 + node.CostFromStartingPoint; // Add's 1 to the CostFromStartingPoint since it's one more move
@@ -261,7 +246,7 @@ public class DStarLite
             // Gets the priority key op the top
             PriorityKey oldKey = m_heap.TopKey();
             // Gets the node of the top
-            Coordinates coordinates = m_heap.Pop();
+            Vector2Int coordinates = m_heap.Pop();
             if (coordinates == null)
             {
                 break; // Heap is empty
@@ -277,7 +262,7 @@ public class DStarLite
             else if (node.CostFromStartingPoint > node.Rhs) // The g-value wasn't optimally calculated
             {
                 node.CostFromStartingPoint = node.Rhs;
-                foreach (Coordinates surroundingCoordinates in Map.GetSurroundingOpenSpaces(coordinates))
+                foreach (Vector2Int surroundingCoordinates in Map.GetSurroundingOpenSpaces(coordinates))
                 {
                     UpdateVertex(surroundingCoordinates);
                 }
@@ -286,7 +271,7 @@ public class DStarLite
             {
                 node.CostFromStartingPoint = double.PositiveInfinity;
                 UpdateVertex(coordinates);
-                foreach (Coordinates surroundingNodes in Map.GetSurroundingOpenSpaces(coordinates))
+                foreach (Vector2Int surroundingNodes in Map.GetSurroundingOpenSpaces(coordinates))
                 {
                     UpdateVertex(surroundingNodes);
                 }

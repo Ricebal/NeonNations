@@ -11,7 +11,7 @@ public class SearchBehaviour : MonoBehaviour
     public GameObject Bot;
 
     private const float m_offsetForLineCalculation = .95f; // A little less than 1. This will prevent the bot from thinking it will collide with an obstacle directly next to it when moving parallel to ithat obstacle.
-    private Coordinates GoalCoordinates = new Coordinates();
+    private Vector2Int GoalCoordinates = new Vector2Int();
     private GameEnvironment m_environment;
     private DStarLite m_dStarLite;
     private Bot m_bot;
@@ -23,23 +23,23 @@ public class SearchBehaviour : MonoBehaviour
         UnityEngine.Random.InitState((int)DateTime.Now.Ticks);
         m_dStarLite = new DStarLite(m_environment);
         m_dStarLite.GenerateNodeMap(false);
-        Coordinates startCoordinates = m_environment.ConvertGameObjectToCoordinates(Bot.transform);
-        GenerateNewDestination(startCoordinates.X, startCoordinates.Y);
+        Vector2Int startCoordinates = m_environment.ConvertGameObjectToCoordinates(Bot.transform);
+        GenerateNewDestination(startCoordinates.x, startCoordinates.y);
         m_bot = GetComponent<Bot>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        Coordinates currentCoordinates = m_environment.ConvertGameObjectToCoordinates(Bot.transform);
+        Vector2Int currentCoordinates = m_environment.ConvertGameObjectToCoordinates(Bot.transform);
         // If the goal hasn't been reached
-        if (currentCoordinates.X != GoalCoordinates.X || currentCoordinates.Y != GoalCoordinates.Y)
+        if (currentCoordinates.x != GoalCoordinates.x || currentCoordinates.y != GoalCoordinates.y)
         {
             NextMove();
         }
         else
         {
-            GenerateNewDestination(currentCoordinates.X, currentCoordinates.Y);
+            GenerateNewDestination(currentCoordinates.x, currentCoordinates.y);
         }
     }
 
@@ -48,12 +48,12 @@ public class SearchBehaviour : MonoBehaviour
     /// </summary>
     private void NextMove()
     {
-        List<Coordinates> coordinatesToTraverse = new List<Coordinates>();
-        Coordinates botCoordinate = m_environment.ConvertGameObjectToCoordinates(Bot.transform);
+        List<Vector2Int> coordinatesToTraverse = new List<Vector2Int>();
+        Vector2Int botCoordinate = m_environment.ConvertGameObjectToCoordinates(Bot.transform);
         coordinatesToTraverse.AddRange(m_dStarLite.CoordinatesToTraverse());
 
-        Coordinates farthestReachableNode = PathSmoothing.FarthestCoordinateToReach(new PointF(Bot.transform.position.x, Bot.transform.position.z), coordinatesToTraverse, m_dStarLite.Map, m_offsetForLineCalculation);
-        DebugMap(m_dStarLite.Map, farthestReachableNode, coordinatesToTraverse);
+        Vector2Int farthestReachableNode = PathSmoothing.FarthestCoordinateToReach(new PointF(Bot.transform.position.x, Bot.transform.position.z), coordinatesToTraverse, m_dStarLite.Map, m_offsetForLineCalculation);
+        //DebugMap(m_dStarLite.Map, farthestReachableNode, coordinatesToTraverse);
         MoveTo(farthestReachableNode);
         m_dStarLite.SyncBotPosition(botCoordinate);
     }
@@ -78,16 +78,16 @@ public class SearchBehaviour : MonoBehaviour
                 found = true;
             }
         }
-        GoalCoordinates.X = mapX;
-        GoalCoordinates.Y = mapY;
-        m_dStarLite.RunDStarLite(currentX, currentY, GoalCoordinates.X, GoalCoordinates.Y);
+        GoalCoordinates.x = mapX;
+        GoalCoordinates.y = mapY;
+        m_dStarLite.RunDStarLite(currentX, currentY, GoalCoordinates.x, GoalCoordinates.y);
     }
     
     // Moves the bot to the next Coordinate
-    private void MoveTo(Coordinates s)
+    private void MoveTo(Vector2Int coordinates)
     {
-        float horizontal = s.X - Bot.transform.position.x;
-        float vertical = s.Y - Bot.transform.position.z;
+        float horizontal = coordinates.x - Bot.transform.position.x;
+        float vertical = coordinates.y - Bot.transform.position.z;
 
         Vector2 heading = new Vector2(horizontal, vertical);
         heading.Normalize();
@@ -95,9 +95,9 @@ public class SearchBehaviour : MonoBehaviour
         m_bot.Move(heading.x, heading.y);
     }
 
-    private void DebugMap(NavigationGraph map, Coordinates nodeToReach, List<Coordinates> coordinatesToTraverse)
+    private void DebugMap(NavigationGraph map, Vector2Int nodeToReach, List<Vector2Int> coordinatesToTraverse)
     {
-        Coordinates botCoordinates = m_environment.ConvertGameObjectToCoordinates(Bot.transform);
+        Vector2Int botCoordinates = m_environment.ConvertGameObjectToCoordinates(Bot.transform);
         StringBuilder builder = new StringBuilder();
         builder.Append('\n');
         for (int y = map.Map[0].Length - 1; y >= 0; y--)
@@ -109,25 +109,25 @@ public class SearchBehaviour : MonoBehaviour
                     builder.Append("#");
                     continue;
                 }
-                if (x == botCoordinates.X && y == botCoordinates.Y)
+                if (x == botCoordinates.x && y == botCoordinates.y)
                 {
                     builder.Append("@");
                     continue;
                 }
-                if (x == GoalCoordinates.X && y == GoalCoordinates.Y)
+                if (x == GoalCoordinates.x && y == GoalCoordinates.y)
                 {
                     builder.Append("X");
                     continue;
                 }
-                if (x == nodeToReach.X && y == nodeToReach.Y)
+                if (x == nodeToReach.x && y == nodeToReach.y)
                 {
                     builder.Append("%");
                     continue;
                 }
                 bool foundInNodes = false;
-                foreach(Coordinates coordinates in coordinatesToTraverse)
+                foreach(Vector2Int coordinates in coordinatesToTraverse)
                 {
-                    if(x == coordinates.X && y == coordinates.Y)
+                    if(x == coordinates.x && y == coordinates.y)
                     {
                         foundInNodes = true;
                         builder.Append("Q");

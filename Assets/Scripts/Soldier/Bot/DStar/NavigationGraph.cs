@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace Assets.Scripts.Soldier.Bot.DStar
 {
@@ -55,21 +56,21 @@ namespace Assets.Scripts.Soldier.Bot.DStar
             return Map[x][y];
         }
 
-        public Node GetNode(Coordinates coordinate)
+        public Node GetNode(Vector2Int coordinate)
         {
-            return Map[coordinate.X][coordinate.Y];
+            return Map[coordinate.x][coordinate.y];
         }
 
         /// <summary>
         /// Search for surrounding positions 
         /// </summary>
-        public LinkedList<Coordinates> GetSurroundingOpenSpaces(Coordinates coordinates)
+        public LinkedList<Vector2Int> GetSurroundingOpenSpaces(Vector2Int coordinates)
         {
-            int x = coordinates.X;
-            int y = coordinates.Y;
+            int x = coordinates.x;
+            int y = coordinates.y;
             int width = Map.Length;
             int height = Map[0].Length;
-            LinkedList<Coordinates> openPositionsAroundEntity = new LinkedList<Coordinates>();
+            LinkedList<Vector2Int> openPositionsAroundEntity = new LinkedList<Vector2Int>();
             Node tempState;
             for (int i = -1; i < 2; i++)
             {
@@ -87,7 +88,7 @@ namespace Assets.Scripts.Soldier.Bot.DStar
                         if (!tempState.Obstacle)
                         {
                             //openPositionsAroundEntity.AddFirst(tempState);
-                            openPositionsAroundEntity.AddFirst(new Coordinates(x + i, y + j));
+                            openPositionsAroundEntity.AddFirst(new Vector2Int(x + i, y + j));
                         }
                     }
                 }
