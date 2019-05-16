@@ -10,18 +10,40 @@ public class Scoreboard : NetworkBehaviour
     [SerializeField]
     private GameObject m_playerList;
     [SerializeField]
+    private GameObject m_scoreBoard;
+    [SerializeField]
     private TeamManager m_teamManager;
 
     private void Start()
     {
-        m_teamManager.OnPlayersChange += CmdRefresh;
-        CmdRefresh();
+        if (isServer)
+        {
+            m_teamManager.OnPlayersChange += Refresh;
+        }
     }
 
-    [Command]
-    public void CmdRefresh()
+    private void Update()
+    {
+        if (Input.GetKeyDown("tab"))
+        {
+            m_scoreBoard.SetActive(true);
+        }
+        else if (Input.GetKeyUp("tab"))
+        {
+            m_scoreBoard.SetActive(false);
+        }
+    }
+
+    public void Refresh()
     {
         RpcEmpty();
+        foreach (Soldier player in m_teamManager.GetAllPlayers())
+        {
+            if (player != null)
+            {
+                RpcAddPlayer("PlayerName", 10, 5);
+            }
+        }
     }
 
     [ClientRpc]
@@ -31,15 +53,13 @@ public class Scoreboard : NetworkBehaviour
         {
             Destroy(child.gameObject);
         }
+    }
 
-        foreach (Soldier player in m_teamManager.GetAllPlayers())
-        {
-            if (player != null)
-            {
-                Debug.Log("Soldiers!");
-                GameObject scorePanel = Instantiate(m_playerScorePrefab)as GameObject;
-                scorePanel.transform.SetParent(m_playerList.transform, false);
-            }
-        }
+    [ClientRpc]
+    private void RpcAddPlayer(string name, int kills, int deaths)
+    {
+        Debug.Log("Adding soldier with name: " + name + ", kills: " + kills + ", deaths: " + deaths);
+        GameObject scorePanel = Instantiate(m_playerScorePrefab)as GameObject;
+        scorePanel.transform.SetParent(m_playerList.transform, false);
     }
 }
