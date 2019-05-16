@@ -20,7 +20,7 @@ public class PlayerController : NetworkBehaviour
         m_action = GetComponent<Action>();
         m_playerDash = GetComponent<DashController>();
 
-        Vector2 spawnPoint = GameObject.Find("GameManager").GetComponent<BoardManager>().GetRandomFloorTile();
+        Vector2Int spawnPoint = GameObject.Find("GameManager").GetComponent<BoardManager>().GetRandomFloorTile();
         transform.position = new Vector3(spawnPoint.x, 0, spawnPoint.y);
 
         // By default, everything is freezed to avoid weird player collisions but the local player needs 
