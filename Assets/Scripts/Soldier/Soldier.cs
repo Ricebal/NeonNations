@@ -74,11 +74,9 @@ public abstract class Soldier : NetworkBehaviour
 
     protected virtual void Die()
     {
-        Debug.Log("Oof I died");
         m_isDead = true;
         m_sphereCollider.enabled = false;
         m_deathTime = Time.time;
-        PlayerScore.Deaths++;
 
         DeathExplosion deathExplosion = GetComponentInChildren<DeathExplosion>();
         if (deathExplosion != null)
@@ -120,6 +118,33 @@ public abstract class Soldier : NetworkBehaviour
         RpcColor(obj, color);
     }
 
+    [Command]
+    private void CmdAddKill(string shooterId)
+    {
+        RpcAddKill(shooterId);
+    }
+
+    [ClientRpc]
+    private void RpcAddKill(string shooterId)
+    {
+        Soldier shooter = GameObject.Find(shooterId).GetComponent<Soldier>();
+        shooter.PlayerScore.Kills++;
+        Debug.Log("Yikers");
+    }
+
+    [Command]
+    private void CmdAddDeath(string shooterId)
+    {
+        RpcAddDeath(shooterId);
+    }
+
+    [ClientRpc]
+    private void RpcAddDeath(string shooterId)
+    {
+        Soldier shooter = GameObject.Find(shooterId).GetComponent<Soldier>();
+        shooter.PlayerScore.Deaths++;
+    }
+
     protected void OnTriggerEnter(Collider collider)
     {
         if (collider.gameObject.tag == "Bullet")
@@ -131,7 +156,7 @@ public abstract class Soldier : NetworkBehaviour
                 m_stats.TakeDamage(bullet.Damage);
                 if (m_stats.GetCurrentHealth() <= 0)
                 {
-                    shooter.PlayerScore.Kills++;
+                    CmdAddKill(bullet.GetShooterId());
                 }
             }
         }

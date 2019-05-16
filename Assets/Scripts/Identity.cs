@@ -16,6 +16,11 @@ public class Identity : NetworkBehaviour
         }
     }
 
+    private void Update()
+    {
+        SetIdentity();
+    }
+
     private string CreateUniqueIdentity(NetworkInstanceId netId)
     {
         string name = transform.name;

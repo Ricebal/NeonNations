@@ -41,7 +41,6 @@ public class Scoreboard : NetworkBehaviour
         {
             if (player != null)
             {
-                Debug.Log("Addind player: " + player.transform.name);
                 RpcAddPlayer(player.transform.name);
             }
         }
@@ -59,6 +58,7 @@ public class Scoreboard : NetworkBehaviour
     [ClientRpc]
     private void RpcAddPlayer(string shooterId)
     {
+        Debug.Log("Adding player: " + shooterId);
         GameObject scorePanel = Instantiate(m_playerScorePrefab)as GameObject;
         scorePanel.transform.SetParent(m_playerList.transform, false);
         GameObject shooter = GameObject.Find(shooterId);
