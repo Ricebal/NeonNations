@@ -7,7 +7,6 @@ public class PlayerController : NetworkBehaviour
     private Player m_player;
     private Action m_action;
     private DashController m_playerDash;
-    private InputManager m_inputManager;
 
     void Start()
     {
@@ -20,7 +19,6 @@ public class PlayerController : NetworkBehaviour
         m_player = GetComponent<Player>();
         m_action = GetComponent<Action>();
         m_playerDash = GetComponent<DashController>();
-        m_inputManager = GameObject.Find("InputManager").GetComponent<InputManager>();
 
         Vector2 spawnPoint = GameObject.Find("GameManager").GetComponent<BoardManager>().GetRandomFloorTile();
         transform.position = new Vector3(spawnPoint.x, 0, spawnPoint.y);
@@ -63,8 +61,8 @@ public class PlayerController : NetworkBehaviour
             return;
         }
 
-        float moveHorizontal = m_inputManager.GetAxis("Horizontal");
-        float moveVertical = m_inputManager.GetAxis("Vertical");
+        float moveHorizontal = InputManager.GetAxis("Horizontal");
+        float moveVertical = InputManager.GetAxis("Vertical");
 
         Vector3 movement = new Vector3(moveHorizontal, 0, moveVertical);
 

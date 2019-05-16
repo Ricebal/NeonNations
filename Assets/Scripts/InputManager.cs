@@ -25,30 +25,15 @@ public class InputManager : MonoBehaviour
     private static KeyCode s_dashKey = KeyCode.LeftShift;
 
     // These 2 variables take values between -1 and 1
-    private float m_horizMovement;
-    private float m_vertMovement;
-    [SerializeField]
-    private float m_acceleration;
+    private static float m_horizMovement = 0;
+    private static float m_vertMovement = 0;
+    private static float m_acceleration = 0.2f;
 
     private void OnEnable()
     {
         s_actionKeys = new Dictionary<string, KeyCode>();
 
         InitActionKeys();
-
-        m_horizMovement = 0;
-        m_vertMovement = 0;
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     // Returns true while the key associated to the given action is pressed down
@@ -113,7 +98,7 @@ public class InputManager : MonoBehaviour
     }
 
     // Returns a value corresponding to the movement when a key is pressed down, depending on the given axis
-    public float GetAxis(string axisName)
+    public static float GetAxis(string axisName)
     {
         if (axisName == "Horizontal")
         {
