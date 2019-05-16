@@ -137,6 +137,7 @@ public class InputManager : MonoBehaviour
         else
         {
             Debug.LogError("Wrong axis name: " + axisName);
+            return 0;
         }
     }
 
