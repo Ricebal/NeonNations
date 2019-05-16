@@ -76,10 +76,10 @@ public abstract class Soldier : NetworkBehaviour
         m_sphereCollider.enabled = false;
         m_deathTime = Time.time;
 
-        Explosion ex = GetComponentInChildren<Explosion>();
-        if (ex != null)
+        DeathExplosion deathExplosion = GetComponentInChildren<DeathExplosion>();
+        if (deathExplosion != null)
         {
-            ex.Fire();
+            deathExplosion.Fire();
         }
     }
 
@@ -103,8 +103,11 @@ public abstract class Soldier : NetworkBehaviour
     protected void RpcColor(GameObject obj, Color color)
     {
         obj.GetComponent<Renderer>().material.color = color;
-        Explosion explosion = obj.GetComponentInChildren<Explosion>();
-        explosion.SetColor(color);
+        DeathExplosion deathExplosion = obj.GetComponentInChildren<DeathExplosion>();
+        if (deathExplosion != null)
+        {
+            deathExplosion.SetColor(color);
+        }
     }
 
     [Command]

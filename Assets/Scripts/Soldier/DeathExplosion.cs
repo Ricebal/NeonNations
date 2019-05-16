@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(ParticleSystem))]
-public class Explosion : MonoBehaviour
+public class DeathExplosion : MonoBehaviour
 {
     [SerializeField] private Light m_light;
     private const float LIFESPAN = 1.5f;
