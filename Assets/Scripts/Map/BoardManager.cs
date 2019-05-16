@@ -14,8 +14,14 @@ public class BoardManager : NetworkBehaviour
     [SerializeField]
     private int m_outerWallWidth = 14;
 
+    private const string MAP = "Map";
+    private const string BREAKABLE_WALLS = "Breakable Walls";
+    private const string BREAKABLE_WALL = "Breakable Wall";
+    private const string MAP_PART = "Map Part";
+
     private Tile[][] m_tileMap;
     private GameObject m_map;
+    private GameObject m_breakableWalls;
     private List<GameObject> m_mapParts = new List<GameObject>();
 
     // So that a position is in the middle of a tile
@@ -32,7 +38,7 @@ public class BoardManager : NetworkBehaviour
     {
         m_tileMap = tileMap;
         m_map = new GameObject();
-        m_map.name = "Map";
+        m_map.name = MAP;
 
         LoadFloor();
         LoadMap();
@@ -89,6 +95,9 @@ public class BoardManager : NetworkBehaviour
     /// </summary>
     private void LoadMap()
     {
+        m_breakableWalls = new GameObject();
+        m_breakableWalls.name = BREAKABLE_WALLS;
+        m_breakableWalls.transform.SetParent(m_map.transform);
         for (int i = 0; i < m_tileMap.Length; i++)
         {
             for (int j = 0; j < m_tileMap[0].Length; j++)
@@ -125,8 +134,8 @@ public class BoardManager : NetworkBehaviour
                 else if (m_tileMap[i][j] == Tile.BreakableWall && isServer)
                 {
                     GameObject instance = Instantiate(m_breakableWallPrefab, new Vector3(i, 0f, j), Quaternion.identity);
-                    instance.name = "BreakableWall";
-                    instance.transform.SetParent(m_map.transform);
+                    instance.name = BREAKABLE_WALL;
+                    instance.transform.SetParent(m_breakableWalls.transform);
                     NetworkServer.Spawn(instance);
                 }
             }
@@ -238,7 +247,7 @@ public class BoardManager : NetworkBehaviour
         List<MeshFilter> meshFilters = new List<MeshFilter>();
         foreach (Transform child in m_map.transform)
         {
-            if (child.gameObject.name != "BreakableWall")
+            if (child.gameObject.name != BREAKABLE_WALLS)
             {
                 meshFilters.Add(child.GetComponent<MeshFilter>());
             }
@@ -254,7 +263,7 @@ public class BoardManager : NetworkBehaviour
             if (verticesSoFar + meshFilters[i].mesh.vertexCount > vertexLimit)
             {
                 // send list to be combined
-                CreateCombinedMeshes(combiners);
+                CreateCombinedMesh(combiners);
                 combiners.Clear();
                 verticesSoFar = 0;
             }
@@ -268,12 +277,12 @@ public class BoardManager : NetworkBehaviour
         }
 
         // call the mesh combiner one last time for the last few objects in the list
-        CreateCombinedMeshes(combiners);
+        CreateCombinedMesh(combiners);
 
         // destroy all the objects the map was made up of
         foreach (Transform child in m_map.transform)
         {
-            if (child.gameObject.name != "BreakableWall")
+            if (child.gameObject.name != BREAKABLE_WALLS)
             {
                 Destroy(child.gameObject);
             }
@@ -290,7 +299,7 @@ public class BoardManager : NetworkBehaviour
     /// Adds a mappart based on the mesh data
     /// </summary>
     /// <param name="meshDataList">Data of the meshes used to create the mappart</param>
-    private void CreateCombinedMeshes(List<CombineInstance> meshDataList)
+    private void CreateCombinedMesh(List<CombineInstance> meshDataList)
     {
         // create the combined mesh
         Mesh newMesh = new Mesh();
@@ -306,7 +315,7 @@ public class BoardManager : NetworkBehaviour
 
         // add part to list
         m_mapParts.Add(mapPart);
-        mapPart.name = "MapPart " + m_mapParts.Count;
+        mapPart.name = MAP_PART + " " + m_mapParts.Count;
     }
 }
 
