@@ -264,17 +264,17 @@ public class DStarLite
             }
             else if (node.CostFromStartingPoint > node.Rhs) // The g-value wasn't optimally calculated
             {
-                node.CostFromStartingPoint = node.Rhs;
-                foreach (Vector2Int surroundingCoordinates in Map.GetSurroundingOpenSpaces(coordinates))
+                node.CostFromStartingPoint = node.Rhs;      // Set the g-value to the calculated Rhs-value
+                foreach (Vector2Int surroundingCoordinates in Map.GetSurroundingOpenSpaces(coordinates))    // Update the Rhs-value of the surrounding nodes
                 {
                     UpdateVertex(surroundingCoordinates);
                 }
             }
-            else
+            else  // Re-calculate the Rhs-value of the current node and it's surrounding nodes
             {
                 node.CostFromStartingPoint = double.PositiveInfinity;
                 UpdateVertex(coordinates);
-                foreach (Vector2Int surroundingNodes in Map.GetSurroundingOpenSpaces(coordinates))
+                foreach (Vector2Int surroundingNodes in Map.GetSurroundingOpenSpaces(coordinates))  // Update the Rhs-value of the surrounding nodes
                 {
                     UpdateVertex(surroundingNodes);
                 }

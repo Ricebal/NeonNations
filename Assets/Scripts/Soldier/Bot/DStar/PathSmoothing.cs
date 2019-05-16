@@ -92,16 +92,17 @@ namespace Assets.Scripts.Soldier.Bot.DStar
         /// </summary>
         private static bool LineIntersectsLine(PointF currentPosition, PointF nextPosition, PointF rectanglePoint1, PointF rectanglePoint2)
         {
-            // 
+            // The first point of line QR
             float q = (currentPosition.Y - rectanglePoint1.Y) * (rectanglePoint2.X - rectanglePoint1.X) - (currentPosition.X - rectanglePoint1.X) * (rectanglePoint2.Y - rectanglePoint1.Y);
-            // 
+            // Help-variable to calculate R
             float delta = (nextPosition.X - currentPosition.X) * (rectanglePoint2.Y - rectanglePoint1.Y) - (nextPosition.Y - currentPosition.Y) * (rectanglePoint2.X - rectanglePoint1.X);
 
             if (delta == 0)
             {
                 return false;
             }
-
+            
+            // The second point of line QR
             float r = q / delta;
 
             q = (currentPosition.Y - rectanglePoint1.Y) * (nextPosition.X - currentPosition.X) - (currentPosition.X - rectanglePoint1.X) * (nextPosition.Y - currentPosition.Y);
