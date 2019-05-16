@@ -9,10 +9,10 @@ public class SyncPosition : NetworkBehaviour
     // Interpolation factor
     [SerializeField]
     private float m_lerpRate = 7;
-    // The soldier is teleported when the difference between his current position and the real one is lower than this value
+    // Non-local soldiers are teleported when the difference between their current position and the real one is lower than this value
     [SerializeField]
     private float m_closeEnough = 0.2f;
-    // The soldier is teleported when the difference between his current position and the real one is higher than this value
+    // Non-local soldiers are teleported when the difference between their current position and the real one is higher than this value
     [SerializeField]
     private float m_tooFar = 10;
     // Whether or not the GameObject is a bot
@@ -40,15 +40,16 @@ public class SyncPosition : NetworkBehaviour
         }
     }
 
+    // Interpolate non-local soldier's position between his actual position and his synced position
     private void LerpPosition()
     {
-        // If the position has not yet been synchronized (zero) or is already synchronized, do nothing
+        // If the position has not yet been synchronized (when the soldier just joined) or the non-local soldier has reached his real position, do nothing
         if (m_syncPos == Vector3.zero || m_transform.position == m_syncPos)
         {
             return;
         }
 
-        // If the player is close enough or too far from his real position, teleport him
+        // If the non-local soldier is close enough or too far from his real position, teleport him
         float distance = Vector3.Distance(m_transform.position, m_syncPos);
         if (distance < m_closeEnough || distance > m_tooFar)
         {
@@ -62,7 +63,7 @@ public class SyncPosition : NetworkBehaviour
 
     private void TransmitPosition()
     {
-        // If the player has moved more than the threshold value, transmit his new position
+        // If the local-player has moved more than the threshold value, transmit his new position
         if (Vector3.Distance(m_transform.position, m_lastPos) > m_threshold)
         {
             m_lastPos = m_transform.position;
