@@ -315,8 +315,9 @@ public class MapGenerator
                 return Vector2Int.down;
             case 4:
                 return Vector2Int.left;
+            default:
+                return Vector2Int.zero;
         }
-        return Vector2Int.zero;
     }
 
     /// <summary>

@@ -4,8 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
-[RequireComponent(typeof(MeshFilter))]
-[RequireComponent(typeof(MeshRenderer))]
+[RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 public class BoardManager : NetworkBehaviour
 {
     [SerializeField]
@@ -116,7 +115,7 @@ public class BoardManager : NetworkBehaviour
                         walls = walls | Walls.Left;
                     }
 
-                    instance.transform.GetComponent<MeshFilter>().sharedMesh = generateNewMesh(walls);
+                    instance.transform.GetComponent<MeshFilter>().sharedMesh = GenerateNewMesh(walls);
 
                     instance.transform.position = new Vector3(i + MAP_OFFSET, 0f, j + MAP_OFFSET);
                     instance.transform.SetParent(m_map.transform);
@@ -138,6 +137,7 @@ public class BoardManager : NetworkBehaviour
     /// </summary>
     private void CreateOuterWalls()
     {
+        // since (0,0) in the tilemap is (0,0) in unity, the down left corner of the map is (-outerwallwidth,-outerwallwidth) and the up right corner is ((maplength-1)+outerwallwidth,(maplength-1)+outerwallwidth)
         for (int i = -m_outerWallWidth; i < m_tileMap.Length + m_outerWallWidth; i++)
         {
             for (int j = -m_outerWallWidth; j < m_tileMap[0].Length + m_outerWallWidth; j++)
@@ -146,7 +146,7 @@ public class BoardManager : NetworkBehaviour
                 {
                     GameObject instance = GameObject.CreatePrimitive(PrimitiveType.Cube);
 
-                    instance.transform.GetComponent<MeshFilter>().sharedMesh = generateNewMesh(Walls.None);
+                    instance.transform.GetComponent<MeshFilter>().sharedMesh = GenerateNewMesh(Walls.None);
 
                     instance.transform.position = new Vector3(i + MAP_OFFSET, 0f, j + MAP_OFFSET);
                     instance.transform.SetParent(m_map.transform);
@@ -160,10 +160,10 @@ public class BoardManager : NetworkBehaviour
     /// </summary>
     /// <param name="walls">Used to see which vertices should be generated</param>
     /// <returns>The new mesh</returns>
-    private Mesh generateNewMesh(Walls walls)
+    private Mesh GenerateNewMesh(Walls walls)
     {
         // all the vertices needed for the different faces
-        // vertices can't be shared between the triangles, because the shading will be wrong then
+        // vertices can't be shared between the triangles, because the shader can't handle that
         Vector3[] vertices = {
                         new Vector3 (1, 0.5f, 0),
                         new Vector3 (0, 0.5f, 0),
@@ -199,23 +199,23 @@ public class BoardManager : NetworkBehaviour
 
         List<int> triangles = new List<int>();
 
-        AddMultipleInts(triangles, faceTop);
+        triangles.AddRange(faceTop);
 
         if (walls.HasFlag(Walls.Up))
         {
-            AddMultipleInts(triangles, faceUp);
+            triangles.AddRange(faceUp);
         }
         if (walls.HasFlag(Walls.Right))
         {
-            AddMultipleInts(triangles, faceRight);
+            triangles.AddRange(faceRight);
         }
         if (walls.HasFlag(Walls.Down))
         {
-            AddMultipleInts(triangles, faceDown);
+            triangles.AddRange(faceDown);
         }
         if (walls.HasFlag(Walls.Left))
         {
-            AddMultipleInts(triangles, faceLeft);
+            triangles.AddRange(faceLeft);
         }
 
         Mesh mesh = new Mesh();
@@ -224,19 +224,6 @@ public class BoardManager : NetworkBehaviour
         mesh.RecalculateNormals();
 
         return mesh;
-    }
-
-    /// <summary>
-    /// Adds an array of ints to a list of ints
-    /// </summary>
-    /// <param name="list">List of ints</param>
-    /// <param name="ints">Array of ints that should be added to the list</param>
-    private void AddMultipleInts(List<int> list, int[] ints)
-    {
-        for (int i = 0; i < ints.Length; i++)
-        {
-            list.Add(ints[i]);
-        }
     }
 
     /// <summary>
