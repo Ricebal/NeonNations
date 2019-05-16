@@ -255,16 +255,17 @@ public class MapGenerator
             // create temporary values for this length
             int[][] tempMap = AddTunnelToMap(room.RoomMap, i, entrance, direction);
             Vector2Int tempEntrance = new Vector2Int(entrance.x, entrance.y);
+            Vector2Int tempPos = new Vector2Int(room.Pos.x, room.Pos.y);
 
             // adjust position and entrance of the room based on the length of the tunnel
             if (direction == Vector2Int.down)
             {
-                room.Pos.y = wallTile.y + 1 - tempMap[0].Length;
+                tempPos.y = wallTile.y + 1 - tempMap[0].Length;
                 tempEntrance.y += i;
             }
             else if (direction == Vector2Int.left)
             {
-                room.Pos.x = wallTile.x + 1 - tempMap.Length;
+                tempPos.x = wallTile.x + 1 - tempMap.Length;
                 tempEntrance.x += i;
             }
 
@@ -276,9 +277,10 @@ public class MapGenerator
             }
 
             // if it can be placed, return the room
-            if (CanPlace(tempMap, room.Pos, entranceTiles, direction))
+            if (CanPlace(tempMap, tempPos, entranceTiles, direction))
             {
                 room.RoomMap = tempMap;
+                room.Pos = tempPos;
                 return true;
             }
         }
@@ -507,9 +509,9 @@ public class MapGenerator
                     List<Vector2Int> entranceTiles = new List<Vector2Int>();
                     for (int j = 0; j < m_tunnelWidth; j++)
                     {
-                        entranceTiles.Add(new Vector2Int(direction.y * j, direction.x * j));
-                        // TODO check this
-                        entranceTiles.Add(new Vector2Int(direction.y * j + direction.x * (tunnel[0].Length - 1), direction.y * (tunnel[0].Length - 1) + direction.x * j));
+                        Vector2Int absDirection = new Vector2Int(Math.Abs(direction.x), Math.Abs(direction.y));
+                        entranceTiles.Add(new Vector2Int(absDirection.y * j, absDirection.x * j));
+                        entranceTiles.Add(new Vector2Int(absDirection.y * j + absDirection.x * (tunnel.Length - 1), absDirection.y * (tunnel[0].Length - 1) + absDirection.x * j));
                     }
 
                     // check if placeable
