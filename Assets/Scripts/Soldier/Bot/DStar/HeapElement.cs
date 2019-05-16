@@ -2,14 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HeapElement
+namespace Assets.Scripts.Soldier.Bot.DStar
 {
-    public Vector2Int Coordinates;
-    public PriorityKey Key;
-
-    public HeapElement(Vector2Int coordinates, PriorityKey key)
+    public class HeapElement
     {
-        Coordinates = coordinates;
-        Key = key;
+        public Vector2Int Coordinates;
+        public PriorityKey Key;
+
+        public HeapElement(Vector2Int coordinates, PriorityKey key)
+        {
+            Coordinates = coordinates;
+            Key = key;
+        }
     }
 }
