@@ -858,7 +858,7 @@ MonoBehaviour:
     Color: {r: 1, g: 0, b: 0, a: 0}
     PlayerCount: 0
   - Id: 3
-    Color: {r: 0.040236473, g: 1, b: 0, a: 0}
+    Color: {r: 0, g: 1, b: 0.99020815, a: 0}
     PlayerCount: 0
 --- !u!1001 &1679541086
 PrefabInstance:
