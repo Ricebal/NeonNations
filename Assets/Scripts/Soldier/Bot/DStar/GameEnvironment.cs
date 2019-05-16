@@ -10,7 +10,7 @@ namespace Assets.Scripts.Soldier.Bot.DStar
     public class GameEnvironment : MonoBehaviour
     {
         private GameObject m_bot;
-        private int[][] m_map;
+        private static int[][] m_map;
 
         public GameEnvironment(GameObject bot)
         {
@@ -29,13 +29,23 @@ namespace Assets.Scripts.Soldier.Bot.DStar
             return m_map;
         }
 
+        public int GetNode(int x, int y)
+        {
+            return m_map[x][y];
+        }
+
+        public static void UpdateNode(int x, int y, int newNode)
+        {
+            m_map[x][y] = newNode;
+        }
+
         // Return the obstacles the bot should be able to see
-        public LinkedList<Vector2Int> GetObstaclesInVision()
+        public LinkedList<Vector2Int> GetPositionsInVision()
         {
             // First get all coordinates that are illuminated
             LinkedList<Vector2Int> currentCoordinatesInSight = GetIlluminatedCoordinates();
             // Than check the map-layout to see if the illuminated parts are walls or empty spaces
-            FilterCoordinatesWithObstacle(ref currentCoordinatesInSight);
+            //FilterCoordinatesWithObstacle(ref currentCoordinatesInSight);
             // Return the result
             return currentCoordinatesInSight;
         }

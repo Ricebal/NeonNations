@@ -62,7 +62,7 @@ namespace Assets.Scripts.Soldier.Bot.DStar
             TilesIntersectedByLine(currentPosition.X, currentPosition.Y + lowerSideFromEntity, newPosition.X, newPosition.Y + lowerSideFromEntity, ref passingCoordinates);
             foreach (Vector2Int coordinate in passingCoordinates)
             {
-                if (map.GetNode(coordinate.x, coordinate.y).Obstacle)
+                if (map.GetNode(coordinate.x, coordinate.y).IsObstacle())
                 {
                     // There is a wall in the colliding line
                     return false;

@@ -68,17 +68,20 @@ public class DStarLite
     private bool CheckForMapChanges()
     {
         // Check if bot sees new obstacles
-        LinkedList<Vector2Int> obstacleCoord = m_environment.GetObstaclesInVision();
+        LinkedList<Vector2Int> coordinatesInSight = m_environment.GetPositionsInVision();
 
         bool change = false;
-        foreach (Vector2Int coordinates in obstacleCoord)
+        foreach (Vector2Int coordinates in coordinatesInSight)
         {
-            Node node = Map.GetNode(coordinates.x, coordinates.y);
+            // What the bot knows of the node
+            Node knownNode = Map.GetNode(coordinates.x, coordinates.y);
+            // What the node actually is
+            int actualNode = m_environment.GetNode(coordinates.x, coordinates.y);
             // If the obstacle was not previously known
-            if (!node.Obstacle)
+            if (knownNode.Content != actualNode)
             {
                 change = true;
-                node.Obstacle = true;
+                knownNode.Content = actualNode;
                 foreach (Vector2Int surroundingCoordinates in Map.GetSurroundingOpenSpaces(coordinates))
                 {
                     UpdateVertex(surroundingCoordinates);

@@ -27,9 +27,8 @@ public class SearchBehaviour : MonoBehaviour
         GenerateNewDestination(startCoordinates.x, startCoordinates.y);
         m_bot = GetComponent<Bot>();
     }
-
-    // Update is called once per frame
-    void Update()
+    
+    void FixedUpdate()
     {
         Vector2Int currentCoordinates = m_environment.ConvertGameObjectToCoordinates(Bot.transform);
         // If the goal hasn't been reached
@@ -53,7 +52,6 @@ public class SearchBehaviour : MonoBehaviour
         coordinatesToTraverse.AddRange(m_dStarLite.CoordinatesToTraverse());
 
         Vector2Int farthestReachableNode = PathSmoothing.FarthestCoordinateToReach(new PointF(Bot.transform.position.x, Bot.transform.position.z), coordinatesToTraverse, m_dStarLite.Map, m_offsetForLineCalculation);
-        DebugMap(m_dStarLite.Map, farthestReachableNode, coordinatesToTraverse);
         MoveTo(farthestReachableNode);
         m_dStarLite.SyncBotPosition(botCoordinate);
     }
@@ -91,7 +89,7 @@ public class SearchBehaviour : MonoBehaviour
 
         Vector2 heading = new Vector2(horizontal, vertical);
         heading.Normalize();
-        //m_bot.Move(heading.x, heading.y);
+        m_bot.Move(heading.x, heading.y);
     }
 
     private void DebugMap(NavigationGraph map, Vector2Int nodeToReach, List<Vector2Int> coordinatesToTraverse)
@@ -103,7 +101,7 @@ public class SearchBehaviour : MonoBehaviour
         {
             for (int x = 0; x < map.Map.Length; x++)
             {
-                if (map.Map[x][y].Obstacle)
+                if (map.Map[x][y].IsObstacle())
                 {
                     builder.Append("#");
                     continue;

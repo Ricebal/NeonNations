@@ -23,12 +23,9 @@ namespace Assets.Scripts.Soldier.Bot.DStar
                 for (int j = 0; j < Map[0].Length; j++)
                 {
                     Map[i][j] = new Node();
-                    Map[i][j].CostFromStartingPoint = double.PositiveInfinity;
-                    Map[i][j].Rhs = double.PositiveInfinity;
-
-                    if (knowMap && completeMap[i][j] == 1)
+                    if (knowMap)
                     {
-                        Map[i][j].Obstacle = true;
+                        Map[i][j].Content = completeMap[i][j];
                     }
                 }
             }
@@ -51,11 +48,18 @@ namespace Assets.Scripts.Soldier.Bot.DStar
             }
         }
 
+
+        /// <summary>
+        /// Returns the Node that corresponds to a specific x- and y-value.
+        /// </summary>
         public Node GetNode(int x, int y)
         {
             return Map[x][y];
         }
 
+        /// <summary>
+        /// Returns the Node that corresponds to a specific coordinate.
+        /// </summary>
         public Node GetNode(Vector2Int coordinate)
         {
             return Map[coordinate.x][coordinate.y];
@@ -85,7 +89,7 @@ namespace Assets.Scripts.Soldier.Bot.DStar
                     {
                         tempState = Map[x + i][y + j];
                         // If it's no obstacle
-                        if (!tempState.Obstacle)
+                        if (!tempState.IsObstacle())
                         {
                             //openPositionsAroundEntity.AddFirst(tempState);
                             openPositionsAroundEntity.AddFirst(new Vector2Int(x + i, y + j));
