@@ -41,7 +41,8 @@ public class Scoreboard : NetworkBehaviour
         {
             if (player != null)
             {
-                RpcAddPlayer("PlayerName", 10, 5);
+                Debug.Log("Addind player: " + player.transform.name);
+                RpcAddPlayer(player.transform.name);
             }
         }
     }
@@ -56,10 +57,14 @@ public class Scoreboard : NetworkBehaviour
     }
 
     [ClientRpc]
-    private void RpcAddPlayer(string name, int kills, int deaths)
+    private void RpcAddPlayer(string shooterId)
     {
-        Debug.Log("Adding soldier with name: " + name + ", kills: " + kills + ", deaths: " + deaths);
         GameObject scorePanel = Instantiate(m_playerScorePrefab)as GameObject;
         scorePanel.transform.SetParent(m_playerList.transform, false);
+        GameObject shooter = GameObject.Find(shooterId);
+        if (shooter != null)
+        {
+            scorePanel.GetComponent<ScoreboardEntry>().SetScore(shooter.GetComponent<Soldier>().PlayerScore);
+        }
     }
 }

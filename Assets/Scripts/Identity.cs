@@ -6,7 +6,7 @@ public class Identity : NetworkBehaviour
 {
     private string m_uniqueIdentity;
 
-    void Update()
+    public void SetIdentity()
     {
         if (transform.name != m_uniqueIdentity)
         {

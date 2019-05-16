@@ -8,6 +8,8 @@ public abstract class Soldier : NetworkBehaviour
     public int Team;
     [SyncVar]
     public Color InitialColor;
+    [SyncVar]
+    public Score PlayerScore = new Score();
     // The speed of the entity
     public float Speed;
     // The respawn time of the soldier
@@ -72,9 +74,11 @@ public abstract class Soldier : NetworkBehaviour
 
     protected virtual void Die()
     {
+        Debug.Log("Oof I died");
         m_isDead = true;
         m_sphereCollider.enabled = false;
         m_deathTime = Time.time;
+        PlayerScore.Deaths++;
 
         DeathExplosion deathExplosion = GetComponentInChildren<DeathExplosion>();
         if (deathExplosion != null)
@@ -121,9 +125,14 @@ public abstract class Soldier : NetworkBehaviour
         if (collider.gameObject.tag == "Bullet")
         {
             Bullet bullet = collider.gameObject.GetComponent<Bullet>();
-            if (bullet.GetShooterId() != transform.name && GameObject.Find(bullet.GetShooterId()).GetComponent<Soldier>().Team != this.Team)
+            Soldier shooter = GameObject.Find(bullet.GetShooterId()).GetComponent<Soldier>();
+            if (bullet.GetShooterId() != transform.name && shooter.Team != this.Team)
             {
-                m_stats.TakeDamage(collider.gameObject.GetComponent<Bullet>().Damage);
+                m_stats.TakeDamage(bullet.Damage);
+                if (m_stats.GetCurrentHealth() <= 0)
+                {
+                    shooter.PlayerScore.Kills++;
+                }
             }
         }
     }
