@@ -102,7 +102,7 @@ public class Soldier : NetworkBehaviour
         {
             m_sphereCollider.enabled = true;
             m_renderer.material.color = InitialColor;
-            Vector2 spawnPoint = GameObject.Find("GameManager").GetComponent<BoardManager>().GetRandomFloorTile();
+            Vector2Int spawnPoint = GameObject.Find("GameManager").GetComponent<BoardManager>().GetRandomFloorTile();
             transform.position = new Vector3(spawnPoint.x, 0, spawnPoint.y);
             m_stats.Reset();
         }

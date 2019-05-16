@@ -14,7 +14,7 @@ public class BoardManager : NetworkBehaviour
     [SerializeField]
     private int m_outerWallWidth = 14;
 
-    private int[][] m_tileMap;
+    private Tile[][] m_tileMap;
     private GameObject m_map;
     private List<GameObject> m_mapParts = new List<GameObject>();
 
@@ -28,9 +28,12 @@ public class BoardManager : NetworkBehaviour
     /// <summary>
     /// Creates a random map object 
     /// </summary>
-    public void SetupScene(int[][] tileMap)
+    public void SetupScene(Tile[][] tileMap)
     {
         m_tileMap = tileMap;
+        m_map = new GameObject();
+        m_map.name = "Map";
+
         LoadFloor();
         LoadMap();
         CreateOuterWalls();
@@ -41,7 +44,7 @@ public class BoardManager : NetworkBehaviour
     /// Gets the tilemap
     /// </summary>
     /// <returns>A jagged array of chars containing the map data</returns>
-    public int[][] GetTileMap()
+    public Tile[][] GetTileMap()
     {
         return m_tileMap;
     }
@@ -49,15 +52,15 @@ public class BoardManager : NetworkBehaviour
     /// <summary>
     /// Gets a random floor tile
     /// </summary>
-    /// <returns>Vector2 containing the position of the floortile</returns>
-    public Vector2 GetRandomFloorTile()
+    /// <returns>Vector2Int containing the position of the floortile</returns>
+    public Vector2Int GetRandomFloorTile()
     {
         while (true)
         {
             // get a random tile in the map
-            Vector2 randomTile = new Vector2(UnityEngine.Random.Range(1, m_tileMap.Length - 1), UnityEngine.Random.Range(1, m_tileMap[0].Length - 1));
+            Vector2Int randomTile = new Vector2Int(UnityEngine.Random.Range(1, m_tileMap.Length - 1), UnityEngine.Random.Range(1, m_tileMap[0].Length - 1));
 
-            if (m_tileMap[(int)randomTile.x][(int)randomTile.y] == 0)
+            if (m_tileMap[randomTile.x][randomTile.y] == 0)
             {
                 return randomTile;
             }
@@ -74,8 +77,6 @@ public class BoardManager : NetworkBehaviour
     /// </summary>
     private void LoadFloor()
     {
-        m_map = new GameObject();
-        m_map.name = "Map";
         GameObject floor = GameObject.CreatePrimitive(PrimitiveType.Plane);
 
         floor.transform.position = new Vector3((float)m_tileMap.Length / 2, MAP_OFFSET, (float)m_tileMap[0].Length / 2);
@@ -92,25 +93,25 @@ public class BoardManager : NetworkBehaviour
         {
             for (int j = 0; j < m_tileMap[0].Length; j++)
             {
-                if (m_tileMap[i][j] == 1)
+                if (m_tileMap[i][j] == Tile.Wall)
                 { // if 1, build wall
                     GameObject instance = GameObject.CreatePrimitive(PrimitiveType.Cube);
 
                     // calculate walls
                     Walls walls = Walls.None;
-                    if (j + 1 < m_tileMap[0].Length && m_tileMap[i][j + 1] != 1)
+                    if (j + 1 < m_tileMap[0].Length && m_tileMap[i][j + 1] != Tile.Wall)
                     {
                         walls = walls | Walls.Up;
                     }
-                    if (i + 1 < m_tileMap.Length && m_tileMap[i + 1][j] != 1)
+                    if (i + 1 < m_tileMap.Length && m_tileMap[i + 1][j] != Tile.Wall)
                     {
                         walls = walls | Walls.Right;
                     }
-                    if (j - 1 >= 0 && m_tileMap[i][j - 1] != 1)
+                    if (j - 1 >= 0 && m_tileMap[i][j - 1] != Tile.Wall)
                     {
                         walls = walls | Walls.Down;
                     }
-                    if (i - 1 >= 0 && m_tileMap[i - 1][j] != 1)
+                    if (i - 1 >= 0 && m_tileMap[i - 1][j] != Tile.Wall)
                     {
                         walls = walls | Walls.Left;
                     }
@@ -121,7 +122,7 @@ public class BoardManager : NetworkBehaviour
                     instance.transform.SetParent(m_map.transform);
                 } 
                 // if 2, build breakable wall
-                else if (m_tileMap[i][j] == 2 && isServer)
+                else if (m_tileMap[i][j] == Tile.BreakableWall && isServer)
                 {
                     GameObject instance = Instantiate(m_breakableWallPrefab, new Vector3(i, 0f, j), Quaternion.identity);
                     instance.name = "BreakableWall";
