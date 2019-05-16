@@ -9,10 +9,10 @@ public class SyncRotation : NetworkBehaviour
     // Interpolation factor
     [SerializeField]
     private float m_lerpRate = 15;
-    // The soldier is instantly rotated when the difference between his current rotation and the real one is lower than this value
+    // Non-local soldiers are instantly rotated when the difference between their current rotation and the real one is lower than this value
     [SerializeField]
     private float m_closeEnough = 1.5f;
-    // The soldier is instantly rotated when the difference between his current rotation and the real one is higher than this value
+    // Non-local soldiers are instantly rotated when the difference between their current rotation and the real one is higher than this value
     [SerializeField]
     private float m_tooFar = 90;
     // Whether or not the GameObject is a bot
@@ -40,17 +40,18 @@ public class SyncRotation : NetworkBehaviour
         }
     }
 
+    // Interpolate non-local soldier's rotation between his actual rotation and his synced rotation
     private void LerpRotation()
     {
         Quaternion newRotation = Quaternion.Euler(new Vector3(0, m_syncRotation, 0));
 
-        // If the rotation has not yet been synchronized (identity) or is already synchronized, do nothing
+        // If the rotation has not yet been synchronized (when the soldier just joined) or the non-local soldier has reached his real rotation, do nothing
         if (newRotation == Quaternion.identity || m_transform.rotation == newRotation)
         {
             return;
         }
 
-        // If the player is close enough or too far from his real rotation, instantly rotate him
+        // If the non-local soldier is close enough or too far from his real rotation, instantly rotate him
         float angle = Mathf.Abs(m_transform.localEulerAngles.y - m_syncRotation);
         if (angle < m_closeEnough || angle > m_tooFar)
         {
@@ -64,7 +65,7 @@ public class SyncRotation : NetworkBehaviour
 
     private void TransmitRotation()
     {
-        // If the player has rotated more than the threshold value, transmit his new Y rotation
+        // If the local-player has rotated more than the threshold value, transmit his new Y rotation
         if (Mathf.Abs(m_transform.localEulerAngles.y - m_lastRotation) > m_threshold)
         {
             m_lastRotation = m_transform.localEulerAngles.y;
