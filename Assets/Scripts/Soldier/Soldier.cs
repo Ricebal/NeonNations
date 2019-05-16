@@ -1,5 +1,5 @@
-using Mirror;
 using UnityEngine;
+using Mirror;
 
 public abstract class Soldier : NetworkBehaviour
 {
@@ -74,6 +74,12 @@ public abstract class Soldier : NetworkBehaviour
         m_isDead = true;
         m_sphereCollider.enabled = false;
         m_deathTime = Time.time;
+
+        DeathExplosion deathExplosion = GetComponentInChildren<DeathExplosion>();
+        if (deathExplosion != null)
+        {
+            deathExplosion.Fire();
+        }
     }
 
     protected virtual void Respawn(Vector2 spawnPoint)
@@ -96,6 +102,11 @@ public abstract class Soldier : NetworkBehaviour
     protected void RpcColor(GameObject obj, Color color)
     {
         obj.GetComponent<Renderer>().material.color = color;
+        DeathExplosion deathExplosion = obj.GetComponentInChildren<DeathExplosion>();
+        if (deathExplosion != null)
+        {
+            deathExplosion.SetColor(color);
+        }
     }
 
     [Command]

@@ -68,7 +68,7 @@ MonoBehaviour:
   m_text: Neon nations
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: cb2f71bbac538984cbde417ea6b0bc18, type: 2}
-  m_sharedMaterial: {fileID: 2100000, guid: 372676c5bb183e0459b4f6b190fa4da9, type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: b22855a75d244ba458460e8eb476674b, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
