@@ -6,33 +6,31 @@ using UnityEngine;
 public class InputManager : MonoBehaviour
 {
     // Dictionary composed of the names of the actions and their associated keys (keycodes)
-    private static Dictionary<string, KeyCode> s_actionKeys;
-    private static string s_forward = "Move Forward";
-    private static string s_backward = "Move Backward";
-    private static string s_left = "Move Left";
-    private static string s_right = "Move Right";
-    private static string s_shoot = "Shoot";
-    private static string s_sonar = "Sonar";
-    private static string s_dash = "Dash";
+    private static Dictionary<string, KeyCode> s_actionKeys = new Dictionary<string, KeyCode>();
+    private const string FORWARD = "Move Forward";
+    private const string BACKWARD = "Move Backward";
+    private const string LEFT = "Move Left";
+    private const string RIGHT = "Move Right";
+    private const string SHOOT = "Shoot";
+    private const string SONAR = "Sonar";
+    private const string DASH = "Dash";
 
     // Default key values
-    private static KeyCode s_forwardKey = KeyCode.W;
-    private static KeyCode s_backwardKey = KeyCode.S;
-    private static KeyCode s_leftKey = KeyCode.A;
-    private static KeyCode s_rightKey = KeyCode.D;
-    private static KeyCode s_shootKey = KeyCode.Mouse0;
-    private static KeyCode s_sonarKey = KeyCode.Space;
-    private static KeyCode s_dashKey = KeyCode.LeftShift;
+    private const KeyCode FORWARD_KEY = KeyCode.W;
+    private const KeyCode BACKWARD_KEY = KeyCode.S;
+    private const KeyCode LEFT_KEY = KeyCode.A;
+    private const KeyCode RIGHT_KEY = KeyCode.D;
+    private const KeyCode SHOOT_KEY = KeyCode.Mouse0;
+    private const KeyCode SONAR_KEY = KeyCode.Space;
+    private const KeyCode DASH_KEY = KeyCode.LeftShift;
 
+    private const float ACCELERATION = 0.2f;
     // These 2 variables take values between -1 and 1
     private static float m_horizMovement = 0;
     private static float m_vertMovement = 0;
-    private static float m_acceleration = 0.2f;
 
     private void OnEnable()
     {
-        s_actionKeys = new Dictionary<string, KeyCode>();
-
         InitActionKeys();
     }
 
@@ -104,17 +102,17 @@ public class InputManager : MonoBehaviour
         {
             if (GetKey("Move Right"))
             {
-                m_horizMovement = Mathf.Lerp(m_horizMovement, 1, m_acceleration);
+                m_horizMovement = Mathf.Lerp(m_horizMovement, 1, ACCELERATION);
                 return m_horizMovement;
             }
             else if (GetKey("Move Left"))
             {
-                m_horizMovement = Mathf.Lerp(m_horizMovement, -1, m_acceleration);
+                m_horizMovement = Mathf.Lerp(m_horizMovement, -1, ACCELERATION);
                 return m_horizMovement;
             }
             else
             {
-                m_horizMovement = Mathf.Lerp(m_horizMovement, 0, m_acceleration);
+                m_horizMovement = Mathf.Lerp(m_horizMovement, 0, ACCELERATION);
                 return m_horizMovement;
             }
         }
@@ -122,23 +120,23 @@ public class InputManager : MonoBehaviour
         {
             if (GetKey("Move Forward"))
             {
-                m_vertMovement = Mathf.Lerp(m_vertMovement, 1, m_acceleration);
+                m_vertMovement = Mathf.Lerp(m_vertMovement, 1, ACCELERATION);
                 return m_vertMovement;
             }
             else if (GetKey("Move Backward"))
             {
-                m_vertMovement = Mathf.Lerp(m_vertMovement, -1, m_acceleration);
+                m_vertMovement = Mathf.Lerp(m_vertMovement, -1, ACCELERATION);
                 return m_vertMovement;
             }
             else
             {
-                m_vertMovement = Mathf.Lerp(m_vertMovement, 0, m_acceleration);
+                m_vertMovement = Mathf.Lerp(m_vertMovement, 0, ACCELERATION);
                 return m_vertMovement;
             }
         }
         else
         {
-            throw new System.Exception("Wrong axis name");
+            Debug.LogError("Wrong axis name: " + axisName);
         }
     }
 
@@ -154,25 +152,25 @@ public class InputManager : MonoBehaviour
     // Sets the key bindings to default bindings
     public void SetToDefault()
     {
-        s_actionKeys[s_forward] = s_forwardKey;
-        s_actionKeys[s_backward] = s_backwardKey;
-        s_actionKeys[s_left] = s_leftKey;
-        s_actionKeys[s_right] = s_rightKey;
-        s_actionKeys[s_shoot] = s_shootKey;
-        s_actionKeys[s_sonar] = s_sonarKey;
-        s_actionKeys[s_dash] = s_dashKey;
+        s_actionKeys[FORWARD] = FORWARD_KEY;
+        s_actionKeys[BACKWARD] = BACKWARD_KEY;
+        s_actionKeys[LEFT] = LEFT_KEY;
+        s_actionKeys[RIGHT] = RIGHT_KEY;
+        s_actionKeys[SHOOT] = SHOOT_KEY;
+        s_actionKeys[SONAR] = SONAR_KEY;
+        s_actionKeys[DASH] = DASH_KEY;
     }
 
     // Loads the keycode of each action if it has been saved. Takes the default keycode otherwise
     public void InitActionKeys()
     {
-        s_actionKeys[s_forward] = PlayerPrefs.HasKey(s_forward) ? (KeyCode)PlayerPrefs.GetInt(s_forward) : s_forwardKey;
-        s_actionKeys[s_backward] = PlayerPrefs.HasKey(s_backward) ? (KeyCode)PlayerPrefs.GetInt(s_backward) : s_backwardKey;
-        s_actionKeys[s_left] = PlayerPrefs.HasKey(s_left) ? (KeyCode)PlayerPrefs.GetInt(s_left) : s_leftKey;
-        s_actionKeys[s_right] = PlayerPrefs.HasKey(s_right) ? (KeyCode)PlayerPrefs.GetInt(s_right) : s_rightKey;
-        s_actionKeys[s_shoot] = PlayerPrefs.HasKey(s_shoot) ? (KeyCode)PlayerPrefs.GetInt(s_shoot) : s_shootKey;
-        s_actionKeys[s_sonar] = PlayerPrefs.HasKey(s_sonar) ? (KeyCode)PlayerPrefs.GetInt(s_sonar) : s_sonarKey;
-        s_actionKeys[s_dash] = PlayerPrefs.HasKey(s_dash) ? (KeyCode)PlayerPrefs.GetInt(s_dash) : s_dashKey;
+        s_actionKeys[FORWARD] = PlayerPrefs.HasKey(FORWARD) ? (KeyCode)PlayerPrefs.GetInt(FORWARD) : FORWARD_KEY;
+        s_actionKeys[BACKWARD] = PlayerPrefs.HasKey(BACKWARD) ? (KeyCode)PlayerPrefs.GetInt(BACKWARD) : BACKWARD_KEY;
+        s_actionKeys[LEFT] = PlayerPrefs.HasKey(LEFT) ? (KeyCode)PlayerPrefs.GetInt(LEFT) : LEFT_KEY;
+        s_actionKeys[RIGHT] = PlayerPrefs.HasKey(RIGHT) ? (KeyCode)PlayerPrefs.GetInt(RIGHT) : RIGHT_KEY;
+        s_actionKeys[SHOOT] = PlayerPrefs.HasKey(SHOOT) ? (KeyCode)PlayerPrefs.GetInt(SHOOT) : SHOOT_KEY;
+        s_actionKeys[SONAR] = PlayerPrefs.HasKey(SONAR) ? (KeyCode)PlayerPrefs.GetInt(SONAR) : SONAR_KEY;
+        s_actionKeys[DASH] = PlayerPrefs.HasKey(DASH) ? (KeyCode)PlayerPrefs.GetInt(DASH) : DASH_KEY;
         
     }
 }
