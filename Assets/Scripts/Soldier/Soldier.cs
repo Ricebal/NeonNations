@@ -77,13 +77,29 @@ public abstract class Soldier : NetworkBehaviour
         m_isDead = true;
         m_sphereCollider.enabled = false;
         m_deathTime = Time.time;
-        CmdAddDeath(transform.name);
+        PlayerScore.Deaths++;
 
         DeathExplosion deathExplosion = GetComponentInChildren<DeathExplosion>();
         if (deathExplosion != null)
         {
             deathExplosion.Fire();
         }
+    }
+
+    public void SyncScore()
+    {
+        if (PlayerScore == null)
+        {
+            PlayerScore = new Score();
+        }
+        RpcSetScore(PlayerScore.Kills, PlayerScore.Deaths);
+    }
+
+    [ClientRpc]
+    private void RpcSetScore(int kills, int deaths)
+    {
+        PlayerScore.Kills = kills;
+        PlayerScore.Deaths = deaths;
     }
 
     protected virtual void Respawn(Vector2 spawnPoint)
@@ -119,34 +135,6 @@ public abstract class Soldier : NetworkBehaviour
         RpcColor(obj, color);
     }
 
-    [Command]
-    private void CmdAddKill(string shooterId)
-    {
-        RpcAddKill(shooterId);
-    }
-
-    [ClientRpc]
-    private void RpcAddKill(string shooterId)
-    {
-        Soldier shooter = GameObject.Find(shooterId).GetComponent<Soldier>();
-        shooter.PlayerScore.Kills++;
-        Debug.Log("Kills: " + shooter.PlayerScore.Kills.ToString());
-    }
-
-    [Command]
-    private void CmdAddDeath(string playerId)
-    {
-        RpcAddDeath(playerId);
-    }
-
-    [ClientRpc]
-    private void RpcAddDeath(string playerId)
-    {
-        Soldier shooter = GameObject.Find(playerId).GetComponent<Soldier>();
-        shooter.PlayerScore.Deaths++;
-        Debug.Log("Deaths: " + shooter.PlayerScore.Deaths.ToString());
-    }
-
     protected void OnTriggerEnter(Collider collider)
     {
         if (collider.gameObject.tag == "Bullet")
@@ -158,7 +146,7 @@ public abstract class Soldier : NetworkBehaviour
                 m_stats.TakeDamage(bullet.Damage);
                 if (m_stats.GetCurrentHealth() <= 0)
                 {
-                    CmdAddKill(bullet.GetShooterId());
+                    shooter.PlayerScore.Kills++;
                 }
             }
         }

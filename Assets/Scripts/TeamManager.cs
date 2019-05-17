@@ -33,19 +33,19 @@ public class TeamManager : MonoBehaviour
         // Increment player count
         m_playerCount++;
 
-        // Set player colour for all existing players (for online syncing)
+        // Sync player colour and score
         for (int i = 0; i < 8; i++)
         {
             if (m_players[i] != null)
             {
                 m_players[i].SetInitialColor(GetColor(m_players[i].Team));
+                m_players[i].SyncScore();
             }
         }
 
         // Set player colour for new player
         player.SetInitialColor(GetColor(team));
         player.GetComponent<Identity>().SetIdentity();
-        player.PlayerScore = new Score();
 
         if (OnPlayersChange != null)
         {

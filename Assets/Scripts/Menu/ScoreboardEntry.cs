@@ -23,7 +23,6 @@ public class ScoreboardEntry : MonoBehaviour
 
     private void Refresh()
     {
-        Debug.Log("Refreshing scoreboard panel");
         m_kills.text = m_score.Kills.ToString();
         m_deaths.text = m_score.Deaths.ToString();
     }

@@ -34,7 +34,9 @@ public class Scoreboard : NetworkBehaviour
         {
             m_scoreBoard.SetActive(false);
         }
-        if (m_outdatedPlayers != null)
+
+        // If there are outdated players try to add them.
+        if (m_outdatedPlayers != null && m_outdatedPlayers.Count > 0)
         {
             RetryOutdatedPlayers();
         }
@@ -42,6 +44,7 @@ public class Scoreboard : NetworkBehaviour
 
     private void Refresh()
     {
+        // Clear the list and add all players
         RpcEmpty();
         foreach (Soldier player in m_teamManager.GetAllPlayers())
         {
@@ -55,7 +58,7 @@ public class Scoreboard : NetworkBehaviour
     [ClientRpc]
     private void RpcEmpty()
     {
-        Debug.Log("RpcEmpty");
+        // Clean the list
         foreach (Transform child in m_playerList.transform)
         {
             Destroy(child.gameObject);
@@ -65,14 +68,17 @@ public class Scoreboard : NetworkBehaviour
     [ClientRpc]
     private void RpcAddPlayer(string playerId)
     {
+        // Make outdated player list if it doesn't exist yet
         if (m_outdatedPlayers == null)
         {
             m_outdatedPlayers = new Dictionary<string, ScoreboardEntry>();
         }
-        Debug.Log("RpcAddPlayer(" + playerId + ")");
+
+        // Make a new entry on the scoreboard
         GameObject scorePanel = Instantiate(m_playerScorePrefab)as GameObject;
         scorePanel.transform.SetParent(m_playerList.transform, false);
 
+        // Try to add the player to the scsoreboard, if it fails add it to the list of outdated players
         if (!AddPlayer(playerId, scorePanel.GetComponent<ScoreboardEntry>()))
         {
             m_outdatedPlayers.Add(playerId, scorePanel.GetComponent<ScoreboardEntry>());
@@ -81,18 +87,20 @@ public class Scoreboard : NetworkBehaviour
 
     private bool AddPlayer(string playerId, ScoreboardEntry scoreboardEntry)
     {
-        GameObject shooter = GameObject.Find(playerId);
-        if (shooter == null)
+        // Find the player, return false if nothing found
+        GameObject player = GameObject.Find(playerId);
+        if (player == null)
         {
             return false;
         }
 
-        scoreboardEntry.SetScore(shooter.GetComponent<Soldier>().PlayerScore);
+        scoreboardEntry.SetScore(player.GetComponent<Soldier>().PlayerScore);
         return true;
     }
 
     private void RetryOutdatedPlayers()
     {
+        // Make a list of updated players
         List<string> updatedPlayers = new List<string>();
         foreach (KeyValuePair<string, ScoreboardEntry> player in m_outdatedPlayers)
         {
@@ -101,6 +109,7 @@ public class Scoreboard : NetworkBehaviour
                 updatedPlayers.Add(player.Key);
             }
         }
+        // Remove updated players from the outdated players list
         updatedPlayers.ForEach(player => m_outdatedPlayers.Remove(player));
     }
 }
