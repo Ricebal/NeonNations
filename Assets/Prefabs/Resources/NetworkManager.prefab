@@ -120,8 +120,8 @@ MonoBehaviour:
   m_BindToAllInterfaces: 1
   m_BindToAddress: 127.0.0.1
   m_Port: 7777
-  m_UseCustomTimeout: 0
-  m_BasePeerTimeout: 5000
+  m_UseCustomTimeout: 1
+  m_BasePeerTimeout: 2500
   m_BasePeerMultiplier: 3
   m_MaximumTotalConnections: 1000
   m_ServerUPNPEnabled: 0
