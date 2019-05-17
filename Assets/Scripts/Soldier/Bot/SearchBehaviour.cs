@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using Assets.Scripts.Soldier.Bot.DStar;
@@ -10,16 +9,16 @@ public class SearchBehaviour : MonoBehaviour
 {
     private const float OFFSET_FOR_LINE_CALCULATION  = .95f; // A little less than 1. This will prevent the bot from thinking it will collide with an obstacle directly next to it when moving parallel to ithat obstacle.
     private Vector2Int m_goalCoordinates = new Vector2Int();
+    private Vector2Int m_previousFarthestNode = new Vector2Int();
     private GameEnvironment m_environment;
     private DStarLite m_dStarLite;
     private Bot m_bot;
 
-    // Start is called before the first frame update
     void Start()
     {
         m_environment = new GameEnvironment(gameObject);
         UnityEngine.Random.InitState((int)DateTime.Now.Ticks);
-        m_dStarLite = new DStarLite(m_environment, true);
+        m_dStarLite = new DStarLite(m_environment, false);
         Vector2Int startCoordinates = m_environment.ConvertGameObjectToCoordinates(gameObject.transform);
         GenerateNewDestination(startCoordinates.x, startCoordinates.y);
         m_bot = GetComponent<Bot>();
@@ -47,9 +46,14 @@ public class SearchBehaviour : MonoBehaviour
         Vector2Int botCoordinate = m_environment.ConvertGameObjectToCoordinates(gameObject.transform);
         List<Vector2Int> coordinatesToTraverse = m_dStarLite.CoordinatesToTraverse();
 
-        Vector2Int farthestReachableNode = PathSmoothing.FarthestCoordinateToReach(new PointF(gameObject.transform.position.x, gameObject.transform.position.z), coordinatesToTraverse, m_dStarLite.Map, OFFSET_FOR_LINE_CALCULATION );
+        Vector2Int farthestReachableNode = m_previousFarthestNode;
+        if (m_dStarLite.CoordinatesToTraverseChanged || botCoordinate.Equals(m_previousFarthestNode)) // Perform pathsmoothing if either the path has changed, or if the bot is on the same position as the old farthest node.
+        {
+            farthestReachableNode = PathSmoothing.FarthestCoordinateToReach(new PointF(gameObject.transform.position.x, gameObject.transform.position.z), coordinatesToTraverse, m_dStarLite.Map, OFFSET_FOR_LINE_CALCULATION);
+        }
+        m_previousFarthestNode = farthestReachableNode;
         DebugMap(m_dStarLite.Map, farthestReachableNode, coordinatesToTraverse);
-        MoveTo(coordinatesToTraverse[0]);
+        MoveTo(farthestReachableNode);
         m_dStarLite.SyncBotPosition(botCoordinate);
     }
 
@@ -65,8 +69,11 @@ public class SearchBehaviour : MonoBehaviour
         m_goalCoordinates.y = (int)newGoal.y;
         m_dStarLite.RunDStarLite(currentX, currentY, m_goalCoordinates.x, m_goalCoordinates.y);
     }
-    
-    // Moves the bot to the next Coordinate
+
+    /// <summary>
+    /// Moves the bot to the next coordinates.
+    /// </summary>
+    /// <param name="coordinates">The coordinates the bot has to move to as Vector2Int</param>
     private void MoveTo(Vector2Int coordinates)
     {
         float horizontal = coordinates.x - gameObject.transform.position.x;
@@ -116,6 +123,11 @@ public class SearchBehaviour : MonoBehaviour
                         builder.Append("Q");
                         continue;
                     }
+                }
+                if(map.Map[x][y].Content == -1)
+                {
+                    builder.Append("?");
+                    continue;
                 }
                 if (foundInNodes)
                 {

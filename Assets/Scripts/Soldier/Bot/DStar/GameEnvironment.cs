@@ -113,7 +113,7 @@ namespace Assets.Scripts.Soldier.Bot.DStar
                     int y = objectCoordinates.y + j;
 
                     // Check if coordinate is inside the map
-                    if(x < 0 && x >= s_map.Length && y < 0 && y >= s_map[0].Length)
+                    if(x < 0 || x >= s_map.Length || y < 0 || y >= s_map[0].Length)
                     {
                         continue;
                     }

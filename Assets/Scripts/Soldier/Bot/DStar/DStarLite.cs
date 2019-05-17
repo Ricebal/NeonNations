@@ -10,6 +10,7 @@ namespace Assets.Scripts.Soldier.Bot.DStar
     public class DStarLite
     {
         public NavigationGraph Map;
+        public bool CoordinatesToTraverseChanged = true;
 
         private GameEnvironment m_environment;
         private MinHeap m_heap;
@@ -79,12 +80,12 @@ namespace Assets.Scripts.Soldier.Bot.DStar
                 // What the bot knows of the node
                 Node knownNode = Map.GetNode(coordinates.x, coordinates.y);
                 // What the node actually is
-                int actualNode = m_environment.GetNode(coordinates.x, coordinates.y);
-                // If the obstacle was not previously known
-                if (knownNode.Content != actualNode)
+                int actualNodeContent = m_environment.GetNode(coordinates.x, coordinates.y);
+                // If the obstacle was not previously known or the obstacle has been removed
+                if (knownNode.Content != actualNodeContent)
                 {
                     change = true;
-                    knownNode.Content = actualNode;
+                    knownNode.Content = actualNodeContent;
                     foreach (Vector2Int surroundingCoordinates in Map.GetSurroundingOpenSpaces(coordinates))
                     {
                         UpdateVertex(surroundingCoordinates);
@@ -101,20 +102,27 @@ namespace Assets.Scripts.Soldier.Bot.DStar
         /// </summary>
         public List<Vector2Int> CoordinatesToTraverse()
         {
+            if (Map.GetNode(m_start).IsObstacle())  // Prevent from crashing when bot is inside a wall
+            {
+                return new List<Vector2Int>();
+            }
             List<Vector2Int> CoordinatesToTraverse = new List<Vector2Int>();
 
             // If the map has changed or not
             bool mapChanged = CheckForMapChanges();
 
             Vector2Int previousFirstCoordinates = m_previousCoordinatesToTraverse.FirstOrDefault();
+
+            CoordinatesToTraverseChanged = true;
             // If the map has not been changed AND 
             // The bot is still in the same tile AND
             // The goal hasn't been reached THEN
             // The shortest path does not need to be recalculated.
-            //if (!mapChanged && m_start == previousFirstCoordinates && m_goal == m_previousGoal)
-            //{
-            //    return m_previousCoordinatesToTraverse;
-            //}
+            if (!mapChanged && m_start == previousFirstCoordinates && m_goal == m_previousGoal)
+            {
+                CoordinatesToTraverseChanged = false;
+                return m_previousCoordinatesToTraverse;
+            }
             m_previousGoal = m_goal;
             Vector2Int coordinateToTraverse = new Vector2Int();
             do
@@ -247,7 +255,7 @@ namespace Assets.Scripts.Soldier.Bot.DStar
         private void ComputeShortestPath()
         {
             Node startNode = Map.GetNode(m_start);
-            if (startNode.IsObstacle())
+            if (startNode.IsObstacle()) // Prevent from crashing when bot is inside a wall
             {
                 return;
             }

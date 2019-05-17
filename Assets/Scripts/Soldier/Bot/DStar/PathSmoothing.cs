@@ -11,6 +11,11 @@ namespace Assets.Scripts.Soldier.Bot.DStar
     public static class PathSmoothing
     {
         /// <summary>
+        /// The tile-offset used for the map.
+        /// </summary>
+        public const float TILE_OFFSET = 0.5f;
+
+        /// <summary>
         /// Returns the farthest coordinate the entity can reach from its current position.
         /// </summary>
         /// <param name="currentPosition">The current position of the entity.</param>
@@ -25,19 +30,23 @@ namespace Assets.Scripts.Soldier.Bot.DStar
             bool possibleToMoveHere = true;
 
             // When it is possible to move from current position and the new position AND the new position is not the final destination
-            //while (possibleToMoveHere && nextNode != goalNode)
-            //{
-            //    // Save current new point for if the next one fails.
-            //    previousNextNode = nextNode;
-            //    // Get new point that is closer to the destination.
-            //    nextNode++;
-            //    // Check if it is possible to move to the next position
-            //    possibleToMoveHere = PossibleToMoveBetween(currentPosition, new PointF(coordinatesToTraverse[nextNode].x, coordinatesToTraverse[nextNode].y), map, entityWidth, entityWidth);
-           // }
-
-            possibleToMoveHere = PossibleToMoveBetween(currentPosition, new PointF(coordinatesToTraverse[goalNode].x, coordinatesToTraverse[goalNode].y), map, entityWidth, entityWidth);
-
-            // If it is not possible to move to the next position
+            while (possibleToMoveHere && nextNode != goalNode)
+            {
+                // Save current new point for if the next one fails.
+                previousNextNode = nextNode;
+                // Get new point that is closer to the destination.
+                nextNode++;
+                // Skip this node if it's on the same row or column as the current position.
+                // In this case we won't have to recalculate if it's possible to move somewhere since the straight paths are already calculated by the D* algorithm.
+                if(coordinatesToTraverse[nextNode].x == currentPosition.X || coordinatesToTraverse[nextNode].y == currentPosition.Y)
+                {
+                    continue;
+                }
+                // Check if it is possible to move to the next position.
+                possibleToMoveHere = PossibleToMoveBetween(currentPosition, new PointF(coordinatesToTraverse[nextNode].x, coordinatesToTraverse[nextNode].y), map, entityWidth, entityWidth);
+            }
+            
+            // If it is not possible to move to the next position.
             if (!possibleToMoveHere)
             {
                 // Get back to previousPoint, since that is the last point that is reachable.
@@ -60,127 +69,68 @@ namespace Assets.Scripts.Soldier.Bot.DStar
             float rightSideFromEntity = +(xOffset / 2);
             float upperSideFromEntity = +(yOffset / 2);
             float lowerSideFromEntity = -(yOffset / 2);
-            List<Vector2Int> passingCoordinates = new List<Vector2Int>();
-            Traverse(currentPosition.X, currentPosition.Y, newPosition.X, newPosition.Y, ref passingCoordinates);
+            
+            // Top of entity
+            // If there is an obstacle on this line, return false since it's not possible to move here.
+            if(CheckIfNodeContainsObstacle(Traverse(currentPosition.X, currentPosition.Y + upperSideFromEntity, newPosition.X, newPosition.Y + upperSideFromEntity), map)){
+                return false;
+            }
+            // Left of entity
+            // If there is an obstacle on this line, return false since it's not possible to move here.
+            if (CheckIfNodeContainsObstacle(Traverse(currentPosition.X + leftSideFromEntity, currentPosition.Y, newPosition.X + leftSideFromEntity, newPosition.Y), map))
+            {
+                return false;
+            }
+            // Right of entity
+            // If there is an obstacle on this line, return false since it's not possible to move here.
+            if (CheckIfNodeContainsObstacle(Traverse(currentPosition.X + rightSideFromEntity, currentPosition.Y, newPosition.X + rightSideFromEntity, newPosition.Y), map)){
+                return false;
+            }
+            // Bottom of entity
+            // If there is an obstacle on this line, return false since it's not possible to move here.
+            if(CheckIfNodeContainsObstacle(Traverse(currentPosition.X, currentPosition.Y + lowerSideFromEntity, newPosition.X, newPosition.Y + lowerSideFromEntity), map)){
+                return false;
+            }
+            // No obstacles have been seen.
+            return true;
+        }
 
-            Debug.DrawLine(new Vector3(currentPosition.X, 0, currentPosition.Y), new Vector3(newPosition.X, 0, newPosition.Y), UnityEngine.Color.red, 0.01f);
-            //Debug.DrawLine(new Vector3(currentPosition.X + leftSideFromEntity, 0, currentPosition.Y), new Vector3(newPosition.X + leftSideFromEntity, 0, newPosition.Y), UnityEngine.Color.yellow, 0.01f);
-            //Debug.DrawLine(new Vector3(currentPosition.X + rightSideFromEntity, 0, currentPosition.Y), new Vector3(newPosition.X + rightSideFromEntity, 0, newPosition.Y), UnityEngine.Color.green, 0.01f);
-            //Debug.DrawLine(new Vector3(currentPosition.X, 0, currentPosition.Y + lowerSideFromEntity), new Vector3(newPosition.X, 0, newPosition.Y + lowerSideFromEntity), UnityEngine.Color.blue, 0.01f);
-
-            //// Top of entity
-            //Traverse(currentPosition.X, currentPosition.Y + upperSideFromEntity, newPosition.X, newPosition.Y + upperSideFromEntity, ref passingCoordinates);
-            //// Left of entity
-            //Traverse(currentPosition.X + leftSideFromEntity, currentPosition.Y, newPosition.X + leftSideFromEntity, newPosition.Y, ref passingCoordinates);
-            //// Right of entity
-            //Traverse(currentPosition.X + rightSideFromEntity, currentPosition.Y, newPosition.X + rightSideFromEntity, newPosition.Y, ref passingCoordinates);
-            //// Bottom of entity
-            //Traverse(currentPosition.X, currentPosition.Y + lowerSideFromEntity, newPosition.X, newPosition.Y + lowerSideFromEntity, ref passingCoordinates);
+        /// <summary>
+        /// Checks if one of the coordinates contains an obstacle
+        /// </summary>
+        private static bool CheckIfNodeContainsObstacle(List<Vector2Int> passingCoordinates, NavigationGraph map)
+        {
             foreach (Vector2Int coordinate in passingCoordinates)
             {
                 if (map.GetNode(coordinate).IsObstacle())
                 {
                     // There is a wall in the colliding line
-                    return false;
+                    return true;
                 }
             }
             // No wall is found between these coordinates
-            return true;
+            return false;
         }
 
-        /// <summary>
-        /// Check if line intersects a triangle
-        /// </summary>
-        /// <param name="currentPosition">The start-position of the line</param>
-        /// <param name="nextPosition">The end-position of the line</param>
-        /// <param name="tile">The rectangle you want to check for collision</param>
-        public static bool LineIntersectsRect(PointF currentPosition, PointF nextPosition, RectangleF tile)
+        private static List<Vector2Int> Traverse(float startPointX, float startPointY, float endPointX, float endPointY)
         {
-            return LineIntersectsLine(currentPosition, nextPosition, new PointF(tile.X, tile.Y), new PointF(tile.X + tile.Width, tile.Y)) ||
-                   LineIntersectsLine(currentPosition, nextPosition, new PointF(tile.X + tile.Width, tile.Y), new PointF(tile.X + tile.Width, tile.Y + tile.Height)) ||
-                   LineIntersectsLine(currentPosition, nextPosition, new PointF(tile.X + tile.Width, tile.Y + tile.Height), new PointF(tile.X, tile.Y + tile.Height)) ||
-                   LineIntersectsLine(currentPosition, nextPosition, new PointF(tile.X, tile.Y + tile.Height), new PointF(tile.X, tile.Y)) ||
-                   (tile.Contains(currentPosition) && tile.Contains(nextPosition));
-        }
-
-        /// <summary>
-        /// Checks if two lines intersect with each other
-        /// </summary>
-        private static bool LineIntersectsLine(PointF currentPosition, PointF nextPosition, PointF rectanglePoint1, PointF rectanglePoint2)
-        {
-            // The first point of line QR
-            float q = (currentPosition.Y - rectanglePoint1.Y) * (rectanglePoint2.X - rectanglePoint1.X) - (currentPosition.X - rectanglePoint1.X) * (rectanglePoint2.Y - rectanglePoint1.Y);
-            // Help-variable to calculate R
-            float delta = (nextPosition.X - currentPosition.X) * (rectanglePoint2.Y - rectanglePoint1.Y) - (nextPosition.Y - currentPosition.Y) * (rectanglePoint2.X - rectanglePoint1.X);
-
-            if (delta == 0)
-            {
-                return false;
-            }
-            
-            // The second point of line QR
-            float r = q / delta;
-
-            q = (currentPosition.Y - rectanglePoint1.Y) * (nextPosition.X - currentPosition.X) - (currentPosition.X - rectanglePoint1.X) * (nextPosition.Y - currentPosition.Y);
-            float s = q / delta;
-
-            if (r < 0 || r > 1 || s < 0 || s > 1)
-            {
-                return false;
-            }
-
-            return true;
-        }
-
-
-        /// <summary>
-        /// Returns the fractional part of a float
-        /// For example, Frac(1.3) = 0.3, Frac(-1.7)=0.3
-        /// </summary>
-        public static float Frac(float value)
-        {
-            return value - (float)Math.Truncate(value);
-        }
-
-        //private static float deltaHelper(float start, float end)
-        //{
-        //    int tile = (int)Math.Abs(start);
-        //    int destinationTile;// = (int)Math.Abs(end);
-        //    float deltaT;
-        //    if(end > 0)
-        //}
-        //private static void RayCast(float startPointX, float startPointY, float endPointX, float endPointY, ref List<Vector2Int> passingCoordinates)
-        //{
-        //    // The difference between the points
-        //    float deltaX = Mathf.Abs(endPointX - startPointX);
-        //    float deltaY = Mathf.Abs(endPointY - startPointY);
-
-        //    // The directions
-        //    int dirSignX = Math.Sign(deltaX);
-        //    int dirSignY = Math.Sign(deltaY);
-
-        //    float tileOffsetX = 
-        //}
-
-        private static void Traverse(float startPointX, float startPointY, float endPointX, float endPointY, ref List<Vector2Int> passingCoordinates)
-        {
-            float tileOffset = 0.5f;
-
-            //startPointX += tileOffset;
-            //startPointY += tileOffset;
-            //endPointX += tileOffset;
-            //endPointY += tileOffset;
+            List<Vector2Int> passingCoordinates = new List<Vector2Int>();
+            // Change the positions to fit our grid
+            startPointX += TILE_OFFSET;
+            startPointY += TILE_OFFSET;
+            endPointX += TILE_OFFSET;
+            endPointY += TILE_OFFSET;
 
             // The difference between the points
             float deltaX = Mathf.Abs(endPointX - startPointX);
             float deltaY = Mathf.Abs(endPointY - startPointY);
 
             // Initialize the starting points (floor to get to the right tile position)
-            float x = (float)Math.Floor(startPointX + tileOffset)- tileOffset;
-            float y = (float)Math.Floor(startPointY + tileOffset)- tileOffset;
+            float tileX = (float)Math.Floor(startPointX);
+            float tileY = (float)Math.Floor(startPointY);
 
             // Counter
-            float counter = 1;
+            float counter = 0;
 
             // Whether the x should be incremented or decremented (left is decremented, right is incremented)
             // Whether the y should be incremented or decremented (down is decremented, up is incremented)
@@ -200,17 +150,17 @@ namespace Assets.Scripts.Soldier.Bot.DStar
                 stepX = 0;
                 error = double.PositiveInfinity;
             }
-            else if (endPointX > startPointX) // Goes right
+            else if (endPointX > startPointX) // If the entity has to move right
             {
                 stepX = 1;
-                counter += (float)(Math.Floor(endPointX)) - x;
-                error = (Math.Floor(startPointX) + 1 - startPointX) * deltaY + tileOffset;
+                counter += (float)(Math.Floor(endPointX)) - tileX;
+                error = (Math.Floor(startPointX) + 1 - startPointX) * deltaY;
             }
-            else // Goes left
+            else // If the entity has to move left
             {
                 stepX = -1;
-                counter += x - (float)(Math.Floor(endPointX));
-                error = (startPointX - Math.Floor(startPointX)) * deltaY - tileOffset;
+                counter += tileX - (float)(Math.Floor(endPointX));
+                error = (startPointX - Math.Floor(startPointX)) * deltaY;
             }
 #endregion
 
@@ -221,31 +171,21 @@ namespace Assets.Scripts.Soldier.Bot.DStar
                 stepY = 0;
                 error = double.PositiveInfinity;
             }
-            else if (endPointY > startPointY) // Goes up
+            else if (endPointY > startPointY) // If the entity has to move up
             {
                 stepY = 1;
-                counter += (float)(Math.Floor(endPointY)) - y;
-                error -= (Math.Floor(startPointY) + 1 - startPointY) * deltaX - tileOffset;
+                counter += (float)(Math.Floor(endPointY)) - tileY;
+                error -= (Math.Floor(startPointY) + 1 - startPointY) * deltaX;
             }
-            else // Goes down
+            else // If the entity has to move down
             {
                 stepY = -1;
-                counter += y - (float)(Math.Floor(endPointY));
-                error -= (startPointY - Math.Floor(startPointY)) * deltaX + tileOffset;
+                counter += tileY - (float)(Math.Floor(endPointY));
+                error -= (startPointY - Math.Floor(startPointY)) * deltaX;
             }
             #endregion
-
-            RectangleF rect = new RectangleF(x, y, 1, 1);
-            Debug.DrawLine(new Vector3(rect.Left, 0, rect.Bottom), new Vector3(rect.Right, 0, rect.Bottom), UnityEngine.Color.white, 0.01f);
-            Debug.DrawLine(new Vector3(rect.Left, 0, rect.Top), new Vector3(rect.Right, 0, rect.Top), UnityEngine.Color.white, 0.01f);
-            Debug.DrawLine(new Vector3(rect.Left, 0, rect.Bottom), new Vector3(rect.Left, 0, rect.Top), UnityEngine.Color.white, 0.01f);
-            Debug.DrawLine(new Vector3(rect.Right, 0, rect.Bottom), new Vector3(rect.Right, 0, rect.Top), UnityEngine.Color.white, 0.01f);
-
-            // If the coordinate isn't know already
-            if (!passingCoordinates.Any(c => c.x == Math.Ceiling(x) && c.y == Math.Ceiling(y)))
-            {
-                passingCoordinates.Add(new Vector2Int((int)Math.Ceiling(x), (int)Math.Ceiling(y)));
-            }
+            
+            passingCoordinates.Add(new Vector2Int((int)(tileX), (int)(tileY)));
 
             // While the end of the line hasn't been reach
             while (counter>0)
@@ -254,146 +194,39 @@ namespace Assets.Scripts.Soldier.Bot.DStar
                 if (error > 0)
                 {
                     // Go to the next vertical tile from this point
-                    y += stepY;
+                    tileY += stepY;
                     error -= deltaX;
                 }
                 else if (error == 0) // If the line exactly crosses two tiles at once
                 {
-                    x += stepX;
-                    y += stepY;
+                    tileX += stepX;
+                    tileY += stepY;
                     error -= deltaX;
                     error += deltaY;
                     counter--;
                 }
                 else{
                     // Go to the next horizontal tile from this point 
-                    x += stepX;
+                    tileX += stepX;
                     error += deltaY;
                 }
-                rect = new RectangleF(x, y, 1, 1);
-                Debug.DrawLine(new Vector3(rect.Left, 0, rect.Bottom), new Vector3(rect.Right, 0, rect.Bottom), UnityEngine.Color.white, 0.01f);
-                Debug.DrawLine(new Vector3(rect.Left, 0, rect.Top), new Vector3(rect.Right, 0, rect.Top), UnityEngine.Color.white, 0.01f);
-                Debug.DrawLine(new Vector3(rect.Left, 0, rect.Bottom), new Vector3(rect.Left, 0, rect.Top), UnityEngine.Color.white, 0.01f);
-                Debug.DrawLine(new Vector3(rect.Right, 0, rect.Bottom), new Vector3(rect.Right, 0, rect.Top), UnityEngine.Color.white, 0.01f);
-
-                // If the coordinate isn't know already
-                if (!passingCoordinates.Any(c => c.x == Math.Ceiling(x) && c.y == Math.Ceiling(y)))
-                {
-                    passingCoordinates.Add(new Vector2Int((int)Math.Ceiling(x), (int)Math.Ceiling(y)));
-                }
+                
+                passingCoordinates.Add(new Vector2Int((int)(tileX), (int)(tileY)));
                 // Decrease the counter
                 counter--;
             }
+            return passingCoordinates;
         }
 
-        /// <summary>
-        /// Returns a List of Coordinates that will be intersected by a line
-        /// </summary>
-        private static void TilesIntersectedByLine2(float startPointX, float startPointY, float endPointX, float endPointY, ref List<Vector2Int> passingCoordinates)
+#if (UNITY_EDITOR)
+        private static void DebugRectangle(float tileX, float tileY)
         {
-            float tileOffset = 0.5f; // The value of the map-offset
-            // Set the x-coordinate of to the tile that contains startPointX
-            float x = Mathf.Floor(startPointX) - tileOffset;
-            // Set the y-coordinate of to the tile that contains startPointY
-            float y = Mathf.Floor(startPointY) - tileOffset;
-            // The final x-coordinate
-            float finalCoordinateX = Mathf.Floor(endPointX) - tileOffset;
-            // The final y-coordinate
-            float finalCoordinateY = Mathf.Floor(endPointY) - tileOffset;
-            // The distance between the startX and endX.
-            float distanceX = endPointX - startPointX;
-            // The distance between the startY and endY.
-            float distanceY = endPointY - startPointY;
-            // Whether the x should be incremented or decremented (left is decremented, right is incremented)
-            int stepX = -1;
-            if (distanceX >= 0)
-            {
-                stepX = 1;
-            }
-            // Whether the y should be incremented or decremented (down is decremented, up is incremented)
-            int stepY = -1;
-            if (distanceY >= 0)
-            {
-                stepY = 1;
-            }
-
-            // The range untill the ray will cross the first vertical boundary.
-            float tDeltaX = 1 / distanceX;
-            float tMaxX = tDeltaX * (1.0f - Frac(startPointX));
-
-            // The range untill the ray will cross the first horizontal boundary.
-            float tDeltaY = 1 / distanceY;
-            float tMaxY = tDeltaY * (1.0f - Frac(startPointY));
-
-            // While the endpoints hasn't been reached, keep in-/decreasing the x and y value.
-            while (x != finalCoordinateX && y != finalCoordinateY)
-            {
-                // If the coordinate isn't know already
-                if (!passingCoordinates.Any(c => c.x == x && c.y == y))
-                {
-                    passingCoordinates.Add(new Vector2Int((int)x, (int)y));
-                }
-                if (tMaxX < tMaxY)
-                {
-                    tMaxX = tMaxX + tDeltaX;
-                    x = x + stepX;
-                }
-                else
-                {
-                    tMaxY = tMaxY + tDeltaY;
-                    y = y + stepY;
-                }
-            }
+            RectangleF rect = new RectangleF(tileX - TILE_OFFSET, tileY - TILE_OFFSET, 1, 1);
+            Debug.DrawLine(new Vector3(rect.Left, 0, rect.Bottom), new Vector3(rect.Right, 0, rect.Bottom), UnityEngine.Color.white, 0.01f);
+            Debug.DrawLine(new Vector3(rect.Left, 0, rect.Top), new Vector3(rect.Right, 0, rect.Top), UnityEngine.Color.white, 0.01f);
+            Debug.DrawLine(new Vector3(rect.Left, 0, rect.Bottom), new Vector3(rect.Left, 0, rect.Top), UnityEngine.Color.white, 0.01f);
+            Debug.DrawLine(new Vector3(rect.Right, 0, rect.Bottom), new Vector3(rect.Right, 0, rect.Top), UnityEngine.Color.white, 0.01f);
         }
-
-        /// <summary>
-        /// Returns a List of Coordinates that will be intersected by a line
-        /// </summary>
-        private static void TilesIntersectedByLine(float startPointX, float startPointY, float endPointX, float endPointY, ref List<Vector2Int> passingCoordinates)
-        {
-            float leftX = startPointX;
-            float rightX = endPointX;
-            float downY = startPointY;
-            float upY = endPointY;
-
-            // Sets the most left position to leftX
-            if (startPointX > endPointX)
-            {
-                leftX = endPointX;
-                rightX = startPointX;
-            }
-            // Sets the lowest position to downY
-            if (startPointY > endPointY)
-            {
-                downY = endPointY;
-                upY = startPointY;
-            }
-            // Round numbers to prevent weird detections
-            downY = Mathf.Floor(downY);
-            leftX = Mathf.Floor(leftX);
-            upY = Mathf.Ceil(upY);
-            rightX = Mathf.Ceil(rightX);
-
-            float tileOffset = 0.5f; // The value of the map-offset
-
-            // For each Tile in the Rectangle
-            for (float i = leftX; i <= rightX; i++)
-            {
-                for(float j = downY; j <= upY; j++)
-                {
-                    // If the coordinate isn't know already
-                    if(!passingCoordinates.Any(c => c.x == i && c.y == j))
-                    {
-                        RectangleF tile = new RectangleF(i-tileOffset,j-tileOffset,1,1);
-
-                        // Check if it is intersected by the line
-                        if (LineIntersectsRect(new PointF(startPointX, startPointY), new PointF(endPointX, endPointY), tile))
-                        {
-                                passingCoordinates.Add(new Vector2Int((int)i, (int)j));
-                        }
-                    }
-                }
-            }
-        }
+#endif
     }
 }
