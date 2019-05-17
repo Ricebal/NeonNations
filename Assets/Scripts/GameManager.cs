@@ -5,8 +5,22 @@ using UnityEngine.Networking;
 
 public class GameManager : NetworkBehaviour
 {
-    [SyncVar]
-    public string Seed = "";
+    [SyncVar] public string Seed = "";
+    [SyncVar] public int MapWidth = 50;
+    [SyncVar] public int MapHeight = 50;
+    [SyncVar] public int MaxRoomAmount = 100;
+    [SyncVar] public int MaxShortcutAmount = 10;
+    [SyncVar] public int MaxRoomSize = 80;
+    [SyncVar] public int MinRoomLength = 6;
+    [SyncVar] public int MaxPlaceAttempts = 10;
+    [SyncVar] public int MaxBuildAttempts = 250;
+    [SyncVar] public int MaxShortcutAttempts = 250;
+    [SyncVar] public int MinTunnelLength = 1;
+    [SyncVar] public int MaxTunnelLength = 7;
+    [SyncVar] public int TunnelWidth = 2;
+    [SyncVar] public int BreakableTunnelChance = 20;
+    [SyncVar] public int OuterWallWidth = 14;
+
     private BoardManager m_boardManager;
     private BotManager m_botManager;
     private TeamManager m_teamManager;
@@ -36,8 +50,9 @@ public class GameManager : NetworkBehaviour
         TextMeshProUGUI text = hud.GetComponent<TextMeshProUGUI>();
         text.text = Seed;
 
-        MapGenerator mapGenerator = new MapGenerator();
-        m_boardManager.SetupScene(mapGenerator.GenerateRandomMap(Seed));
+        MapGenerator mapGenerator = new MapGenerator(MapWidth, MapHeight, MaxRoomAmount, MaxShortcutAmount, MaxRoomSize, MinRoomLength, 
+            MaxPlaceAttempts, MaxBuildAttempts, MaxShortcutAttempts, MinTunnelLength, MaxTunnelLength, TunnelWidth, BreakableTunnelChance);
+        m_boardManager.SetupScene(mapGenerator.GenerateRandomMap(Seed), OuterWallWidth);
         m_botManager.SetupBots();
     }
 

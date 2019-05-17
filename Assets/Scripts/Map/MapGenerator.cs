@@ -6,38 +6,43 @@ using UnityEngine;
 
 public class MapGenerator
 {
-    [SerializeField]
-    private int m_mapWidth = 50;
-    [SerializeField]
-    private int m_mapHeight = 50;
-    [SerializeField]
-    private int m_maxRoomAmount = 100;
-    [SerializeField]
-    private int m_maxShortcutAmount = 10;
-    [SerializeField]
-    private int m_maxRoomSize = 80;
-    [SerializeField]
-    private int m_minRoomLength = 6;
-    [SerializeField]
-    private int m_maxPlaceAttempts = 10;
-    [SerializeField]
-    private int m_maxBuildAttempts = 250;
-    [SerializeField]
-    private int m_maxShortcutAttempts = 250;
-    [SerializeField]
-    private int m_minTunnelLength = 1;
-    [SerializeField]
-    private int m_maxTunnelLength = 7;
-    [SerializeField]
-    private int m_tunnelWidth = 2;
-    [SerializeField]
-    private int m_chanceForBreakableTunnel = 20;
+    private int m_mapWidth;
+    private int m_mapHeight;
+    private int m_maxRoomAmount;
+    private int m_maxShortcutAmount;
+    private int m_maxRoomSize;
+    private int m_minRoomLength;
+    private int m_maxPlaceAttempts;
+    private int m_maxBuildAttempts;
+    private int m_maxShortcutAttempts;
+    private int m_maxWallAttempts = 500;
+    private int m_minTunnelLength;
+    private int m_maxTunnelLength;
+    private int m_tunnelWidth;
+    private int m_breakableTunnelChance;
 
     private Tile[][] m_tileMap;
 
     // --------------------------------------------------------------------------------------------
     // Generate maps
     // --------------------------------------------------------------------------------------------
+    public MapGenerator(int mapWidth, int mapHeight, int maxRoomAmount, int maxShortcutAmount, int maxRoomSize, int minRoomLength, int maxPlaceAttempts, 
+        int maxBuildAttempts, int maxShortcutAttempts, int minTunnelLength, int maxTunnelLength, int tunnelWidth, int breakableTunnelChance)
+    {
+        m_mapWidth = mapWidth;
+        m_mapHeight = mapHeight;
+        m_maxRoomAmount = maxRoomAmount;
+        m_maxShortcutAmount = maxShortcutAmount;
+        m_maxRoomSize = maxRoomSize;
+        m_minRoomLength = minRoomLength;
+        m_maxPlaceAttempts = maxPlaceAttempts;
+        m_maxBuildAttempts = maxBuildAttempts;
+        m_maxShortcutAttempts = maxShortcutAttempts;
+        m_minTunnelLength = minTunnelLength;
+        m_maxTunnelLength = maxTunnelLength;
+        m_tunnelWidth = tunnelWidth;
+        m_breakableTunnelChance = breakableTunnelChance;
+    }
 
     /// <summary>
     /// Generates a map based on the content
@@ -105,6 +110,9 @@ public class MapGenerator
     /// <returns>A jagged array of ints representing the tilemap</returns>
     public Tile[][] GenerateRandomMap(string seed)
     {
+        // Check if settings can be used
+        CheckSettings();
+
         // Create level with only walls
         GenerateEmptyMap(Tile.Wall);
 
@@ -134,6 +142,7 @@ public class MapGenerator
 
         // Add shortcuts
         AddShortcuts();
+        DebugMap(m_tileMap);
 
         // Set seed to random again
         UnityEngine.Random.InitState((int)DateTime.Now.Ticks);
@@ -224,6 +233,10 @@ public class MapGenerator
 
         // get random walltile for that direction
         Vector2Int wallTile = GetRandomWallTile(direction);
+        if (wallTile.x == -1 && wallTile.y == -1)
+        {
+            return false;
+        }
 
         // get a random tile within the room, to attach the corridor to
         Vector2Int entrance = new Vector2Int(UnityEngine.Random.Range(0, room.RoomMap.Length + 1 - m_tunnelWidth), UnityEngine.Random.Range(0, room.RoomMap[0].Length + 1 - m_tunnelWidth));
@@ -327,16 +340,19 @@ public class MapGenerator
     /// <returns>A Vector2Int containing the position of the wall</returns>
     private Vector2Int GetRandomWallTile(Vector2Int direction)
     {
-        while (true)
+        int tryCount = 0;
+        while (tryCount < m_maxWallAttempts)
         {
             // get a random tile in the map
-            Vector2Int randomTile = new Vector2Int(UnityEngine.Random.Range(1, m_mapWidth - m_tunnelWidth), UnityEngine.Random.Range(1, m_mapHeight - m_tunnelWidth));
+            Vector2Int randomTile = new Vector2Int(UnityEngine.Random.Range(1, m_mapWidth - 2), UnityEngine.Random.Range(1, m_mapHeight - 2));
 
             if (CheckWallTile(randomTile, direction))
             {
                 return randomTile;
             }
+            tryCount++;
         }
+        return new Vector2Int(-1, -1);
     }
 
     /// <summary>
@@ -479,6 +495,10 @@ public class MapGenerator
 
             // get random walltile for that direction
             Vector2Int wallTile = GetRandomWallTile(direction);
+            if (wallTile.x == -1 && wallTile.y == -1)
+            {
+                return;
+            }
             Vector2Int otherWallTile = Vector2Int.zero;
 
             for (int i = m_minTunnelLength; i < m_maxTunnelLength; i++)
@@ -540,7 +560,7 @@ public class MapGenerator
     private bool IsBreakable()
     {
         int i = UnityEngine.Random.Range(1, 101);
-        return i <= m_chanceForBreakableTunnel;
+        return i <= m_breakableTunnelChance;
     }
 
     // --------------------------------------------------------------------------------------------
@@ -568,6 +588,57 @@ public class MapGenerator
         }
     }
 
+    private void CheckSettings()
+    {
+        if (m_mapWidth < 20)
+        {
+            Debug.LogError("Map width can't be smaller than 20, using 20");
+            m_mapWidth = 20;
+        }
+        if (m_mapHeight < 20)
+        {
+            Debug.LogError("Map height can't be smaller than 20, using 20");
+            m_mapHeight = 20;
+        }
+        if (m_maxRoomSize < 1)
+        {
+            Debug.LogError("Room size can't be smaller than 9, using 9");
+            m_maxRoomSize = 9;
+        }
+        else if (m_mapWidth < Math.Sqrt(m_maxRoomSize) / 2 || m_mapHeight < Math.Sqrt(m_maxRoomSize) / 2)
+        {
+            Debug.LogError("Room size is too large for this map size, using maximum size possible");
+            m_maxRoomSize = m_mapWidth / 2 * m_mapHeight / 2;
+        }
+        if (m_maxRoomSize < Math.Pow(m_minRoomLength, 2))
+        {
+            Debug.LogError("Minimum room length is too big for this max room size, using maximum size possible");
+            m_minRoomLength = (int)Math.Sqrt(m_maxRoomSize);
+        }
+        if (m_minTunnelLength < 1)
+        {
+            Debug.LogError("Minimum tunnel length can't be lower than 1, using 1");
+            m_minTunnelLength = 1;
+        }
+        if (m_minTunnelLength > m_maxTunnelLength)
+        {
+            Debug.LogError("Maximum tunnel length can't be smaller than minimum tunnel length, using minimum length as maximum");
+            m_maxTunnelLength = m_minTunnelLength;
+        }
+        if (m_tunnelWidth < 1)
+        {
+            Debug.LogError("Tunnel width can't be lower than 1, using 1");
+            m_tunnelWidth = 1;
+        }
+        else if (m_tunnelWidth > m_minRoomLength)
+        {
+            Debug.LogError("Tunnel width can't be bigger than minimum room length, using maximum");
+            m_tunnelWidth = m_minRoomLength;
+        }
+
+        return;
+    }
+
 
     // --------------------------------------------------------------------------------------------
     // Debug functions
@@ -585,7 +656,7 @@ public class MapGenerator
         {
             for (int x = 0; x < map.Length; x++)
             {
-                builder.Append(map[x][y]);
+                builder.Append((int)map[x][y]);
             }
             builder.Append('\n');
         }
@@ -609,11 +680,11 @@ public class MapGenerator
             {
                 if (x >= pos.x && x < pos.x + roomMap.Length && y >= pos.y && y < pos.y + roomMap[0].Length)
                 {
-                    builder.Append(roomMap[x - pos.x][y - pos.y]);
+                    builder.Append((int)roomMap[x - pos.x][y - pos.y]);
                 }
                 else
                 {
-                    builder.Append(map[x][y]);
+                    builder.Append((int)map[x][y]);
                 }
             }
             builder.Append('\n');

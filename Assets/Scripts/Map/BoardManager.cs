@@ -11,8 +11,6 @@ public class BoardManager : NetworkBehaviour
     private GameObject m_mapPrefab;
     [SerializeField]
     private GameObject m_breakableWallPrefab;
-    [SerializeField]
-    private int m_outerWallWidth = 14;
 
     private const string MAP = "Map";
     private const string BREAKABLE_WALLS = "Breakable Walls";
@@ -20,6 +18,7 @@ public class BoardManager : NetworkBehaviour
     private const string MAP_PART = "Map Part";
 
     private Tile[][] m_tileMap;
+    private int m_outerWallWidth;
     private GameObject m_map;
     private GameObject m_breakableWalls;
     private List<GameObject> m_mapParts = new List<GameObject>();
@@ -34,9 +33,10 @@ public class BoardManager : NetworkBehaviour
     /// <summary>
     /// Creates a random map object 
     /// </summary>
-    public void SetupScene(Tile[][] tileMap)
+    public void SetupScene(Tile[][] tileMap, int outerWallWidth)
     {
         m_tileMap = tileMap;
+        m_outerWallWidth = outerWallWidth;
         m_map = new GameObject();
         m_map.name = MAP;
 
@@ -86,7 +86,7 @@ public class BoardManager : NetworkBehaviour
         GameObject floor = GameObject.CreatePrimitive(PrimitiveType.Plane);
 
         floor.transform.position = new Vector3((float)m_tileMap.Length / 2, MAP_OFFSET, (float)m_tileMap[0].Length / 2);
-        floor.transform.localScale = new Vector3((float)(m_tileMap.Length + m_outerWallWidth * 2) / 10, 1, (float)(m_tileMap[0].Length + m_outerWallWidth * 2) / 10);
+        floor.transform.localScale = new Vector3((float)(m_tileMap.Length) / 10, 1, (float)(m_tileMap[0].Length) / 10);
         floor.transform.SetParent(m_map.transform);
     }
 
