@@ -28,7 +28,6 @@ public class NetworkManagerCustom : NetworkManager
     {
         if (m_isConnecting)
         {
-            m_connectionText = "Disconnecting";
             StopClient();
         }
         StartHost();
@@ -54,21 +53,27 @@ public class NetworkManagerCustom : NetworkManager
         }
     }
 
+    public override void OnClientConnect(NetworkConnection conn)
+    {
+        base.OnClientConnect(conn);
+        m_connectionText = "";
+        m_isConnecting = false;
+    }
+
     public override void OnClientError(NetworkConnection conn, int errorCode)
     {
-        // If the client is not properly disconnected...
-        if ((UnityEngine.Networking.NetworkError)errorCode != UnityEngine.Networking.NetworkError.Ok)
-        {
-            // and if it is a timeout error, print "impossible to connect"
-            if ((UnityEngine.Networking.NetworkError)errorCode == UnityEngine.Networking.NetworkError.Timeout)
-            {
-                m_connectionText = "Connection failed";
-            }
-            Debug.LogError("ClientDisconnected due to error: " + (UnityEngine.Networking.NetworkError)errorCode);
-        }
-
-        Debug.Log("Client disconnected from server: " + conn);
+        UnityEngine.Networking.NetworkError error = (UnityEngine.Networking.NetworkError)errorCode;
+        m_connectionText = "Connection failed due to error: " + error.ToString(); ;
         m_isConnecting = false;
+    }
+
+    public override void OnStopClient()
+    {
+        if(m_isConnecting)
+        {
+            m_connectionText = "Connection timed out";
+            m_isConnecting = false;
+        }
     }
 
     public override void OnServerDisconnect(NetworkConnection conn)
@@ -84,13 +89,6 @@ public class NetworkManagerCustom : NetworkManager
         GameObject player = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
         NetworkServer.AddPlayerForConnection(conn, player);
         GameObject.Find("GameManager").GetComponent<GameManager>().AddPlayer(player.GetComponent<Player>());
-    }
-
-    public override void OnClientConnect(NetworkConnection conn)
-    {
-        base.OnClientConnect(conn);
-        m_connectionText = "";
-        m_isConnecting = false;
     }
 
     // Set the IP address of the network manager for the StartClient function
@@ -113,7 +111,7 @@ public class NetworkManagerCustom : NetworkManager
     {
         StopClient();
         StopHost();
-        m_isConnecting = false;
         m_connectionText = "";
+        m_isConnecting = false;
     }
 }
