@@ -129,6 +129,7 @@ public abstract class Soldier : NetworkBehaviour
 
     protected void OnCollisionEnter(Collision collision)
     {
+        // If the player collides with another player, freezes the other player locally to avoid being able to push him
         if (collision.gameObject.tag == "Player" && collision.gameObject != gameObject)
         {
             collision.rigidbody.isKinematic = true;
@@ -137,6 +138,7 @@ public abstract class Soldier : NetworkBehaviour
 
     protected void OnCollisionExit(Collision collision)
     {
+        // If the player is not colliding with another player anymore, unfreezes the other player locally
         if (collision.gameObject.tag == "Player" && collision.gameObject != gameObject)
         {
             collision.rigidbody.isKinematic = false;
