@@ -23,7 +23,7 @@ public class PlayerController : NetworkBehaviour
         Vector2Int spawnPoint = GameObject.Find("GameManager").GetComponent<BoardManager>().GetRandomFloorTile();
         transform.position = new Vector3(spawnPoint.x, 0, spawnPoint.y);
 
-        // By default, everything is freezed to avoid weird player collisions but the local player needs 
+        // By default, everything is freezed to avoid weird collisions but the local player needs 
         // to move using the rigidbody velocity so his position is only frozen on Y.
         m_rigidbody.constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionY;
     }
@@ -35,20 +35,20 @@ public class PlayerController : NetworkBehaviour
             return;
         }
 
-        // If a fire key is held down
-        if (Input.GetButton("Fire1"))
+        // If the shoot key is held down
+        if (InputManager.GetKey("Shoot"))
         {
             m_action.Shoot();
         }
 
-        // If the 'space' key is held down
-        if (Input.GetButton("Jump"))
+        // If the sonar key is held down
+        if (InputManager.GetKey("Sonar"))
         {
             m_action.Sonar();
         }
 
-        // If shift or mouse3 is pressed
-        if (Input.GetButton("Fire3"))
+        // If the dash key is pressed
+        if (InputManager.GetKeyDown("Dash"))
         {
             m_action.Dash();
         }
@@ -61,8 +61,8 @@ public class PlayerController : NetworkBehaviour
             return;
         }
 
-        float moveHorizontal = Input.GetAxis("Horizontal");
-        float moveVertical = Input.GetAxis("Vertical");
+        float moveHorizontal = InputManager.GetAxis("Horizontal");
+        float moveVertical = InputManager.GetAxis("Vertical");
 
         Vector3 movement = new Vector3(moveHorizontal, 0, moveVertical);
 
