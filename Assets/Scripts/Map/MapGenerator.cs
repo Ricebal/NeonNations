@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 
+public enum Tile { Floor, Wall, BreakableWall }
+
 public class MapGenerator
 {
     private int m_mapWidth;
@@ -15,7 +17,7 @@ public class MapGenerator
     private int m_maxPlaceAttempts;
     private int m_maxBuildAttempts;
     private int m_maxShortcutAttempts;
-    private int m_maxWallAttempts = 500;
+    private int m_maxWallAttempts;
     private int m_minTunnelLength;
     private int m_maxTunnelLength;
     private int m_tunnelWidth;
@@ -27,7 +29,7 @@ public class MapGenerator
     // Generate maps
     // --------------------------------------------------------------------------------------------
     public MapGenerator(int mapWidth, int mapHeight, int maxRoomAmount, int maxShortcutAmount, int maxRoomSize, int minRoomLength, int maxPlaceAttempts, 
-        int maxBuildAttempts, int maxShortcutAttempts, int minTunnelLength, int maxTunnelLength, int tunnelWidth, int breakableTunnelChance)
+        int maxBuildAttempts, int maxShortcutAttempts, int maxWallAttempts, int minTunnelLength, int maxTunnelLength, int tunnelWidth, int breakableTunnelChance)
     {
         m_mapWidth = mapWidth;
         m_mapHeight = mapHeight;
@@ -38,6 +40,7 @@ public class MapGenerator
         m_maxPlaceAttempts = maxPlaceAttempts;
         m_maxBuildAttempts = maxBuildAttempts;
         m_maxShortcutAttempts = maxShortcutAttempts;
+        m_maxWallAttempts = maxWallAttempts;
         m_minTunnelLength = minTunnelLength;
         m_maxTunnelLength = maxTunnelLength;
         m_tunnelWidth = tunnelWidth;
@@ -48,6 +51,7 @@ public class MapGenerator
     /// Generates a map based on the content
     /// </summary>
     /// <param name="content">The tile to fill the map with</param>
+    /// <returns>A jagged array of Tiles representing the tilemap</returns>
     public Tile[][] GenerateEmptyMap(Tile content)
     {
         m_tileMap = new Tile[m_mapWidth][];
@@ -65,6 +69,7 @@ public class MapGenerator
     /// <summary>
     /// Generates the hardcoded test map
     /// </summary>
+    /// <returns>A jagged array of Tiles representing the tilemap</returns>
     public Tile[][] GenerateTestMap()
     {
         GenerateEmptyMap(Tile.Wall);
@@ -96,7 +101,7 @@ public class MapGenerator
                     || x >= 23 && x <= 24 && y == 2
                     || x >= 25 && x <= 26 && y >= 11 && y <= 16)
                 {
-                    m_tileMap[x][y] = 0;
+                    m_tileMap[x][y] = Tile.Floor;
                 }
             }
         }
@@ -107,7 +112,7 @@ public class MapGenerator
     /// Generates a random map, based on the settings
     /// </summary>
     /// <param name="seed">Seed to be used with the generation</param>
-    /// <returns>A jagged array of ints representing the tilemap</returns>
+    /// <returns>A jagged array of Tiles representing the tilemap</returns>
     public Tile[][] GenerateRandomMap(string seed)
     {
         // Check if settings can be used
@@ -366,9 +371,10 @@ public class MapGenerator
         // check if the surrounding tiles are suitable for the width of the tunnel
         for (int i = 0; i < m_tunnelWidth; i++)
         {
-            if (!(m_tileMap[(randomTile.x + i * Math.Abs(direction.y))][(randomTile.y + i * Math.Abs(direction.x))] == Tile.Wall
-                    && m_tileMap[(randomTile.x + i * Math.Abs(direction.y) + direction.x)][(randomTile.y + i * Math.Abs(direction.x) + direction.y)] == Tile.Wall
-                    && m_tileMap[(randomTile.x + i * Math.Abs(direction.y) - direction.x)][(randomTile.y + i * Math.Abs(direction.x) - direction.y)] == Tile.Floor))
+            Vector2Int wallTile = new Vector2Int(randomTile.x + i * Math.Abs(direction.y), randomTile.y + i * Math.Abs(direction.x));
+            if (!(m_tileMap[wallTile.x][wallTile.y] == Tile.Wall
+                    && m_tileMap[wallTile.x + direction.x][wallTile.y + direction.y] == Tile.Wall
+                    && m_tileMap[wallTile.x - direction.x][wallTile.y - direction.y] == Tile.Floor))
             {
                 return false;
             }
@@ -455,7 +461,7 @@ public class MapGenerator
         {
             for (int y = 0; y < map[0].Length; y++)
             {
-                if (map[x][y] == Tile.Floor && // check if position in room equals zero
+                if (map[x][y] == Tile.Floor && // check if position in room is a floor tile
                     (!entranceTiles.Contains(new Vector2Int(x, y)) && // if the tile isn't an entrance
                     (m_tileMap[x + pos.x][y + pos.y] != Tile.Wall || // if so, check if the same position on map isn't a wall
                     m_tileMap[x + pos.x][y + pos.y + 1] != Tile.Wall || // and check all tiles around the position on the map, starting with north
@@ -692,17 +698,15 @@ public class MapGenerator
         string s = builder.ToString();
         Debug.Log(s);
     }
-}
 
-public class Room
-{
-    public Tile[][] RoomMap;
-    public Vector2Int Pos;
-
-    public Room(Tile[][] roomMap)
+    private class Room
     {
-        RoomMap = roomMap;
+        public Tile[][] RoomMap;
+        public Vector2Int Pos;
+
+        public Room(Tile[][] roomMap)
+        {
+            RoomMap = roomMap;
+        }
     }
 }
-
-public enum Tile { Floor, Wall, BreakableWall }

@@ -15,6 +15,7 @@ public class GameManager : NetworkBehaviour
     [SyncVar] public int MaxPlaceAttempts = 10;
     [SyncVar] public int MaxBuildAttempts = 250;
     [SyncVar] public int MaxShortcutAttempts = 250;
+    [SyncVar] public int MaxWallAttempts = 500;
     [SyncVar] public int MinTunnelLength = 1;
     [SyncVar] public int MaxTunnelLength = 7;
     [SyncVar] public int TunnelWidth = 2;
@@ -51,7 +52,7 @@ public class GameManager : NetworkBehaviour
         text.text = Seed;
 
         MapGenerator mapGenerator = new MapGenerator(MapWidth, MapHeight, MaxRoomAmount, MaxShortcutAmount, MaxRoomSize, MinRoomLength, 
-            MaxPlaceAttempts, MaxBuildAttempts, MaxShortcutAttempts, MinTunnelLength, MaxTunnelLength, TunnelWidth, BreakableTunnelChance);
+            MaxPlaceAttempts, MaxBuildAttempts, MaxShortcutAttempts, MaxWallAttempts, MinTunnelLength, MaxTunnelLength, TunnelWidth, BreakableTunnelChance);
         m_boardManager.SetupScene(mapGenerator.GenerateRandomMap(Seed), OuterWallWidth);
         m_botManager.SetupBots();
     }

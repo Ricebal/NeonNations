@@ -7,6 +7,18 @@ using UnityEngine.Networking;
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 public class BoardManager : NetworkBehaviour
 {
+    // Walls is used for loading the map
+    [Flags]
+    private enum Walls
+    {
+        // Decimal     // Binary
+        None = 0,    // 000000
+        Up = 1,    // 000001
+        Right = 2,    // 000010
+        Down = 4,    // 000100
+        Left = 8    // 001000
+    }
+
     [SerializeField]
     private GameObject m_mapPrefab;
     [SerializeField]
@@ -49,7 +61,7 @@ public class BoardManager : NetworkBehaviour
     /// <summary>
     /// Gets the tilemap
     /// </summary>
-    /// <returns>A jagged array of chars containing the map data</returns>
+    /// <returns>A jagged array of Tiles containing the map data</returns>
     public Tile[][] GetTileMap()
     {
         return m_tileMap;
@@ -66,7 +78,7 @@ public class BoardManager : NetworkBehaviour
             // get a random tile in the map
             Vector2Int randomTile = new Vector2Int(UnityEngine.Random.Range(1, m_tileMap.Length - 1), UnityEngine.Random.Range(1, m_tileMap[0].Length - 1));
 
-            if (m_tileMap[randomTile.x][randomTile.y] == 0)
+            if (m_tileMap[randomTile.x][randomTile.y] == Tile.Floor)
             {
                 return randomTile;
             }
@@ -103,7 +115,7 @@ public class BoardManager : NetworkBehaviour
             for (int j = 0; j < m_tileMap[0].Length; j++)
             {
                 if (m_tileMap[i][j] == Tile.Wall)
-                { // if 1, build wall
+                {
                     GameObject instance = GameObject.CreatePrimitive(PrimitiveType.Cube);
 
                     // calculate walls
@@ -130,7 +142,6 @@ public class BoardManager : NetworkBehaviour
                     instance.transform.position = new Vector3(i + MAP_OFFSET, 0f, j + MAP_OFFSET);
                     instance.transform.SetParent(m_map.transform);
                 } 
-                // if 2, build breakable wall
                 else if (m_tileMap[i][j] == Tile.BreakableWall && isServer)
                 {
                     GameObject instance = Instantiate(m_breakableWallPrefab, new Vector3(i, 0f, j), Quaternion.identity);
@@ -317,16 +328,4 @@ public class BoardManager : NetworkBehaviour
         m_mapParts.Add(mapPart);
         mapPart.name = MAP_PART + " " + m_mapParts.Count;
     }
-}
-
-// Walls is used for loading the map
-[Flags]
-public enum Walls
-{
-    // Decimal     // Binary
-    None = 0,    // 000000
-    Up = 1,    // 000001
-    Right = 2,    // 000010
-    Down = 4,    // 000100
-    Left = 8    // 001000
 }
