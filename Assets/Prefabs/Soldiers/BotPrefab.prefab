@@ -5038,9 +5038,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7614d91b0fce1ba4c92591a5e636bf17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_threshold: 0.1
+  m_threshold: 0.025
   m_lerpRate: 7
-  m_closeEnough: 0.2
+  m_closeEnough: 0.01
   m_tooFar: 10
   m_isBot: 1
 --- !u!114 &3138340112452186901

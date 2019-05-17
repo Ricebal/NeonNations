@@ -5,13 +5,13 @@ public class SyncPosition : NetworkBehaviour
 {
     // Threshold in meters
     [SerializeField]
-    private float m_threshold = 0.1f;
+    private float m_threshold = 0.025f;
     // Interpolation factor
     [SerializeField]
     private float m_lerpRate = 7;
     // Non-local soldiers are teleported when the difference between their current position and the real one is lower than this value
     [SerializeField]
-    private float m_closeEnough = 0.2f;
+    private float m_closeEnough = 0.01f;
     // Non-local soldiers are teleported when the difference between their current position and the real one is higher than this value
     [SerializeField]
     private float m_tooFar = 10;
