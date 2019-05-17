@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Networking;
 
 public abstract class Soldier : NetworkBehaviour
@@ -125,6 +124,22 @@ public abstract class Soldier : NetworkBehaviour
             {
                 m_stats.TakeDamage(collider.gameObject.GetComponent<Bullet>().Damage);
             }
+        }
+    }
+
+    protected void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.tag == "Player" && collision.gameObject != gameObject)
+        {
+            collision.rigidbody.isKinematic = true;
+        }
+    }
+
+    protected void OnCollisionExit(Collision collision)
+    {
+        if (collision.gameObject.tag == "Player" && collision.gameObject != gameObject)
+        {
+            collision.rigidbody.isKinematic = false;
         }
     }
 
