@@ -23,6 +23,9 @@ public class MapGenerator
     private int m_tunnelWidth;
     private int m_breakableTunnelChance;
 
+    private const int MINIMUM_ROOM_SIZE = 9;
+    private const int MINIMUM_MAP_SIDE = 20;
+
     private Tile[][] m_tileMap;
 
     // --------------------------------------------------------------------------------------------
@@ -595,20 +598,20 @@ public class MapGenerator
 
     private void CheckSettings()
     {
-        if (m_mapWidth < 20)
+        if (m_mapWidth < MINIMUM_MAP_SIDE)
         {
-            Debug.LogError("Map width can't be smaller than 20, using 20");
-            m_mapWidth = 20;
+            Debug.LogError("Map width can't be smaller than " + MINIMUM_MAP_SIDE + ", using " + MINIMUM_MAP_SIDE);
+            m_mapWidth = MINIMUM_MAP_SIDE;
         }
-        if (m_mapHeight < 20)
+        if (m_mapHeight < MINIMUM_MAP_SIDE)
         {
-            Debug.LogError("Map height can't be smaller than 20, using 20");
-            m_mapHeight = 20;
+            Debug.LogError("Map height can't be smaller than " + MINIMUM_MAP_SIDE + ", using " + MINIMUM_MAP_SIDE);
+            m_mapHeight = MINIMUM_MAP_SIDE;
         }
-        if (m_maxRoomSize < 1)
+        if (m_maxRoomSize < MINIMUM_ROOM_SIZE)
         {
-            Debug.LogError("Room size can't be smaller than 9, using 9");
-            m_maxRoomSize = 9;
+            Debug.LogError("Room size can't be smaller than " + MINIMUM_ROOM_SIZE + ", using " + MINIMUM_ROOM_SIZE);
+            m_maxRoomSize = MINIMUM_ROOM_SIZE;
         }
         else if (m_mapWidth < Math.Sqrt(m_maxRoomSize) / 2 || m_mapHeight < Math.Sqrt(m_maxRoomSize) / 2)
         {
