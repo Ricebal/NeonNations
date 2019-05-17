@@ -111,10 +111,10 @@ namespace Assets.Scripts.Soldier.Bot.DStar
             // The bot is still in the same tile AND
             // The goal hasn't been reached THEN
             // The shortest path does not need to be recalculated.
-            if (!mapChanged && m_start == previousFirstCoordinates && m_goal == m_previousGoal)
-            {
-                return m_previousCoordinatesToTraverse;
-            }
+            //if (!mapChanged && m_start == previousFirstCoordinates && m_goal == m_previousGoal)
+            //{
+            //    return m_previousCoordinatesToTraverse;
+            //}
             m_previousGoal = m_goal;
             Vector2Int coordinateToTraverse = new Vector2Int();
             do

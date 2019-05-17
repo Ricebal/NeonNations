@@ -49,7 +49,7 @@ public class SearchBehaviour : MonoBehaviour
 
         Vector2Int farthestReachableNode = PathSmoothing.FarthestCoordinateToReach(new PointF(gameObject.transform.position.x, gameObject.transform.position.z), coordinatesToTraverse, m_dStarLite.Map, OFFSET_FOR_LINE_CALCULATION );
         DebugMap(m_dStarLite.Map, farthestReachableNode, coordinatesToTraverse);
-        MoveTo(farthestReachableNode);
+        MoveTo(coordinatesToTraverse[0]);
         m_dStarLite.SyncBotPosition(botCoordinate);
     }
 

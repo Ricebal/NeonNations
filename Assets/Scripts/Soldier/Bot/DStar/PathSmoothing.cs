@@ -25,15 +25,17 @@ namespace Assets.Scripts.Soldier.Bot.DStar
             bool possibleToMoveHere = true;
 
             // When it is possible to move from current position and the new position AND the new position is not the final destination
-            while (possibleToMoveHere && nextNode != goalNode)
-            {
-                // Save current new point for if the next one fails.
-                previousNextNode = nextNode;
-                // Get new point that is closer to the destination.
-                nextNode++;
-                // Check if it is possible to move to the next position
-                possibleToMoveHere = PossibleToMoveBetween(currentPosition, new PointF(coordinatesToTraverse[nextNode].x, coordinatesToTraverse[nextNode].y), map, entityWidth, entityWidth);
-            }
+            //while (possibleToMoveHere && nextNode != goalNode)
+            //{
+            //    // Save current new point for if the next one fails.
+            //    previousNextNode = nextNode;
+            //    // Get new point that is closer to the destination.
+            //    nextNode++;
+            //    // Check if it is possible to move to the next position
+            //    possibleToMoveHere = PossibleToMoveBetween(currentPosition, new PointF(coordinatesToTraverse[nextNode].x, coordinatesToTraverse[nextNode].y), map, entityWidth, entityWidth);
+           // }
+
+            possibleToMoveHere = PossibleToMoveBetween(currentPosition, new PointF(coordinatesToTraverse[goalNode].x, coordinatesToTraverse[goalNode].y), map, entityWidth, entityWidth);
 
             // If it is not possible to move to the next position
             if (!possibleToMoveHere)
@@ -58,15 +60,16 @@ namespace Assets.Scripts.Soldier.Bot.DStar
             float rightSideFromEntity = +(xOffset / 2);
             float upperSideFromEntity = +(yOffset / 2);
             float lowerSideFromEntity = -(yOffset / 2);
+            List<Vector2Int> passingCoordinates = new List<Vector2Int>();
+            Traverse(currentPosition.X, currentPosition.Y, newPosition.X, newPosition.Y, ref passingCoordinates);
 
-            Debug.DrawLine(new Vector3(currentPosition.X, 0, currentPosition.Y + upperSideFromEntity), new Vector3(newPosition.X, 0, newPosition.Y + upperSideFromEntity), UnityEngine.Color.red, 0.01f);
+            Debug.DrawLine(new Vector3(currentPosition.X, 0, currentPosition.Y), new Vector3(newPosition.X, 0, newPosition.Y), UnityEngine.Color.red, 0.01f);
             //Debug.DrawLine(new Vector3(currentPosition.X + leftSideFromEntity, 0, currentPosition.Y), new Vector3(newPosition.X + leftSideFromEntity, 0, newPosition.Y), UnityEngine.Color.yellow, 0.01f);
             //Debug.DrawLine(new Vector3(currentPosition.X + rightSideFromEntity, 0, currentPosition.Y), new Vector3(newPosition.X + rightSideFromEntity, 0, newPosition.Y), UnityEngine.Color.green, 0.01f);
             //Debug.DrawLine(new Vector3(currentPosition.X, 0, currentPosition.Y + lowerSideFromEntity), new Vector3(newPosition.X, 0, newPosition.Y + lowerSideFromEntity), UnityEngine.Color.blue, 0.01f);
 
-            List<Vector2Int> passingCoordinates = new List<Vector2Int>();
-            // Top of entity
-            Traverse(currentPosition.X, currentPosition.Y + upperSideFromEntity, newPosition.X, newPosition.Y + upperSideFromEntity, ref passingCoordinates);
+            //// Top of entity
+            //Traverse(currentPosition.X, currentPosition.Y + upperSideFromEntity, newPosition.X, newPosition.Y + upperSideFromEntity, ref passingCoordinates);
             //// Left of entity
             //Traverse(currentPosition.X + leftSideFromEntity, currentPosition.Y, newPosition.X + leftSideFromEntity, newPosition.Y, ref passingCoordinates);
             //// Right of entity
@@ -75,12 +78,6 @@ namespace Assets.Scripts.Soldier.Bot.DStar
             //Traverse(currentPosition.X, currentPosition.Y + lowerSideFromEntity, newPosition.X, newPosition.Y + lowerSideFromEntity, ref passingCoordinates);
             foreach (Vector2Int coordinate in passingCoordinates)
             {
-                RectangleF rect = new RectangleF(coordinate.x - 0.5f, coordinate.y - 0.5f, 1, 1);
-                Debug.DrawLine(new Vector3(rect.Left, 0, rect.Bottom), new Vector3(rect.Right, 0, rect.Bottom), UnityEngine.Color.white, 0.01f);
-                Debug.DrawLine(new Vector3(rect.Left, 0, rect.Top), new Vector3(rect.Right, 0, rect.Top), UnityEngine.Color.white, 0.01f);
-                Debug.DrawLine(new Vector3(rect.Left, 0, rect.Bottom), new Vector3(rect.Left, 0, rect.Top), UnityEngine.Color.white, 0.01f);
-                Debug.DrawLine(new Vector3(rect.Right, 0, rect.Bottom), new Vector3(rect.Right, 0, rect.Top), UnityEngine.Color.white, 0.01f);
-
                 if (map.GetNode(coordinate).IsObstacle())
                 {
                     // There is a wall in the colliding line
@@ -167,19 +164,20 @@ namespace Assets.Scripts.Soldier.Bot.DStar
 
         private static void Traverse(float startPointX, float startPointY, float endPointX, float endPointY, ref List<Vector2Int> passingCoordinates)
         {
+            float tileOffset = 0.5f;
 
-            float tileOffset = 0.5f; // The value of the map-offset
-            startPointX += tileOffset;
-            startPointY += tileOffset;
-            endPointX += tileOffset;
-            endPointY += tileOffset;
+            //startPointX += tileOffset;
+            //startPointY += tileOffset;
+            //endPointX += tileOffset;
+            //endPointY += tileOffset;
+
             // The difference between the points
             float deltaX = Mathf.Abs(endPointX - startPointX);
             float deltaY = Mathf.Abs(endPointY - startPointY);
 
             // Initialize the starting points (floor to get to the right tile position)
-            float x = (float)Math.Floor(startPointX);
-            float y = (float)Math.Floor(startPointY);
+            float x = (float)Math.Floor(startPointX + tileOffset)- tileOffset;
+            float y = (float)Math.Floor(startPointY + tileOffset)- tileOffset;
 
             // Counter
             float counter = 1;
@@ -191,58 +189,67 @@ namespace Assets.Scripts.Soldier.Bot.DStar
             // The difference between t_next_horizontal and t_next_vertical;
             // if it’s positive, we know one is closer; if it’s negative,
             // the other is closer. We add or subtract dt_dx and dt_dy as appropriate when we move.
+            // If error > 0; Then move to next vertical tile;
+            // If error < 0; Then move to next horizontal tile;
             double error;
 
             // Calculate stepX
             #region Calculate stepX
-            if (deltaX == 0)
+            if (deltaX == 0) // Only moves vertically
             {
                 stepX = 0;
                 error = double.PositiveInfinity;
             }
-            else if (endPointX > startPointX)
+            else if (endPointX > startPointX) // Goes right
             {
                 stepX = 1;
                 counter += (float)(Math.Floor(endPointX)) - x;
-                error = (Math.Floor(startPointX) + 1 - startPointX) * deltaY;
+                error = (Math.Floor(startPointX) + 1 - startPointX) * deltaY + tileOffset;
             }
-            else
+            else // Goes left
             {
                 stepX = -1;
                 counter += x - (float)(Math.Floor(endPointX));
-                error = (startPointX - Math.Floor(startPointX)) * deltaY;
+                error = (startPointX - Math.Floor(startPointX)) * deltaY - tileOffset;
             }
 #endregion
 
             // Calculate stepY
             #region Calculate stepY
-            if (deltaY == 0)
+            if (deltaY == 0) // only moves horizontally
             {
                 stepY = 0;
                 error = double.PositiveInfinity;
             }
-            else if (endPointY > startPointY)
+            else if (endPointY > startPointY) // Goes up
             {
                 stepY = 1;
                 counter += (float)(Math.Floor(endPointY)) - y;
-                error -= (Math.Floor(startPointY) + 1 - startPointY) * deltaX;
+                error -= (Math.Floor(startPointY) + 1 - startPointY) * deltaX - tileOffset;
             }
-            else
+            else // Goes down
             {
                 stepY = -1;
                 counter += y - (float)(Math.Floor(endPointY));
-                error -= (startPointY - Math.Floor(startPointY)) * deltaX;
+                error -= (startPointY - Math.Floor(startPointY)) * deltaX + tileOffset;
             }
             #endregion
+
+            RectangleF rect = new RectangleF(x, y, 1, 1);
+            Debug.DrawLine(new Vector3(rect.Left, 0, rect.Bottom), new Vector3(rect.Right, 0, rect.Bottom), UnityEngine.Color.white, 0.01f);
+            Debug.DrawLine(new Vector3(rect.Left, 0, rect.Top), new Vector3(rect.Right, 0, rect.Top), UnityEngine.Color.white, 0.01f);
+            Debug.DrawLine(new Vector3(rect.Left, 0, rect.Bottom), new Vector3(rect.Left, 0, rect.Top), UnityEngine.Color.white, 0.01f);
+            Debug.DrawLine(new Vector3(rect.Right, 0, rect.Bottom), new Vector3(rect.Right, 0, rect.Top), UnityEngine.Color.white, 0.01f);
+
+            // If the coordinate isn't know already
+            if (!passingCoordinates.Any(c => c.x == Math.Ceiling(x) && c.y == Math.Ceiling(y)))
+            {
+                passingCoordinates.Add(new Vector2Int((int)Math.Ceiling(x), (int)Math.Ceiling(y)));
+            }
 
             // While the end of the line hasn't been reach
             while (counter>0)
             {
-                // If the coordinate isn't know already
-                if (!passingCoordinates.Any(c => c.x == x && c.y == y))
-                {
-                    passingCoordinates.Add(new Vector2Int((int)x, (int)y));
-                }
                 // If the error is bigger than 0
                 if (error > 0)
                 {
@@ -254,12 +261,25 @@ namespace Assets.Scripts.Soldier.Bot.DStar
                 {
                     x += stepX;
                     y += stepY;
+                    error -= deltaX;
+                    error += deltaY;
                     counter--;
                 }
                 else{
                     // Go to the next horizontal tile from this point 
                     x += stepX;
                     error += deltaY;
+                }
+                rect = new RectangleF(x, y, 1, 1);
+                Debug.DrawLine(new Vector3(rect.Left, 0, rect.Bottom), new Vector3(rect.Right, 0, rect.Bottom), UnityEngine.Color.white, 0.01f);
+                Debug.DrawLine(new Vector3(rect.Left, 0, rect.Top), new Vector3(rect.Right, 0, rect.Top), UnityEngine.Color.white, 0.01f);
+                Debug.DrawLine(new Vector3(rect.Left, 0, rect.Bottom), new Vector3(rect.Left, 0, rect.Top), UnityEngine.Color.white, 0.01f);
+                Debug.DrawLine(new Vector3(rect.Right, 0, rect.Bottom), new Vector3(rect.Right, 0, rect.Top), UnityEngine.Color.white, 0.01f);
+
+                // If the coordinate isn't know already
+                if (!passingCoordinates.Any(c => c.x == Math.Ceiling(x) && c.y == Math.Ceiling(y)))
+                {
+                    passingCoordinates.Add(new Vector2Int((int)Math.Ceiling(x), (int)Math.Ceiling(y)));
                 }
                 // Decrease the counter
                 counter--;

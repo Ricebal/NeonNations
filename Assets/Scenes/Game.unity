@@ -1265,12 +1265,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_mapPrefab: {fileID: 6182289135420230192, guid: 1e44135debb4a9a41a46d373ce5d9c91,
     type: 3}
-  m_mapWidth: 50
-  m_mapHeight: 50
+  m_mapWidth: 20
+  m_mapHeight: 20
   m_outerWallWidth: 14
   m_maxRoomAmount: 100
   m_maxShortcutAmount: 10
-  m_maxRoomSize: 80
+  m_maxRoomSize: 30
   m_minRoomLength: 6
   m_maxPlaceAttempts: 10
   m_maxBuildAttempts: 250
