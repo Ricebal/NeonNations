@@ -40,7 +40,7 @@ public class NetworkManagerCustom : NetworkManager
         if (!m_isConnecting)
         {
             string ipAddress = GameObject.Find("InputFieldIPAddress").transform.Find("Text").GetComponent<Text>().text;
-            if (ipAddress.Length == 0)
+            if (string.IsNullOrWhiteSpace(ipAddress))
             {
                 m_connectionText = "IP address must not be empty";
                 return;
