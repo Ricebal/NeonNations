@@ -147,7 +147,6 @@ public class MapGenerator
 
         // Add shortcuts
         AddShortcuts();
-        DebugMap(m_tileMap);
 
         // Set seed to random again
         UnityEngine.Random.InitState((int)DateTime.Now.Ticks);
