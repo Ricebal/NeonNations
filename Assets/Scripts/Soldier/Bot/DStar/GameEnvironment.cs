@@ -7,14 +7,14 @@ using UnityEngine;
 
 namespace Assets.Scripts.Soldier.Bot.DStar
 {
-    public class GameEnvironment : MonoBehaviour
+    public class GameEnvironment : ScriptableObject
     {
         private GameObject m_bot;
-        private static int[][] m_map;
+        private static int[][] s_map;
 
         public GameEnvironment(GameObject bot)
         {
-            m_map = GameObject.Find("GameManager").GetComponent<BoardManager>().GetTileMap();
+            s_map = GameObject.Find("GameManager").GetComponent<BoardManager>().GetTileMap();
             m_bot = bot;
 
         }
@@ -26,17 +26,17 @@ namespace Assets.Scripts.Soldier.Bot.DStar
         /// <returns>int[][] Map</returns>
         public int[][] GetMap()
         {
-            return m_map;
+            return s_map;
         }
 
         public int GetNode(int x, int y)
         {
-            return m_map[x][y];
+            return s_map[x][y];
         }
 
         public static void UpdateNode(int x, int y, int newNode)
         {
-            m_map[x][y] = newNode;
+            s_map[x][y] = newNode;
         }
 
         // Return the obstacles the bot should be able to see
@@ -44,8 +44,6 @@ namespace Assets.Scripts.Soldier.Bot.DStar
         {
             // First get all coordinates that are illuminated
             LinkedList<Vector2Int> currentCoordinatesInSight = GetIlluminatedCoordinates();
-            // Than check the map-layout to see if the illuminated parts are walls or empty spaces
-            //FilterCoordinatesWithObstacle(ref currentCoordinatesInSight);
             // Return the result
             return currentCoordinatesInSight;
         }
@@ -60,13 +58,13 @@ namespace Assets.Scripts.Soldier.Bot.DStar
             foreach (Vector2Int coordinate in coordinates)
             {
                 // If the coordinates are outside the map they shouldn't be checked (to prevent out of index exception)
-                if (coordinate.x < 0 || coordinate.y < 0 || coordinate.x >= m_map.Length || coordinate.y >= m_map[0].Length)
+                if (coordinate.x < 0 || coordinate.y < 0 || coordinate.x >= s_map.Length || coordinate.y >= s_map[0].Length)
                 {
                     coordinatesToDelete.AddLast(coordinate);
                     continue;
                 }
                 // If the coordinates are inside the map, check if the coordinate contains an obstacle
-                if (m_map[coordinate.x][coordinate.y] == 0)
+                if (s_map[coordinate.x][coordinate.y] == 0)
                 {
                     coordinatesToDelete.AddLast(coordinate);
                 }
@@ -113,6 +111,12 @@ namespace Assets.Scripts.Soldier.Bot.DStar
                 {
                     int x = objectCoordinates.x + i;
                     int y = objectCoordinates.y + j;
+
+                    // Check if coordinate is inside the map
+                    if(x < 0 && x >= s_map.Length && y < 0 && y >= s_map[0].Length)
+                    {
+                        continue;
+                    }
                     // Check if coordinate is already added to the list
                     if (!coordinatesInRange.Any(coordinate => coordinate.x == x && coordinate.y == y))
                     {

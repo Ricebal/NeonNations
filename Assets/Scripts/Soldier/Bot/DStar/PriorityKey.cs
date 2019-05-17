@@ -16,10 +16,22 @@ namespace Assets.Scripts.Soldier.Bot.DStar
 
         public int CompareTo(PriorityKey that)
         {
-            if (Key1 < that.Key1) return -1;
-            else if (Key1 > that.Key1) return 1;
-            if (Key2 > that.Key2) return 1;
-            else if (Key2 < that.Key2) return -1;
+            if (Key1 < that.Key1)
+            {
+                return -1;
+            }
+            else if (Key1 > that.Key1)
+            {
+                return 1;
+            }
+            if (Key2 > that.Key2)
+            {
+                return 1;
+            }
+            else if (Key2 < that.Key2)
+            {
+                return -1;
+            }
             return 0;
         }
     }

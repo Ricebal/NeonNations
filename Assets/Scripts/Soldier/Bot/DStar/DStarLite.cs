@@ -12,8 +12,8 @@ namespace Assets.Scripts.Soldier.Bot.DStar
         public NavigationGraph Map;
 
         private GameEnvironment m_environment;
-        private Heap m_heap;
-        private double m_travelledDistance;
+        private MinHeap m_heap;
+        private int m_travelledDistance;
         private List<Vector2Int> m_previousCoordinatesToTraverse = new List<Vector2Int>();
         private Vector2Int m_goal;
         private Vector2Int m_previousGoal;
@@ -21,13 +21,14 @@ namespace Assets.Scripts.Soldier.Bot.DStar
         private Vector2Int m_start;
         private Vector2Int m_previousStart;
 
-        public DStarLite(GameEnvironment environment)
+        public DStarLite(GameEnvironment environment, bool knowMap)
         {
             m_environment = environment;
+            GenerateNodeMap(knowMap);
         }
 
         /// <summary>
-        /// Set's up the Algorithm.
+        /// Sets up the Algorithm.
         /// </summary>
         /// <param name="startX">The x of the start-position</param>
         /// <param name="startY">The y of the start-position</param>
@@ -43,7 +44,7 @@ namespace Assets.Scripts.Soldier.Bot.DStar
         private void Reset(int startX, int startY, int goalX, int goalY)
         {
             //Creates an heap the size of the map
-            m_heap = new Heap(Map.GetSize());
+            m_heap = new MinHeap(Map.GetSize());
             Map.Reset();
             m_goal = new Vector2Int(goalX, goalY);
             m_start = new Vector2Int(startX, startY);
@@ -57,16 +58,16 @@ namespace Assets.Scripts.Soldier.Bot.DStar
         /// Needs to be called before the RunDStarLite-function.
         /// Generates an empty map for the bot
         /// </summary>
-        /// <param name="width">The amount of columns of the map</param>
-        /// <param name="height">The amount of rows of the map</param>
-        /// <param name="env">Any class that extends IDStarLiteEnvironment. Used for moving the entity and getting the surroundings</param>
         /// <param name="knowMap">Set to true if the algorithm should know the full map</param>
-        public void GenerateNodeMap(bool knowMap)
+        private void GenerateNodeMap(bool knowMap)
         {
             int[][] completeMap = m_environment.GetMap();
             Map = new NavigationGraph(completeMap, knowMap);
         }
 
+        /// <summary>
+        /// Returns if there are changes to the map or not.
+        /// </summary>
         private bool CheckForMapChanges()
         {
             // Check if bot sees new obstacles
@@ -101,15 +102,16 @@ namespace Assets.Scripts.Soldier.Bot.DStar
         public List<Vector2Int> CoordinatesToTraverse()
         {
             List<Vector2Int> CoordinatesToTraverse = new List<Vector2Int>();
-            // Check if the map has changed
-            bool mapHasChanged = CheckForMapChanges();
+
+            // If the map has changed or not
+            bool mapChanged = CheckForMapChanges();
 
             Vector2Int previousFirstCoordinates = m_previousCoordinatesToTraverse.FirstOrDefault();
-            // If nothing has changed AND 
+            // If the map has not been changed AND 
             // The bot is still in the same tile AND
-            // The goal hasn't been reached THAN
+            // The goal hasn't been reached THEN
             // The shortest path does not need to be recalculated.
-            if (!mapHasChanged && m_start == previousFirstCoordinates && m_goal == m_previousGoal)
+            if (!mapChanged && m_start == previousFirstCoordinates && m_goal == m_previousGoal)
             {
                 return m_previousCoordinatesToTraverse;
             }
@@ -117,7 +119,7 @@ namespace Assets.Scripts.Soldier.Bot.DStar
             Vector2Int coordinateToTraverse = new Vector2Int();
             do
             {
-                coordinateToTraverse = NextMove(mapHasChanged);
+                coordinateToTraverse = NextMove(mapChanged);
                 CoordinatesToTraverse.Add(coordinateToTraverse);
             } while (!coordinateToTraverse.Equals(m_goal));
             m_previousCoordinatesToTraverse = CoordinatesToTraverse;
@@ -146,7 +148,7 @@ namespace Assets.Scripts.Soldier.Bot.DStar
         }
 
         /// <summary>
-        /// Set's the right position of the bot for m_start.
+        /// Sets the right position of the bot for m_start.
         /// </summary>
         /// <param name="botCoordinates">The current coordinates of the bot</param>
         public void SyncBotPosition(Vector2Int botCoordinates)
@@ -171,10 +173,10 @@ namespace Assets.Scripts.Soldier.Bot.DStar
         /// <summary>
         /// Calculates the Heuristics for traveling between two points
         /// </summary>
-        private double Heuristic(Vector2Int pointA, Vector2Int pointB)
+        private int Heuristic(Vector2Int pointA, Vector2Int pointB)
         {
-            float xDistance = Math.Abs(pointA.x - pointB.x);
-            float yDistance = Math.Abs(pointA.y - pointB.y);
+            int xDistance = Math.Abs(pointA.x - pointB.x);
+            int yDistance = Math.Abs(pointA.y - pointB.y);
             return xDistance + yDistance;
         }
 
@@ -211,7 +213,7 @@ namespace Assets.Scripts.Soldier.Bot.DStar
             foreach (Vector2Int surroundingCoordinates in Map.GetSurroundingOpenSpaces(coordinates))
             {
                 Node node = Map.GetNode(surroundingCoordinates);
-                double val = 1 + node.CostFromStartingPoint;
+                double val = 1 + node.CostFromStartingPoint;    // Adds 1 to the CostFromStartingPoint since it is one more move to reach this point from a point next to it.
                 if (val <= min)
                 {
                     min = val;
@@ -233,7 +235,7 @@ namespace Assets.Scripts.Soldier.Bot.DStar
             foreach (Vector2Int surroundingCoordinates in Map.GetSurroundingOpenSpaces(coordinates))
             {
                 Node node = Map.GetNode(surroundingCoordinates);
-                double val = 1 + node.CostFromStartingPoint; // Add's 1 to the CostFromStartingPoint since it's one more move
+                double val = 1 + node.CostFromStartingPoint; // Adds 1 to the CostFromStartingPoint since it is one more move to reach this point from a point next to it.
                 if (val < min) // If the value is smaller than the minimum value found
                 {
                     min = val;
@@ -245,10 +247,14 @@ namespace Assets.Scripts.Soldier.Bot.DStar
         private void ComputeShortestPath()
         {
             Node startNode = Map.GetNode(m_start);
+            if (startNode.IsObstacle())
+            {
+                return;
+            }
             // While the top state of the Heap has a higher priority than the start state OR start.rhs is not the cost of start
             while (m_heap.TopKey().CompareTo(CalculatePriority(m_start)) < 0 || startNode.Rhs != startNode.CostFromStartingPoint)
             {
-                // Gets the priority key op the top
+                // Gets the priority key from the top
                 PriorityKey oldKey = m_heap.TopKey();
                 // Gets the node of the top
                 Vector2Int coordinates = m_heap.Pop();
@@ -258,7 +264,7 @@ namespace Assets.Scripts.Soldier.Bot.DStar
                 }
                 Node node = Map.GetNode(coordinates);
 
-                // Gets new key based on current position that's being calculated
+                // Gets new key based on current position that is being calculated
                 PriorityKey newKey = CalculatePriority(coordinates);
                 if (oldKey.CompareTo(newKey) < 0) // The node has a lower priority than before
                 {
@@ -272,7 +278,7 @@ namespace Assets.Scripts.Soldier.Bot.DStar
                         UpdateVertex(surroundingCoordinates);
                     }
                 }
-                else  // Re-calculate the Rhs-value of the current node and it's surrounding nodes
+                else  // Re-calculate the Rhs-value of the current node and its surrounding nodes
                 {
                     node.CostFromStartingPoint = double.PositiveInfinity;
                     UpdateVertex(coordinates);

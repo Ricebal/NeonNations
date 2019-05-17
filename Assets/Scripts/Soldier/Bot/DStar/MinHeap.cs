@@ -5,13 +5,13 @@ using UnityEngine;
 
 namespace Assets.Scripts.Soldier.Bot.DStar
 {
-    public class Heap // minheap
+    public class MinHeap
     {
         private int m_count;
         private HeapElement[] m_heap;
         private Dictionary<Vector2Int, int> m_hash;
 
-        public Heap(int cap)
+        public MinHeap(int cap)
         {
             m_count = 0;
             m_heap = new HeapElement[cap];
@@ -23,7 +23,10 @@ namespace Assets.Scripts.Soldier.Bot.DStar
         /// </summary>
         public PriorityKey TopKey()
         {
-            if (m_count == 0) return new PriorityKey(double.PositiveInfinity, double.PositiveInfinity);
+            if (m_count == 0)
+            {
+                return new PriorityKey(double.PositiveInfinity, double.PositiveInfinity);
+            }
             return m_heap[1].Key;
         }
 
@@ -37,13 +40,13 @@ namespace Assets.Scripts.Soldier.Bot.DStar
             {
                 return new Vector2Int();
             }
-            Vector2Int s = m_heap[1].Coordinates;
+            Vector2Int coordinates = m_heap[1].Coordinates;
             m_heap[1] = m_heap[m_count];
             m_hash[m_heap[1].Coordinates] = 1;
-            m_hash[s] = 0;
+            m_hash[coordinates] = 0;
             m_count--;
             moveDown(1);
-            return s;
+            return coordinates;
         }
 
         /// <summary>
@@ -69,7 +72,10 @@ namespace Assets.Scripts.Soldier.Bot.DStar
         public void Remove(Vector2Int coordinates)
         {
             int i = m_hash[coordinates];
-            if (i == 0) return;
+            if (i == 0)
+            {
+                return;
+            }
             m_hash[coordinates] = 0;
             m_heap[i] = m_heap[m_count];
             m_hash[m_heap[i].Coordinates] = i;
@@ -94,7 +100,10 @@ namespace Assets.Scripts.Soldier.Bot.DStar
         private void moveDown(int i)
         {
             int childL = i * 2;
-            if (childL > m_count) return;
+            if (childL > m_count)
+            {
+                return;
+            }
             int childR = i * 2 + 1;
             int smallerChild;
             if (childR > m_count)
@@ -118,7 +127,10 @@ namespace Assets.Scripts.Soldier.Bot.DStar
 
         private void moveUp(int i)
         {
-            if (i == 1) return;
+            if (i == 1)
+            {
+                return;
+            }
             int parent = i / 2;
             if (m_heap[parent].Key.CompareTo(m_heap[i].Key) > 0)
             {

@@ -54,7 +54,13 @@ namespace Assets.Scripts.Soldier.Bot.DStar
         /// </summary>
         public Node GetNode(int x, int y)
         {
-            return Map[x][y];
+            // Out of bounce check
+            if(x >= 0 && x < Map.Length && y >= 0 && y < Map[0].Length)
+            {
+                return Map[x][y];
+            }
+            // return default
+            return new Node();
         }
 
         /// <summary>
@@ -76,6 +82,11 @@ namespace Assets.Scripts.Soldier.Bot.DStar
             int height = Map[0].Length;
             LinkedList<Vector2Int> openPositionsAroundEntity = new LinkedList<Vector2Int>();
             Node tempState;
+
+            // For all positions around the coordinates.
+            // -1, -1 - 0, -1 - 1, -1
+            // -1, 0  - 0, 0  - 1, 0
+            // -1, 1  - 0, 1  - 1, 1
             for (int i = -1; i < 2; i++)
             {
                 for (int j = -1; j < 2; j++)

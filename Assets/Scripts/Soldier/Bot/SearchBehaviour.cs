@@ -8,10 +8,8 @@ using System.Drawing;
 
 public class SearchBehaviour : MonoBehaviour
 {
-    public GameObject Bot;
-
-    private const float m_offsetForLineCalculation = .95f; // A little less than 1. This will prevent the bot from thinking it will collide with an obstacle directly next to it when moving parallel to ithat obstacle.
-    private Vector2Int GoalCoordinates = new Vector2Int();
+    private const float OFFSET_FOR_LINE_CALCULATION  = .95f; // A little less than 1. This will prevent the bot from thinking it will collide with an obstacle directly next to it when moving parallel to ithat obstacle.
+    private Vector2Int m_goalCoordinates = new Vector2Int();
     private GameEnvironment m_environment;
     private DStarLite m_dStarLite;
     private Bot m_bot;
@@ -19,20 +17,19 @@ public class SearchBehaviour : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        m_environment = new GameEnvironment(Bot);
+        m_environment = new GameEnvironment(gameObject);
         UnityEngine.Random.InitState((int)DateTime.Now.Ticks);
-        m_dStarLite = new DStarLite(m_environment);
-        m_dStarLite.GenerateNodeMap(false);
-        Vector2Int startCoordinates = m_environment.ConvertGameObjectToCoordinates(Bot.transform);
+        m_dStarLite = new DStarLite(m_environment, true);
+        Vector2Int startCoordinates = m_environment.ConvertGameObjectToCoordinates(gameObject.transform);
         GenerateNewDestination(startCoordinates.x, startCoordinates.y);
         m_bot = GetComponent<Bot>();
     }
     
     void FixedUpdate()
     {
-        Vector2Int currentCoordinates = m_environment.ConvertGameObjectToCoordinates(Bot.transform);
+        Vector2Int currentCoordinates = m_environment.ConvertGameObjectToCoordinates(gameObject.transform);
         // If the goal hasn't been reached
-        if (currentCoordinates.x != GoalCoordinates.x || currentCoordinates.y != GoalCoordinates.y)
+        if (currentCoordinates.x != m_goalCoordinates.x || currentCoordinates.y != m_goalCoordinates.y)
         {
             NextMove();
         }
@@ -47,11 +44,11 @@ public class SearchBehaviour : MonoBehaviour
     /// </summary>
     private void NextMove()
     {
-        List<Vector2Int> coordinatesToTraverse = new List<Vector2Int>();
-        Vector2Int botCoordinate = m_environment.ConvertGameObjectToCoordinates(Bot.transform);
-        coordinatesToTraverse.AddRange(m_dStarLite.CoordinatesToTraverse());
+        Vector2Int botCoordinate = m_environment.ConvertGameObjectToCoordinates(gameObject.transform);
+        List<Vector2Int> coordinatesToTraverse = m_dStarLite.CoordinatesToTraverse();
 
-        Vector2Int farthestReachableNode = PathSmoothing.FarthestCoordinateToReach(new PointF(Bot.transform.position.x, Bot.transform.position.z), coordinatesToTraverse, m_dStarLite.Map, m_offsetForLineCalculation);
+        Vector2Int farthestReachableNode = PathSmoothing.FarthestCoordinateToReach(new PointF(gameObject.transform.position.x, gameObject.transform.position.z), coordinatesToTraverse, m_dStarLite.Map, OFFSET_FOR_LINE_CALCULATION );
+        DebugMap(m_dStarLite.Map, farthestReachableNode, coordinatesToTraverse);
         MoveTo(farthestReachableNode);
         m_dStarLite.SyncBotPosition(botCoordinate);
     }
@@ -63,38 +60,27 @@ public class SearchBehaviour : MonoBehaviour
     /// <param name="currentY">The current y-position of the entity</param>
     private void GenerateNewDestination(int currentX, int currentY)
     {
-        bool found = false;
-        int[][] map = m_environment.GetMap();
-        int mapX = 0;
-        int mapY = 0;
-        while (!found)
-        {
-            mapX = UnityEngine.Random.Range(0, map.Length);
-            mapY = UnityEngine.Random.Range(0, map[0].Length);
-            if (map[mapX][mapY] == 0)
-            {
-                found = true;
-            }
-        }
-        GoalCoordinates.x = mapX;
-        GoalCoordinates.y = mapY;
-        m_dStarLite.RunDStarLite(currentX, currentY, GoalCoordinates.x, GoalCoordinates.y);
+        Vector2 newGoal = GameObject.Find("GameManager").GetComponent<BoardManager>().GetRandomFloorTile();
+        m_goalCoordinates.x = (int)newGoal.x;
+        m_goalCoordinates.y = (int)newGoal.y;
+        m_dStarLite.RunDStarLite(currentX, currentY, m_goalCoordinates.x, m_goalCoordinates.y);
     }
     
     // Moves the bot to the next Coordinate
     private void MoveTo(Vector2Int coordinates)
     {
-        float horizontal = coordinates.x - Bot.transform.position.x;
-        float vertical = coordinates.y - Bot.transform.position.z;
+        float horizontal = coordinates.x - gameObject.transform.position.x;
+        float vertical = coordinates.y - gameObject.transform.position.z;
 
         Vector2 heading = new Vector2(horizontal, vertical);
         heading.Normalize();
         m_bot.Move(heading.x, heading.y);
     }
 
+#if (UNITY_EDITOR)
     private void DebugMap(NavigationGraph map, Vector2Int nodeToReach, List<Vector2Int> coordinatesToTraverse)
     {
-        Vector2Int botCoordinates = m_environment.ConvertGameObjectToCoordinates(Bot.transform);
+        Vector2Int botCoordinates = m_environment.ConvertGameObjectToCoordinates(gameObject.transform);
         StringBuilder builder = new StringBuilder();
         builder.Append('\n');
         for (int y = map.Map[0].Length - 1; y >= 0; y--)
@@ -111,7 +97,7 @@ public class SearchBehaviour : MonoBehaviour
                     builder.Append("@");
                     continue;
                 }
-                if (x == GoalCoordinates.x && y == GoalCoordinates.y)
+                if (x == m_goalCoordinates.x && y == m_goalCoordinates.y)
                 {
                     builder.Append("X");
                     continue;
@@ -142,4 +128,5 @@ public class SearchBehaviour : MonoBehaviour
         string s = builder.ToString();
         Debug.Log(s);
     }
+#endif
 }
