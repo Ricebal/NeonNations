@@ -13,8 +13,8 @@ GameObject:
   - component: {fileID: 4331448404734817727}
   - component: {fileID: 4331448404734817723}
   - component: {fileID: 4331448404734817720}
-  - component: {fileID: 4331448404734817721}
   - component: {fileID: 4331448404734817726}
+  - component: {fileID: 1449756772834461147}
   - component: {fileID: 4331448404734817700}
   - component: {fileID: 4331448404734817724}
   m_Layer: 0
@@ -32,7 +32,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4331448404734817703}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.9198894, y: 1.1458646, z: 0.11778409}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -50,6 +50,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 964e321cfd277184fba4affa04ff21d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncInterval: 0.1
   Seed: 
   MapWidth: 50
   MapHeight: 50
@@ -60,6 +61,7 @@ MonoBehaviour:
   MaxPlaceAttempts: 10
   MaxBuildAttempts: 250
   MaxShortcutAttempts: 250
+  MaxWallAttempts: 500
   MinTunnelLength: 1
   MaxTunnelLength: 7
   TunnelWidth: 2
@@ -77,6 +79,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 262fd08e365fcbf47a888b69b8188b15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncInterval: 0.1
   m_mapPrefab: {fileID: 6182289135420230192, guid: 1e44135debb4a9a41a46d373ce5d9c91,
     type: 3}
   m_breakableWallPrefab: {fileID: 7737746882760392655, guid: d780423ce27d7d948bfe4bab56b66701,
@@ -106,40 +109,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cb5d8c00e723a44da5e49a1df25899d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncInterval: 0.1
   Bot: {fileID: 6654271199680664771, guid: e2a0c09fe58275743a21d2b5cd539eb5, type: 3}
---- !u!114 &4331448404734817721
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4331448404734817703}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 372142912, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_SceneId:
-    m_Value: 0
-  m_AssetId:
-    i0: 0
-    i1: 0
-    i2: 0
-    i3: 0
-    i4: 0
-    i5: 0
-    i6: 0
-    i7: 0
-    i8: 0
-    i9: 0
-    i10: 0
-    i11: 0
-    i12: 0
-    i13: 0
-    i14: 0
-    i15: 0
-  m_ServerOnly: 0
-  m_LocalPlayerAuthority: 0
 --- !u!23 &4331448404734817726
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -177,6 +148,22 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!114 &1449756772834461147
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4331448404734817703}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serverOnly: 0
+  localPlayerAuthority: 0
+  m_AssetId: 1c80e058baf483248ad0940525f87605
+  m_SceneId: 0
 --- !u!33 &4331448404734817700
 MeshFilter:
   m_ObjectHideFlags: 0

@@ -1,6 +1,5 @@
-﻿using System;
 using UnityEngine;
-using UnityEngine.Networking;
+using Mirror;
 
 public abstract class Soldier : NetworkBehaviour
 {
@@ -116,14 +115,25 @@ public abstract class Soldier : NetworkBehaviour
         RpcColor(obj, color);
     }
 
+    [ClientRpc]
+    protected void RpcTakeDamage(int damage)
+    {
+        m_stats.TakeDamage(damage);
+    }
+
     protected void OnTriggerEnter(Collider collider)
     {
+        if (!isServer)
+        {
+            return;
+        }
+
         if (collider.gameObject.tag == "Bullet")
         {
             Bullet bullet = collider.gameObject.GetComponent<Bullet>();
             if (bullet.GetShooterId() != transform.name && GameObject.Find(bullet.GetShooterId()).GetComponent<Soldier>().Team != this.Team)
             {
-                m_stats.TakeDamage(collider.gameObject.GetComponent<Bullet>().Damage);
+                RpcTakeDamage(collider.gameObject.GetComponent<Bullet>().Damage);
             }
         }
     }
