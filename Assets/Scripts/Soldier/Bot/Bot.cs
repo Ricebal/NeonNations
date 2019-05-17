@@ -12,10 +12,6 @@ public class Bot : Soldier
         }
 
         m_rigidbody = GetComponent<Rigidbody>();
-
-        // By default, everything is freezed to avoid weird collisions but the bot needs 
-        // to move using the rigidbody velocity so his position is only frozen on Y.
-        m_rigidbody.constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionY;
     }
 
     protected new void Update()
@@ -30,7 +26,7 @@ public class Bot : Soldier
         // if the bot is dead, set its velocity to 0
         if (m_isDead)
         {
-            m_rigidbody.velocity = new Vector3(0, 0, 0);
+            m_rigidbody.velocity = Vector3.zero;
         }
     }
 
