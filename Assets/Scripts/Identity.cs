@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using UnityEngine.Networking;
+using UnityEngine;
+using Mirror;
 
 [RequireComponent(typeof(NetworkIdentity))]
 public class Identity : NetworkBehaviour
@@ -10,13 +10,13 @@ public class Identity : NetworkBehaviour
     {
         if (transform.name != m_uniqueIdentity)
         {
-            NetworkInstanceId netId = GetComponent<NetworkIdentity>().netId;
+            uint netId = GetComponent<NetworkIdentity>().netId;
             m_uniqueIdentity = CreateUniqueIdentity(netId);
             transform.name = m_uniqueIdentity;
         }
     }
 
-    private string CreateUniqueIdentity(NetworkInstanceId netId)
+    private string CreateUniqueIdentity(uint netId)
     {
         string name = transform.name;
         if (name == "")
