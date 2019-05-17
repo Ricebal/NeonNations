@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using UnityEngine.Networking;
+using Mirror;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class NetworkManagerCustom : NetworkManager
@@ -7,9 +7,18 @@ public class NetworkManagerCustom : NetworkManager
     private bool m_isConnecting;
     private string m_connectionText;
 
-    void Start()
+    // Instantiate the NetworkManager when the game starts
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    private static void OnGameStart()
     {
-        connectionConfig.MaxConnectionAttempt = 2;
+        Object obj = Resources.Load("NetworkManager");
+        GameObject networkManager = Instantiate(obj) as GameObject;
+        // Rename NetworkManager(Clone) to NetworkManager
+        networkManager.name = obj.name;
+    }
+
+    public override void Start()
+    {
         m_isConnecting = false;
         m_connectionText = "";
     }
@@ -19,10 +28,8 @@ public class NetworkManagerCustom : NetworkManager
     {
         if (m_isConnecting)
         {
-            m_connectionText = "Disconnecting";
             StopClient();
         }
-        SetPort();
         StartHost();
     }
 
@@ -32,7 +39,7 @@ public class NetworkManagerCustom : NetworkManager
         if (!m_isConnecting)
         {
             string ipAddress = GameObject.Find("InputFieldIPAddress").transform.Find("Text").GetComponent<Text>().text;
-            if (ipAddress.Length == 0)
+            if (string.IsNullOrWhiteSpace(ipAddress))
             {
                 m_connectionText = "IP address must not be empty";
                 return;
@@ -42,47 +49,8 @@ public class NetworkManagerCustom : NetworkManager
             m_connectionText = "Connecting...";
 
             SetIPAddress(ipAddress);
-            SetPort();
             StartClient();
         }
-    }
-
-    public override void OnClientDisconnect(NetworkConnection conn)
-    {
-        StopClient();
-
-        // If the client is not properly disconnected...
-        if (conn.lastError != NetworkError.Ok)
-        {
-            // and if it is a timeout error, print "impossible to connect"
-            if (conn.lastError == NetworkError.Timeout)
-            {
-                m_connectionText = "Connection failed";
-            }
-            // otherwise print the error in the console
-            if (LogFilter.logError)
-            {
-                Debug.LogError("ClientDisconnected due to error: " + conn.lastError);
-            }
-        }
-
-        Debug.Log("Client disconnected from server: " + conn);
-        m_isConnecting = false;
-    }
-
-    public override void OnServerDisconnect(NetworkConnection conn)
-    {
-        // Remove disconnecting player from team
-        GameObject.Find("GameManager").GetComponent<GameManager>().RemovePlayer(conn.playerControllers[0].gameObject.GetComponent<Player>());
-        base.OnServerDisconnect(conn);
-    }
-
-    public override void OnServerAddPlayer(NetworkConnection conn, short playerControllerId)
-    {
-        // Instantiate new player and assign a team
-        GameObject player = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
-        NetworkServer.AddPlayerForConnection(conn, player, playerControllerId);
-        GameObject.Find("GameManager").GetComponent<GameManager>().AddPlayer(player.GetComponent<Player>());
     }
 
     public override void OnClientConnect(NetworkConnection conn)
@@ -92,16 +60,41 @@ public class NetworkManagerCustom : NetworkManager
         m_isConnecting = false;
     }
 
-    // Set the IP address of the network manager for the StartClient function
-    void SetIPAddress(string ipAddress)
+    public override void OnClientError(NetworkConnection conn, int errorCode)
     {
-        NetworkManager.singleton.networkAddress = ipAddress;
+        UnityEngine.Networking.NetworkError error = (UnityEngine.Networking.NetworkError)errorCode;
+        m_connectionText = "Connection failed due to error: " + error.ToString(); ;
+        m_isConnecting = false;
     }
 
-    // Set the port of the network manager for the StartClient function
-    void SetPort()
+    public override void OnStopClient()
     {
-        NetworkManager.singleton.networkPort = 7777;
+        if(m_isConnecting)
+        {
+            m_connectionText = "Connection timed out";
+            m_isConnecting = false;
+        }
+    }
+
+    public override void OnServerDisconnect(NetworkConnection conn)
+    {
+        // Remove disconnecting player from team
+        GameObject.Find("GameManager").GetComponent<GameManager>().RemovePlayer(conn.playerController.gameObject.GetComponent<Player>());
+        base.OnServerDisconnect(conn);
+    }
+
+    public override void OnServerAddPlayer(NetworkConnection conn, AddPlayerMessage extraMessage)
+    {
+        // Instantiate new player and assign a team
+        GameObject player = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
+        NetworkServer.AddPlayerForConnection(conn, player);
+        GameObject.Find("GameManager").GetComponent<GameManager>().AddPlayer(player.GetComponent<Player>());
+    }
+
+    // Set the IP address of the network manager for the StartClient function
+    private void SetIPAddress(string ipAddress)
+    {
+        NetworkManager.singleton.networkAddress = ipAddress;
     }
 
     public bool IsConnecting()
@@ -118,7 +111,7 @@ public class NetworkManagerCustom : NetworkManager
     {
         StopClient();
         StopHost();
-        m_isConnecting = false;
         m_connectionText = "";
+        m_isConnecting = false;
     }
 }
