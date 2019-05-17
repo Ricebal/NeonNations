@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using UnityEngine.Networking;
+using UnityEngine;
+using Mirror;
 
 public class PlayerController : NetworkBehaviour
 {
@@ -22,10 +22,6 @@ public class PlayerController : NetworkBehaviour
 
         Vector2 spawnPoint = GameObject.Find("GameManager").GetComponent<BoardManager>().GetRandomFloorTile();
         transform.position = new Vector3(spawnPoint.x, 0, spawnPoint.y);
-
-        // By default, everything is freezed to avoid weird player collisions but the local player needs 
-        // to move using the rigidbody velocity so his position is only frozen on Y.
-        m_rigidbody.constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionY;
     }
 
     void Update()

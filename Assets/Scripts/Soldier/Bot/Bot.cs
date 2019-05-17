@@ -26,7 +26,7 @@ public class Bot : Soldier
         // if the bot is dead, set its velocity to 0
         if (m_isDead)
         {
-            m_rigidbody.velocity = new Vector3(0, 0, 0);
+            m_rigidbody.velocity = Vector3.zero;
         }
     }
 
