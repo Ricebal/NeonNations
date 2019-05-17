@@ -135,16 +135,13 @@ public abstract class Soldier : NetworkBehaviour
     }
 
     [ClientRpc]
-    protected void RpcTakeDamage(int damage)
+    protected void RpcTakeDamage(int damage, string shooterId)
     {
         m_stats.TakeDamage(damage);
-    }
-
-    [ClientRpc]
-    protected void RpcAddKill(string playerId)
-    {
-        Soldier player = GameObject.Find(playerId).GetComponent<Soldier>();
-        player.PlayerScore.Kills++;
+        if (m_stats.GetCurrentHealth() <= 0)
+        {
+            GameObject.Find(shooterId).GetComponent<Soldier>().PlayerScore.Kills++;
+        }
     }
 
     protected void OnTriggerEnter(Collider collider)
@@ -160,11 +157,7 @@ public abstract class Soldier : NetworkBehaviour
             Soldier shooter = GameObject.Find(bullet.GetShooterId()).GetComponent<Soldier>();
             if (bullet.GetShooterId() != transform.name && shooter.Team != this.Team)
             {
-                RpcTakeDamage(bullet.Damage);
-                if (m_stats.GetCurrentHealth() <= 0)
-                {
-                    RpcAddKill(bullet.GetShooterId());
-                }
+                RpcTakeDamage(bullet.Damage, bullet.GetShooterId());
             }
         }
     }

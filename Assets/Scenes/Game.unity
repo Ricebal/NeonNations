@@ -2017,5 +2017,10 @@ PrefabInstance:
       propertyPath: m_AssetId.i15
       value: 150
       objectReference: {fileID: 0}
+    - target: {fileID: 1376595315368991327, guid: a35939fd3a9f2174b89bcd2d87ab3e96,
+        type: 3}
+      propertyPath: m_SceneId
+      value: 850273572
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a35939fd3a9f2174b89bcd2d87ab3e96, type: 3}
