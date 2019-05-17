@@ -45,6 +45,7 @@ public class TeamManager : MonoBehaviour
         // Set player colour for new player
         player.SetInitialColor(GetColor(team));
         player.GetComponent<Identity>().SetIdentity();
+        player.PlayerScore = new Score();
 
         if (OnPlayersChange != null)
         {

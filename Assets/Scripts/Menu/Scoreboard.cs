@@ -13,12 +13,14 @@ public class Scoreboard : NetworkBehaviour
     private GameObject m_scoreBoard;
     [SerializeField]
     private TeamManager m_teamManager;
+    private Dictionary<string, ScoreboardEntry> m_outdatedPlayers;
 
     private void Start()
     {
         if (isServer)
         {
             m_teamManager.OnPlayersChange += Refresh;
+            Refresh();
         }
     }
 
@@ -32,9 +34,13 @@ public class Scoreboard : NetworkBehaviour
         {
             m_scoreBoard.SetActive(false);
         }
+        if (m_outdatedPlayers != null)
+        {
+            RetryOutdatedPlayers();
+        }
     }
 
-    public void Refresh()
+    private void Refresh()
     {
         RpcEmpty();
         foreach (Soldier player in m_teamManager.GetAllPlayers())
@@ -49,6 +55,7 @@ public class Scoreboard : NetworkBehaviour
     [ClientRpc]
     private void RpcEmpty()
     {
+        Debug.Log("RpcEmpty");
         foreach (Transform child in m_playerList.transform)
         {
             Destroy(child.gameObject);
@@ -56,15 +63,44 @@ public class Scoreboard : NetworkBehaviour
     }
 
     [ClientRpc]
-    private void RpcAddPlayer(string shooterId)
+    private void RpcAddPlayer(string playerId)
     {
-        Debug.Log("Adding player: " + shooterId);
+        if (m_outdatedPlayers == null)
+        {
+            m_outdatedPlayers = new Dictionary<string, ScoreboardEntry>();
+        }
+        Debug.Log("RpcAddPlayer(" + playerId + ")");
         GameObject scorePanel = Instantiate(m_playerScorePrefab)as GameObject;
         scorePanel.transform.SetParent(m_playerList.transform, false);
-        GameObject shooter = GameObject.Find(shooterId);
-        if (shooter != null)
+
+        if (!AddPlayer(playerId, scorePanel.GetComponent<ScoreboardEntry>()))
         {
-            scorePanel.GetComponent<ScoreboardEntry>().SetScore(shooter.GetComponent<Soldier>().PlayerScore);
+            m_outdatedPlayers.Add(playerId, scorePanel.GetComponent<ScoreboardEntry>());
         }
+    }
+
+    private bool AddPlayer(string playerId, ScoreboardEntry scoreboardEntry)
+    {
+        GameObject shooter = GameObject.Find(playerId);
+        if (shooter == null)
+        {
+            return false;
+        }
+
+        scoreboardEntry.SetScore(shooter.GetComponent<Soldier>().PlayerScore);
+        return true;
+    }
+
+    private void RetryOutdatedPlayers()
+    {
+        List<string> updatedPlayers = new List<string>();
+        foreach (KeyValuePair<string, ScoreboardEntry> player in m_outdatedPlayers)
+        {
+            if (AddPlayer(player.Key, player.Value))
+            {
+                updatedPlayers.Add(player.Key);
+            }
+        }
+        updatedPlayers.ForEach(player => m_outdatedPlayers.Remove(player));
     }
 }
