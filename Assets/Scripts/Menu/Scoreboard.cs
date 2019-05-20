@@ -78,7 +78,7 @@ public class Scoreboard : NetworkBehaviour
         GameObject scorePanel = Instantiate(m_playerScorePrefab)as GameObject;
         scorePanel.transform.SetParent(m_playerList.transform, false);
 
-        // Try to add the player to the scsoreboard, if it fails add it to the list of outdated players
+        // Try to add the player to the scoreboard, if it fails add it to the list of outdated players
         if (!AddPlayer(playerId, scorePanel.GetComponent<ScoreboardEntry>()))
         {
             m_outdatedPlayers.Add(playerId, scorePanel.GetComponent<ScoreboardEntry>());
