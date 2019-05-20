@@ -13,7 +13,7 @@ public class Scoreboard : NetworkBehaviour
     private GameObject m_scoreBoard;
     [SerializeField]
     private TeamManager m_teamManager;
-    private Dictionary<string, ScoreboardEntry> m_outdatedPlayers;
+    private Dictionary<string, ScoreboardEntry> m_outdatedPlayers = new Dictionary<string, ScoreboardEntry>();
 
     private void Start()
     {
@@ -68,12 +68,6 @@ public class Scoreboard : NetworkBehaviour
     [ClientRpc]
     private void RpcAddPlayer(string playerId)
     {
-        // Make outdated player list if it doesn't exist yet
-        if (m_outdatedPlayers == null)
-        {
-            m_outdatedPlayers = new Dictionary<string, ScoreboardEntry>();
-        }
-
         // Make a new entry on the scoreboard
         GameObject scorePanel = Instantiate(m_playerScorePrefab)as GameObject;
         scorePanel.transform.SetParent(m_playerList.transform, false);
