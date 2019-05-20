@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Assets.Scripts.Soldier.Bot.DStar
 {
-    public class HeapElement
+    public struct HeapElement
     {
         public Vector2Int Coordinates;
         public PriorityKey Key;

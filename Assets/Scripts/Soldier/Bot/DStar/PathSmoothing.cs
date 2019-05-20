@@ -137,8 +137,8 @@ namespace Assets.Scripts.Soldier.Bot.DStar
             int stepX, stepY;
 
             // The difference between t_next_horizontal and t_next_vertical;
-            // if it’s positive, we know one is closer; if it’s negative,
-            // the other is closer. We add or subtract dt_dx and dt_dy as appropriate when we move.
+            // if it’s positive, the next vertical tile is closer; if it’s negative,
+            // the next horizontal tile is closer.
             // If error > 0; Then move to next vertical tile;
             // If error < 0; Then move to next horizontal tile;
             double error;

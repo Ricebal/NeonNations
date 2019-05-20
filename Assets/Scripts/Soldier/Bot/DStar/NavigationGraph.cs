@@ -54,7 +54,7 @@ namespace Assets.Scripts.Soldier.Bot.DStar
         /// </summary>
         public Node GetNode(int x, int y)
         {
-            // Out of bounce check
+            // Out of bounds check
             if(x >= 0 && x < Map.Length && y >= 0 && y < Map[0].Length)
             {
                 return Map[x][y];
@@ -102,7 +102,6 @@ namespace Assets.Scripts.Soldier.Bot.DStar
                         // If it's no obstacle
                         if (!tempState.IsObstacle())
                         {
-                            //openPositionsAroundEntity.AddFirst(tempState);
                             openPositionsAroundEntity.AddFirst(new Vector2Int(x + i, y + j));
                         }
                     }

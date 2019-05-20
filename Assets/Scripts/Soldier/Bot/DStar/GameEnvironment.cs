@@ -11,6 +11,10 @@ namespace Assets.Scripts.Soldier.Bot.DStar
     {
         private GameObject m_bot;
         private static int[][] s_map;
+        private const int SONAR_RANGE = 5;
+        private const int BULLET_RANGE = 1;
+        private const int IMPACT_RANGE = 2;
+
 
         public GameEnvironment(GameObject bot)
         {
@@ -37,15 +41,6 @@ namespace Assets.Scripts.Soldier.Bot.DStar
         public static void UpdateNode(int x, int y, int newNode)
         {
             s_map[x][y] = newNode;
-        }
-
-        // Return the obstacles the bot should be able to see
-        public LinkedList<Vector2Int> GetPositionsInVision()
-        {
-            // First get all coordinates that are illuminated
-            LinkedList<Vector2Int> currentCoordinatesInSight = GetIlluminatedCoordinates();
-            // Return the result
-            return currentCoordinatesInSight;
         }
 
         /// <summary>
@@ -79,7 +74,7 @@ namespace Assets.Scripts.Soldier.Bot.DStar
         /// <summary>
         /// Get all Coordinates that are illuminated by light on the bot's screen
         /// </summary>
-        private LinkedList<Vector2Int> GetIlluminatedCoordinates()
+        public LinkedList<Vector2Int> GetIlluminatedCoordinates()
         {
             LinkedList<Vector2Int> illuminatedCoordinates = GetCoordinatesAroundBot(); // Because of the spotlight around the bot
             GetCoordinatesAroundLights(ref illuminatedCoordinates); // All other lights visible on screen
@@ -141,16 +136,20 @@ namespace Assets.Scripts.Soldier.Bot.DStar
             {
                 int range = 0;
                 // The specific range of the lights.
+                // Because the sonar and the impact-effect use such a big range,
+                // the bot would see way to much with those values.
+                // This is why those values are fixed.
+                // Also, this way the prefabs could be changed without having any consequences for the bots.
                 switch (light.transform.parent.tag)
                 {
                     case "Sonar":
-                        range = 5;
+                        range = SONAR_RANGE;
                         break;
                     case "Bullet":
-                        range = 1;
+                        range = BULLET_RANGE;
                         break;
                     case "Impact":
-                        range = 2;
+                        range = IMPACT_RANGE;
                         break;
                     default:
                         range = (int)Math.Floor(light.range);
@@ -179,10 +178,12 @@ namespace Assets.Scripts.Soldier.Bot.DStar
         /// <param name="position">The position you want to check</param>
         private bool CheckIfPositionIsInsideView(Vector3 position)
         {
-            float viewLeft = m_bot.transform.position.x - 11;
-            float viewUp = m_bot.transform.position.z + 5;
-            float viewRight = viewLeft + 22;
-            float viewDown = viewUp - 10;
+            int screenWidth = 11;
+            int screenHeight = 5;
+            float viewLeft = m_bot.transform.position.x - screenWidth;
+            float viewUp = m_bot.transform.position.z + screenHeight;
+            float viewRight = viewLeft + screenWidth*2;
+            float viewDown = viewUp - screenHeight*2;
             float posX = position.x;
             float posZ = position.z;
             return (viewLeft <= posX && posX <= viewRight && viewDown <= posZ && posZ <= viewUp);
