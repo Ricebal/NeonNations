@@ -88,7 +88,13 @@ public class Scoreboard : NetworkBehaviour
             return false;
         }
 
-        scoreboardEntry.SetScore(player.GetComponent<Soldier>().PlayerScore);
+        Soldier playerScript = player.GetComponent<Soldier>();
+
+        scoreboardEntry.SetScore(playerScript.PlayerScore);
+        if (playerScript.isLocalPlayer)
+        {
+            scoreboardEntry.EnableOutline();
+        }
         return true;
     }
 

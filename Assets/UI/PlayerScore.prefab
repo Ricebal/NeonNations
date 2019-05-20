@@ -334,6 +334,7 @@ GameObject:
   - component: {fileID: 5792890443730796063}
   - component: {fileID: 79892402908393659}
   - component: {fileID: 459143519426575029}
+  - component: {fileID: 5071989448941147343}
   m_Layer: 5
   m_Name: PlayerScore
   m_TagString: Untagged
@@ -384,7 +385,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.392}
+  m_Color: {r: 1, g: 0, b: 0, a: 0.392}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -435,6 +436,7 @@ MonoBehaviour:
   m_name: {fileID: 5950138729186079414}
   m_kills: {fileID: 363167116775533465}
   m_deaths: {fileID: 1952919762941324894}
+  m_outline: {fileID: 5071989448941147343}
 --- !u!114 &459143519426575029
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -468,6 +470,21 @@ MonoBehaviour:
     i15: 0
   m_ServerOnly: 0
   m_LocalPlayerAuthority: 0
+--- !u!114 &5071989448941147343
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2113924865527100046}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -900027084, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectColor: {r: 1, g: 1, b: 1, a: 0.1254902}
+  m_EffectDistance: {x: 1, y: -1}
+  m_UseGraphicAlpha: 0
 --- !u!1 &7347343520087781287
 GameObject:
   m_ObjectHideFlags: 0

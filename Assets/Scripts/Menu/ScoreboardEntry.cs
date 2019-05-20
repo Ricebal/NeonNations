@@ -12,6 +12,8 @@ public class ScoreboardEntry : MonoBehaviour
     private TextMeshProUGUI m_kills;
     [SerializeField]
     private TextMeshProUGUI m_deaths;
+    [SerializeField]
+    private Outline m_outline;
     private Score m_score;
 
     public void SetScore(Score score)
@@ -19,6 +21,11 @@ public class ScoreboardEntry : MonoBehaviour
         m_score = score;
         score.OnScoreChange += Refresh;
         Refresh();
+    }
+
+    public void EnableOutline()
+    {
+        m_outline.enabled = true;
     }
 
     private void Refresh()
