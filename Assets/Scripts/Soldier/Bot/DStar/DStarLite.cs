@@ -42,6 +42,9 @@ namespace Assets.Scripts.Soldier.Bot.DStar
             ComputeShortestPath();
         }
 
+        /// <summary>
+        /// Resets the algorithm for a new location.
+        /// </summary>
         private void Reset(int startX, int startY, int goalX, int goalY)
         {
             //Creates an heap the size of the map
@@ -252,6 +255,9 @@ namespace Assets.Scripts.Soldier.Bot.DStar
             return min;
         }
 
+        /// <summary>
+        /// Computes the shortest path from the current location to the goal location.
+        /// </summary>
         private void ComputeShortestPath()
         {
             Node startNode = Map.GetNode(m_start);
