@@ -51,22 +51,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   syncInterval: 0.1
-  Seed: 
-  MapWidth: 50
-  MapHeight: 50
-  MaxRoomAmount: 100
-  MaxShortcutAmount: 10
-  MaxRoomSize: 80
-  MinRoomLength: 6
-  MaxPlaceAttempts: 10
-  MaxBuildAttempts: 250
-  MaxShortcutAttempts: 250
-  MaxWallAttempts: 500
-  MinTunnelLength: 1
-  MaxTunnelLength: 7
-  TunnelWidth: 2
-  BreakableTunnelChance: 20
-  OuterWallWidth: 14
+  m_seed: Chiel
+  m_mapWidth: 50
+  m_mapHeight: 50
+  m_maxRoomAmount: 100
+  m_maxShortcutAmount: 10
+  m_maxRoomSize: 80
+  m_minRoomLength: 6
+  m_maxPlaceAttempts: 10
+  m_maxBuildAttempts: 250
+  m_maxShortcutAttempts: 250
+  m_maxWallAttempts: 250
+  m_minTunnelLength: 1
+  m_maxTunnelLength: 7
+  m_tunnelWidth: 2
+  m_breakableTunnelChance: 20
+  m_outerWallWidth: 14
 --- !u!114 &4331448404734817727
 MonoBehaviour:
   m_ObjectHideFlags: 0
