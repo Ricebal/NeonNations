@@ -146,7 +146,7 @@ public class MapGenerator
         }
 
         // Add shortcuts
-        //AddShortcuts();
+        AddShortcuts();
 
         // Set seed to random again
         UnityEngine.Random.InitState((int)DateTime.Now.Ticks);
