@@ -36,8 +36,5 @@ public class GameManager : NetworkBehaviour
         player.Team = m_teamManager.AddPlayer(player);
     }
 
-    public void RemovePlayer(Soldier player)
-    {
-        m_teamManager.RemovePlayer(player);
-    }
+    public void RemovePlayer(Soldier player) => m_teamManager.RemovePlayer(player);
 }

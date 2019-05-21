@@ -1,12 +1,12 @@
-using UnityEngine;
 using Mirror;
+using UnityEngine;
 
 [RequireComponent(typeof(NetworkIdentity))]
 public class Identity : NetworkBehaviour
 {
     private string m_uniqueIdentity;
 
-    void Update()
+    public void SetIdentity()
     {
         if (transform.name != m_uniqueIdentity)
         {
@@ -14,6 +14,11 @@ public class Identity : NetworkBehaviour
             m_uniqueIdentity = CreateUniqueIdentity(netId);
             transform.name = m_uniqueIdentity;
         }
+    }
+
+    private void Update()
+    {
+        SetIdentity();
     }
 
     private string CreateUniqueIdentity(uint netId)
