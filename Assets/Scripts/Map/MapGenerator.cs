@@ -20,9 +20,9 @@ public class MapGenerator
     private int m_breakableTunnelChance;
 
 
-    private const int MAX_PLACE_ATTEMPTS = 20;
-    private const int MAX_BUILD_ATTEMPTS = 500;
-    private const int MAX_SHORTCUT_ATTEMPTS = 500;
+    private const int MAX_PLACE_ATTEMPTS = 10;
+    private const int MAX_BUILD_ATTEMPTS = 250;
+    private const int MAX_SHORTCUT_ATTEMPTS = 250;
     private const int MAX_WALL_ATTEMPTS = 250;
     private const int MINIMUM_ROOM_LENGTH = 1;
     private const int MINIMUM_MAP_SIDE = 20;
@@ -604,7 +604,7 @@ public class MapGenerator
         else if (m_mapWidth > MAXIMUM_MAP_SIDE)
         {
             Debug.LogWarning("Map width can't be bigger than " + MAXIMUM_MAP_SIDE + ", using " + MAXIMUM_MAP_SIDE);
-            m_mapWidth = MINIMUM_MAP_SIDE;
+            m_mapWidth = MAXIMUM_MAP_SIDE;
         }
 
         // check map height
@@ -616,7 +616,7 @@ public class MapGenerator
         else if (m_mapHeight > MAXIMUM_MAP_SIDE)
         {
             Debug.LogWarning("Map height can't be bigger than " + MAXIMUM_MAP_SIDE + ", using " + MAXIMUM_MAP_SIDE);
-            m_mapHeight = MINIMUM_MAP_SIDE;
+            m_mapHeight = MAXIMUM_MAP_SIDE;
         }
 
         // check minimum room length
@@ -639,7 +639,7 @@ public class MapGenerator
         }
         else if (m_maxRoomLength > Math.Max(m_mapWidth, m_mapHeight) - 2)
         {
-            Debug.LogWarning("Room size is too big for this map size, using maximum size possible");
+            Debug.LogWarning("Maximum room length is too big for this map size, using maximum length possible");
             m_maxRoomLength = Math.Max(m_mapWidth, m_mapHeight) - 2;
         }
 

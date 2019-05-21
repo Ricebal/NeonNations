@@ -97,7 +97,7 @@ public class BoardManager : NetworkBehaviour
     {
         GameObject floor = GameObject.CreatePrimitive(PrimitiveType.Plane);
 
-        floor.transform.position = new Vector3((float)m_tileMap.Length / 2, MAP_OFFSET, (float)m_tileMap[0].Length / 2);
+        floor.transform.position = new Vector3((float)m_tileMap.Length / 2 + MAP_OFFSET, MAP_OFFSET, (float)m_tileMap[0].Length / 2 + MAP_OFFSET);
         floor.transform.localScale = new Vector3((float)(m_tileMap.Length) / 10, 1, (float)(m_tileMap[0].Length) / 10);
         floor.transform.SetParent(m_map.transform);
     }
