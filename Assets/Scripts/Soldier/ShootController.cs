@@ -38,5 +38,6 @@ public class ShootController : NetworkBehaviour
         Bullet bullet = prefab.GetComponent<Bullet>();
         bullet.SetShooterId(shooterId);
         bullet.SetBulletColor();
+        bullet.GetComponent<Identity>().SetIdentity();
     }
 }
