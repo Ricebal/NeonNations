@@ -7,6 +7,7 @@ TagManager:
   - Sonar
   - Bullet
   - HUD
+  - Impact
   layers:
   - Default
   - TransparentFX

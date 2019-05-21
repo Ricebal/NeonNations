@@ -4816,7 +4816,7 @@ Light:
   m_RenderMode: 1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 823
+    m_Bits: 4294967295
   m_Lightmapping: 4
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}
@@ -4839,7 +4839,7 @@ GameObject:
   - component: {fileID: 7800752770005150913}
   m_Layer: 4
   m_Name: ImpactPrefab
-  m_TagString: Untagged
+  m_TagString: Impact
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
