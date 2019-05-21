@@ -10,9 +10,9 @@ public class TeamManager : MonoBehaviour
     public delegate void OnPlayersChangeDelegate();
     public event OnPlayersChangeDelegate OnPlayersChange;
 
-    public int AddPlayer(Soldier player)
+    public Team AddPlayer(Soldier player)
     {
-        int team = 0;
+        Team team = new Team(-1);
 
         // Add player to list of players
         m_players[m_playerCount] = player;
@@ -23,7 +23,7 @@ public class TeamManager : MonoBehaviour
             // Get the team with the least players
             Team toJoin = Teams.Aggregate((min, next) => min.PlayerCount < next.PlayerCount ? min : next);
             toJoin.PlayerCount++;
-            team = toJoin.Id;
+            team = toJoin;
         }
         else
         {
@@ -38,13 +38,13 @@ public class TeamManager : MonoBehaviour
         {
             if (m_players[i] != null)
             {
-                m_players[i].SetInitialColor(GetColor(m_players[i].Team));
+                m_players[i].SetInitialColor(GetColor(m_players[i].Team.Id));
                 m_players[i].SyncScore();
             }
         }
 
         // Set player colour for new player
-        player.SetInitialColor(GetColor(team));
+        player.SetInitialColor(GetColor(team.Id));
         player.GetComponent<Identity>().SetIdentity();
 
         if (OnPlayersChange != null)
@@ -58,7 +58,7 @@ public class TeamManager : MonoBehaviour
     public void RemovePlayer(Soldier player)
     {
         // Decrease the playercount in the team the player was in
-        Teams.Find(e => e.Id == player.Team).PlayerCount--;
+        Teams.Find(e => e == player.Team).PlayerCount--;
 
         // Decrease total player count
         m_playerCount--;
@@ -108,21 +108,11 @@ public class TeamManager : MonoBehaviour
     public void RemoveTeam(Team team)
     {
         Teams.Remove(team);
-        int i = 0;
         // Fix team id's so there are no gaps
-        Teams.ForEach(e =>
+        for(int i = 0; i < Teams.Count; i++)
         {
-            i++;
-            for (int j = 0; j < 8; j++)
-            {
-                // If there are players in a team fix played team id's
-                if (m_players[j] != null && m_players[j].Team == e.Id)
-                {
-                    m_players[j].Team = i;
-                }
-            }
-            e.Id = i;
-        });
+            Teams[i].Id = i;
+        }
     }
 
     public Soldier[] GetAllPlayers()

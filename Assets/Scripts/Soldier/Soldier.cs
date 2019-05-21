@@ -4,7 +4,7 @@ using UnityEngine;
 public abstract class Soldier : NetworkBehaviour
 {
     [SyncVar]
-    public int Team;
+    public Team Team;
     [SyncVar]
     public Color InitialColor;
     [SyncVar]
@@ -68,6 +68,7 @@ public abstract class Soldier : NetworkBehaviour
         m_sphereCollider.enabled = false;
         m_deathTime = Time.time;
         PlayerScore.Deaths++;
+        Team.Score.Deaths++;
 
         DeathExplosion deathExplosion = GetComponentInChildren<DeathExplosion>();
         if (deathExplosion != null)
@@ -148,7 +149,9 @@ public abstract class Soldier : NetworkBehaviour
     [ClientRpc]
     protected void RpcAddKill(string playerId)
     {
-        GameObject.Find(playerId).GetComponent<Soldier>().PlayerScore.Kills++;
+        Soldier otherSoldier = GameObject.Find(playerId).GetComponent<Soldier>();
+        otherSoldier.PlayerScore.Kills++;
+        otherSoldier.Team.Score.Kills++;
     }
 
     protected void OnTriggerEnter(Collider collider)
