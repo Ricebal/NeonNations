@@ -615,12 +615,12 @@ public class MapGenerator
         }
         else if (m_mapWidth < Math.Sqrt(m_maxRoomSize) / 2 || m_mapHeight < Math.Sqrt(m_maxRoomSize) / 2)
         {
-            Debug.LogError("Room size is too large for this map size, using maximum size possible");
+            Debug.LogError("Room size is too big for this map size, using maximum size possible");
             m_maxRoomSize = m_mapWidth / 2 * m_mapHeight / 2;
         }
         if (m_maxRoomSize < Math.Pow(m_minRoomLength, 2))
         {
-            Debug.LogError("Minimum room length is too big for this max room size, using maximum size possible");
+            Debug.LogError("Minimum room length is too high for this max room size, using maximum size possible");
             m_minRoomLength = (int)Math.Sqrt(m_maxRoomSize);
         }
         if (m_minTunnelLength < 1)
@@ -630,7 +630,7 @@ public class MapGenerator
         }
         if (m_minTunnelLength > m_maxTunnelLength)
         {
-            Debug.LogError("Maximum tunnel length can't be smaller than minimum tunnel length, using minimum length as maximum");
+            Debug.LogError("Maximum tunnel length can't be lower than minimum tunnel length, using minimum length as maximum");
             m_maxTunnelLength = m_minTunnelLength;
         }
         if (m_tunnelWidth < 1)
@@ -640,7 +640,7 @@ public class MapGenerator
         }
         else if (m_tunnelWidth > m_minRoomLength)
         {
-            Debug.LogError("Tunnel width can't be bigger than minimum room length, using maximum");
+            Debug.LogError("Tunnel width can't be higher than minimum room length, using maximum");
             m_tunnelWidth = m_minRoomLength;
         }
 

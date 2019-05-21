@@ -5,22 +5,22 @@ using Mirror;
 
 public class GameManager : NetworkBehaviour
 {
-    [SyncVar] public string Seed = "";
-    [SyncVar] public int MapWidth = 50;
-    [SyncVar] public int MapHeight = 50;
-    [SyncVar] public int MaxRoomAmount = 100;
-    [SyncVar] public int MaxShortcutAmount = 10;
-    [SyncVar] public int MaxRoomSize = 80;
-    [SyncVar] public int MinRoomLength = 6;
-    [SyncVar] public int MaxPlaceAttempts = 10;
-    [SyncVar] public int MaxBuildAttempts = 250;
-    [SyncVar] public int MaxShortcutAttempts = 250;
-    [SyncVar] public int MaxWallAttempts = 500;
-    [SyncVar] public int MinTunnelLength = 1;
-    [SyncVar] public int MaxTunnelLength = 7;
-    [SyncVar] public int TunnelWidth = 2;
-    [SyncVar] public int BreakableTunnelChance = 20;
-    [SyncVar] public int OuterWallWidth = 14;
+    [SyncVar][SerializeField] private string Seed = "";
+    [SyncVar][SerializeField] private int m_mapWidth = 50;
+    [SyncVar][SerializeField] private int m_mapHeight = 50;
+    [SyncVar][SerializeField] private int m_maxRoomAmount = 100;
+    [SyncVar][SerializeField] private int m_maxShortcutAmount = 10;
+    [SyncVar][SerializeField] private int m_maxRoomSize = 80;
+    [SyncVar][SerializeField] private int m_minRoomLength = 6;
+    [SyncVar][SerializeField] private int m_maxPlaceAttempts = 10;
+    [SyncVar][SerializeField] private int m_maxBuildAttempts = 250;
+    [SyncVar][SerializeField] private int m_maxShortcutAttempts = 250;
+    [SyncVar][SerializeField] private int m_maxWallAttempts = 500;
+    [SyncVar][SerializeField] private int m_minTunnelLength = 1;
+    [SyncVar][SerializeField] private int m_maxTunnelLength = 7;
+    [SyncVar][SerializeField] private int m_tunnelWidth = 2;
+    [SyncVar][SerializeField] private int m_breakableTunnelChance = 20;
+    [SyncVar][SerializeField] private int m_outerWallWidth = 14;
 
     private BoardManager m_boardManager;
     private BotManager m_botManager;
@@ -51,9 +51,9 @@ public class GameManager : NetworkBehaviour
         TextMeshProUGUI text = hud.GetComponent<TextMeshProUGUI>();
         text.text = Seed;
 
-        MapGenerator mapGenerator = new MapGenerator(MapWidth, MapHeight, MaxRoomAmount, MaxShortcutAmount, MaxRoomSize, MinRoomLength, 
-            MaxPlaceAttempts, MaxBuildAttempts, MaxShortcutAttempts, MaxWallAttempts, MinTunnelLength, MaxTunnelLength, TunnelWidth, BreakableTunnelChance);
-        m_boardManager.SetupScene(mapGenerator.GenerateRandomMap(Seed), OuterWallWidth);
+        MapGenerator mapGenerator = new MapGenerator(m_mapWidth, m_mapHeight, m_maxRoomAmount, m_maxShortcutAmount, m_maxRoomSize, m_minRoomLength,
+            m_maxPlaceAttempts, m_maxBuildAttempts, m_maxShortcutAttempts, m_maxWallAttempts, m_minTunnelLength, m_maxTunnelLength, m_tunnelWidth, m_breakableTunnelChance);
+        m_boardManager.SetupScene(mapGenerator.GenerateRandomMap(Seed), m_outerWallWidth);
         m_botManager.SetupBots();
     }
 
