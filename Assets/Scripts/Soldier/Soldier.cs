@@ -125,16 +125,15 @@ public abstract class Soldier : NetworkBehaviour
         RpcColor(obj, color);
     }
 
-    [Command]
-    protected void CmdTakeDamage(int damage, string playerId)
+    protected void TakeDamage(int damage, string playerId)
     {
         RpcTakeDamage(damage);
         if (m_stats.GetCurrentHealth() <= 0)
         {
-            RpcAddKill(playerId);
             // If the Soldier is not yet dead, the Soldier will die
             if (!m_isDead)
             {
+                RpcAddKill(playerId);
                 RpcDead();
             }
         }
@@ -165,7 +164,7 @@ public abstract class Soldier : NetworkBehaviour
             Soldier shooter = GameObject.Find(bullet.GetShooterId()).GetComponent<Soldier>();
             if (bullet.GetShooterId() != transform.name && shooter.Team != this.Team)
             {
-                CmdTakeDamage(bullet.Damage, bullet.GetShooterId());
+                TakeDamage(bullet.Damage, bullet.GetShooterId());
             }
         }
     }

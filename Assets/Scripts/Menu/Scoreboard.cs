@@ -22,6 +22,8 @@ public class Scoreboard : NetworkBehaviour
             m_teamManager.OnPlayersChange += Refresh;
             Refresh();
         }
+
+        GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
     }
 
     private void Update()
