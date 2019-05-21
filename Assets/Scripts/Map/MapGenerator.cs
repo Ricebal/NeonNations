@@ -14,15 +14,16 @@ public class MapGenerator
     private int m_maxShortcutAmount;
     private int m_maxRoomSize;
     private int m_minRoomLength;
-    private int m_maxPlaceAttempts;
-    private int m_maxBuildAttempts;
-    private int m_maxShortcutAttempts;
-    private int m_maxWallAttempts;
     private int m_minTunnelLength;
     private int m_maxTunnelLength;
     private int m_tunnelWidth;
     private int m_breakableTunnelChance;
 
+
+    private const int MAX_PLACE_ATTEMPTS = 10;
+    private const int MAX_BUILD_ATTEMPTS = 250;
+    private const int MAX_SHORTCUT_ATTEMPTS = 250;
+    private const int MAX_WALL_ATTEMPTS = 250;
     private const int MINIMUM_ROOM_SIZE = 9;
     private const int MINIMUM_MAP_SIDE = 20;
     private const int MAXIMUM_MAP_SIDE = 400;
@@ -32,8 +33,8 @@ public class MapGenerator
     // --------------------------------------------------------------------------------------------
     // Generate maps
     // --------------------------------------------------------------------------------------------
-    public MapGenerator(int mapWidth, int mapHeight, int maxRoomAmount, int maxShortcutAmount, int maxRoomSize, int minRoomLength, int maxPlaceAttempts, 
-        int maxBuildAttempts, int maxShortcutAttempts, int maxWallAttempts, int minTunnelLength, int maxTunnelLength, int tunnelWidth, int breakableTunnelChance)
+    public MapGenerator(int mapWidth, int mapHeight, int maxRoomAmount, int maxShortcutAmount, int maxRoomSize, 
+        int minRoomLength, int minTunnelLength, int maxTunnelLength, int tunnelWidth, int breakableTunnelChance)
     {
         m_mapWidth = mapWidth;
         m_mapHeight = mapHeight;
@@ -41,10 +42,6 @@ public class MapGenerator
         m_maxShortcutAmount = maxShortcutAmount;
         m_maxRoomSize = maxRoomSize;
         m_minRoomLength = minRoomLength;
-        m_maxPlaceAttempts = maxPlaceAttempts;
-        m_maxBuildAttempts = maxBuildAttempts;
-        m_maxShortcutAttempts = maxShortcutAttempts;
-        m_maxWallAttempts = maxWallAttempts;
         m_minTunnelLength = minTunnelLength;
         m_maxTunnelLength = maxTunnelLength;
         m_tunnelWidth = tunnelWidth;
@@ -135,7 +132,7 @@ public class MapGenerator
 
         int currentRoomAmount = 1;
         int currentBuildAttempt = 0;
-        while (currentBuildAttempt < m_maxBuildAttempts && currentRoomAmount < m_maxRoomAmount)
+        while (currentBuildAttempt < MAX_BUILD_ATTEMPTS && currentRoomAmount < m_maxRoomAmount)
         {
             // Generate a room
             room = GenerateRandomRoom();
@@ -217,7 +214,7 @@ public class MapGenerator
     /// <returns>True if successful</returns>
     private bool PlaceRoom(Room room)
     {
-        for (int i = 1; i <= m_maxPlaceAttempts; i++)
+        for (int i = 1; i <= MAX_PLACE_ATTEMPTS; i++)
         {
             if (TryPlacement(room))
             {
@@ -349,7 +346,7 @@ public class MapGenerator
     private Vector2Int GetRandomWallTile(Vector2Int direction)
     {
         int tryCount = 0;
-        while (tryCount < m_maxWallAttempts)
+        while (tryCount < MAX_WALL_ATTEMPTS)
         {
             // get a random tile in the map
             Vector2Int randomTile = new Vector2Int(UnityEngine.Random.Range(1, m_mapWidth - 2), UnityEngine.Random.Range(1, m_mapHeight - 2));
@@ -497,7 +494,7 @@ public class MapGenerator
     {
         int currentShortcutAttempt = 0;
         int currentShortcutAmount = 0;
-        while (currentShortcutAttempt < m_maxShortcutAttempts && currentShortcutAmount < m_maxShortcutAmount)
+        while (currentShortcutAttempt < MAX_SHORTCUT_ATTEMPTS && currentShortcutAmount < m_maxShortcutAmount)
         {
             // get random direction to create a shortcut
             Vector2Int direction = GenerateRandomDirection();
