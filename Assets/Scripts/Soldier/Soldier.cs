@@ -41,20 +41,11 @@ public abstract class Soldier : NetworkBehaviour
 
         if (isServer)
         {
-            // If the Soldier's health is below or equal to 0
-            if (m_stats.GetCurrentHealth() <= 0)
+            // If the soldier is able to respawn
+            if (m_isDead && Time.time - m_deathTime >= RespawnTime)
             {
-                // If the Soldier is not yet dead, the Soldier will die
-                if (!m_isDead)
-                {
-                    RpcDead();
-                }
-                // If the Soldier is dead, but is able to respawn
-                else if (Time.time - m_deathTime >= RespawnTime)
-                {
-                    Vector2 spawnPoint = GameObject.Find("GameManager").GetComponent<BoardManager>().GetRandomFloorTile();
-                    RpcRespawn(spawnPoint);
-                }
+                Vector2 spawnPoint = GameObject.Find("GameManager").GetComponent<BoardManager>().GetRandomFloorTile();
+                RpcRespawn(spawnPoint);
             }
         }
     }
@@ -134,14 +125,31 @@ public abstract class Soldier : NetworkBehaviour
         RpcColor(obj, color);
     }
 
-    [ClientRpc]
-    protected void RpcTakeDamage(int damage, string shooterId)
+    [Command]
+    protected void CmdTakeDamage(int damage, string playerId)
     {
-        m_stats.TakeDamage(damage);
+        RpcTakeDamage(damage);
         if (m_stats.GetCurrentHealth() <= 0)
         {
-            GameObject.Find(shooterId).GetComponent<Soldier>().PlayerScore.Kills++;
+            RpcAddKill(playerId);
+            // If the Soldier is not yet dead, the Soldier will die
+            if (!m_isDead)
+            {
+                RpcDead();
+            }
         }
+    }
+
+    [ClientRpc]
+    protected void RpcTakeDamage(int damage)
+    {
+        m_stats.TakeDamage(damage);
+    }
+
+    [ClientRpc]
+    protected void RpcAddKill(string playerId)
+    {
+        GameObject.Find(playerId).GetComponent<Soldier>().PlayerScore.Kills++;
     }
 
     protected void OnTriggerEnter(Collider collider)
@@ -157,7 +165,7 @@ public abstract class Soldier : NetworkBehaviour
             Soldier shooter = GameObject.Find(bullet.GetShooterId()).GetComponent<Soldier>();
             if (bullet.GetShooterId() != transform.name && shooter.Team != this.Team)
             {
-                RpcTakeDamage(bullet.Damage, bullet.GetShooterId());
+                CmdTakeDamage(bullet.Damage, bullet.GetShooterId());
             }
         }
     }
