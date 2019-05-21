@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using UnityEngine;
-using Assets.Scripts.Soldier.Bot.DStar;
-using System.Text;
 using System.Drawing;
+using System.Text;
+using Assets.Scripts.Soldier.Bot.DStar;
+using UnityEngine;
 
 public class SearchBehaviour : MonoBehaviour
 {
-    private const float OFFSET_FOR_LINE_CALCULATION  = .95f; // A little less than 1. This will prevent the bot from thinking it will collide with an obstacle directly next to it when moving parallel to ithat obstacle.
+    private const float OFFSET_FOR_LINE_CALCULATION = .95f; // A little less than 1. This will prevent the bot from thinking it will collide with an obstacle directly next to it when moving parallel to ithat obstacle.
     private Vector2Int m_goalCoordinates = new Vector2Int();
     private Vector2Int m_previousFarthestNode = new Vector2Int();
     private GameEnvironment m_environment;
@@ -23,7 +23,7 @@ public class SearchBehaviour : MonoBehaviour
         GenerateNewDestination(startCoordinates.x, startCoordinates.y);
         m_bot = GetComponent<Bot>();
     }
-    
+
     void FixedUpdate()
     {
         Vector2Int currentCoordinates = m_environment.ConvertGameObjectToCoordinates(gameObject.transform);
@@ -52,7 +52,9 @@ public class SearchBehaviour : MonoBehaviour
             farthestReachableNode = PathSmoothing.FarthestCoordinateToReach(new PointF(gameObject.transform.position.x, gameObject.transform.position.z), coordinatesToTraverse, m_dStarLite.Map, OFFSET_FOR_LINE_CALCULATION);
         }
         m_previousFarthestNode = farthestReachableNode;
+#if(UNITY_EDITOR)
         DebugMap(m_dStarLite.Map, farthestReachableNode, coordinatesToTraverse);
+#endif
         MoveTo(farthestReachableNode);
         m_dStarLite.SyncBotPosition(botCoordinate);
     }
@@ -115,16 +117,16 @@ public class SearchBehaviour : MonoBehaviour
                     continue;
                 }
                 bool foundInNodes = false;
-                foreach(Vector2Int coordinates in coordinatesToTraverse)
+                foreach (Vector2Int coordinates in coordinatesToTraverse)
                 {
-                    if(x == coordinates.x && y == coordinates.y)
+                    if (x == coordinates.x && y == coordinates.y)
                     {
                         foundInNodes = true;
                         builder.Append("Q");
                         continue;
                     }
                 }
-                if(map.Map[x][y].Content == -1)
+                if (map.Map[x][y].Content == -1)
                 {
                     builder.Append("?");
                     continue;
