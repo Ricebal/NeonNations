@@ -24,6 +24,9 @@ public class BoardManager : NetworkBehaviour
     [SerializeField]
     private GameObject m_breakableWallPrefab;
 
+    // So that a position is in the middle of a tile
+    private const float MAP_OFFSET = -0.5f;
+    private const int vertexLimit = 30000;
     private const string MAP = "Map";
     private const string BREAKABLE_WALLS = "Breakable Walls";
     private const string BREAKABLE_WALL = "Breakable Wall";
@@ -35,8 +38,6 @@ public class BoardManager : NetworkBehaviour
     private GameObject m_breakableWalls;
     private List<GameObject> m_mapParts = new List<GameObject>();
 
-    // So that a position is in the middle of a tile
-    private const float MAP_OFFSET = -0.5f;
 
     // --------------------------------------------------------------------------------------------
     // Public functions
@@ -73,16 +74,13 @@ public class BoardManager : NetworkBehaviour
     /// <returns>Vector2Int containing the position of the floortile</returns>
     public Vector2Int GetRandomFloorTile()
     {
-        while (true)
+        Vector2Int randomTile;
+        do
         {
             // get a random tile in the map
-            Vector2Int randomTile = new Vector2Int(UnityEngine.Random.Range(1, m_tileMap.Length - 1), UnityEngine.Random.Range(1, m_tileMap[0].Length - 1));
-
-            if (m_tileMap[randomTile.x][randomTile.y] == Tile.Floor)
-            {
-                return randomTile;
-            }
-        }
+            randomTile = new Vector2Int(UnityEngine.Random.Range(1, m_tileMap.Length - 1), UnityEngine.Random.Range(1, m_tileMap[0].Length - 1));
+        } while (m_tileMap[randomTile.x][randomTile.y] != Tile.Floor);
+        return randomTile;
     }
 
 
@@ -253,7 +251,6 @@ public class BoardManager : NetworkBehaviour
     private void CombineAllMeshes()
     {
         // initialize
-        int vertexLimit = 30000;
         int verticesSoFar = 0;
         List<MeshFilter> meshFilters = new List<MeshFilter>();
         foreach (Transform child in m_map.transform)

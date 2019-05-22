@@ -51,7 +51,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   syncInterval: 0.1
-  m_seed: Chiel
+  m_seed: 
   m_mapWidth: 50
   m_mapHeight: 50
   m_maxRoomAmount: 100
@@ -62,7 +62,7 @@ MonoBehaviour:
   m_maxTunnelLength: 7
   m_tunnelWidth: 2
   m_breakableTunnelChance: 20
-  m_outerWallWidth: 0
+  m_outerWallWidth: 14
 --- !u!114 &4331448404734817727
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -158,8 +158,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   serverOnly: 0
   localPlayerAuthority: 0
-  m_AssetId: 
-  m_SceneId: 3800965968
+  m_AssetId: 1c80e058baf483248ad0940525f87605
+  m_SceneId: 0
 --- !u!33 &4331448404734817700
 MeshFilter:
   m_ObjectHideFlags: 0

@@ -70,7 +70,7 @@ public class GameManager : NetworkBehaviour
         char ch;
         for (int i = 0; i < 20; i++)
         {
-            ch = (char)UnityEngine.Random.Range('a', 'z');
+            ch = (char)Random.Range('a', 'z');
             builder.Append(ch);
         }
         return builder.ToString();
