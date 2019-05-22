@@ -51,15 +51,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   syncInterval: 0.1
-  m_seed: 
+  m_seed: Chiel
   m_mapWidth: 50
   m_mapHeight: 50
   m_maxRoomAmount: 100
-  m_maxShortcutAmount: 100
+  m_maxShortcutAmount: 1000000
   m_minRoomLength: 6
   m_maxRoomLength: 9
   m_minTunnelLength: 1
-  m_maxTunnelLength: 7
+  m_maxTunnelLength: 100
   m_tunnelWidth: 2
   m_breakableTunnelChance: 20
   m_outerWallWidth: 14
