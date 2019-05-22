@@ -18,6 +18,7 @@ public class MapGenerator
     private int m_maxTunnelLength;
     private int m_tunnelWidth;
     private int m_breakableTunnelChance;
+    private int m_shortcutMinSkipDistance;
 
 
     private const int MAX_PLACE_ATTEMPTS = 10;
@@ -33,7 +34,7 @@ public class MapGenerator
     // --------------------------------------------------------------------------------------------
     // Generate maps
     // --------------------------------------------------------------------------------------------
-    public MapGenerator(int mapWidth, int mapHeight, int maxRoomAmount, int maxShortcutAmount, int minRoomLength, int maxRoomLength, int minTunnelLength, int maxTunnelLength, int tunnelWidth, int breakableTunnelChance)
+    public MapGenerator(int mapWidth, int mapHeight, int maxRoomAmount, int maxShortcutAmount, int minRoomLength, int maxRoomLength, int minTunnelLength, int maxTunnelLength, int tunnelWidth, int breakableTunnelChance, int shortcutMinSkipDistance)
     {
         m_mapWidth = mapWidth;
         m_mapHeight = mapHeight;
@@ -45,6 +46,7 @@ public class MapGenerator
         m_maxTunnelLength = maxTunnelLength;
         m_tunnelWidth = tunnelWidth;
         m_breakableTunnelChance = breakableTunnelChance;
+        m_shortcutMinSkipDistance = shortcutMinSkipDistance;
     }
 
     /// <summary>
@@ -355,9 +357,9 @@ public class MapGenerator
 
     private IEnumerable<Vector2Int> GetAllWallTilesInDirection(Vector2Int direction, int outerWidth)
     {
-        for(int i = outerWidth; i < m_tileMap.Length-m_tunnelWidth-outerWidth; i++)
+        for (int i = outerWidth; i < m_tileMap.Length - m_tunnelWidth - outerWidth; i++)
         {
-            for (int j = outerWidth; j < m_tileMap[0].Length-m_tunnelWidth-outerWidth; j++)
+            for (int j = outerWidth; j < m_tileMap[0].Length - m_tunnelWidth - outerWidth; j++)
             {
                 Vector2Int tile = new Vector2Int(i, j);
                 if (CheckWallTile(tile, direction))
@@ -399,7 +401,7 @@ public class MapGenerator
         {
             Vector2Int wallTile = new Vector2Int(randomTile.x + i * Math.Abs(direction.y), randomTile.y + i * Math.Abs(direction.x));
             if (!(m_tileMap[wallTile.x][wallTile.y] == Tile.Wall
-                    && m_tileMap[wallTile.x + direction.x][wallTile.y + direction.y] == Tile.Wall
+                    //&& m_tileMap[wallTile.x + direction.x][wallTile.y + direction.y] == Tile.Wall
                     && m_tileMap[wallTile.x - direction.x][wallTile.y - direction.y] == Tile.Floor))
             {
                 return false;
@@ -532,7 +534,7 @@ public class MapGenerator
                 Vector2Int otherWallTile = Vector2Int.zero;
                 Vector2Int direction = list[i].Value;
 
-                for (int j = m_minTunnelLength; j < m_maxTunnelLength; j++)
+                for (int j = m_minTunnelLength - 1; j < m_maxTunnelLength - 1; j++)
                 {
                     otherWallTile = new Vector2Int(wallTile.x + direction.x * (j - 1), (wallTile.y + direction.y * (j - 1)));
                     if (!(otherWallTile.x <= 1 || otherWallTile.x >= m_mapWidth - 1 || otherWallTile.y <= 1 || otherWallTile.y >= m_mapHeight - 1)
@@ -567,7 +569,7 @@ public class MapGenerator
                         }
 
                         // check if placeable
-                        if (CanPlace(tunnel, pos, entranceTiles, direction))
+                        if (CanPlace(tunnel, pos, entranceTiles, direction) && CheckIfUsefulToPlace(wallTile, otherWallTile, direction))
                         {
                             // if breakable, make entrance tiles a breakable block
                             if (IsBreakable())
@@ -602,6 +604,26 @@ public class MapGenerator
     {
         int i = UnityEngine.Random.Range(1, 101);
         return i <= m_breakableTunnelChance;
+    }
+
+    private bool CheckIfUsefulToPlace(Vector2Int wallTile, Vector2Int otherWallTile, Vector2Int direction)
+    {
+        // calculate tiles to run pathfinding on
+        Vector2Int[] tilesToCalculateFrom = new Vector2Int[2];
+        Vector2Int[] tilesToCalculateTo = new Vector2Int[2];
+        tilesToCalculateFrom[0] = new Vector2Int(wallTile.x - direction.x, wallTile.y - direction.y);
+        tilesToCalculateFrom[1] = new Vector2Int(wallTile.x - direction.x + direction.y * m_tunnelWidth, wallTile.y - direction.y + direction.x * m_tunnelWidth);
+        tilesToCalculateTo[0] = new Vector2Int(otherWallTile.x + direction.x, otherWallTile.y + direction.y);
+        tilesToCalculateTo[1] = new Vector2Int(otherWallTile.x + direction.x + direction.y * m_tunnelWidth, otherWallTile.y + direction.y + direction.x * m_tunnelWidth);
+
+        // run DStarLite twice
+        // TODO: use DStarLite algorithm when it isn't dependant on everything and their moms
+        if (8 >= m_shortcutMinSkipDistance && 10 >= m_shortcutMinSkipDistance)
+        {
+            return true;
+        }
+
+        return false;
     }
 
     // --------------------------------------------------------------------------------------------
@@ -639,7 +661,7 @@ public class MapGenerator
         while (n > 1)
         {
             n--;
-            int k = UnityEngine.Random.Range(0, n+1);
+            int k = UnityEngine.Random.Range(0, n + 1);
             T value = list[k];
             list[k] = list[n];
             list[n] = value;
@@ -697,10 +719,10 @@ public class MapGenerator
         }
 
         // check minimum tunnel length
-        if (m_minTunnelLength > Math.Min(m_mapWidth, m_mapHeight)/2 - m_maxRoomLength*2)
+        if (m_minTunnelLength > Math.Min(m_mapWidth, m_mapHeight) / 2 - m_maxRoomLength * 2)
         {
             Debug.LogWarning("Minimum tunnel length is too high for this map size, using minimum size possible");
-            m_minTunnelLength = Math.Min(m_mapWidth, m_mapHeight)/2 - m_maxRoomLength*2;
+            m_minTunnelLength = Math.Min(m_mapWidth, m_mapHeight) / 2 - m_maxRoomLength * 2;
         }
         if (m_minTunnelLength < 1)
         {

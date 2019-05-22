@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
-using Assets.Scripts.Soldier.Bot.DStar;
 using UnityEngine;
 
 public class SearchBehaviour : MonoBehaviour
