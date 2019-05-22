@@ -26,7 +26,7 @@ public class BoardManager : NetworkBehaviour
 
     // So that a position is in the middle of a tile
     private const float MAP_OFFSET = -0.5f;
-    private const int vertexLimit = 30000;
+    private const int VERTEX_LIMIT = 30000;
     private const string MAP = "Map";
     private const string BREAKABLE_WALLS = "Breakable Walls";
     private const string BREAKABLE_WALL = "Breakable Wall";
@@ -268,7 +268,7 @@ public class BoardManager : NetworkBehaviour
         for (int i = 0; i < meshFilters.Count; i++)
         {
             // if the amount of vertices till now would be over the limit
-            if (verticesSoFar + meshFilters[i].mesh.vertexCount > vertexLimit)
+            if (verticesSoFar + meshFilters[i].mesh.vertexCount > VERTEX_LIMIT)
             {
                 // send list to be combined
                 CreateCombinedMesh(combiners);
