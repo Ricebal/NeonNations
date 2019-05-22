@@ -6,15 +6,7 @@ using UnityEngine.UI;
 
 public class TeamScoreboardEntry : MonoBehaviour
 {
-    [SerializeField]
-    private TextMeshProUGUI m_name;
-    [SerializeField]
     private TextMeshProUGUI m_kills;
-    [SerializeField]
-    private TextMeshProUGUI m_deaths;
-    [SerializeField]
-    private Outline m_outline;
-    private Score m_score;
 
     public void SetScore(Score score)
     {

@@ -10,21 +10,31 @@ public class Team
     public delegate void OnScoreChangeDelegate(Team team);
     public event OnScoreChangeDelegate OnScoreChange;
 
-    public Team(int id)
+    public Team(int id): this()
     {
         Id = id;
+    }
+    public Team()
+    {
+        m_score = new Score();
     }
 
     public void AddKill()
     {
         m_score.Kills++;
-        OnScoreChange(this);
+        if (OnScoreChange != null)
+        {
+            OnScoreChange(this);
+        }
     }
 
     public void AddDeath()
     {
         m_score.Deaths++;
-        OnScoreChange(this);
+        if (OnScoreChange != null)
+        {
+            OnScoreChange(this);
+        }
     }
     
     public int GetScore()

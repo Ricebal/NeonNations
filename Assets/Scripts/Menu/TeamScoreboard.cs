@@ -18,23 +18,35 @@ public class TeamScoreboard : NetworkBehaviour
     {
         if (isServer)
         {
-            foreach(Team team in m_teamManager.Teams)
+            m_teamManager = GameObject.Find("GameManager").GetComponent<TeamManager>();
+
+            foreach (Team team in m_teamManager.Teams)
             {
                 RpcAddTeam(team);
-                team.OnScoreChange += Refresh;
-                Refresh(team);
+                team.OnScoreChange += RpcRefresh;
             }
         }
 
         GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
     }
 
-    private void Refresh(Team team)
+    [ClientRpc]
+    private void RpcRefresh(Team team)
     {
         // Get the teamscore
-        Transform t = m_teamList.transform.GetChild(team.Id);
+        Transform t = m_teamList.transform.GetChild(team.Id-1); //-1 to match the array
+        // Get the TextMesh object
+        TextMeshProUGUI textMesh = t.gameObject.GetComponent<TextMeshProUGUI>();
         // Update score
-        t.gameObject.GetComponent<TextMeshProUGUI>().text = team.GetScore().ToString();
+        textMesh.text = team.GetScore().ToString();
+        // Set color
+        textMesh.outlineColor = team.Color;
+        Material mat = Material.Instantiate(textMesh.fontSharedMaterial);
+        Color32 teamColor = team.Color;
+        // Set alpha because that's not saved in team.Color
+        teamColor.a = 255;
+        mat.SetColor(ShaderUtilities.ID_GlowColor, teamColor);
+        textMesh.fontSharedMaterial = mat;
     }
 
     [ClientRpc]
@@ -45,39 +57,16 @@ public class TeamScoreboard : NetworkBehaviour
         scorePanel.transform.SetParent(m_teamList.transform, false);
 
         // Sets the score of the team
-        scorePanel.GetComponent<TextMeshProUGUI>().text = team.GetScore().ToString();
+        RpcRefresh(team);
     }
 
-    //private bool AddTeam(Team team, ScoreboardEntry scoreboardEntry)
-    //{
-    //    // Find the player, return false if nothing found
-    //    if (player == null)
-    //    {
-    //        return false;
-    //    }
-
-    //    Soldier playerScript = player.GetComponent<Soldier>();
-
-    //    scoreboardEntry.SetScore(playerScript.PlayerScore);
-    //    if (playerScript.isLocalPlayer)
-    //    {
-    //        scoreboardEntry.EnableOutline();
-    //    }
-    //    return true;
-    //}
-
-    //private void RetryOutdatedPlayers()
-    //{
-    //    // Make a list of updated players
-    //    List<string> updatedPlayers = new List<string>();
-    //    foreach (KeyValuePair<string, ScoreboardEntry> player in m_outdatedPlayers)
-    //    {
-    //        if (AddTeam(player.Key, player.Value))
-    //        {
-    //            updatedPlayers.Add(player.Key);
-    //        }
-    //    }
-    //    // Remove updated players from the outdated players list
-    //    updatedPlayers.ForEach(player => m_outdatedPlayers.Remove(player));
-    //}
+    [ClientRpc]
+    private void RpcEmpty()
+    {
+        // Clean the list
+        foreach (Transform child in m_teamList.transform)
+        {
+            Destroy(child.gameObject);
+        }
+    }
 }

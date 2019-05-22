@@ -43,6 +43,10 @@ public class Bot : Soldier
     // Should be called from the script that will control the bot
     public void Move(float horizontal, float vertical)
     {
+        if (!isServer)
+        {
+            return;
+        }
         if (!m_isDead)
         {
             Vector3 movement = new Vector3(horizontal, 0.0f, vertical);

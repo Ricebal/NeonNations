@@ -128,11 +128,13 @@ namespace Assets.Scripts.Soldier.Bot.DStar
             }
             m_previousGoal = m_goal;
             Vector2Int coordinateToTraverse = new Vector2Int();
+            int failSaveCounter = 0;
             do
             {
+                failSaveCounter++;
                 coordinateToTraverse = NextMove(mapChanged);
                 CoordinatesToTraverse.Add(coordinateToTraverse);
-            } while (!coordinateToTraverse.Equals(m_goal));
+            } while (!coordinateToTraverse.Equals(m_goal) && failSaveCounter < 100);
             m_previousCoordinatesToTraverse = CoordinatesToTraverse;
             return CoordinatesToTraverse;
         }
@@ -265,8 +267,10 @@ namespace Assets.Scripts.Soldier.Bot.DStar
             {
                 return;
             }
+            int failSaveCounter = 0;
+            int maxTriesInLoop = Map.Map.Length * Map.Map[0].Length;
             // While the top state of the Heap has a higher priority than the start state OR start.rhs is not the cost of start
-            while (m_heap.TopKey().CompareTo(CalculatePriority(m_start)) < 0 || startNode.Rhs != startNode.CostFromStartingPoint)
+            while ((m_heap.TopKey().CompareTo(CalculatePriority(m_start)) < 0 || startNode.Rhs != startNode.CostFromStartingPoint) && failSaveCounter < maxTriesInLoop)
             {
                 // Gets the priority key from the top
                 PriorityKey oldKey = m_heap.TopKey();
