@@ -11,7 +11,7 @@ namespace Assets.Scripts.Soldier.Bot.DStar
     {
         public Node[][] Map;
 
-        public NavigationGraph(int[][] completeMap, bool knowMap)
+        public NavigationGraph(Tile[][] completeMap, bool knowMap)
         {
             Map = new Node[completeMap.Length][];
             for (int i = 0; i < Map.Length; i++)

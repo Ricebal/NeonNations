@@ -9,18 +9,12 @@ namespace Assets.Scripts.Soldier.Bot.DStar
         public double CostFromStartingPoint;
         // Some kind of potentially better estimated value than the g-value.
         public double Rhs;
-        /// <summary>
-        /// -1 = Unknown
-        ///  0 = Open Space
-        ///  1 = Wall
-        ///  2 = Breakable Wall
-        /// </summary>
-        public int Content;
+        public Tile Content;
 
         public Node()
         {
             // Set the Content to Unknown by default.
-            Content = -1;
+            Content = Tile.Unknown;
             // Set CostFromStartingPoint and Rhs to PositiveInfinity by default.
             CostFromStartingPoint = double.PositiveInfinity;
             Rhs = double.PositiveInfinity;
@@ -32,7 +26,7 @@ namespace Assets.Scripts.Soldier.Bot.DStar
         public bool IsObstacle()
         {
             // 1 and 2 are obstacles
-            return Content >= 1 && Content <= 2;
+            return Content == Tile.Wall || Content == Tile.BreakableWall;
         }
     }
 }
