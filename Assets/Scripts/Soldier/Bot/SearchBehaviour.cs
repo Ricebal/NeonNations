@@ -53,7 +53,7 @@ public class SearchBehaviour : MonoBehaviour
         }
         m_previousFarthestNode = farthestReachableNode;
 #if(UNITY_EDITOR)
-        DebugMap(m_dStarLite.Map, farthestReachableNode, coordinatesToTraverse);
+        // DebugMap(m_dStarLite.Map, farthestReachableNode, coordinatesToTraverse);
 #endif
         MoveTo(farthestReachableNode);
         m_dStarLite.SyncBotPosition(botCoordinate);

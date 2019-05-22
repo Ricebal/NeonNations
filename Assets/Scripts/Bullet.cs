@@ -32,12 +32,22 @@ public class Bullet : MonoBehaviour
 
     public void OnTriggerEnter(Collider collider)
     {
+        if (collider.tag == "Mirror")
+        {
+            Vector3 currentDirection = transform.TransformDirection(Vector3.forward);
+            RaycastHit contact = GetRaycastHit(collider.GetInstanceID());
+            Vector3 newDirection = Vector3.Reflect(currentDirection, contact.normal);
+            newDirection.Normalize();
+            GetComponent<Rigidbody>().velocity = newDirection * Speed;
+            return;
+        }
+
         // If the bullet does not collide with its shooter
         if (collider.transform.name != m_shooterId)
         {
             if (HitPrefab != null)
             {
-                Vector3 impactPos = GetBulletImpactPosition(collider.GetInstanceID());
+                Vector3 impactPos = GetRaycastHit(collider.GetInstanceID()).point;
                 // If an impact point has been found
                 if (!impactPos.Equals(default))
                 {
@@ -61,14 +71,14 @@ public class Bullet : MonoBehaviour
         }
     }
 
-    private Vector3 GetBulletImpactPosition(int id)
+    private RaycastHit GetRaycastHit(int id)
     {
         RaycastHit[] hits = Physics.RaycastAll(m_startPosition, transform.forward, 80);
         foreach (RaycastHit hit in hits)
         {
             if (hit.collider.GetInstanceID() == id)
             {
-                return hit.point;
+                return hit;
             }
         }
         return default;

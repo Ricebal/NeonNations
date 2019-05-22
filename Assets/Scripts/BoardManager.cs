@@ -56,9 +56,9 @@ public class BoardManager : MonoBehaviour
         m_seed = seed;
         GenerateRandomMap();
         LoadFloor();
-        LoadMap();
-        CreateOuterWalls();
-        CombineAllMeshes();
+        // LoadMap();
+        // CreateOuterWalls();
+        // CombineAllMeshes();
     }
 
     /// <summary>
@@ -136,28 +136,29 @@ public class BoardManager : MonoBehaviour
         {
             for (int y = 0; y < m_mapHeight; y++)
             {
-                if (// rooms
-                    x == 0 && y == 0
-                    || x >= 0 && x <= 9 && y >= 16 && y <= 21
-                    || x >= 1 && x <= 7 && y >= 0 && y <= 5
-                    || x >= 11 && x <= 15 && y >= 4 && y <= 10
-                    || x >= 16 && x <= 20 && y >= 13 && y <= 18
-                    || x >= 23 && x <= 29 && y >= 3 && y <= 10
-                    || x >= 24 && x <= 27 && y >= 17 && y <= 21
+                if ( // rooms
+                    x == 0 && y == 0 ||
+                    x >= 0 && x <= 9 && y >= 16 && y <= 21 ||
+                    x >= 1 && x <= 7 && y >= 0 && y <= 5 ||
+                    x >= 11 && x <= 15 && y >= 4 && y <= 10 ||
+                    x >= 16 && x <= 20 && y >= 13 && y <= 18 ||
+                    x >= 23 && x <= 29 && y >= 3 && y <= 10 ||
+                    x >= 24 && x <= 27 && y >= 17 && y <= 21
                     // corridors
-                    || x >= 1 && x <= 2 && y >= 12 && y <= 15
-                    || x >= 3 && x <= 6 && y >= 12 && y <= 13
-                    || x >= 5 && x <= 6 && y >= 6 && y <= 13
-                    || x >= 7 && x <= 10 && y >= 8 && y <= 9
-                    || x >= 8 && x <= 24 && y >= 0 && y <= 1
-                    || x >= 10 && x <= 15 && y >= 17 && y <= 18
-                    || x >= 13 && x <= 14 && y >= 2 && y <= 3
-                    || x >= 16 && x <= 22 && y >= 8 && y <= 9
-                    || x >= 17 && x <= 18 && y >= 19 && y <= 21
-                    || x >= 17 && x <= 18 && y >= 10 && y <= 12
-                    || x >= 19 && x <= 25 && y >= 20 && y <= 21
-                    || x >= 23 && x <= 24 && y == 2
-                    || x >= 25 && x <= 26 && y >= 11 && y <= 16)
+                    ||
+                    x >= 1 && x <= 2 && y >= 12 && y <= 15 ||
+                    x >= 3 && x <= 6 && y >= 12 && y <= 13 ||
+                    x >= 5 && x <= 6 && y >= 6 && y <= 13 ||
+                    x >= 7 && x <= 10 && y >= 8 && y <= 9 ||
+                    x >= 8 && x <= 24 && y >= 0 && y <= 1 ||
+                    x >= 10 && x <= 15 && y >= 17 && y <= 18 ||
+                    x >= 13 && x <= 14 && y >= 2 && y <= 3 ||
+                    x >= 16 && x <= 22 && y >= 8 && y <= 9 ||
+                    x >= 17 && x <= 18 && y >= 19 && y <= 21 ||
+                    x >= 17 && x <= 18 && y >= 10 && y <= 12 ||
+                    x >= 19 && x <= 25 && y >= 20 && y <= 21 ||
+                    x >= 23 && x <= 24 && y == 2 ||
+                    x >= 25 && x <= 26 && y >= 11 && y <= 16)
                 {
                     m_tileMap[x][y] = 0;
                 }
@@ -423,9 +424,9 @@ public class BoardManager : MonoBehaviour
         // check if the surrounding tiles are suitable for the width of the tunnel
         for (int i = 0; i < m_tunnelWidth; i++)
         {
-            if (!(m_tileMap[(int)(randomTile.x + i * Math.Abs(direction.y))][(int)(randomTile.y + i * Math.Abs(direction.x))] == 1
-                    && m_tileMap[(int)(randomTile.x + i * Math.Abs(direction.y) + direction.x)][(int)(randomTile.y + i * Math.Abs(direction.x) + direction.y)] == 1
-                    && m_tileMap[(int)(randomTile.x + i * Math.Abs(direction.y) - direction.x)][(int)(randomTile.y + i * Math.Abs(direction.x) - direction.y)] == 0))
+            if (!(m_tileMap[(int)(randomTile.x + i * Math.Abs(direction.y))][(int)(randomTile.y + i * Math.Abs(direction.x))] == 1 &&
+                    m_tileMap[(int)(randomTile.x + i * Math.Abs(direction.y) + direction.x)][(int)(randomTile.y + i * Math.Abs(direction.x) + direction.y)] == 1 &&
+                    m_tileMap[(int)(randomTile.x + i * Math.Abs(direction.y) - direction.x)][(int)(randomTile.y + i * Math.Abs(direction.x) - direction.y)] == 0))
             {
                 return false;
             }
@@ -514,14 +515,14 @@ public class BoardManager : MonoBehaviour
                 if (map[x][y] == 0 && // check if position in room equals zero
                     !entranceTiles.Contains(new Vector2(x, y)) && // check if the tile isn't an entrance
                     (m_tileMap[x + (int)pos.x][y + (int)pos.y] == 0 || // if so, check if the same position on map is zero
-                    m_tileMap[x + (int)pos.x][y + (int)pos.y + 1] == 0 || // and check all tiles around the position on the map is zero, starting with north
-                    m_tileMap[x + (int)pos.x + 1][y + (int)pos.y + 1] == 0 || // northeast
-                    m_tileMap[x + (int)pos.x + 1][y + (int)pos.y] == 0 || // east
-                    m_tileMap[x + (int)pos.x + 1][y + (int)pos.y - 1] == 0 || // southeast
-                    m_tileMap[x + (int)pos.x][y + (int)pos.y - 1] == 0 || // south
-                    m_tileMap[x + (int)pos.x - 1][y + (int)pos.y - 1] == 0 || // southwest
-                    m_tileMap[x + (int)pos.x - 1][y + (int)pos.y] == 0 || // west
-                    m_tileMap[x + (int)pos.x - 1][y + (int)pos.y + 1] == 0 // northwest
+                        m_tileMap[x + (int)pos.x][y + (int)pos.y + 1] == 0 || // and check all tiles around the position on the map is zero, starting with north
+                        m_tileMap[x + (int)pos.x + 1][y + (int)pos.y + 1] == 0 || // northeast
+                        m_tileMap[x + (int)pos.x + 1][y + (int)pos.y] == 0 || // east
+                        m_tileMap[x + (int)pos.x + 1][y + (int)pos.y - 1] == 0 || // southeast
+                        m_tileMap[x + (int)pos.x][y + (int)pos.y - 1] == 0 || // south
+                        m_tileMap[x + (int)pos.x - 1][y + (int)pos.y - 1] == 0 || // southwest
+                        m_tileMap[x + (int)pos.x - 1][y + (int)pos.y] == 0 || // west
+                        m_tileMap[x + (int)pos.x - 1][y + (int)pos.y + 1] == 0 // northwest
                     ))
                 {
                     return false;
@@ -683,31 +684,31 @@ public class BoardManager : MonoBehaviour
         // all the vertices needed for the different faces
         // vertices can't be shared between the triangles, because the shading will be wrong then
         Vector3[] vertices = {
-                        new Vector3 (1, 0.5f, 0),
-                        new Vector3 (0, 0.5f, 0),
-                        new Vector3 (0, 0.5f, 1),
-                        new Vector3 (1, 0.5f, 1),
+            new Vector3(1, 0.5f, 0),
+            new Vector3(0, 0.5f, 0),
+            new Vector3(0, 0.5f, 1),
+            new Vector3(1, 0.5f, 1),
 
-                        new Vector3 (1, 0.5f, 1),
-                        new Vector3 (0, 0.5f, 1),
-                        new Vector3 (0, -0.5f, 1),
-                        new Vector3 (1, -0.5f, 1),
+            new Vector3(1, 0.5f, 1),
+            new Vector3(0, 0.5f, 1),
+            new Vector3(0, -0.5f, 1),
+            new Vector3(1, -0.5f, 1),
 
-                        new Vector3 (1, -0.5f, 0),
-                        new Vector3 (1, 0.5f, 0),
-                        new Vector3 (1, 0.5f, 1),
-                        new Vector3 (1, -0.5f, 1),
+            new Vector3(1, -0.5f, 0),
+            new Vector3(1, 0.5f, 0),
+            new Vector3(1, 0.5f, 1),
+            new Vector3(1, -0.5f, 1),
 
-                        new Vector3 (0, -0.5f, 0),
-                        new Vector3 (1, 0.5f, 0),
-                        new Vector3 (1, -0.5f, 0),
-                        new Vector3 (0, 0.5f, 0),
+            new Vector3(0, -0.5f, 0),
+            new Vector3(1, 0.5f, 0),
+            new Vector3(1, -0.5f, 0),
+            new Vector3(0, 0.5f, 0),
 
-                        new Vector3 (0, -0.5f, 0),
-                        new Vector3 (0, -0.5f, 1),
-                        new Vector3 (0, 0.5f, 1),
-                        new Vector3 (0, 0.5f, 0)
-                    };
+            new Vector3(0, -0.5f, 0),
+            new Vector3(0, -0.5f, 1),
+            new Vector3(0, 0.5f, 1),
+            new Vector3(0, 0.5f, 0)
+        };
 
         int[] faceTop = { 0, 1, 2, 0, 2, 3 };
         int[] faceUp = { 4, 5, 6, 4, 6, 7 };
@@ -816,7 +817,7 @@ public class BoardManager : MonoBehaviour
         newMesh.CombineMeshes(meshDataList.ToArray());
 
         // create new map object to hold part of the map
-        GameObject mapPart = Instantiate(m_mapPrefab, Vector3.zero, Quaternion.identity) as GameObject;
+        GameObject mapPart = Instantiate(m_mapPrefab, Vector3.zero, Quaternion.identity)as GameObject;
 
         // handle new map object
         mapPart.transform.GetComponent<MeshFilter>().sharedMesh = newMesh;
@@ -923,9 +924,9 @@ public class Room
 public enum Walls
 {
     // Decimal     // Binary
-    None = 0,    // 000000
-    Up = 1,    // 000001
-    Right = 2,    // 000010
-    Down = 4,    // 000100
-    Left = 8    // 001000
+    None = 0, // 000000
+    Up = 1, // 000001
+    Right = 2, // 000010
+    Down = 4, // 000100
+    Left = 8 // 001000
 }
