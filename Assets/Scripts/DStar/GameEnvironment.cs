@@ -10,8 +10,7 @@ public class GameEnvironment : ScriptableObject
     private const int BULLET_RANGE = 1;
     private const int IMPACT_RANGE = 2;
 
-
-    public GameEnvironment()
+    private void OnEnable()
     {
         s_map = GameObject.Find("GameManager").GetComponent<BoardManager>().GetTileMap();
     }
