@@ -162,6 +162,7 @@ public class Bullet : MonoBehaviour
             // Set the emission color of the particle trail to the new color times 3 for intensity
             mat = Material.Instantiate(particleSystemRenderer.material);
             mat.SetColor("_EmissionColor", color * 3);
+            particleSystemRenderer.material = mat;
             particleSystemRenderer.trailMaterial = mat;
         }
     }
