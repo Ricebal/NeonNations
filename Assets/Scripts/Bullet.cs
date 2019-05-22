@@ -36,6 +36,7 @@ public class Bullet : MonoBehaviour
 
     private void OnTriggerExit(Collider collider)
     {
+        // Check if the bullet has left the players hitbox, so they don't shoot themself immediately
         if (collider.transform.name == m_shooterId)
         {
             m_hasLeftPlayerCollider = true;
@@ -44,20 +45,28 @@ public class Bullet : MonoBehaviour
 
     private void OnTriggerEnter(Collider collider)
     {
+        // If the bullet hits a mirror and it's not the same as the last mirror bounce
         if (collider.tag == "Mirror" && collider.GetInstanceID() != m_lastMirror)
         {
+            // Get the current heading
             Vector3 currentDirection = transform.TransformDirection(Vector3.forward);
+            // Raycast from start or last bounce to collision
             RaycastHit contact = GetRaycastHit(collider.GetInstanceID());
+            // Calculate the angle of reflection
             Vector3 newDirection = Vector3.Reflect(currentDirection, contact.normal);
             newDirection.Normalize();
+            // Set the velocity to the speed var
             Vector3 newVelocity = newDirection * Speed;
             GetComponent<Rigidbody>().velocity = newVelocity;
+            // Rotate the bullet so it faces the direction it's heading
             transform.rotation = Quaternion.LookRotation(newVelocity);
+            // Set the last bounce position to current position for future raycasting
             m_lastBouncePosition = transform.position;
+            // Set last hit mirror to the hit mirror
             m_lastMirror = collider.GetInstanceID();
         }
 
-        // If the bullet does not collide with its shooter
+        // If the collider is not a mirror and has left the player hitbox
         if (collider.tag != "Mirror" && m_hasLeftPlayerCollider)
         {
             if (HitPrefab != null)
