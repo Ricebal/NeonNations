@@ -16,11 +16,15 @@ public class Bullet : MonoBehaviour
     // The player that shot the bullet
     private string m_shooterId;
     // Start position
-    private Vector3 m_startPosition;
+    private Vector3 m_lastBouncePosition;
+    // Has left player model
+    private bool m_hasLeftPlayerCollider = false;
+    // Last hit mirror
+    private int m_lastMirror;
 
     public void Start()
     {
-        m_startPosition = transform.position;
+        m_lastBouncePosition = transform.position;
         Rigidbody rigidbody = GetComponent<Rigidbody>();
 
         // Move the bullet straight ahead with constant speed
@@ -30,20 +34,31 @@ public class Bullet : MonoBehaviour
         Destroy(gameObject, LivingTime);
     }
 
-    public void OnTriggerEnter(Collider collider)
+    private void OnTriggerExit(Collider collider)
     {
-        if (collider.tag == "Mirror")
+        if (collider.transform.name == m_shooterId)
+        {
+            m_hasLeftPlayerCollider = true;
+        }
+    }
+
+    private void OnTriggerEnter(Collider collider)
+    {
+        if (collider.tag == "Mirror" && collider.GetInstanceID() != m_lastMirror)
         {
             Vector3 currentDirection = transform.TransformDirection(Vector3.forward);
             RaycastHit contact = GetRaycastHit(collider.GetInstanceID());
             Vector3 newDirection = Vector3.Reflect(currentDirection, contact.normal);
             newDirection.Normalize();
-            GetComponent<Rigidbody>().velocity = newDirection * Speed;
-            return;
+            Vector3 newVelocity = newDirection * Speed;
+            GetComponent<Rigidbody>().velocity = newVelocity;
+            transform.rotation = Quaternion.LookRotation(newVelocity);
+            m_lastBouncePosition = transform.position;
+            m_lastMirror = collider.GetInstanceID();
         }
 
         // If the bullet does not collide with its shooter
-        if (collider.transform.name != m_shooterId)
+        if (collider.tag != "Mirror" && m_hasLeftPlayerCollider)
         {
             if (HitPrefab != null)
             {
@@ -73,7 +88,7 @@ public class Bullet : MonoBehaviour
 
     private RaycastHit GetRaycastHit(int id)
     {
-        RaycastHit[] hits = Physics.RaycastAll(m_startPosition, transform.forward, 80);
+        RaycastHit[] hits = Physics.RaycastAll(m_lastBouncePosition, transform.forward, 80);
         foreach (RaycastHit hit in hits)
         {
             if (hit.collider.GetInstanceID() == id)
