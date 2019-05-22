@@ -321,7 +321,9 @@ GameObject:
   m_Component:
   - component: {fileID: 554816597113025820}
   - component: {fileID: 8971493596410351257}
+  - component: {fileID: 1569657582489831987}
   - component: {fileID: 702961341822398188}
+  - component: {fileID: 7354764442901588293}
   m_Layer: 5
   m_Name: TeamScore
   m_TagString: Untagged
@@ -347,7 +349,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.9}
   m_AnchorMax: {x: 0.5, y: 0.9}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1000, y: 254}
+  m_SizeDelta: {x: 1000, y: 250}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8971493596410351257
 CanvasRenderer:
@@ -357,6 +359,23 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1180176020245855257}
   m_CullTransparentMesh: 0
+--- !u!114 &1569657582489831987
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1180176020245855257}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e070342af14f3b48a5a888356e0b94d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncInterval: 0.1
+  m_teamScorePrefab: {fileID: 2226107171521314961, guid: c72c9d1e051bd38499a8f45e362d89c9,
+    type: 3}
+  m_teamList: {fileID: 3039216186996607917}
+  m_teamManager: {fileID: 0}
 --- !u!114 &702961341822398188
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -386,6 +405,22 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
+--- !u!114 &7354764442901588293
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1180176020245855257}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serverOnly: 0
+  localPlayerAuthority: 0
+  m_AssetId: a35939fd3a9f2174b89bcd2d87ab3e96
+  m_SceneId: 0
 --- !u!1 &1325848646273544874
 GameObject:
   m_ObjectHideFlags: 0
@@ -577,10 +612,10 @@ RectTransform:
   m_Father: {fileID: 554816597113025820}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0}
-  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1000, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1037655816836013059
 MonoBehaviour:

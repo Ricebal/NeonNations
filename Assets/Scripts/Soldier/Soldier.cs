@@ -68,7 +68,7 @@ public abstract class Soldier : NetworkBehaviour
         m_sphereCollider.enabled = false;
         m_deathTime = Time.time;
         PlayerScore.Deaths++;
-        Team.Score.Deaths++;
+        Team.AddDeath();
 
         DeathExplosion deathExplosion = GetComponentInChildren<DeathExplosion>();
         if (deathExplosion != null)
@@ -151,7 +151,7 @@ public abstract class Soldier : NetworkBehaviour
     {
         Soldier otherSoldier = GameObject.Find(playerId).GetComponent<Soldier>();
         otherSoldier.PlayerScore.Kills++;
-        otherSoldier.Team.Score.Kills++;
+        otherSoldier.Team.AddKill();
     }
 
     protected void OnTriggerEnter(Collider collider)

@@ -6,11 +6,30 @@ public class Team
     public int Id;
     public Color Color;
     public int PlayerCount;
-    public Score Score;
+    private Score m_score;
+    public delegate void OnScoreChangeDelegate(Team team);
+    public event OnScoreChangeDelegate OnScoreChange;
 
     public Team(int id)
     {
         Id = id;
+    }
+
+    public void AddKill()
+    {
+        m_score.Kills++;
+        OnScoreChange(this);
+    }
+
+    public void AddDeath()
+    {
+        m_score.Deaths++;
+        OnScoreChange(this);
+    }
+    
+    public int GetScore()
+    {
+        return m_score.Kills;
     }
 
     public override bool Equals(object obj)
