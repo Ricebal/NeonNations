@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 
-public enum Tile { Floor, Wall, BreakableWall }
+public enum Tile { Unknown = -1, Floor, Wall, BreakableWall }
 
 public class MapGenerator
 {

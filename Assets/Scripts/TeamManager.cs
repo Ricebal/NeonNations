@@ -7,6 +7,8 @@ public class TeamManager : MonoBehaviour
     public List<Team> Teams;
     private int m_playerCount;
     private Soldier[] m_players = new Soldier[8];
+    public delegate void OnPlayersChangeDelegate();
+    public event OnPlayersChangeDelegate OnPlayersChange;
 
     public int AddPlayer(Soldier player)
     {
@@ -31,17 +33,24 @@ public class TeamManager : MonoBehaviour
         // Increment player count
         m_playerCount++;
 
-        // Set player colour for all existing players (for online syncing)
+        // Sync player colour and score
         for (int i = 0; i < 8; i++)
         {
             if (m_players[i] != null)
             {
                 m_players[i].SetInitialColor(GetColor(m_players[i].Team));
+                m_players[i].SyncScore();
             }
         }
 
         // Set player colour for new player
         player.SetInitialColor(GetColor(team));
+        player.GetComponent<Identity>().SetIdentity();
+
+        if (OnPlayersChange != null)
+        {
+            OnPlayersChange();
+        }
 
         return team;
     }
@@ -68,6 +77,10 @@ public class TeamManager : MonoBehaviour
         }
 
         m_players = tempArray;
+        if (OnPlayersChange != null)
+        {
+            OnPlayersChange();
+        }
     }
 
     public Soldier[] GetPlayers()
@@ -110,5 +123,10 @@ public class TeamManager : MonoBehaviour
             }
             e.Id = i;
         });
+    }
+
+    public Soldier[] GetAllPlayers()
+    {
+        return m_players;
     }
 }

@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 4331448404734817726}
   - component: {fileID: 1449756772834461147}
   - component: {fileID: 4331448404734817700}
-  - component: {fileID: 4331448404734817724}
+  - component: {fileID: 8033260808568749409}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -158,8 +158,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   serverOnly: 0
   localPlayerAuthority: 0
-  m_AssetId: 1c80e058baf483248ad0940525f87605
-  m_SceneId: 0
+  m_AssetId: 
+  m_SceneId: 3800965968
 --- !u!33 &4331448404734817700
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -168,7 +168,7 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4331448404734817703}
   m_Mesh: {fileID: 0}
---- !u!114 &4331448404734817724
+--- !u!114 &8033260808568749409
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
