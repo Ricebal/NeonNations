@@ -10,7 +10,7 @@ namespace Assets.Scripts.Soldier.Bot.DStar
     public class GameEnvironment : ScriptableObject
     {
         private GameObject m_bot;
-        private static int[][] s_map;
+        private static Tile[][] s_map;
         private const int SONAR_RANGE = 5;
         private const int BULLET_RANGE = 1;
         private const int IMPACT_RANGE = 2;
@@ -28,17 +28,17 @@ namespace Assets.Scripts.Soldier.Bot.DStar
         /// Gives the current map
         /// </summary>
         /// <returns>int[][] Map</returns>
-        public int[][] GetMap()
+        public Tile[][] GetMap()
         {
             return s_map;
         }
 
-        public int GetNode(int x, int y)
+        public Tile GetNode(int x, int y)
         {
             return s_map[x][y];
         }
 
-        public static void UpdateNode(int x, int y, int newNode)
+        public static void UpdateNode(int x, int y, Tile newNode)
         {
             s_map[x][y] = newNode;
         }
@@ -59,7 +59,7 @@ namespace Assets.Scripts.Soldier.Bot.DStar
                     continue;
                 }
                 // If the coordinates are inside the map, check if the coordinate contains an obstacle
-                if (s_map[coordinate.x][coordinate.y] == 0)
+                if (s_map[coordinate.x][coordinate.y] == Tile.Floor)
                 {
                     coordinatesToDelete.AddLast(coordinate);
                 }
