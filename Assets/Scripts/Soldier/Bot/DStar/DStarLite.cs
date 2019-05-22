@@ -65,7 +65,7 @@ namespace Assets.Scripts.Soldier.Bot.DStar
         /// <param name="knowMap">Set to true if the algorithm should know the full map</param>
         private void GenerateNodeMap(bool knowMap)
         {
-            int[][] completeMap = m_environment.GetMap();
+            Tile[][] completeMap = m_environment.GetMap();
             Map = new NavigationGraph(completeMap, knowMap);
         }
 
@@ -83,7 +83,7 @@ namespace Assets.Scripts.Soldier.Bot.DStar
                 // What the bot knows of the node
                 Node knownNode = Map.GetNode(coordinates.x, coordinates.y);
                 // What the node actually is
-                int actualNodeContent = m_environment.GetNode(coordinates.x, coordinates.y);
+                Tile actualNodeContent = m_environment.GetNode(coordinates.x, coordinates.y);
                 // If the obstacle was not previously known or the obstacle has been removed
                 if (knownNode.Content != actualNodeContent)
                 {

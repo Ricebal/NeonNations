@@ -126,7 +126,7 @@ public class SearchBehaviour : MonoBehaviour
                         continue;
                     }
                 }
-                if (map.Map[x][y].Content == -1)
+                if (map.Map[x][y].Content == Tile.Unknown)
                 {
                     builder.Append("?");
                     continue;

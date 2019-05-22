@@ -19,6 +19,7 @@ public class Scoreboard : NetworkBehaviour
     {
         if (isServer)
         {
+            m_teamManager = GameObject.Find("GameManager").GetComponent<TeamManager>();
             m_teamManager.OnPlayersChange += Refresh;
             Refresh();
         }
