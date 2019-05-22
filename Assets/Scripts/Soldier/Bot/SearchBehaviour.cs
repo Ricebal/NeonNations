@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
-using Assets.Scripts.Soldier.Bot.DStar;
 using UnityEngine;
 
 public class SearchBehaviour : MonoBehaviour
@@ -16,7 +15,7 @@ public class SearchBehaviour : MonoBehaviour
 
     void Start()
     {
-        m_environment = new GameEnvironment(gameObject);
+        m_environment = ScriptableObject.CreateInstance<GameEnvironment>();
         UnityEngine.Random.InitState((int)DateTime.Now.Ticks);
         m_dStarLite = new DStarLite(m_environment, false);
         Vector2Int startCoordinates = m_environment.ConvertGameObjectToCoordinates(gameObject.transform);
@@ -52,9 +51,6 @@ public class SearchBehaviour : MonoBehaviour
             farthestReachableNode = PathSmoothing.FarthestCoordinateToReach(new PointF(gameObject.transform.position.x, gameObject.transform.position.z), coordinatesToTraverse, m_dStarLite.Map, OFFSET_FOR_LINE_CALCULATION);
         }
         m_previousFarthestNode = farthestReachableNode;
-#if(UNITY_EDITOR)
-        DebugMap(m_dStarLite.Map, farthestReachableNode, coordinatesToTraverse);
-#endif
         MoveTo(farthestReachableNode);
         m_dStarLite.SyncBotPosition(botCoordinate);
     }
