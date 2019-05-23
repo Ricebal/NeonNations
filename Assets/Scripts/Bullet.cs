@@ -67,7 +67,7 @@ public class Bullet : MonoBehaviour
         }
 
         // If the collider is not a mirror and has left the player hitbox
-        if (collider.tag != "Mirror" && m_hasLeftPlayerCollider)
+        if (collider.tag != "Mirror" && (m_hasLeftPlayerCollider || collider.transform.name != m_shooterId))
         {
             if (HitPrefab != null)
             {
