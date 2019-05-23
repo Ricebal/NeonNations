@@ -4,7 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TeamScoreboardEntry : MonoBehaviour
+public class ScoreboardEntry: MonoBehaviour
 {
     [SerializeField]
     private TextMeshProUGUI m_name;

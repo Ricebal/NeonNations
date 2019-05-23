@@ -33,8 +33,9 @@ public class MinHeap
     /// <returns>Vector2Int</returns>
     public Vector2Int Pop()
     {
-        if (m_count == 0)
+        if (m_count <= 0)
         {
+            m_count = 0;
             return new Vector2Int();
         }
         Vector2Int coordinates = m_heap[1].Coordinates;

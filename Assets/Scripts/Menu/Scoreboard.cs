@@ -13,7 +13,7 @@ public class Scoreboard : NetworkBehaviour
     private GameObject m_scoreBoard;
     [SerializeField]
     private TeamManager m_teamManager;
-    private Dictionary<string, TeamScoreboardEntry> m_outdatedPlayers = new Dictionary<string, TeamScoreboardEntry>();
+    private Dictionary<string, ScoreboardEntry> m_outdatedPlayers = new Dictionary<string, ScoreboardEntry>();
 
     private void Start()
     {
@@ -72,17 +72,17 @@ public class Scoreboard : NetworkBehaviour
     private void RpcAddPlayer(string playerId)
     {
         // Make a new entry on the scoreboard
-        GameObject scorePanel = Instantiate(m_playerScorePrefab)as GameObject;
+        GameObject scorePanel = Instantiate(m_playerScorePrefab) as GameObject;
         scorePanel.transform.SetParent(m_playerList.transform, false);
 
         // Try to add the player to the scoreboard, if it fails add it to the list of outdated players
-        if (!AddPlayer(playerId, scorePanel.GetComponent<TeamScoreboardEntry>()))
+        if (!AddPlayer(playerId, scorePanel.GetComponent<ScoreboardEntry>()))
         {
-            m_outdatedPlayers.Add(playerId, scorePanel.GetComponent<TeamScoreboardEntry>());
+            m_outdatedPlayers.Add(playerId, scorePanel.GetComponent<ScoreboardEntry>());
         }
     }
 
-    private bool AddPlayer(string playerId, TeamScoreboardEntry scoreboardEntry)
+    private bool AddPlayer(string playerId, ScoreboardEntry scoreboardEntry)
     {
         // Find the player, return false if nothing found
         GameObject player = GameObject.Find(playerId);
@@ -105,7 +105,7 @@ public class Scoreboard : NetworkBehaviour
     {
         // Make a list of updated players
         List<string> updatedPlayers = new List<string>();
-        foreach (KeyValuePair<string, TeamScoreboardEntry> player in m_outdatedPlayers)
+        foreach (KeyValuePair<string, ScoreboardEntry> player in m_outdatedPlayers)
         {
             if (AddPlayer(player.Key, player.Value))
             {

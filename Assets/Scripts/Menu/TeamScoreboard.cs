@@ -13,51 +13,49 @@ public class TeamScoreboard : NetworkBehaviour
     [SerializeField]
     private TeamManager m_teamManager;
     private TextMeshProUGUI m_teamScore;
+    private Dictionary<int, TeamScoreboardEntry> m_teamScoreboardEntries = new Dictionary<int, TeamScoreboardEntry>();
 
     private void Start()
     {
         if (isServer)
         {
             m_teamManager = GameObject.Find("GameManager").GetComponent<TeamManager>();
-
+            m_teamManager.OnPlayersChange += RefreshScores;
             foreach (Team team in m_teamManager.Teams)
             {
-                RpcAddTeam(team);
-                team.OnScoreChange += RpcRefresh;
+                RpcAddTeam(team.Id);
             }
         }
 
         GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
     }
-
+    
     [ClientRpc]
-    private void RpcRefresh(Team team)
+    private void RpcAddTeam(int teamId)
     {
-        // Get the teamscore
-        Transform t = m_teamList.transform.GetChild(team.Id-1); //-1 to match the array
-        // Get the TextMesh object
-        TextMeshProUGUI textMesh = t.gameObject.GetComponent<TextMeshProUGUI>();
-        // Update score
-        textMesh.text = team.GetScore().ToString();
-        // Set color
-        textMesh.outlineColor = team.Color;
-        Material mat = Material.Instantiate(textMesh.fontSharedMaterial);
-        Color32 teamColor = team.Color;
-        // Set alpha because that's not saved in team.Color
-        teamColor.a = 255;
-        mat.SetColor(ShaderUtilities.ID_GlowColor, teamColor);
-        textMesh.fontSharedMaterial = mat;
-    }
+        // Get team, -1 for array.
+        Team team = m_teamManager.Teams[teamId-1];
 
-    [ClientRpc]
-    private void RpcAddTeam(Team team)
-    {
         // Make a new entry on the scoreboard
         GameObject scorePanel = Instantiate(m_teamScorePrefab)as GameObject;
         scorePanel.transform.SetParent(m_teamList.transform, false);
 
-        // Sets the score of the team
-        RpcRefresh(team);
+        // Set the score
+        TeamScoreboardEntry entry = scorePanel.GetComponent<TeamScoreboardEntry>();
+        entry.SetScore(team.Score);
+        entry.SetColor(team.Color);
+        m_teamScoreboardEntries.Add(teamId, entry);
+    }
+
+    private void RefreshScores()
+    {
+        Debug.Log("number 2");
+        foreach(KeyValuePair<int, TeamScoreboardEntry> keyValuePair in m_teamScoreboardEntries)
+        {
+            // Get team, -1 for array.
+            Team team = m_teamManager.Teams[keyValuePair.Key - 1];
+            keyValuePair.Value.SetScore(team.Score);
+        }
     }
 
     [ClientRpc]

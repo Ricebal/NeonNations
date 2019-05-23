@@ -34,6 +34,12 @@ public static class PathSmoothing
             previousNextNode = nextNode;
             // Get new point that is closer to the destination.
             nextNode++;
+            // For if the path does not lead to the goalNode (Goalnode is unreachable)
+            // Take the last node in the list of CoordinatesToTraverse
+            if (coordinatesToTraverse.Count == nextNode)
+            {
+                continue;
+            }
             // Skip this node if it's on the same row or column as the current position.
             // In this case we won't have to recalculate if it's possible to move somewhere since the straight paths are already calculated by the D* algorithm.
             if (coordinatesToTraverse[nextNode].x == currentPosition.X || coordinatesToTraverse[nextNode].y == currentPosition.Y)

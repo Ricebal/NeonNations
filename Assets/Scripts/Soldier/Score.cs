@@ -17,6 +17,7 @@ public class Score
             m_kills = value;
             if (OnScoreChange != null)
             {
+            Debug.Log("Score event");
                 OnScoreChange();
             }
         }
@@ -35,5 +36,13 @@ public class Score
                 OnScoreChange();
             }
         }
+    }
+
+    public Score() : this(0, 0) { }
+
+    public Score(int kills, int deaths)
+    {
+        m_kills = kills;
+        m_deaths = deaths;
     }
 }

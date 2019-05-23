@@ -1,28 +1,35 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
-public class TeamScoreboardEntry : MonoBehaviour
+public class TeamScoreboardEntry: MonoBehaviour
 {
-    private TextMeshProUGUI m_kills;
+    [SerializeField]
+    private TextMeshProUGUI m_teamScore;
+    private Score m_score;
 
     public void SetScore(Score score)
     {
         m_score = score;
-        score.OnScoreChange += Refresh;
-        Refresh();
+        m_score.OnScoreChange += UpdateScore;
+        UpdateScore();
+        Debug.Log("number 3");
     }
 
-    public void EnableOutline()
+    private void UpdateScore()
     {
-        m_outline.enabled = true;
+        Debug.Log("Updating score");
+        m_teamScore.text = m_score.Kills.ToString();
     }
 
-    private void Refresh()
+    public void SetColor(Color teamColor)
     {
-        m_kills.text = m_score.Kills.ToString();
-        m_deaths.text = m_score.Deaths.ToString();
+        // Set color
+        m_teamScore.outlineColor = teamColor;
+        Material mat = Material.Instantiate(m_teamScore.fontSharedMaterial);
+        Color32 teamColor32 = teamColor;
+        // Set alpha because that's not saved in team.Color
+        teamColor32.a = 255;
+        mat.SetColor(ShaderUtilities.ID_GlowColor, teamColor32);
+        m_teamScore.fontSharedMaterial = mat;
     }
 }

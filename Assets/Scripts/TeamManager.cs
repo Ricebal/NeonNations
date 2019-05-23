@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Mirror;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -9,7 +10,7 @@ public class TeamManager : MonoBehaviour
     private Soldier[] m_players = new Soldier[8];
     public delegate void OnPlayersChangeDelegate();
     public event OnPlayersChangeDelegate OnPlayersChange;
-
+    
     public Team AddPlayer(Soldier player)
     {
         Team team = new Team(-1);
@@ -49,6 +50,7 @@ public class TeamManager : MonoBehaviour
 
         if (OnPlayersChange != null)
         {
+            Debug.Log("Number 1.5");
             OnPlayersChange();
         }
 
@@ -98,6 +100,12 @@ public class TeamManager : MonoBehaviour
         }
 
         return new Color(0, 0, 0, 0);
+    }
+
+    public void SetTeamScore(int teamId, Score score)
+    {
+        Debug.Log("number 1");
+        Teams[teamId - 1].Score = score;
     }
 
     public void AddTeam()

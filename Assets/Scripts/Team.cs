@@ -6,9 +6,7 @@ public class Team
     public int Id;
     public Color Color;
     public int PlayerCount;
-    private Score m_score;
-    public delegate void OnScoreChangeDelegate(Team team);
-    public event OnScoreChangeDelegate OnScoreChange;
+    public Score Score;
 
     public Team(int id): this()
     {
@@ -16,30 +14,22 @@ public class Team
     }
     public Team()
     {
-        m_score = new Score();
+        Score = new Score();
     }
 
     public void AddKill()
     {
-        m_score.Kills++;
-        if (OnScoreChange != null)
-        {
-            OnScoreChange(this);
-        }
+        Score.Kills++;   
     }
 
     public void AddDeath()
     {
-        m_score.Deaths++;
-        if (OnScoreChange != null)
-        {
-            OnScoreChange(this);
-        }
+        Score.Deaths++;
     }
     
     public int GetScore()
     {
-        return m_score.Kills;
+        return Score.Kills;
     }
 
     public override bool Equals(object obj)
