@@ -12,6 +12,6 @@ public class BotController : MonoBehaviour
         m_searchBehaviour = GetComponent<SearchBehaviour>();
         m_attackBehaviour = GetComponent<AttackBehaviour>();
 
-        m_searchBehaviour.Activate();
+        m_attackBehaviour.Activate();
     }
 }

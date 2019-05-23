@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Text;
 using UnityEngine;
 
+[RequireComponent(typeof(Bot))]
 public class SearchBehaviour : BotBehaviour
 {
     private const float OFFSET_FOR_LINE_CALCULATION = .95f; // A little less than 1. This will prevent the bot from thinking it will collide with an obstacle directly next to it when moving parallel to ithat obstacle.
@@ -15,7 +16,6 @@ public class SearchBehaviour : BotBehaviour
 
     void Start()
     {
-        m_active = false;
         m_environment = ScriptableObject.CreateInstance<GameEnvironment>();
         UnityEngine.Random.InitState((int)DateTime.Now.Ticks);
         m_dStarLite = new DStarLite(m_environment, false);

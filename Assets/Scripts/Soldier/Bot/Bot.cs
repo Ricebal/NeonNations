@@ -56,14 +56,14 @@ public class Bot : Soldier
     }
 
     // Should be called from the script that will control the bot
-    public void Aim(float x, float z)
+    public void Aim(Vector2 position)
     {
         if (!isServer)
         {
             return;
         }
 
-        Vector3 newDirection = new Vector3(x, transform.forward.y, z);
+        Vector3 newDirection = new Vector3(position.x, transform.forward.y, position.y);
         // Change the rotation
         transform.rotation = Quaternion.LookRotation(newDirection);
     }
