@@ -47,6 +47,7 @@ public class Bot : Soldier
         {
             return;
         }
+
         if (!m_isDead)
         {
             Vector3 movement = new Vector3(horizontal, 0.0f, vertical);

@@ -5312,8 +5312,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7614d91b0fce1ba4c92591a5e636bf17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_threshold: 0.025
   syncInterval: 0.1
+  m_threshold: 0.025
   m_lerpRate: 7
   m_closeEnough: 0.01
   m_tooFar: 10
@@ -5364,7 +5364,7 @@ GameObject:
   - component: {fileID: 5445096779193966606}
   m_Layer: 10
   m_Name: Point Light
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
