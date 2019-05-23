@@ -63,9 +63,14 @@ public class Bot : Soldier
             return;
         }
 
-        Vector3 newDirection = new Vector3(position.x, transform.forward.y, position.y);
-        // Change the rotation
-        transform.rotation = Quaternion.LookRotation(newDirection);
+        Vector3 target = new Vector3(position.x, 0, position.y);
+        Vector3 direction = target - transform.position;
+        float rotation = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.Euler(0, rotation, 0);
+
+        // Vector3 newDirection = new Vector3(position.x, transform.forward.y, position.y);
+        // // Change the rotation
+        // transform.rotation = Quaternion.LookRotation(newDirection);
     }
 
 }
