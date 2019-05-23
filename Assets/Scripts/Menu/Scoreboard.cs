@@ -17,9 +17,9 @@ public class Scoreboard : NetworkBehaviour
 
     private void Start()
     {
+        m_teamManager = GameObject.Find("GameManager").GetComponent<TeamManager>();
         if (isServer)
         {
-            m_teamManager = GameObject.Find("GameManager").GetComponent<TeamManager>();
             m_teamManager.OnPlayersChange += Refresh;
             Refresh();
         }
@@ -98,6 +98,7 @@ public class Scoreboard : NetworkBehaviour
         {
             scoreboardEntry.EnableOutline();
         }
+        playerScript.Team.Score = m_teamManager.Teams[playerScript.Team.Id-1].Score;
         return true;
     }
 

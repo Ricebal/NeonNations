@@ -84,11 +84,6 @@ public class TeamManager : MonoBehaviour
         }
     }
 
-    public Soldier[] GetPlayers()
-    {
-        return m_players;
-    }
-
     public Color GetColor(int teamId)
     {
         // Find the team with corresponding team id

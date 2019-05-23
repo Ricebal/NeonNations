@@ -73,6 +73,14 @@ public class GameManager : NetworkBehaviour
         player.Team = m_teamManager.AddPlayer(player);
     }
 
+    [ClientRpc]
+    private void RpcSyncTeamForPlayer(string playerName)
+    {
+        // Get soldier with this playerName
+        Soldier soldier = GameObject.Find(playerName).GetComponent<Soldier>();
+        soldier.Team.Score = m_teamManager.Teams[soldier.Team.Id - 1].Score;
+    }
+
     public void RemovePlayer(Soldier player) => m_teamManager.RemovePlayer(player);
 
     /// <summary>
