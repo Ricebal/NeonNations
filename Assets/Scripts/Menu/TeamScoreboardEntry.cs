@@ -1,7 +1,7 @@
 ﻿using TMPro;
 using UnityEngine;
 
-public class TeamScoreboardEntry: MonoBehaviour
+public class TeamScoreboardEntry : MonoBehaviour
 {
     [SerializeField]
     private TextMeshProUGUI m_teamScore;
@@ -12,12 +12,10 @@ public class TeamScoreboardEntry: MonoBehaviour
         m_score = score;
         m_score.OnScoreChange += UpdateScore;
         UpdateScore();
-        Debug.Log("number 3");
     }
 
     private void UpdateScore()
     {
-        Debug.Log("Updating score");
         m_teamScore.text = m_score.Kills.ToString();
     }
 

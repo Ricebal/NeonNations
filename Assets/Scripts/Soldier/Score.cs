@@ -17,7 +17,6 @@ public class Score
             m_kills = value;
             if (OnScoreChange != null)
             {
-            Debug.Log("Score event");
                 OnScoreChange();
             }
         }

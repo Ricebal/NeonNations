@@ -1,6 +1,6 @@
-﻿using Mirror;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using Mirror;
 using UnityEngine;
 
 public class TeamManager : MonoBehaviour
@@ -10,7 +10,7 @@ public class TeamManager : MonoBehaviour
     private Soldier[] m_players = new Soldier[8];
     public delegate void OnPlayersChangeDelegate();
     public event OnPlayersChangeDelegate OnPlayersChange;
-    
+
     public Team AddPlayer(Soldier player)
     {
         Team team = new Team(-1);
@@ -50,7 +50,6 @@ public class TeamManager : MonoBehaviour
 
         if (OnPlayersChange != null)
         {
-            Debug.Log("Number 1.5");
             OnPlayersChange();
         }
 
@@ -104,7 +103,6 @@ public class TeamManager : MonoBehaviour
 
     public void SetTeamScore(int teamId, Score score)
     {
-        Debug.Log("number 1");
         Teams[teamId - 1].Score = score;
     }
 
@@ -117,7 +115,7 @@ public class TeamManager : MonoBehaviour
     {
         Teams.Remove(team);
         // Fix team id's so there are no gaps
-        for(int i = 0; i < Teams.Count; i++)
+        for (int i = 0; i < Teams.Count; i++)
         {
             Teams[i].Id = i;
         }

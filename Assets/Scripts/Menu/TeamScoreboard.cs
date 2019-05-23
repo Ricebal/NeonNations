@@ -13,7 +13,7 @@ public class TeamScoreboard : NetworkBehaviour
     [SerializeField]
     private TeamManager m_teamManager;
     private TextMeshProUGUI m_teamScore;
-    private Dictionary<int, TeamScoreboardEntry> m_teamScoreboardEntries = new Dictionary<int, TeamScoreboardEntry>();
+    private Dictionary<int, TeamScoreboardEntry> m_teamScoreboardEntries;
 
     private void Start()
     {
@@ -21,20 +21,22 @@ public class TeamScoreboard : NetworkBehaviour
         {
             m_teamManager = GameObject.Find("GameManager").GetComponent<TeamManager>();
             m_teamManager.OnPlayersChange += RefreshScores;
+            m_teamScoreboardEntries = new Dictionary<int, TeamScoreboardEntry>();
             foreach (Team team in m_teamManager.Teams)
             {
                 RpcAddTeam(team.Id);
             }
+            RpcRefreshScores();
         }
 
         GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
     }
-    
+
     [ClientRpc]
     private void RpcAddTeam(int teamId)
     {
         // Get team, -1 for array.
-        Team team = m_teamManager.Teams[teamId-1];
+        Team team = m_teamManager.Teams[teamId - 1];
 
         // Make a new entry on the scoreboard
         GameObject scorePanel = Instantiate(m_teamScorePrefab)as GameObject;
@@ -49,8 +51,13 @@ public class TeamScoreboard : NetworkBehaviour
 
     private void RefreshScores()
     {
-        Debug.Log("number 2");
-        foreach(KeyValuePair<int, TeamScoreboardEntry> keyValuePair in m_teamScoreboardEntries)
+        RpcRefreshScores();
+    }
+
+    [ClientRpc]
+    private void RpcRefreshScores()
+    {
+        foreach (KeyValuePair<int, TeamScoreboardEntry> keyValuePair in m_teamScoreboardEntries)
         {
             // Get team, -1 for array.
             Team team = m_teamManager.Teams[keyValuePair.Key - 1];
