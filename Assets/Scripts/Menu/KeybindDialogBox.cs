@@ -31,11 +31,11 @@ public class KeybindDialogBox : MonoBehaviour
             keyItem.transform.localScale = Vector3.one;
 
             // Sets the name of the action in the "Keybind Dialog Box"
-            TextMeshProUGUI actionNameText = keyItem.transform.Find("Action Name").GetComponent<TextMeshProUGUI>();
+            TextMeshProUGUI actionNameText = keyItem.transform.Find("ActionName").GetComponent<TextMeshProUGUI>();
             actionNameText.text = actionName;
 
             // Sets the name of the key in the "Keybind Dialog Box"
-            TextMeshProUGUI keyNameText = keyItem.transform.Find("Button/Key Name").GetComponent<TextMeshProUGUI>();
+            TextMeshProUGUI keyNameText = keyItem.transform.Find("Button/KeyName").GetComponent<TextMeshProUGUI>();
             keyNameText.text = InputManager.GetKeyName(actionName);
             m_keyToLabel[actionName] = keyNameText;
 
