@@ -8,13 +8,19 @@ public class AttackBehaviour : BotBehaviour
     private Action m_action;
     private Bot m_bot;
     private TeamManager m_teamManager;
-    private const float VISION_RANGE = 7.5f;
-    private const float INITIAL_ACCURACY = 2f;
-    private const float ACCURACY_MODIFIER = 0.01f;
-    private const float MOVE_ZERO = 0.5f;
-    private const float MOVE_TRESHHOLD = 0.02f;
-    private float m_accuracy = 1f;
     private Vector3 m_lastShotPosition;
+    private float m_accuracy = 1f;
+
+    // How far the bot can see
+    private const float VISION_RANGE = 7.5f;
+    // Accuracy to reset to
+    private const float INITIAL_ACCURACY = 2f;
+    // Amount of accuracy gained per update
+    private const float ACCURACY_MODIFIER = 0.01f;
+    // Zero point for movement is 0.5 for some reason
+    private const float MOVE_ZERO = 0.5f;
+    // Threshold if the target moved
+    private const float MOVE_THRESHOLD = 0.02f;
 
     private void Start()
     {
@@ -34,10 +40,13 @@ public class AttackBehaviour : BotBehaviour
 
     private void FireAtClosestEnemy()
     {
+        // Get all players that aren't on the bot's team
         List<Soldier> enemies = m_teamManager.GetEnemiesByTeam(m_bot.Team);
         Vector3 aimTarget;
         Vector3 targetPosition = FindClosestEnemyPosition(enemies);
+        // Worldspace -> localspace
         Vector3 rayCastTarget = targetPosition - transform.position;
+        // Raycast to the target
         RaycastHit[] hits = Physics.RaycastAll(transform.position, rayCastTarget, VISION_RANGE);
         RaycastHit closestHit = new RaycastHit();
         float minDist = Mathf.Infinity;
@@ -51,13 +60,14 @@ public class AttackBehaviour : BotBehaviour
             }
         }
 
+        // If the closest raycast object is not a player return
         if (!(closestHit.collider != null && closestHit.collider.tag == "Player"))
         {
             return;
         }
 
+        // Make bot less accurate to make it more fair for players
         aimTarget = JitterAim(closestHit.point);
-        // Debug.DrawLine(transform.position, aimTarget);
         FireAtPosition(aimTarget);
         m_lastShotPosition = targetPosition;
     }
@@ -66,8 +76,9 @@ public class AttackBehaviour : BotBehaviour
     {
         if (m_lastShotPosition != null)
         {
+            // Set the accuracy based on last aimed at position
             float movedDistance = Vector3.Distance(m_lastShotPosition, position);
-            if (movedDistance > MOVE_ZERO + MOVE_TRESHHOLD || movedDistance < MOVE_ZERO - MOVE_TRESHHOLD)
+            if (movedDistance > MOVE_ZERO + MOVE_THRESHOLD || movedDistance < MOVE_ZERO - MOVE_THRESHOLD)
             {
                 m_accuracy = INITIAL_ACCURACY;
             }
