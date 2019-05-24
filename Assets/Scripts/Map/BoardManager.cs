@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using Mirror;
+using UnityEngine;
 
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 public class BoardManager : NetworkBehaviour
@@ -12,11 +12,11 @@ public class BoardManager : NetworkBehaviour
     private enum Walls
     {
         // Decimal     // Binary
-        None = 0,    // 000000
-        Up = 1,    // 000001
-        Right = 2,    // 000010
-        Down = 4,    // 000100
-        Left = 8    // 001000
+        None = 0, // 000000
+        Up = 1, // 000001
+        Right = 2, // 000010
+        Down = 4, // 000100
+        Left = 8 // 001000
     }
 
     [SerializeField]
@@ -37,7 +37,6 @@ public class BoardManager : NetworkBehaviour
     private GameObject m_map;
     private GameObject m_breakableWalls;
     private List<GameObject> m_mapParts = new List<GameObject>();
-
 
     // --------------------------------------------------------------------------------------------
     // Public functions
@@ -82,7 +81,6 @@ public class BoardManager : NetworkBehaviour
         } while (m_tileMap[randomTile.x][randomTile.y] != Tile.Floor);
         return randomTile;
     }
-
 
     // --------------------------------------------------------------------------------------------
     // Create map functions
@@ -139,7 +137,7 @@ public class BoardManager : NetworkBehaviour
 
                     instance.transform.position = new Vector3(i + MAP_OFFSET, 0f, j + MAP_OFFSET);
                     instance.transform.SetParent(m_map.transform);
-                } 
+                }
                 else if (m_tileMap[i][j] == Tile.BreakableWall && isServer)
                 {
                     GameObject instance = Instantiate(m_breakableWallPrefab, new Vector3(i, 0f, j), Quaternion.identity);
@@ -184,31 +182,31 @@ public class BoardManager : NetworkBehaviour
         // all the vertices needed for the different faces
         // vertices can't be shared between the triangles, because the shader can't handle that
         Vector3[] vertices = {
-                        new Vector3 (1, 0.5f, 0),
-                        new Vector3 (0, 0.5f, 0),
-                        new Vector3 (0, 0.5f, 1),
-                        new Vector3 (1, 0.5f, 1),
+            new Vector3(1, 0.5f, 0),
+            new Vector3(0, 0.5f, 0),
+            new Vector3(0, 0.5f, 1),
+            new Vector3(1, 0.5f, 1),
 
-                        new Vector3 (1, 0.5f, 1),
-                        new Vector3 (0, 0.5f, 1),
-                        new Vector3 (0, -0.5f, 1),
-                        new Vector3 (1, -0.5f, 1),
+            new Vector3(1, 0.5f, 1),
+            new Vector3(0, 0.5f, 1),
+            new Vector3(0, -0.5f, 1),
+            new Vector3(1, -0.5f, 1),
 
-                        new Vector3 (1, -0.5f, 0),
-                        new Vector3 (1, 0.5f, 0),
-                        new Vector3 (1, 0.5f, 1),
-                        new Vector3 (1, -0.5f, 1),
+            new Vector3(1, -0.5f, 0),
+            new Vector3(1, 0.5f, 0),
+            new Vector3(1, 0.5f, 1),
+            new Vector3(1, -0.5f, 1),
 
-                        new Vector3 (0, -0.5f, 0),
-                        new Vector3 (1, 0.5f, 0),
-                        new Vector3 (1, -0.5f, 0),
-                        new Vector3 (0, 0.5f, 0),
+            new Vector3(0, -0.5f, 0),
+            new Vector3(1, 0.5f, 0),
+            new Vector3(1, -0.5f, 0),
+            new Vector3(0, 0.5f, 0),
 
-                        new Vector3 (0, -0.5f, 0),
-                        new Vector3 (0, -0.5f, 1),
-                        new Vector3 (0, 0.5f, 1),
-                        new Vector3 (0, 0.5f, 0)
-                    };
+            new Vector3(0, -0.5f, 0),
+            new Vector3(0, -0.5f, 1),
+            new Vector3(0, 0.5f, 1),
+            new Vector3(0, 0.5f, 0)
+        };
 
         int[] faceTop = { 0, 1, 2, 0, 2, 3 };
         int[] faceUp = { 4, 5, 6, 4, 6, 7 };
@@ -314,7 +312,7 @@ public class BoardManager : NetworkBehaviour
         newMesh.CombineMeshes(meshDataList.ToArray());
 
         // create new map object to hold part of the map
-        GameObject mapPart = Instantiate(m_mapPrefab, Vector3.zero, Quaternion.identity) as GameObject;
+        GameObject mapPart = Instantiate(m_mapPrefab, Vector3.zero, Quaternion.identity)as GameObject;
 
         // handle new map object
         mapPart.transform.GetComponent<MeshFilter>().sharedMesh = newMesh;
