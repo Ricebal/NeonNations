@@ -8,7 +8,11 @@ public class AttackBehaviour : BotBehaviour
     private Action m_action;
     private Bot m_bot;
     private TeamManager m_teamManager;
-    private const float VISION_RANGE = 5;
+    private const float VISION_RANGE = 7.5f;
+    private const float INITIAL_ACCURACY = 2f;
+    private const float ACCURACY_MODIFIER = 0.01f;
+    private float m_accuracy = 1f;
+    private Vector3 m_lastShotPosition;
 
     private void Start()
     {
@@ -17,7 +21,7 @@ public class AttackBehaviour : BotBehaviour
         m_teamManager = GameObject.Find("GameManager").GetComponent<TeamManager>();
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         if (!m_active)
         {
@@ -29,23 +33,48 @@ public class AttackBehaviour : BotBehaviour
     private void FireAtClosestEnemy()
     {
         List<Soldier> enemies = m_teamManager.GetEnemiesByTeam(m_bot.Team);
+        Vector3 aimTarget;
         Vector3 targetPosition = FindClosestEnemyPosition(enemies);
         Vector3 rayCastTarget = targetPosition - transform.position;
         RaycastHit[] hits = Physics.RaycastAll(transform.position, rayCastTarget, VISION_RANGE);
-        bool canFire = true;
+        RaycastHit closestHit = new RaycastHit();
+        float minDist = Mathf.Infinity;
         foreach (RaycastHit hit in hits)
         {
-            if (hit.collider.tag != "Player" && hit.collider.tag != "Bullet")
+            float dist = Vector3.Distance(transform.position, hit.point);
+            if (dist < minDist)
             {
-                canFire = false;
-                return;
+                closestHit = hit;
+                minDist = dist;
             }
         }
-        if (!canFire)
+
+        if (!(closestHit.collider != null && closestHit.collider.tag == "Player"))
         {
             return;
         }
-        FireAtPosition(targetPosition);
+
+        aimTarget = JitterAim(closestHit.point);
+        // Debug.DrawLine(transform.position, aimTarget);
+        FireAtPosition(aimTarget);
+        m_lastShotPosition = targetPosition;
+    }
+
+    private Vector3 JitterAim(Vector3 position)
+    {
+        if (m_lastShotPosition != null)
+        {
+            float movedDistance = Vector3.Distance(m_lastShotPosition, position);
+            if (movedDistance > 0.52 || movedDistance < 0.48)
+            {
+                m_accuracy = INITIAL_ACCURACY;
+            }
+            else
+            {
+                m_accuracy = Mathf.Max(0, m_accuracy - ACCURACY_MODIFIER);
+            }
+        }
+        return new Vector3(position.x + Random.Range(-m_accuracy, m_accuracy), position.y, position.z + Random.Range(-m_accuracy, m_accuracy));
     }
 
     private void FireAtPosition(Vector3 position)
