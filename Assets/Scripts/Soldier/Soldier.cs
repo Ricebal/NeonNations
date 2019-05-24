@@ -13,8 +13,8 @@ public abstract class Soldier : NetworkBehaviour
     public float Speed;
     // The respawn time of the soldier
     public float RespawnTime;
+    public bool IsDead = false;
 
-    protected bool m_isDead = false;
     protected float m_deathTime;
     protected Stats m_stats;
 
@@ -33,7 +33,7 @@ public abstract class Soldier : NetworkBehaviour
     protected void Update()
     {
         // If the Soldier is respawning, make him fade away
-        if (m_isDead)
+        if (IsDead)
         {
             float newAlpha = Mathf.Max(0, (RespawnTime - (Time.time - m_deathTime)) / RespawnTime);
             m_renderer.material.color = new Color(1, 0.39f, 0.28f, newAlpha);
@@ -42,7 +42,7 @@ public abstract class Soldier : NetworkBehaviour
         if (isServer)
         {
             // If the soldier is able to respawn
-            if (m_isDead && Time.time - m_deathTime >= RespawnTime)
+            if (IsDead && Time.time - m_deathTime >= RespawnTime)
             {
                 Vector2 spawnPoint = GameObject.Find("GameManager").GetComponent<BoardManager>().GetRandomFloorTile();
                 RpcRespawn(spawnPoint);
@@ -64,7 +64,7 @@ public abstract class Soldier : NetworkBehaviour
 
     protected virtual void Die()
     {
-        m_isDead = true;
+        IsDead = true;
         m_sphereCollider.enabled = false;
         m_deathTime = Time.time;
         PlayerScore.Deaths++;
@@ -98,7 +98,7 @@ public abstract class Soldier : NetworkBehaviour
         m_sphereCollider.enabled = true;
         m_renderer.material.color = InitialColor;
         m_stats.Reset();
-        m_isDead = false;
+        IsDead = false;
     }
 
     public void SetInitialColor(Color color)
@@ -131,7 +131,7 @@ public abstract class Soldier : NetworkBehaviour
         if (m_stats.GetCurrentHealth() <= 0)
         {
             // If the Soldier is not yet dead, the Soldier will die
-            if (!m_isDead)
+            if (!IsDead)
             {
                 RpcAddKill(playerId);
                 RpcDead();

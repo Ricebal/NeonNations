@@ -6,8 +6,12 @@
     public double Rhs;
     public Tile Content;
 
-    public Node()
+    private List<Tile> m_listOfObstacles = new List<Tile>();
+
+    public Node(List<Tile> listOfObstacles)
     {
+        m_listOfObstacles = listOfObstacles;
+
         // Set the Content to Unknown by default.
         Content = Tile.Unknown;
         // Set CostFromStartingPoint and Rhs to PositiveInfinity by default.
@@ -20,7 +24,6 @@
     /// </summary>
     public bool IsObstacle()
     {
-        // 1 and 2 are obstacles
-        return Content == Tile.Wall || Content == Tile.BreakableWall;
+        return m_listOfObstacles.Contains(Content);
     }
 }

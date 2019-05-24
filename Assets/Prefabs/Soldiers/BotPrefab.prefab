@@ -4819,6 +4819,7 @@ GameObject:
   - component: {fileID: 8638977763130829896}
   - component: {fileID: 8638977763130829897}
   - component: {fileID: 8638977763130829898}
+  - component: {fileID: 3520973048332080483}
   - component: {fileID: 2189273758118548216}
   - component: {fileID: 4637634387170343305}
   - component: {fileID: 7305227545255766034}
@@ -4828,6 +4829,11 @@ GameObject:
   - component: {fileID: 3138340112452186901}
   - component: {fileID: 8035132587775920758}
   - component: {fileID: 4016150385033508826}
+  - component: {fileID: 6834461769898358064}
+  - component: {fileID: 4318195982715262185}
+  - component: {fileID: 3484724584103712261}
+  - component: {fileID: 2573536475702280004}
+  - component: {fileID: 3756314019618765446}
   m_Layer: 10
   m_Name: BotPrefab
   m_TagString: Player
@@ -4928,6 +4934,18 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &3520973048332080483
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6654271199680664771}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89ba722bcd5944b40b5806bb0b193a05, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &2189273758118548216
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4985,6 +5003,7 @@ MonoBehaviour:
   InitialColor: {r: 0, g: 0, b: 0, a: 0}
   Speed: 7.5
   RespawnTime: 5
+  IsDead: 0
 --- !u!114 &3362813290604796342
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5062,6 +5081,85 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ddc690c2389f574bb4047d8ad5a10db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &6834461769898358064
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6654271199680664771}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19384b48d653250488bc4bed0cf1b0f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &4318195982715262185
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6654271199680664771}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a37e3b0faa9a0444b8b6fd05ff93ccb9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncInterval: 0.1
+  Prefab: {fileID: 4647958490886930736, guid: c00706cf39d2dec45acc42ae29296223, type: 3}
+  Spawn: {fileID: 8830476281594632761}
+  Cost: 10
+  Cooldown: 0.25
+--- !u!114 &3484724584103712261
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6654271199680664771}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3fde16f02c5ab324a8ce14c90d494b5e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncInterval: 0.1
+  m_prefab: {fileID: 4647958490886930736, guid: be7e8cfbb92a8f44b857f951d2f36f60,
+    type: 3}
+  m_cooldown: 1
+  Cost: 50
+--- !u!114 &2573536475702280004
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6654271199680664771}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 421888c4585966b489533fd75af27991, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Multiplier: 7.5
+  Cost: 20
+  m_duration: 0.1
+  m_cooldown: 1
+--- !u!114 &3756314019618765446
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6654271199680664771}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0223991d6e74d5e43bbe073c9693bb0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncInterval: 0.1
+  m_prefab: {fileID: 4278105648758884905, guid: b7ef729de582b5a469c6774727d3dca1,
+    type: 3}
+  m_distance: 1
+  m_linger: 0.1
 --- !u!1 &6716781768823966986
 GameObject:
   m_ObjectHideFlags: 0
