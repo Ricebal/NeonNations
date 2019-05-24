@@ -643,7 +643,7 @@ public class MapGenerator
         GameEnvironment ge = GameEnvironment.CreateInstance(m_tileMap, new List<Tile>() { Tile.Wall });
         DStarLite dStarLite = new DStarLite(ge, true);
         dStarLite.RunDStarLite(tilesToCalculateFrom[0], tilesToCalculateTo[0]);
-        costs[0] = dStarLite.Map.GetNode(tilesToCalculateFrom[0].x,tilesToCalculateFrom[0].y).CostFromStartingPoint;
+        costs[0] = dStarLite.Map.GetNode(tilesToCalculateFrom[0].x, tilesToCalculateFrom[0].y).CostFromStartingPoint;
         dStarLite.RunDStarLite(tilesToCalculateFrom[1], tilesToCalculateTo[1]);
         costs[1] = dStarLite.Map.GetNode(tilesToCalculateFrom[1].x, tilesToCalculateFrom[1].y).CostFromStartingPoint;
 
