@@ -60,8 +60,7 @@ public class DStarLite
     private void GenerateNodeMap(bool knowMap)
     {
         Tile[][] completeMap = m_environment.GetMap();
-        List<Tile> list = m_environment.GetList();
-        Map = new NavigationGraph(completeMap, knowMap, ref list);
+        Map = new NavigationGraph(completeMap, knowMap, m_environment.GetList());
     }
 
     /// <summary>

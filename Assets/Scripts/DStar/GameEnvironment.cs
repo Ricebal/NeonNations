@@ -18,10 +18,10 @@ public class GameEnvironment : ScriptableObject
     /// <param name="map">Map to set</param>
     /// <param name="list">List to set</param>
     /// <returns>A new GameEnvironment with the set values</returns>
-    public static GameEnvironment CreateInstance(Tile[][] map, ref List<Tile> list)
+    public static GameEnvironment CreateInstance(Tile[][] map, List<Tile> list)
     {
         var data = CreateInstance<GameEnvironment>();
-        data.Init(map, ref list);
+        data.Init(map, list);
         return data;
     }
 
@@ -30,7 +30,7 @@ public class GameEnvironment : ScriptableObject
     /// </summary>
     /// <param name="map">Map to set</param>
     /// <param name="list">List to set</param>
-    private void Init(Tile[][] map, ref List<Tile> list)
+    private void Init(Tile[][] map, List<Tile> list)
     {
         m_map = map;
         m_listOfObstacles = list;
@@ -39,7 +39,7 @@ public class GameEnvironment : ScriptableObject
     /// <summary>
     /// Gives the current map
     /// </summary>
-    /// <returns>Tile[][] Map</returns>
+    /// <returns>int[][] Map</returns>
     public Tile[][] GetMap()
     {
         return m_map;
