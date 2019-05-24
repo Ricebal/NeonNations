@@ -3,7 +3,7 @@ using System.Linq;
 using Mirror;
 using UnityEngine;
 
-public class TeamManager : MonoBehaviour
+public class TeamManager : NetworkBehaviour
 {
     public List<Team> Teams;
     private int m_playerCount;
@@ -11,13 +11,13 @@ public class TeamManager : MonoBehaviour
     public delegate void OnPlayersChangeDelegate();
     public event OnPlayersChangeDelegate OnPlayersChange;
 
-    public Team AddPlayer(Soldier player)
+    public void AddPlayer(Soldier player)
     {
         Team team = new Team(-1);
 
         // Add player to list of players
         m_players[m_playerCount] = player;
-
+        RpcAddPlayerLocally(player.transform.name);
         // If there's no team throw a debug
         if (Teams.Count > 0)
         {
@@ -47,13 +47,27 @@ public class TeamManager : MonoBehaviour
         // Set player colour for new player
         player.SetInitialColor(GetColor(team.Id));
         player.GetComponent<Identity>().SetIdentity();
+        player.Team = team;
 
         if (OnPlayersChange != null)
         {
+            Debug.Log($"Playercount is now {m_playerCount}");
             OnPlayersChange();
         }
+    }
 
-        return team;
+    [ClientRpc]
+    public void RpcAddPlayerLocally(string playerName)
+    {
+        if (isServer)
+        {
+            return;
+        }
+        Soldier[] players = GameObject.FindObjectsOfType<Soldier>();//.First(s => s.name == playerName);
+        Soldier player = players.First(s => s.transform.name == playerName);
+        m_players[m_playerCount] = player;
+        m_playerCount++;
+        Debug.Log($"Playercount is now {m_playerCount}");
     }
 
     public void RemovePlayer(Soldier player)
@@ -78,10 +92,39 @@ public class TeamManager : MonoBehaviour
         }
 
         m_players = tempArray;
+        RpcRemovePlayerLocally(player.transform.name);
         if (OnPlayersChange != null)
         {
+            Debug.Log($"Playercount is now {m_playerCount}");
             OnPlayersChange();
         }
+    }
+
+    [ClientRpc]
+    public void RpcRemovePlayerLocally(string playerName)
+    {
+        if (isServer)
+        {
+            return;
+        }
+        Soldier player = GameObject.FindObjectsOfType<Soldier>().First(s => s.transform.name == playerName);
+        m_playerCount--;
+
+        // Remove player from list of players
+        Soldier[] tempArray = new Soldier[8];
+        int index = 0;
+        // Fix the player array so that there are no gaps
+        for (int i = 0; i < 8; i++)
+        {
+            if (m_players[i] != null && m_players[i] != player)
+            {
+                tempArray[index] = m_players[i];
+                index++;
+            }
+        }
+
+        m_players = tempArray;
+        Debug.Log($"Playercount is now {m_playerCount}");
     }
 
     public Color GetColor(int teamId)
@@ -119,5 +162,10 @@ public class TeamManager : MonoBehaviour
     public Soldier[] GetAllPlayers()
     {
         return m_players;
+    }
+    public Soldier GetNewestPlayer()
+    {
+        Debug.Log($"playercount at moment that newest player is asked = {m_playerCount}");
+        return m_players[m_playerCount-1];
     }
 }

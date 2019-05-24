@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Mirror;
 using UnityEngine;
 
@@ -98,10 +99,33 @@ public class Scoreboard : NetworkBehaviour
         {
             scoreboardEntry.EnableOutline();
         }
+        if(playerScript.Team.Id == 0)
+        {
+            Debug.Log("Send request to host for updating team-id");
+            Team toJoin = m_teamManager.Teams.Aggregate((min, next) => min.PlayerCount < next.PlayerCount ? min : next);
+            toJoin.PlayerCount++;
+            playerScript.Team = toJoin;
+            Debug.Log("Request has been sent and the id should have been updated");
+            Debug.Log($"Newest player their team is now {playerScript.Team.Id}");
+        }
         playerScript.Team.Score = m_teamManager.Teams[playerScript.Team.Id-1].Score;
         return true;
     }
-
+    [Command]
+    private void CmdGetTeamIdFromHost()
+    {
+        Debug.Log("Host received a message and will now update the team-id of the newest player");
+        Soldier playerScript = m_teamManager.GetNewestPlayer();
+        RpcUpdateTeamIdForClients(playerScript.Team.Id);
+        Debug.Log("Host has updated the team id of the newest player");
+    }
+    [ClientRpc]
+    private void RpcUpdateTeamIdForClients(int teamId)
+    {
+        Debug.Log("Updating the team Id for a the newest player");
+        Soldier playerScript = m_teamManager.GetNewestPlayer();
+        playerScript.Team.Id = teamId;
+    }
     private void RetryOutdatedPlayers()
     {
         // Make a list of updated players

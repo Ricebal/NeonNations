@@ -13,36 +13,37 @@ public class TeamEditor : Editor
 
     public override void OnInspectorGUI()
     {
-        serializedObject.Update();
+        base.OnInspectorGUI();
+        //    serializedObject.Update();
 
-        GUILayout.BeginVertical("Box");
-        GUILayout.BeginHorizontal();
-        GUILayout.Label("Team count: " + tm.Teams.Count);
-        if (GUILayout.Button("Add team"))
-        {
-            AddTeam();
-        }
-        GUILayout.EndHorizontal();
+        //    GUILayout.BeginVertical("Box");
+        //    GUILayout.BeginHorizontal();
+        //    GUILayout.Label("Team count: " + tm.Teams.Count);
+        //    if (GUILayout.Button("Add team"))
+        //    {
+        //        AddTeam();
+        //    }
+        //    GUILayout.EndHorizontal();
 
-        tm.Teams.ForEach(e =>
-        {
-            GUILayout.BeginHorizontal();
+        //    tm.Teams.ForEach(e =>
+        //    {
+        //        GUILayout.BeginHorizontal();
 
-            GUILayout.Label("Team " + e.Id);
-            e.Color = EditorGUILayout.ColorField(e.Color);
-            if (GUILayout.Button("X"))
-            {
-                RemoveTeam(e);
-                return;
-            }
+        //        GUILayout.Label("Team " + e.Id);
+        //        e.Color = EditorGUILayout.ColorField(e.Color);
+        //        if (GUILayout.Button("X"))
+        //        {
+        //            RemoveTeam(e);
+        //            return;
+        //        }
 
-            GUILayout.EndHorizontal();
-        });
-        GUILayout.EndVertical();
+        //        GUILayout.EndHorizontal();
+        //    });
+        //    GUILayout.EndVertical();
 
-        EditorUtility.SetDirty(target);
-        EditorApplication.MarkSceneDirty();
-        serializedObject.ApplyModifiedProperties();
+        //    EditorUtility.SetDirty(target);
+        //    EditorApplication.MarkSceneDirty();
+        //    serializedObject.ApplyModifiedProperties();
     }
 
     private void AddTeam() => tm.AddTeam();

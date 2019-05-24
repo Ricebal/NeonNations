@@ -10,6 +10,7 @@ public class TeamScoreboard : NetworkBehaviour
     private GameObject m_teamScorePrefab;
     [SerializeField]
     private GameObject m_teamList;
+    [SerializeField]
     private TeamManager m_teamManager;
     private TextMeshProUGUI m_teamScore;
     private Dictionary<int, TeamScoreboardEntry> m_teamScoreboardEntries = new Dictionary<int, TeamScoreboardEntry>();
@@ -45,6 +46,10 @@ public class TeamScoreboard : NetworkBehaviour
         entry.SetScore(team.Score);
         entry.SetColor(team.Color);
         m_teamScoreboardEntries.Add(teamId, entry);
+        if (isServer)
+        {
+            entry.GetScore().OnScoreChange += RefreshScores;
+        }
     }
 
     private void RefreshScores()
@@ -60,6 +65,11 @@ public class TeamScoreboard : NetworkBehaviour
             // Get team, -1 for array.
             Team team = m_teamManager.Teams[keyValuePair.Key - 1];
             keyValuePair.Value.SetScore(team.Score);
+            //if (isServer)
+            //{
+            //    keyValuePair.Value.GetScore().OnScoreChange += RefreshScores;
+            //}
+            Debug.Log("Updating the score");
         }
     }
 }

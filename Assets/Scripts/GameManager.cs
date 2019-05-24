@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Linq;
+using System.Text;
 using Mirror;
 using TMPro;
 using UnityEngine;
@@ -21,20 +22,6 @@ public class GameManager : NetworkBehaviour
     private BoardManager m_boardManager;
     private BotManager m_botManager;
     private TeamManager m_teamManager;
-
-    public void SyncTeams()
-    {
-        m_teamManager.Teams.ForEach(team =>
-        {
-            RpcSyncTeamScore(team.Id, team.Score.Kills, team.Score.Deaths);
-        });
-    }
-
-    [ClientRpc]
-    public void RpcSyncTeamScore(int teamId, int kills, int deaths)
-    {
-        m_teamManager.SetTeamScore(teamId, new Score(kills, deaths));
-    }
 
     void Awake()
     {
@@ -70,7 +57,7 @@ public class GameManager : NetworkBehaviour
     public void AddPlayer(Soldier player)
     {
         SyncTeams();
-        player.Team = m_teamManager.AddPlayer(player);
+        m_teamManager.AddPlayer(player);
     }
 
     [ClientRpc]
@@ -97,5 +84,19 @@ public class GameManager : NetworkBehaviour
             builder.Append(ch);
         }
         return builder.ToString();
+    }
+
+    public void SyncTeams()
+    {
+        m_teamManager.Teams.ForEach(team =>
+        {
+            RpcSyncTeamScore(team.Id, team.Score.Kills, team.Score.Deaths);
+        });
+    }
+
+    [ClientRpc]
+    public void RpcSyncTeamScore(int teamId, int kills, int deaths)
+    {
+        m_teamManager.SetTeamScore(teamId, new Score(kills, deaths));
     }
 }

@@ -1,8 +1,11 @@
 ﻿using UnityEngine;
 
+[System.Serializable]
 public class Score
 {
+    [SerializeField]
     private int m_kills = 0;
+    [SerializeField]
     private int m_deaths = 0;
     public delegate void OnScoreChangeDelegate();
     public event OnScoreChangeDelegate OnScoreChange;
