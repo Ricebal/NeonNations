@@ -92,7 +92,7 @@ public class AttackBehaviour : BotBehaviour
 
     private void FireAtPosition(Vector3 position)
     {
-        m_bot.Aim(new Vector2(position.x, position.z));
+        m_bot.WorldAim(new Vector2(position.x, position.z));
         m_action.Shoot();
     }
 

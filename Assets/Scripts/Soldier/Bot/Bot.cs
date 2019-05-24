@@ -55,8 +55,8 @@ public class Bot : Soldier
         }
     }
 
-    // Should be called from the script that will control the bot
-    public void Aim(Vector2 position)
+    // Aims the bot at the input vector in world space
+    public void WorldAim(Vector2 position)
     {
         if (!isServer)
         {
@@ -68,9 +68,19 @@ public class Bot : Soldier
         float rotation = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(0, rotation, 0);
 
-        // Vector3 newDirection = new Vector3(position.x, transform.forward.y, position.y);
-        // // Change the rotation
-        // transform.rotation = Quaternion.LookRotation(newDirection);
+    }
+
+    // Aims the bot at the input vector in local space
+    public void LocalAim(Vector2 position)
+    {
+        if (!isServer)
+        {
+            return;
+        }
+
+        Vector3 newDirection = new Vector3(position.x, transform.forward.y, position.y);
+        // Change the rotation
+        transform.rotation = Quaternion.LookRotation(newDirection);
     }
 
 }
