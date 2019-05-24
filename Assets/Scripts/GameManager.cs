@@ -56,7 +56,7 @@ public class GameManager : NetworkBehaviour
 
     public void AddPlayer(Soldier player)
     {
-        SyncTeams();
+        m_teamManager.SyncTeams();
         m_teamManager.AddPlayer(player);
     }
 
@@ -84,19 +84,5 @@ public class GameManager : NetworkBehaviour
             builder.Append(ch);
         }
         return builder.ToString();
-    }
-
-    public void SyncTeams()
-    {
-        m_teamManager.Teams.ForEach(team =>
-        {
-            RpcSyncTeamScore(team.Id, team.Score.Kills, team.Score.Deaths);
-        });
-    }
-
-    [ClientRpc]
-    public void RpcSyncTeamScore(int teamId, int kills, int deaths)
-    {
-        m_teamManager.SetTeamScore(teamId, new Score(kills, deaths));
     }
 }

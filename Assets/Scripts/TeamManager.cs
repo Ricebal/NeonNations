@@ -168,4 +168,23 @@ public class TeamManager : NetworkBehaviour
         Debug.Log($"playercount at moment that newest player is asked = {m_playerCount}");
         return m_players[m_playerCount-1];
     }
+
+    public void SyncTeams()
+    {
+        Teams.ForEach(team =>
+        {
+            RpcSyncTeamScore(team.Id, team.Score.Kills, team.Score.Deaths);
+        });
+    }
+
+    [ClientRpc]
+    public void RpcSyncTeamScore(int teamId, int kills, int deaths)
+    {
+        Debug.Log("Syncing team score");
+        if (isServer)
+        {
+            return;
+        }
+        SetTeamScore(teamId, new Score(kills, deaths));
+    }
 }

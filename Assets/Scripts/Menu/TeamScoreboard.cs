@@ -21,6 +21,11 @@ public class TeamScoreboard : NetworkBehaviour
         foreach (Team team in m_teamManager.Teams)
         {
             AddTeam(team.Id);
+            if (isServer)
+            {
+                Debug.Log("Add eventListener");
+                team.Score.OnScoreChange += RefreshScores;
+            }
         }
 
         if (isServer)
@@ -46,30 +51,22 @@ public class TeamScoreboard : NetworkBehaviour
         entry.SetScore(team.Score);
         entry.SetColor(team.Color);
         m_teamScoreboardEntries.Add(teamId, entry);
-        if (isServer)
-        {
-            entry.GetScore().OnScoreChange += RefreshScores;
-        }
     }
 
     private void RefreshScores()
     {
+        m_teamManager.SyncTeams();
         RpcRefreshScores();
     }
 
     [ClientRpc]
     private void RpcRefreshScores()
     {
+        Debug.Log("Updating the score");
         foreach (KeyValuePair<int, TeamScoreboardEntry> keyValuePair in m_teamScoreboardEntries)
         {
-            // Get team, -1 for array.
             Team team = m_teamManager.Teams[keyValuePair.Key - 1];
             keyValuePair.Value.SetScore(team.Score);
-            //if (isServer)
-            //{
-            //    keyValuePair.Value.GetScore().OnScoreChange += RefreshScores;
-            //}
-            Debug.Log("Updating the score");
         }
     }
 }
