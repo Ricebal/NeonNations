@@ -16,6 +16,7 @@ public class GameManager : NetworkBehaviour
     [SyncVar] [SerializeField] private int m_maxTunnelLength = 7;
     [SyncVar] [SerializeField] private int m_tunnelWidth = 2;
     [SyncVar] [SerializeField] private int m_breakableTunnelChance = 20;
+    [SyncVar] [SerializeField] private int m_shortcutMinSkipDistance = 20;
     [SyncVar] [SerializeField] private int m_outerWallWidth = 14;
 
     private BoardManager m_boardManager;
@@ -48,7 +49,7 @@ public class GameManager : NetworkBehaviour
         text.text = m_seed;
 
         MapGenerator mapGenerator = new MapGenerator(m_mapWidth, m_mapHeight, m_maxRoomAmount, m_maxShortcutAmount, m_minRoomLength,
-            m_maxRoomLength, m_minTunnelLength, m_maxTunnelLength, m_tunnelWidth, m_breakableTunnelChance);
+            m_maxRoomLength, m_minTunnelLength, m_maxTunnelLength, m_tunnelWidth, m_breakableTunnelChance, m_shortcutMinSkipDistance);
         m_boardManager.SetupScene(mapGenerator.GenerateRandomMap(m_seed), m_outerWallWidth);
         m_botManager.SetupBots();
     }
