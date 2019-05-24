@@ -618,7 +618,7 @@ public class MapGenerator
 
         // run DStarLite twice
         // TODO: use DStarLite algorithm when it isn't dependant on everything and their moms
-        if (8 >= m_shortcutMinSkipDistance && 10 >= m_shortcutMinSkipDistance)
+        if (12 >= m_shortcutMinSkipDistance && 12 >= m_shortcutMinSkipDistance)
         {
             return true;
         }

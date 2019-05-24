@@ -1,4 +1,6 @@
-﻿
+﻿using System;
+using System.Collections.Generic;
+
 public class Node
 {
     // The cost it takes to get from the starting point to this position. (Also known as g-value)

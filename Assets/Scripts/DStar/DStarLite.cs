@@ -71,7 +71,7 @@ public class DStarLite
     private bool CheckForMapChanges()
     {
         // Check if bot sees new obstacles
-        LinkedList<Vector2Int> coordinatesInSight = m_environment.GetIlluminatedCoordinates();
+        LinkedList<Vector2Int> coordinatesInSight = m_environment.GetIlluminatedCoordinates(m_start);
 
         bool change = false;
         foreach (Vector2Int coordinates in coordinatesInSight)
@@ -124,11 +124,17 @@ public class DStarLite
         }
         m_previousGoal = m_goal;
         Vector2Int coordinateToTraverse = new Vector2Int();
-        do
+        for (int i = 0; i < Map.Map.Length + Map.Map[0].Length; i++)
         {
             coordinateToTraverse = NextMove(mapChanged);
             CoordinatesToTraverse.Add(coordinateToTraverse);
-        } while (!coordinateToTraverse.Equals(m_goal));
+
+            // If the goal coordinates have been reached
+            if (coordinateToTraverse.Equals(m_goal))
+            {
+                break;
+            }
+        }
         m_previousCoordinatesToTraverse = CoordinatesToTraverse;
         return CoordinatesToTraverse;
     }
@@ -261,8 +267,8 @@ public class DStarLite
         {
             return;
         }
-        // While the top state of the Heap has a higher priority than the start state OR start.rhs is not the cost of start
-        while (m_heap.TopKey().CompareTo(CalculatePriority(m_start)) < 0 || startNode.Rhs != startNode.CostFromStartingPoint)
+
+        for (int i = 0; i < Map.Map.Length * Map.Map[0].Length; i++)
         {
             // Gets the priority key from the top
             PriorityKey oldKey = m_heap.TopKey();
@@ -296,6 +302,11 @@ public class DStarLite
                 {
                     UpdateVertex(surroundingNodes);
                 }
+            }
+            // íf the top state of the Heap does not have a higher priority than the start state AND start.rhs is the cost of start
+            if (!(m_heap.TopKey().CompareTo(CalculatePriority(m_start)) < 0 || startNode.Rhs != startNode.CostFromStartingPoint))
+            {
+                break;
             }
         }
     }

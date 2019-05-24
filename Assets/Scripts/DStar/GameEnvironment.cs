@@ -5,20 +5,15 @@ using UnityEngine;
 
 public class GameEnvironment : ScriptableObject
 {
-    private GameObject m_bot;
     private static Tile[][] s_map;
     private const int SONAR_RANGE = 5;
     private const int BULLET_RANGE = 1;
     private const int IMPACT_RANGE = 2;
 
-
-    public GameEnvironment(GameObject bot)
+    private void OnEnable()
     {
         s_map = GameObject.Find("GameManager").GetComponent<BoardManager>().GetTileMap();
-        m_bot = bot;
-
     }
-
 
     /// <summary>
     /// Gives the current map
@@ -70,21 +65,20 @@ public class GameEnvironment : ScriptableObject
     /// <summary>
     /// Get all Coordinates that are illuminated by light on the bot's screen
     /// </summary>
-    public LinkedList<Vector2Int> GetIlluminatedCoordinates()
+    public LinkedList<Vector2Int> GetIlluminatedCoordinates(Vector2Int botCoordinates)
     {
-        LinkedList<Vector2Int> illuminatedCoordinates = GetCoordinatesAroundBot(); // Because of the spotlight around the bot
-        GetCoordinatesAroundLights(ref illuminatedCoordinates); // All other lights visible on screen
+        LinkedList<Vector2Int> illuminatedCoordinates = GetCoordinatesAroundBot(botCoordinates); // Because of the spotlight around the bot
+        GetCoordinatesAroundLights(ref illuminatedCoordinates, botCoordinates); // All other lights visible on screen
         return illuminatedCoordinates;
     }
 
     /// <summary>
     /// Get the Coordinates that are illuminated by the spotlight on the bot
     /// </summary>
-    private LinkedList<Vector2Int> GetCoordinatesAroundBot()
+    private LinkedList<Vector2Int> GetCoordinatesAroundBot(Vector2Int botCoordinates)
     {
         LinkedList<Vector2Int> currentCoordinatesInSight = new LinkedList<Vector2Int>();
-        Vector2Int botCoordinate = ConvertGameObjectToCoordinates(m_bot.transform);
-        return GetCoordinatesInRange(botCoordinate, 2, currentCoordinatesInSight);
+        return GetCoordinatesInRange(botCoordinates, 2, currentCoordinatesInSight);
     }
 
     /// <summary>
@@ -122,10 +116,10 @@ public class GameEnvironment : ScriptableObject
     /// Get coordinates that are illuminated by lights
     /// </summary>
     /// <param name="illuminatedCoordinates">LinkedListist to which the illuminated Coordinates should be added</param>
-    private void GetCoordinatesAroundLights(ref LinkedList<Vector2Int> illuminatedCoordinates)
+    private void GetCoordinatesAroundLights(ref LinkedList<Vector2Int> illuminatedCoordinates, Vector2Int botCoordinates)
     {
         // Get all lights in sight of the bot
-        List<Light> lightsInSight = GetLights();
+        List<Light> lightsInSight = GetLights(botCoordinates);
 
         // Get all illuminated coordinates
         foreach (Light light in lightsInSight)
@@ -158,12 +152,12 @@ public class GameEnvironment : ScriptableObject
     /// <summary>
     /// Get all lights in view of the bot
     /// </summary>
-    private List<Light> GetLights()
+    private List<Light> GetLights(Vector2Int botCoordinates)
     {
         // Get's all lights in the scene 
         Light[] lights = FindObjectsOfType<Light>();
         // Filter lights by point light and check if the position is inside the view
-        List<Light> pointLights = lights.Where(light => light.type == UnityEngine.LightType.Point && CheckIfPositionIsInsideView(light.transform.position)).ToList();
+        List<Light> pointLights = lights.Where(light => light.type == UnityEngine.LightType.Point && CheckIfPositionIsInsideView(light.transform.position, botCoordinates)).ToList();
         // Remove point lights of the players and bots
         return pointLights.Where(light => light.transform.parent.tag != "Player").ToList();
     }
@@ -172,12 +166,12 @@ public class GameEnvironment : ScriptableObject
     /// Checks if a position is inside the view of the bot
     /// </summary>
     /// <param name="position">The position you want to check</param>
-    private bool CheckIfPositionIsInsideView(Vector3 position)
+    private bool CheckIfPositionIsInsideView(Vector3 position, Vector2Int botCoordinates)
     {
         int screenWidth = 11;
         int screenHeight = 5;
-        float viewLeft = m_bot.transform.position.x - screenWidth;
-        float viewUp = m_bot.transform.position.z + screenHeight;
+        float viewLeft = botCoordinates.x - screenWidth;
+        float viewUp = botCoordinates.y + screenHeight;
         float viewRight = viewLeft + screenWidth * 2;
         float viewDown = viewUp - screenHeight * 2;
         float posX = position.x;
