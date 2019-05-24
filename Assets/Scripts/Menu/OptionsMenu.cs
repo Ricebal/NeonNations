@@ -6,11 +6,6 @@ using UnityEngine.UI;
 
 public class OptionsMenu : MonoBehaviour
 {
-    private static string s_resolutionWidth = "resolutionWidth";
-    private static string s_resolutionHeight = "resolutionHeight";
-    private static string s_quality = "quality";
-    private static string s_fullScreen = "fullScreen";
-
     [SerializeField]
     private Dropdown m_resolutionDropdown;
     [SerializeField]
