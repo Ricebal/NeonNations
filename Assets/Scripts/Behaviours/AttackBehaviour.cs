@@ -11,6 +11,8 @@ public class AttackBehaviour : BotBehaviour
     private const float VISION_RANGE = 7.5f;
     private const float INITIAL_ACCURACY = 2f;
     private const float ACCURACY_MODIFIER = 0.01f;
+    private const float MOVE_ZERO = 0.5f;
+    private const float MOVE_TRESHHOLD = 0.02f;
     private float m_accuracy = 1f;
     private Vector3 m_lastShotPosition;
 
@@ -65,7 +67,7 @@ public class AttackBehaviour : BotBehaviour
         if (m_lastShotPosition != null)
         {
             float movedDistance = Vector3.Distance(m_lastShotPosition, position);
-            if (movedDistance > 0.52 || movedDistance < 0.48)
+            if (movedDistance > MOVE_ZERO + MOVE_TRESHHOLD || movedDistance < MOVE_ZERO - MOVE_TRESHHOLD)
             {
                 m_accuracy = INITIAL_ACCURACY;
             }
