@@ -355,6 +355,12 @@ public class MapGenerator
         return new Vector2Int(-1, -1);
     }
 
+    /// <summary>
+    /// Gets a list of all the wall tiles in a certain direction
+    /// </summary>
+    /// <param name="direction">Direction that should be searched</param>
+    /// <param name="outerWidth">The distance between the edge of the map and the area that should be searched</param>
+    /// <returns></returns>
     private IEnumerable<Vector2Int> GetAllWallTilesInDirection(Vector2Int direction, int outerWidth)
     {
         for (int i = outerWidth; i < m_tileMap.Length - m_tunnelWidth - outerWidth; i++)
@@ -370,6 +376,11 @@ public class MapGenerator
         }
     }
 
+    /// <summary>
+    /// Gets a list of all the wall tiles in the map, and what their direction is
+    /// </summary>
+    /// <param name="outerWidth">The distance between the edge of the map and the area that should be searched</param>
+    /// <returns>List containing all the wall tiles</returns>
     private List<KeyValuePair<Vector2Int, Vector2Int>> GetAllWallTiles(int outerWidth)
     {
         List<KeyValuePair<Vector2Int, Vector2Int>> result = new List<KeyValuePair<Vector2Int, Vector2Int>>();
@@ -600,12 +611,23 @@ public class MapGenerator
         }
     }
 
+    /// <summary>
+    /// Determines if a shortcut should be secret or not
+    /// </summary>
+    /// <returns>True if secret</returns>
     private bool IsBreakable()
     {
         int i = UnityEngine.Random.Range(1, 101);
         return i <= m_breakableTunnelChance;
     }
 
+    /// <summary>
+    /// Calculates if shortcut should be placed. 
+    /// </summary>
+    /// <param name="wallTile"></param>
+    /// <param name="otherWallTile"></param>
+    /// <param name="direction"></param>
+    /// <returns></returns>
     private bool CheckIfUsefulToPlace(Vector2Int wallTile, Vector2Int otherWallTile, Vector2Int direction)
     {
         // calculate tiles to run pathfinding on
@@ -624,12 +646,16 @@ public class MapGenerator
         costs[0] = dStarLite.Map.GetNode(tilesToCalculateFrom[0].x,tilesToCalculateFrom[0].y).CostFromStartingPoint;
         dStarLite.RunDStarLite(tilesToCalculateFrom[1], tilesToCalculateTo[1]);
         costs[1] = dStarLite.Map.GetNode(tilesToCalculateFrom[1].x, tilesToCalculateFrom[1].y).CostFromStartingPoint;
+
+        // see if the distance between the two points without a shortcut is larger than the minimum distance
         if (costs[0] >= m_shortcutMinSkipDistance && costs[1] >= m_shortcutMinSkipDistance)
         {
             return true;
         }
-
-        return false;
+        else
+        {
+            return false;
+        }
     }
 
     // --------------------------------------------------------------------------------------------
@@ -674,6 +700,9 @@ public class MapGenerator
         }
     }
 
+    /// <summary>
+    /// Checks if all the settings are correct, and corrects them if necessary
+    /// </summary>
     private void CheckSettings()
     {
         // check map width

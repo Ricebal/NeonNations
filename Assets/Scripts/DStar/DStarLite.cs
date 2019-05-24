@@ -27,10 +27,8 @@ public class DStarLite
     /// <summary>
     /// Sets up the Algorithm.
     /// </summary>
-    /// <param name="startX">The x of the start-position</param>
-    /// <param name="startY">The y of the start-position</param>
-    /// <param name="goalY">The y of the goal-position</param>
-    /// <param name="goalX">The x of the goal-position</param>
+    /// <param name="start">The start-position</param>
+    /// <param name="goal">The goal-position</param>
     public void RunDStarLite(Vector2Int start, Vector2Int goal)
     {
         Reset(start, goal);
@@ -79,7 +77,7 @@ public class DStarLite
             // What the bot knows of the node
             Node knownNode = Map.GetNode(coordinates.x, coordinates.y);
             // What the node actually is
-            Tile actualNodeContent = m_environment.GetNode(coordinates.x, coordinates.y);
+            Tile actualNodeContent = m_environment.GetNode(coordinates);
             // If the obstacle was not previously known or the obstacle has been removed
             if (knownNode.Content != actualNodeContent)
             {

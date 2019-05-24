@@ -57,8 +57,7 @@ public class SearchBehaviour : MonoBehaviour
     /// <summary>
     /// Finds a new target for the entity to move/explorer towards.
     /// </summary>
-    /// <param name="currentX">The current x-position of the entity</param>
-    /// <param name="currentY">The current y-position of the entity</param>
+    /// <param name="currentPos">The current position of the entity</param>
     private void GenerateNewDestination(Vector2Int currentPos)
     {
         m_goalCoordinates = GameObject.Find("GameManager").GetComponent<BoardManager>().GetRandomFloorTile();

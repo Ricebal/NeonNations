@@ -11,6 +11,13 @@ public class GameEnvironment : ScriptableObject
     private const int BULLET_RANGE = 1;
     private const int IMPACT_RANGE = 2;
 
+    /// <summary>
+    /// Acts as a constructor for GameEnvironment, since it's real constructor can't be used because it's a ScriptableObject
+    /// It uses Init to set the values
+    /// </summary>
+    /// <param name="map">Map to set</param>
+    /// <param name="list">List to set</param>
+    /// <returns>A new GameEnvironment with the set values</returns>
     public static GameEnvironment CreateInstance(Tile[][] map, List<Tile> list)
     {
         var data = CreateInstance<GameEnvironment>();
@@ -18,6 +25,11 @@ public class GameEnvironment : ScriptableObject
         return data;
     }
 
+    /// <summary>
+    /// Initializes this GameEnvironment
+    /// </summary>
+    /// <param name="map">Map to set</param>
+    /// <param name="list">List to set</param>
     private void Init(Tile[][] map, List<Tile> list)
     {
         m_map = map;
@@ -33,14 +45,23 @@ public class GameEnvironment : ScriptableObject
         return m_map;
     }
 
+    /// <summary>
+    /// Gets the list of obstacles the pathfinding algorithm should worry about
+    /// </summary>
+    /// <returns>List of Tile types containing the obstacles</returns>
     public List<Tile> GetList()
     {
         return m_listOfObstacles;
     }
 
-    public Tile GetNode(int x, int y)
+    /// <summary>
+    /// Gets the content at a certain position
+    /// </summary>
+    /// <param name="pos">Position of node</param>
+    /// <returns>Tile enum containing the type of tile</returns>
+    public Tile GetNode(Vector2Int pos)
     {
-        return m_map[x][y];
+        return m_map[pos.x][pos.y];
     }
 
     /// <summary>
