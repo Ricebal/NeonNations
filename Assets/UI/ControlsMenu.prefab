@@ -446,7 +446,7 @@ GameObject:
   - component: {fileID: 997121546973454850}
   - component: {fileID: 997121546973454853}
   m_Layer: 5
-  m_Name: Key List
+  m_Name: KeyList
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

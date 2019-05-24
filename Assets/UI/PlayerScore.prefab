@@ -333,7 +333,7 @@ GameObject:
   - component: {fileID: 5498904180268347201}
   - component: {fileID: 5792890443730796063}
   - component: {fileID: 79892402908393659}
-  - component: {fileID: 459143519426575029}
+  - component: {fileID: 8818356840016602227}
   - component: {fileID: 5071989448941147343}
   m_Layer: 5
   m_Name: PlayerScore
@@ -437,7 +437,7 @@ MonoBehaviour:
   m_kills: {fileID: 363167116775533465}
   m_deaths: {fileID: 1952919762941324894}
   m_outline: {fileID: 5071989448941147343}
---- !u!114 &459143519426575029
+--- !u!114 &8818356840016602227
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -446,30 +446,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 2113924865527100046}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 372142912, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_SceneId:
-    m_Value: 0
-  m_AssetId:
-    i0: 0
-    i1: 0
-    i2: 0
-    i3: 0
-    i4: 0
-    i5: 0
-    i6: 0
-    i7: 0
-    i8: 0
-    i9: 0
-    i10: 0
-    i11: 0
-    i12: 0
-    i13: 0
-    i14: 0
-    i15: 0
-  m_ServerOnly: 0
-  m_LocalPlayerAuthority: 0
+  serverOnly: 0
+  localPlayerAuthority: 0
+  m_AssetId: 861a43e36afae684eb60d520b4e5486d
+  m_SceneId: 0
 --- !u!114 &5071989448941147343
 MonoBehaviour:
   m_ObjectHideFlags: 0

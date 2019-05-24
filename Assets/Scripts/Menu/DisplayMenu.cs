@@ -4,7 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class OptionsMenu : MonoBehaviour
+public class DisplayMenu : MonoBehaviour
 {
     [SerializeField]
     private Dropdown m_resolutionDropdown;

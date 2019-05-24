@@ -18,9 +18,9 @@ public class Player : Soldier
         m_playerController = GetComponent<PlayerController>();
         m_cameraController = Camera.main.GetComponent<CameraController>();
         m_cameraController.SetTarget(this.transform);
-        m_escapeMenu = GameObject.Find("MenuCanvas").GetComponent<EscapeMenu>();
+        m_escapeMenu = GameObject.Find("EscapeMenu").GetComponent<EscapeMenu>();
         m_escapeMenu.EventPauseToggled += PauseToggled;
-        m_gameOverMenu = GameObject.Find("GameOverCanvas").GetComponent<GameOverMenu>();
+        m_gameOverMenu = GameObject.Find("GameOverMenu").GetComponent<GameOverMenu>();
         m_hud = GetComponent<PlayerHUD>();
     }
 
