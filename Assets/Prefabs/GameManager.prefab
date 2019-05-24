@@ -59,10 +59,10 @@ MonoBehaviour:
   m_minRoomLength: 6
   m_maxRoomLength: 9
   m_minTunnelLength: 1
-  m_maxTunnelLength: 7
+  m_maxTunnelLength: 12
   m_tunnelWidth: 2
-  m_breakableTunnelChance: 20
-  m_shortcutMinSkipDistance: 10
+  m_breakableTunnelChance: 0
+  m_shortcutMinSkipDistance: 20
   m_outerWallWidth: 14
 --- !u!114 &4331448404734817727
 MonoBehaviour:

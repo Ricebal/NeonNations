@@ -611,14 +611,21 @@ public class MapGenerator
         // calculate tiles to run pathfinding on
         Vector2Int[] tilesToCalculateFrom = new Vector2Int[2];
         Vector2Int[] tilesToCalculateTo = new Vector2Int[2];
+        double[] costs = new double[2];
         tilesToCalculateFrom[0] = new Vector2Int(wallTile.x - direction.x, wallTile.y - direction.y);
         tilesToCalculateFrom[1] = new Vector2Int(wallTile.x - direction.x + direction.y * m_tunnelWidth, wallTile.y - direction.y + direction.x * m_tunnelWidth);
         tilesToCalculateTo[0] = new Vector2Int(otherWallTile.x + direction.x, otherWallTile.y + direction.y);
         tilesToCalculateTo[1] = new Vector2Int(otherWallTile.x + direction.x + direction.y * m_tunnelWidth, otherWallTile.y + direction.y + direction.x * m_tunnelWidth);
 
         // run DStarLite twice
-        // TODO: use DStarLite algorithm when it isn't dependant on everything and their moms
-        if (12 >= m_shortcutMinSkipDistance && 12 >= m_shortcutMinSkipDistance)
+        GameEnvironment ge = ScriptableObject.CreateInstance<GameEnvironment>();
+        ge.SetMap(m_tileMap);
+        DStarLite dStarLite = new DStarLite(ge, true);
+        dStarLite.RunDStarLite(tilesToCalculateFrom[0], tilesToCalculateTo[0]);
+        costs[0] = dStarLite.Map.GetNode(tilesToCalculateFrom[0].x,tilesToCalculateFrom[0].y).CostFromStartingPoint;
+        dStarLite.RunDStarLite(tilesToCalculateFrom[1], tilesToCalculateTo[1]);
+        costs[1] = dStarLite.Map.GetNode(tilesToCalculateFrom[1].x, tilesToCalculateFrom[1].y).CostFromStartingPoint;
+        if (costs[0] >= m_shortcutMinSkipDistance && costs[1] >= m_shortcutMinSkipDistance)
         {
             return true;
         }

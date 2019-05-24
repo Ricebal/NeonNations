@@ -5,14 +5,13 @@ using UnityEngine;
 
 public class GameEnvironment : ScriptableObject
 {
-    private static Tile[][] s_map;
+    private Tile[][] m_map;
     private const int SONAR_RANGE = 5;
     private const int BULLET_RANGE = 1;
     private const int IMPACT_RANGE = 2;
 
     private void OnEnable()
     {
-        s_map = GameObject.Find("GameManager").GetComponent<BoardManager>().GetTileMap();
     }
 
     /// <summary>
@@ -21,17 +20,17 @@ public class GameEnvironment : ScriptableObject
     /// <returns>int[][] Map</returns>
     public Tile[][] GetMap()
     {
-        return s_map;
+        return m_map;
+    }
+
+    public void SetMap(Tile[][] map)
+    {
+        m_map = map;
     }
 
     public Tile GetNode(int x, int y)
     {
-        return s_map[x][y];
-    }
-
-    public static void UpdateNode(int x, int y, Tile newNode)
-    {
-        s_map[x][y] = newNode;
+        return m_map[x][y];
     }
 
     /// <summary>
@@ -44,13 +43,13 @@ public class GameEnvironment : ScriptableObject
         foreach (Vector2Int coordinate in coordinates)
         {
             // If the coordinates are outside the map they shouldn't be checked (to prevent out of index exception)
-            if (coordinate.x < 0 || coordinate.y < 0 || coordinate.x >= s_map.Length || coordinate.y >= s_map[0].Length)
+            if (coordinate.x < 0 || coordinate.y < 0 || coordinate.x >= m_map.Length || coordinate.y >= m_map[0].Length)
             {
                 coordinatesToDelete.AddLast(coordinate);
                 continue;
             }
             // If the coordinates are inside the map, check if the coordinate contains an obstacle
-            if (s_map[coordinate.x][coordinate.y] == Tile.Floor)
+            if (m_map[coordinate.x][coordinate.y] == Tile.Floor)
             {
                 coordinatesToDelete.AddLast(coordinate);
             }
@@ -98,7 +97,7 @@ public class GameEnvironment : ScriptableObject
                 int y = objectCoordinates.y + j;
 
                 // Check if coordinate is inside the map
-                if (x < 0 || x >= s_map.Length || y < 0 || y >= s_map[0].Length)
+                if (x < 0 || x >= m_map.Length || y < 0 || y >= m_map[0].Length)
                 {
                     continue;
                 }

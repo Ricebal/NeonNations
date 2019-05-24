@@ -12,9 +12,6 @@ public class NavigationGraph
         for (int i = 0; i < Map.Length; i++)
         {
             Map[i] = new Node[completeMap[0].Length];
-        }
-        for (int i = 0; i < Map.Length; i++)
-        {
             for (int j = 0; j < Map[0].Length; j++)
             {
                 Map[i][j] = new Node();
