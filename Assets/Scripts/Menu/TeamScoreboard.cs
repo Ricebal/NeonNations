@@ -28,7 +28,7 @@ public class TeamScoreboard : NetworkBehaviour
             RpcRefreshScores();
         }
 
-        GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+        GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -75);
     }
 
     private void AddTeam(int teamId)
