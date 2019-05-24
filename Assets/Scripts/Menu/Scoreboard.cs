@@ -1,6 +1,5 @@
-﻿using System.Collections;
+﻿using Mirror;
 using System.Collections.Generic;
-using Mirror;
 using UnityEngine;
 
 public class Scoreboard : NetworkBehaviour
@@ -72,7 +71,7 @@ public class Scoreboard : NetworkBehaviour
     private void RpcAddPlayer(string playerId)
     {
         // Make a new entry on the scoreboard
-        GameObject scorePanel = Instantiate(m_playerScorePrefab)as GameObject;
+        GameObject scorePanel = Instantiate(m_playerScorePrefab) as GameObject;
         scorePanel.transform.SetParent(m_playerList.transform, false);
 
         // Try to add the player to the scoreboard, if it fails add it to the list of outdated players

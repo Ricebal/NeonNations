@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
@@ -644,10 +643,10 @@ public class MapGenerator
         }
 
         // check minimum tunnel length
-        if (m_minTunnelLength > Math.Min(m_mapWidth, m_mapHeight)/2 - m_maxRoomLength*2)
+        if (m_minTunnelLength > Math.Min(m_mapWidth, m_mapHeight) / 2 - m_maxRoomLength * 2)
         {
             Debug.LogWarning("Minimum tunnel length is too high for this map size, using minimum size possible");
-            m_minTunnelLength = Math.Min(m_mapWidth, m_mapHeight)/2 - m_maxRoomLength*2;
+            m_minTunnelLength = Math.Min(m_mapWidth, m_mapHeight) / 2 - m_maxRoomLength * 2;
         }
         if (m_minTunnelLength < 1)
         {

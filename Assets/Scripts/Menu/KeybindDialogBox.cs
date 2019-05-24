@@ -1,9 +1,8 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
-using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 
 public class KeybindDialogBox : MonoBehaviour
 {
@@ -17,7 +16,7 @@ public class KeybindDialogBox : MonoBehaviour
 
     // Start is called before the first frame update
     void Start()
-    {     
+    {
         string[] actionNames = InputManager.GetActionNames();
         m_keyToLabel = new Dictionary<string, TextMeshProUGUI>();
 
@@ -51,7 +50,7 @@ public class KeybindDialogBox : MonoBehaviour
         // If the user wants to rebind a key and if a key was pressed down
         if (m_keyToRebind != null && Input.anyKeyDown)
         {
-             // Loop through all possible keys and see which one was pressed down
+            // Loop through all possible keys and see which one was pressed down
             Array keyCodes = Enum.GetValues(typeof(KeyCode));
             foreach (KeyCode keyCode in keyCodes)
             {
