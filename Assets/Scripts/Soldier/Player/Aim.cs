@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using UnityEngine.Networking;
+using Mirror;
+using UnityEngine;
 
 public class Aim : NetworkBehaviour
 {
@@ -8,6 +8,11 @@ public class Aim : NetworkBehaviour
     private void Start()
     {
         Cursor.visible = false;
+    }
+
+    private void OnDisable()
+    {
+        Cursor.visible = true;
     }
 
     void Update()

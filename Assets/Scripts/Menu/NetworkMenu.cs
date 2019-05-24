@@ -1,7 +1,7 @@
-﻿using UnityEngine;
+﻿using TMPro;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using TMPro;
 
 public class NetworkMenu : MonoBehaviour
 {
@@ -27,7 +27,7 @@ public class NetworkMenu : MonoBehaviour
         ButtonStartHost.interactable = !m_networkManagerCustom.IsConnecting();
 
         // Trigger join game button click when the user presses 'enter' and the ip address is specified
-        if(Input.GetKey(KeyCode.Return) && IpAddressField.text.Length != 0)
+        if (Input.GetKey(KeyCode.Return) && IpAddressField.text.Length != 0)
         {
             ButtonJoingGame.onClick.Invoke();
         }

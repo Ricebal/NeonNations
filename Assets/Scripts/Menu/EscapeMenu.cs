@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using UnityEngine.Networking;
+using Mirror;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class EscapeMenu : NetworkBehaviour
@@ -34,7 +34,6 @@ public class EscapeMenu : NetworkBehaviour
         {
             NetworkManager.singleton.StopClient();
         }
-        Cursor.visible = true;
         SceneManager.LoadScene(2);
     }
 

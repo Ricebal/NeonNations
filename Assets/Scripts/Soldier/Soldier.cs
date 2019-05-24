@@ -1,18 +1,20 @@
-﻿using UnityEngine;
-using UnityEngine.Networking;
+using Mirror;
+using UnityEngine;
 
-public class Soldier : NetworkBehaviour
+public abstract class Soldier : NetworkBehaviour
 {
     [SyncVar]
     public int Team;
     [SyncVar]
     public Color InitialColor;
+    [SyncVar]
+    public Score PlayerScore;
     // The speed of the entity
     public float Speed;
     // The respawn time of the soldier
     public float RespawnTime;
+    public bool IsDead = false;
 
-    protected bool m_isDead = false;
     protected float m_deathTime;
     protected Stats m_stats;
 
@@ -31,36 +33,72 @@ public class Soldier : NetworkBehaviour
     protected void Update()
     {
         // If the Soldier is respawning, make him fade away
-        if (m_isDead)
+        if (IsDead)
         {
-            float newAlpha = (RespawnTime - (Time.time - m_deathTime)) / RespawnTime;
+            float newAlpha = Mathf.Max(0, (RespawnTime - (Time.time - m_deathTime)) / RespawnTime);
             m_renderer.material.color = new Color(1, 0.39f, 0.28f, newAlpha);
         }
 
-        // If the Soldier's health is below or equal to 0
-        if (isLocalPlayer && m_stats.GetCurrentHealth() <= 0)
+        if (isServer)
         {
-            // If the Soldier is not yet dead, the Soldier will die
-            if (!m_isDead)
+            // If the soldier is able to respawn
+            if (IsDead && Time.time - m_deathTime >= RespawnTime)
             {
-                Die();
-            }
-            // If the Soldier is dead, but is able to respawn
-            else if (Time.time - m_deathTime >= RespawnTime)
-            {
-                Respawn();
+                Vector2 spawnPoint = GameObject.Find("GameManager").GetComponent<BoardManager>().GetRandomFloorTile();
+                RpcRespawn(spawnPoint);
             }
         }
+    }
+
+    [ClientRpc]
+    private void RpcDead()
+    {
+        Die();
+    }
+
+    [ClientRpc]
+    private void RpcRespawn(Vector2 spawnPoint)
+    {
+        Respawn(spawnPoint);
     }
 
     protected virtual void Die()
     {
-        CmdSendDeathState(true);
+        IsDead = true;
+        m_sphereCollider.enabled = false;
+        m_deathTime = Time.time;
+        PlayerScore.Deaths++;
+
+        DeathExplosion deathExplosion = GetComponentInChildren<DeathExplosion>();
+        if (deathExplosion != null)
+        {
+            deathExplosion.Fire();
+        }
     }
 
-    protected virtual void Respawn()
+    public void SyncScore()
     {
-        CmdSendDeathState(false);
+        if (PlayerScore == null)
+        {
+            PlayerScore = new Score();
+        }
+        RpcSetScore(PlayerScore.Kills, PlayerScore.Deaths);
+    }
+
+    [ClientRpc]
+    private void RpcSetScore(int kills, int deaths)
+    {
+        PlayerScore.Kills = kills;
+        PlayerScore.Deaths = deaths;
+    }
+
+    protected virtual void Respawn(Vector2 spawnPoint)
+    {
+        transform.position = new Vector3(spawnPoint.x, 0, spawnPoint.y);
+        m_sphereCollider.enabled = true;
+        m_renderer.material.color = InitialColor;
+        m_stats.Reset();
+        IsDead = false;
     }
 
     public void SetInitialColor(Color color)
@@ -74,6 +112,11 @@ public class Soldier : NetworkBehaviour
     protected void RpcColor(GameObject obj, Color color)
     {
         obj.GetComponent<Renderer>().material.color = color;
+        DeathExplosion deathExplosion = obj.GetComponentInChildren<DeathExplosion>();
+        if (deathExplosion != null)
+        {
+            deathExplosion.SetColor(color);
+        }
     }
 
     [Command]
@@ -82,48 +125,66 @@ public class Soldier : NetworkBehaviour
         RpcColor(obj, color);
     }
 
-    [Command]
-    private void CmdSendDeathState(bool isDead)
+    protected void TakeDamage(int damage, string playerId)
     {
-        RpcReceiveDeathState(isDead);
-    }
-
-    [ClientRpc]
-    private void RpcReceiveDeathState(bool isDead)
-    {
-        m_isDead = isDead;
-        m_deathTime = Time.time;
-
-        if (isDead)
+        RpcTakeDamage(damage);
+        if (m_stats.GetCurrentHealth() <= 0)
         {
-            m_sphereCollider.enabled = false;
-        }
-        else
-        {
-            m_sphereCollider.enabled = true;
-            m_renderer.material.color = InitialColor;
-            Vector2 spawnPoint = GameObject.Find("GameManager").GetComponent<BoardManager>().GetRandomFloorTile();
-            transform.position = new Vector3(spawnPoint.x, 0, spawnPoint.y);
-            m_stats.Reset();
-        }
-    }
-
-    void OnTriggerEnter(Collider collider)
-    {
-        if (collider.gameObject.tag == "Bullet")
-        {
-            Bullet bullet = collider.gameObject.GetComponent<Bullet>();
-            if (bullet.GetShooterId() != transform.name && GameObject.Find(bullet.GetShooterId()).GetComponent<Soldier>().Team != this.Team)
+            // If the Soldier is not yet dead, the Soldier will die
+            if (!IsDead)
             {
-                m_stats.TakeDamage(collider.gameObject.GetComponent<Bullet>().Damage);
+                RpcAddKill(playerId);
+                RpcDead();
             }
         }
     }
 
     [ClientRpc]
-    private void RpcTakeDamage(int damage)
+    protected void RpcTakeDamage(int damage)
     {
         m_stats.TakeDamage(damage);
+    }
+
+    [ClientRpc]
+    protected void RpcAddKill(string playerId)
+    {
+        GameObject.Find(playerId).GetComponent<Soldier>().PlayerScore.Kills++;
+    }
+
+    protected void OnTriggerEnter(Collider collider)
+    {
+        if (!isServer)
+        {
+            return;
+        }
+
+        if (collider.gameObject.tag == "Bullet")
+        {
+            Bullet bullet = collider.gameObject.GetComponent<Bullet>();
+            Soldier shooter = GameObject.Find(bullet.GetShooterId()).GetComponent<Soldier>();
+            if (bullet.GetShooterId() != transform.name && shooter.Team != this.Team)
+            {
+                TakeDamage(bullet.Damage, bullet.GetShooterId());
+            }
+        }
+    }
+
+    protected void OnCollisionEnter(Collision collision)
+    {
+        // If the player collides with another player, freezes the other player locally to avoid being able to push him
+        if (collision.gameObject.tag == "Player" && collision.gameObject != gameObject)
+        {
+            collision.rigidbody.isKinematic = true;
+        }
+    }
+
+    protected void OnCollisionExit(Collision collision)
+    {
+        // If the player is not colliding with another player anymore, unfreezes the other player locally
+        if (collision.gameObject.tag == "Player" && collision.gameObject != gameObject)
+        {
+            collision.rigidbody.isKinematic = false;
+        }
     }
 
 }

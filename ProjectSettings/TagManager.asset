@@ -5,8 +5,11 @@ TagManager:
   serializedVersion: 2
   tags:
   - Sonar
+  - Explosion
   - Bullet
+  - Impact
   - HUD
+  - Mirror
   layers:
   - Default
   - TransparentFX
@@ -16,9 +19,9 @@ TagManager:
   - UI
   - 
   - 
-  - PostProcessing
-  - Bullets
-  - Player
+  - 
+  - 
+  - 
   - 
   - 
   - 
