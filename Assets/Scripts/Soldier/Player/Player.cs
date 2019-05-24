@@ -8,12 +8,6 @@ public class Player : Soldier
     private GameOverMenu m_gameOverMenu;
     private PlayerHUD m_hud;
 
-    public override void OnStartClient()
-    {
-        Username = ProfileMenu.GetUsername();
-        base.OnStartClient();
-    }
-
     private void Start()
     {
         if (!isLocalPlayer)
@@ -28,16 +22,9 @@ public class Player : Soldier
         m_escapeMenu.EventPauseToggled += PauseToggled;
         m_gameOverMenu = GameObject.Find("GameOverCanvas").GetComponent<GameOverMenu>();
         m_hud = GetComponent<PlayerHUD>();
-    }
 
-    private void OnDisable()
-    {
-        if (!isLocalPlayer)
-        {
-            return;
-        }
-
-        m_escapeMenu.EventPauseToggled -= PauseToggled;
+        Username = ProfileMenu.GetUsername();
+        CmdUsername(Username);
     }
 
     private void FixedUpdate()
@@ -60,7 +47,7 @@ public class Player : Soldier
     {
         if (isLocalPlayer)
         {
-            m_gameOverMenu.Activate(RespawnTime);
+            m_gameOverMenu.Activate(m_respawnTime);
             m_playerController.enabled = false;
         }
 
@@ -87,5 +74,6 @@ public class Player : Soldier
 
         m_cameraController.SetInactive();
         m_cameraController.PlayerTransform = null;
+        m_escapeMenu.EventPauseToggled -= PauseToggled;
     }
 }

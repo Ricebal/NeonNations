@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-public class Score
+﻿public class Score
 {
     private string m_username = "Unknown";
     private int m_kills = 0;
@@ -17,9 +15,8 @@ public class Score
         }
         set
         {
-            Debug.Log("Previous: " + m_username + " / new: " + value);
             m_username = value;
-            if(OnScoreChange != null)
+            if (OnScoreChange != null)
             {
                 OnScoreChange();
             }

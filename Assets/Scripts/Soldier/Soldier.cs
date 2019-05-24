@@ -4,8 +4,6 @@ using UnityEngine;
 public abstract class Soldier : NetworkBehaviour
 {
     [SyncVar]
-    public string Username;
-    [SyncVar]
     public int Team;
     [SyncVar]
     public Color InitialColor;
@@ -13,9 +11,11 @@ public abstract class Soldier : NetworkBehaviour
     public Score PlayerScore = new Score();
     // The speed of the entity
     public float Speed;
+    public string Username;
+    
     // The respawn time of the soldier
-    public float RespawnTime;
-
+    [SerializeField]
+    protected float m_respawnTime;
     protected bool m_isDead = false;
     protected float m_deathTime;
     protected Stats m_stats;
@@ -26,7 +26,6 @@ public abstract class Soldier : NetworkBehaviour
 
     public override void OnStartClient()
     {
-        PlayerScore.Username = Username;
         m_sphereCollider = GetComponent<SphereCollider>();
         m_meshRenderer = GetComponent<MeshRenderer>();
         m_renderer = GetComponent<Renderer>();
@@ -38,14 +37,14 @@ public abstract class Soldier : NetworkBehaviour
         // If the Soldier is respawning, make him fade away
         if (m_isDead)
         {
-            float newAlpha = Mathf.Max(0, (RespawnTime - (Time.time - m_deathTime)) / RespawnTime);
+            float newAlpha = Mathf.Max(0, (m_respawnTime - (Time.time - m_deathTime)) / m_respawnTime);
             m_renderer.material.color = new Color(1, 0.39f, 0.28f, newAlpha);
         }
 
         if (isServer)
         {
             // If the soldier is able to respawn
-            if (m_isDead && Time.time - m_deathTime >= RespawnTime)
+            if (m_isDead && Time.time - m_deathTime >= m_respawnTime)
             {
                 Vector2 spawnPoint = GameObject.Find("GameManager").GetComponent<BoardManager>().GetRandomFloorTile();
                 RpcRespawn(spawnPoint);
@@ -79,6 +78,15 @@ public abstract class Soldier : NetworkBehaviour
         }
     }
 
+    protected virtual void Respawn(Vector2 spawnPoint)
+    {
+        transform.position = new Vector3(spawnPoint.x, 0, spawnPoint.y);
+        m_sphereCollider.enabled = true;
+        m_renderer.material.color = InitialColor;
+        m_stats.Reset();
+        m_isDead = false;
+    }
+
     public void SyncScore()
     {
         RpcSetScore(PlayerScore.Username, PlayerScore.Kills, PlayerScore.Deaths);
@@ -92,20 +100,11 @@ public abstract class Soldier : NetworkBehaviour
         PlayerScore.Deaths = deaths;
     }
 
-    protected virtual void Respawn(Vector2 spawnPoint)
-    {
-        transform.position = new Vector3(spawnPoint.x, 0, spawnPoint.y);
-        m_sphereCollider.enabled = true;
-        m_renderer.material.color = InitialColor;
-        m_stats.Reset();
-        m_isDead = false;
-    }
-
     public void SetInitialColor(Color color)
     {
         Color newColor = new Color(color.r, color.g, color.b, 1f);
         InitialColor = newColor;
-        CmdColor(this.gameObject, newColor);
+        CmdColor(gameObject, newColor);
     }
 
     [ClientRpc]
@@ -123,6 +122,19 @@ public abstract class Soldier : NetworkBehaviour
     protected void CmdColor(GameObject obj, Color color)
     {
         RpcColor(obj, color);
+    }
+
+    [ClientRpc]
+    protected void RpcUsername(string username)
+    {
+        Username = username;
+        PlayerScore.Username = username;
+    }
+
+    [Command]
+    protected void CmdUsername(string username)
+    {
+        RpcUsername(username);
     }
 
     protected void TakeDamage(int damage, string playerId)

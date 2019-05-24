@@ -5269,7 +5269,8 @@ MonoBehaviour:
   Team: 0
   InitialColor: {r: 0, g: 0, b: 0, a: 0}
   Speed: 7.5
-  RespawnTime: 5
+  Username: Unknown
+  m_respawnTime: 5
 --- !u!114 &5337140830429242400
 MonoBehaviour:
   m_ObjectHideFlags: 0

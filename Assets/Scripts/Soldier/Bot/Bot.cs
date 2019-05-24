@@ -4,12 +4,6 @@ public class Bot : Soldier
 {
     private Rigidbody m_rigidbody;
 
-    public override void OnStartClient()
-    {
-        Username = ProfileMenu.GetRandomName() + " (Bot)";
-        base.OnStartClient();
-    }
-
     private void Start()
     {
         if (!isServer)
@@ -18,6 +12,9 @@ public class Bot : Soldier
         }
 
         m_rigidbody = GetComponent<Rigidbody>();
+
+        Username = ProfileMenu.GetRandomName() + " (Bot)";
+        CmdUsername(Username);
     }
 
     protected new void Update()

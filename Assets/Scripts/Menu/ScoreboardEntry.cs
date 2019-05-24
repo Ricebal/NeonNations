@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -30,7 +28,6 @@ public class ScoreboardEntry : MonoBehaviour
 
     private void Refresh()
     {
-        Debug.Log("Refresh : " + m_score.Username);
         m_username.text = m_score.Username;
         m_kills.text = m_score.Kills.ToString();
         m_deaths.text = m_score.Deaths.ToString();
