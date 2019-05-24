@@ -61,7 +61,7 @@ MonoBehaviour:
   m_minTunnelLength: 1
   m_maxTunnelLength: 12
   m_tunnelWidth: 2
-  m_breakableTunnelChance: 0
+  m_breakableTunnelChance: 20
   m_shortcutMinSkipDistance: 20
   m_outerWallWidth: 14
 --- !u!114 &4331448404734817727

@@ -618,8 +618,7 @@ public class MapGenerator
         tilesToCalculateTo[1] = new Vector2Int(otherWallTile.x + direction.x + direction.y * m_tunnelWidth, otherWallTile.y + direction.y + direction.x * m_tunnelWidth);
 
         // run DStarLite twice
-        GameEnvironment ge = ScriptableObject.CreateInstance<GameEnvironment>();
-        ge.SetMap(m_tileMap);
+        GameEnvironment ge = GameEnvironment.CreateInstance(m_tileMap, new List<Tile>() { Tile.Wall });
         DStarLite dStarLite = new DStarLite(ge, true);
         dStarLite.RunDStarLite(tilesToCalculateFrom[0], tilesToCalculateTo[0]);
         costs[0] = dStarLite.Map.GetNode(tilesToCalculateFrom[0].x,tilesToCalculateFrom[0].y).CostFromStartingPoint;

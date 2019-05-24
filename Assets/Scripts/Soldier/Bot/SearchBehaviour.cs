@@ -15,8 +15,7 @@ public class SearchBehaviour : MonoBehaviour
 
     void Start()
     {
-        m_environment = ScriptableObject.CreateInstance<GameEnvironment>();
-        m_environment.SetMap(GameObject.Find("GameManager").GetComponent<BoardManager>().GetTileMap());
+        m_environment = GameEnvironment.CreateInstance(GameObject.Find("GameManager").GetComponent<BoardManager>().GetTileMap(), new List<Tile>() { Tile.Wall, Tile.BreakableWall });
         m_dStarLite = new DStarLite(m_environment, false);
         Vector2Int startCoordinates = m_environment.ConvertGameObjectToCoordinates(gameObject.transform);
         GenerateNewDestination(startCoordinates);

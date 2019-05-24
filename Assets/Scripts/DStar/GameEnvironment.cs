@@ -6,12 +6,22 @@ using UnityEngine;
 public class GameEnvironment : ScriptableObject
 {
     private Tile[][] m_map;
+    private List<Tile> m_listOfObstacles = new List<Tile>();
     private const int SONAR_RANGE = 5;
     private const int BULLET_RANGE = 1;
     private const int IMPACT_RANGE = 2;
 
-    private void OnEnable()
+    public static GameEnvironment CreateInstance(Tile[][] map, List<Tile> list)
     {
+        var data = CreateInstance<GameEnvironment>();
+        data.Init(map, list);
+        return data;
+    }
+
+    private void Init(Tile[][] map, List<Tile> list)
+    {
+        m_map = map;
+        m_listOfObstacles = list;
     }
 
     /// <summary>
@@ -23,9 +33,9 @@ public class GameEnvironment : ScriptableObject
         return m_map;
     }
 
-    public void SetMap(Tile[][] map)
+    public List<Tile> GetList()
     {
-        m_map = map;
+        return m_listOfObstacles;
     }
 
     public Tile GetNode(int x, int y)
@@ -49,12 +59,12 @@ public class GameEnvironment : ScriptableObject
                 continue;
             }
             // If the coordinates are inside the map, check if the coordinate contains an obstacle
-            if (m_map[coordinate.x][coordinate.y] == Tile.Floor)
+            if (!m_listOfObstacles.Contains(m_map[coordinate.x][coordinate.y]))
             {
                 coordinatesToDelete.AddLast(coordinate);
             }
         }
-        // Delete the coordintes that contain no obstacles
+        // Delete the coordinates that contain no obstacles
         foreach (Vector2Int coordinate in coordinatesToDelete)
         {
             coordinates.Remove(coordinate);
