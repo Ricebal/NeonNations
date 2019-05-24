@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-public class Score
+﻿public class Score
 {
     private int m_kills = 0;
     private int m_deaths = 0;

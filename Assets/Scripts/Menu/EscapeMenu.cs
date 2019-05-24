@@ -1,5 +1,5 @@
-using UnityEngine;
 using Mirror;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class EscapeMenu : NetworkBehaviour

@@ -2562,7 +2562,7 @@ GameObject:
   - component: {fileID: 7126621586832588793}
   - component: {fileID: 2771366236682828820}
   m_Layer: 5
-  m_Name: OptionsMenu
+  m_Name: DisplayMenu
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3189,7 +3189,7 @@ GameObject:
   - component: {fileID: 7126621587789703764}
   - component: {fileID: 7126621587789703767}
   m_Layer: 5
-  m_Name: OptionsMenuPanel
+  m_Name: DisplayPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -333,7 +333,6 @@ GameObject:
   - component: {fileID: 2798620137689313996}
   - component: {fileID: 2831457507903451922}
   - component: {fileID: 6346354782576296190}
-  - component: {fileID: 2821423828567530330}
   m_Layer: 5
   m_Name: GameOverMenu
   m_TagString: Untagged
@@ -435,22 +434,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Panel: {fileID: 3093128335276401593}
   RespawnText: {fileID: 6346354781906209980}
---- !u!114 &2821423828567530330
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6346354782576296184}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  serverOnly: 0
-  localPlayerAuthority: 0
-  m_AssetId: 
-  m_SceneId: 4120092256
 --- !u!1 &8949049338906197989
 GameObject:
   m_ObjectHideFlags: 0

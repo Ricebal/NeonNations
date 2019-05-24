@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections;
+﻿using Mirror;
+using System;
 using System.Collections.Generic;
-using Mirror;
 using UnityEngine;
 
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
@@ -312,7 +311,7 @@ public class BoardManager : NetworkBehaviour
         newMesh.CombineMeshes(meshDataList.ToArray());
 
         // create new map object to hold part of the map
-        GameObject mapPart = Instantiate(m_mapPrefab, Vector3.zero, Quaternion.identity)as GameObject;
+        GameObject mapPart = Instantiate(m_mapPrefab, Vector3.zero, Quaternion.identity) as GameObject;
 
         // handle new map object
         mapPart.transform.GetComponent<MeshFilter>().sharedMesh = newMesh;

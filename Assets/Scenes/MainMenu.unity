@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481694, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -128,7 +128,7 @@ PrefabInstance:
     - target: {fileID: 7126621586832588792, guid: 35155a5dd90250645b97a4c417d4f235,
         type: 3}
       propertyPath: m_Name
-      value: OptionsMenu
+      value: DisplayMenu
       objectReference: {fileID: 0}
     - target: {fileID: 7126621586832588788, guid: 35155a5dd90250645b97a4c417d4f235,
         type: 3}
@@ -168,7 +168,7 @@ PrefabInstance:
     - target: {fileID: 7126621586832588788, guid: 35155a5dd90250645b97a4c417d4f235,
         type: 3}
       propertyPath: m_RootOrder
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 7126621586832588788, guid: 35155a5dd90250645b97a4c417d4f235,
         type: 3}
@@ -390,7 +390,7 @@ PrefabInstance:
     - target: {fileID: 6966701536401117139, guid: a9f9d82fd7684b54d8afa040108a2b9a,
         type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 6966701536401117139, guid: a9f9d82fd7684b54d8afa040108a2b9a,
         type: 3}
@@ -593,7 +593,7 @@ PrefabInstance:
     - target: {fileID: 997121546938248067, guid: cdc37814d97ff4147870fe6bd370661f,
         type: 3}
       propertyPath: m_Name
-      value: BindingsMenu
+      value: ControlsMenu
       objectReference: {fileID: 0}
     - target: {fileID: 997121546938248067, guid: cdc37814d97ff4147870fe6bd370661f,
         type: 3}
@@ -755,16 +755,6 @@ PrefabInstance:
       propertyPath: m_isInputParsingRequired
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 3213667431467044899, guid: cdc37814d97ff4147870fe6bd370661f,
-        type: 3}
-      propertyPath: m_havePropertiesChanged
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3213667431467044899, guid: cdc37814d97ff4147870fe6bd370661f,
-        type: 3}
-      propertyPath: m_isInputParsingRequired
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 4140264110980925567, guid: cdc37814d97ff4147870fe6bd370661f,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -916,7 +906,7 @@ PrefabInstance:
     - target: {fileID: 4328247391892798200, guid: 0c865b2dc4e6ac144a363c0afe80d084,
         type: 3}
       propertyPath: m_RootOrder
-      value: 5
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4328247391892798200, guid: 0c865b2dc4e6ac144a363c0afe80d084,
         type: 3}

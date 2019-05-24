@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -76,7 +75,7 @@ public class InputManager : MonoBehaviour
         }
         return null;
     }
-    
+
     // Returns the name of the key corresponding to the given action
     public static string GetKeyName(string actionName)
     {
@@ -144,7 +143,7 @@ public class InputManager : MonoBehaviour
     // Saves the key bindings
     public void Apply()
     {
-        foreach(KeyValuePair<string, KeyCode> actionKey in s_actionKeys)
+        foreach (KeyValuePair<string, KeyCode> actionKey in s_actionKeys)
         {
             PlayerPrefs.SetInt(actionKey.Key, (int)actionKey.Value);
         }
@@ -172,6 +171,6 @@ public class InputManager : MonoBehaviour
         s_actionKeys[SHOOT] = PlayerPrefs.HasKey(SHOOT) ? (KeyCode)PlayerPrefs.GetInt(SHOOT) : SHOOT_KEY;
         s_actionKeys[SONAR] = PlayerPrefs.HasKey(SONAR) ? (KeyCode)PlayerPrefs.GetInt(SONAR) : SONAR_KEY;
         s_actionKeys[DASH] = PlayerPrefs.HasKey(DASH) ? (KeyCode)PlayerPrefs.GetInt(DASH) : DASH_KEY;
-        
+
     }
 }
