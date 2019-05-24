@@ -16,7 +16,7 @@ public class GameManager : NetworkBehaviour
     [SyncVar] [SerializeField] private int m_maxTunnelLength = 7;
     [SyncVar] [SerializeField] private int m_tunnelWidth = 2;
     [SyncVar] [SerializeField] private int m_breakableTunnelChance = 20;
-    [SyncVar] [SerializeField] private int m_shortcutMinSkipDistance = 10;
+    [SyncVar] [SerializeField] private int m_shortcutMinSkipDistance = 20;
     [SyncVar] [SerializeField] private int m_outerWallWidth = 14;
 
     private BoardManager m_boardManager;
