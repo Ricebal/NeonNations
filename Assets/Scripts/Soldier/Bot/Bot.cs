@@ -43,9 +43,16 @@ public class Bot : Soldier
     // Should be called from the script that will control the bot
     public void Move(float horizontal, float vertical)
     {
-        Vector3 movement = new Vector3(horizontal, 0.0f, vertical);
+        if (!isServer)
+        {
+            return;
+        }
 
-        m_rigidbody.velocity = movement * Speed;
+        if (!m_isDead)
+        {
+            Vector3 movement = new Vector3(horizontal, 0.0f, vertical);
+            m_rigidbody.velocity = movement * Speed;
+        }
     }
 
     // Should be called from the script that will control the bot
