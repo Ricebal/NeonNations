@@ -8,6 +8,12 @@ public class Player : Soldier
     private GameOverMenu m_gameOverMenu;
     private PlayerHUD m_hud;
 
+    public override void OnStartClient()
+    {
+        Username = ProfileMenu.GetUsername();
+        base.OnStartClient();
+    }
+
     private void Start()
     {
         if (!isLocalPlayer)

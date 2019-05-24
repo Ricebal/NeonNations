@@ -4,6 +4,12 @@ public class Bot : Soldier
 {
     private Rigidbody m_rigidbody;
 
+    public override void OnStartClient()
+    {
+        Username = ProfileMenu.GetRandomName() + " (Bot)";
+        base.OnStartClient();
+    }
+
     private void Start()
     {
         if (!isServer)

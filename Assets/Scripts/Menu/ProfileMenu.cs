@@ -8,10 +8,20 @@ public class ProfileMenu : MonoBehaviour
 {
     private const string USERNAME_KEY = "username";
 
-    private static string s_username;
+    private static List<string> s_randomNames = new List<string>()
+        {
+            "Tharemar",
+            "Viang",
+            "Onomanyth",
+            "Sulian",
+            "Gwareron",
+            "Asorerwen",
+            "Rendannon",
+            "Doidien",
+            "Ocireric",
+            "Unaunna"
+        };
 
-    [SerializeField]
-    private List<string> m_randomNames = new List<string>();
     [SerializeField]
     private InputField m_usernameField;
     [SerializeField]
@@ -19,12 +29,11 @@ public class ProfileMenu : MonoBehaviour
 
     private void Awake()
     {
-        s_username = LoadUsername();
-        m_usernameField.text = s_username;
+        m_usernameField.text = GetUsername();
     }
 
     // Return the saved username if it exists or a random username
-    private string LoadUsername()
+    public static string GetUsername()
     {
         if (PlayerPrefs.HasKey(USERNAME_KEY))
         {
@@ -38,12 +47,12 @@ public class ProfileMenu : MonoBehaviour
         }
     }
 
-    private string GetRandomName()
+    public static string GetRandomName()
     {
-        return m_randomNames[Random.Range(0, m_randomNames.Count)];
+        return s_randomNames[Random.Range(0, s_randomNames.Count)];
     }
 
-    private void SaveUsername(string username)
+    private static void SaveUsername(string username)
     {
         PlayerPrefs.SetString(USERNAME_KEY, username);
     }
@@ -53,7 +62,7 @@ public class ProfileMenu : MonoBehaviour
     {
         if (string.IsNullOrWhiteSpace(m_usernameField.text))
         {
-            m_usernameField.text = s_username;
+            m_usernameField.text = GetUsername();
             StartCoroutine(ShowMessage("Username cannot be empty", 2));
         }
         else
@@ -70,11 +79,6 @@ public class ProfileMenu : MonoBehaviour
         m_savingText.enabled = true;
         yield return new WaitForSeconds(delay);
         m_savingText.enabled = false;
-    }
-
-    public static string GetUsername()
-    {
-        return s_username;
     }
 
 }

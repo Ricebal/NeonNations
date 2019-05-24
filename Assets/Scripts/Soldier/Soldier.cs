@@ -4,11 +4,13 @@ using UnityEngine;
 public abstract class Soldier : NetworkBehaviour
 {
     [SyncVar]
+    public string Username;
+    [SyncVar]
     public int Team;
     [SyncVar]
     public Color InitialColor;
     [SyncVar]
-    public Score PlayerScore;
+    public Score PlayerScore = new Score();
     // The speed of the entity
     public float Speed;
     // The respawn time of the soldier
@@ -24,6 +26,7 @@ public abstract class Soldier : NetworkBehaviour
 
     public override void OnStartClient()
     {
+        PlayerScore.Username = Username;
         m_sphereCollider = GetComponent<SphereCollider>();
         m_meshRenderer = GetComponent<MeshRenderer>();
         m_renderer = GetComponent<Renderer>();
@@ -78,16 +81,13 @@ public abstract class Soldier : NetworkBehaviour
 
     public void SyncScore()
     {
-        if (PlayerScore == null)
-        {
-            PlayerScore = new Score();
-        }
-        RpcSetScore(PlayerScore.Kills, PlayerScore.Deaths);
+        RpcSetScore(PlayerScore.Username, PlayerScore.Kills, PlayerScore.Deaths);
     }
 
     [ClientRpc]
-    private void RpcSetScore(int kills, int deaths)
+    private void RpcSetScore(string username, int kills, int deaths)
     {
+        PlayerScore.Username = username;
         PlayerScore.Kills = kills;
         PlayerScore.Deaths = deaths;
     }
