@@ -15,7 +15,7 @@ public class Bullet : MonoBehaviour
 
     // The player that shot the bullet
     private string m_shooterId;
-    // Start position
+    // Last position the bullet bounced off
     private Vector3 m_lastBouncePosition;
     // Has left player model
     private bool m_hasLeftPlayerCollider = false;
