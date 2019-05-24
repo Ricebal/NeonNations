@@ -39,7 +39,7 @@ public class GameEnvironment : ScriptableObject
     /// <summary>
     /// Gives the current map
     /// </summary>
-    /// <returns>int[][] Map</returns>
+    /// <returns>Tile[][] Map</returns>
     public Tile[][] GetMap()
     {
         return m_map;
