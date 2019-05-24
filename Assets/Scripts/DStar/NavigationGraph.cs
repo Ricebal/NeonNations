@@ -6,18 +6,15 @@ public class NavigationGraph
 {
     public Node[][] Map;
 
-    public NavigationGraph(Tile[][] completeMap, bool knowMap)
+    public NavigationGraph(Tile[][] completeMap, bool knowMap, List<Tile> listOfObstacles)
     {
         Map = new Node[completeMap.Length][];
         for (int i = 0; i < Map.Length; i++)
         {
             Map[i] = new Node[completeMap[0].Length];
-        }
-        for (int i = 0; i < Map.Length; i++)
-        {
             for (int j = 0; j < Map[0].Length; j++)
             {
-                Map[i][j] = new Node();
+                Map[i][j] = new Node(listOfObstacles);
                 if (knowMap)
                 {
                     Map[i][j].Content = completeMap[i][j];
@@ -55,7 +52,7 @@ public class NavigationGraph
             return Map[x][y];
         }
         // return default
-        return new Node();
+        return new Node(null);
     }
 
     /// <summary>
