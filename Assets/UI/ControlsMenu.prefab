@@ -173,7 +173,7 @@ GameObject:
   - component: {fileID: 997121546938248069}
   - component: {fileID: 997121546938248066}
   m_Layer: 5
-  m_Name: BindingsMenu
+  m_Name: ControlsMenu
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
