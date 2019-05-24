@@ -5003,6 +5003,7 @@ MonoBehaviour:
   InitialColor: {r: 0, g: 0, b: 0, a: 0}
   Speed: 7.5
   RespawnTime: 5
+  IsDead: 0
 --- !u!114 &3362813290604796342
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -17,8 +17,6 @@ public class AttackBehaviour : BotBehaviour
     private const float INITIAL_ACCURACY = 2f;
     // Amount of accuracy gained per update
     private const float ACCURACY_MODIFIER = 0.01f;
-    // Zero point for movement is 0.5 for some reason
-    private const float MOVE_ZERO = 0.5f;
     // Threshold if the target moved
     private const float MOVE_THRESHOLD = 0.02f;
 
@@ -61,13 +59,13 @@ public class AttackBehaviour : BotBehaviour
         }
 
         // If the closest raycast object is not a player return
-        if (!(closestHit.collider != null && closestHit.collider.tag == "Player"))
+        if (closestHit.collider == null || closestHit.collider.tag != "Player")
         {
             return;
         }
 
         // Make bot less accurate to make it more fair for players
-        aimTarget = JitterAim(closestHit.point);
+        aimTarget = JitterAim(targetPosition);
         FireAtPosition(aimTarget);
         m_lastShotPosition = targetPosition;
     }
@@ -78,7 +76,7 @@ public class AttackBehaviour : BotBehaviour
         {
             // Set the accuracy based on last aimed at position
             float movedDistance = Vector3.Distance(m_lastShotPosition, position);
-            if (movedDistance > MOVE_ZERO + MOVE_THRESHOLD || movedDistance < MOVE_ZERO - MOVE_THRESHOLD)
+            if (movedDistance > MOVE_THRESHOLD || movedDistance < -MOVE_THRESHOLD)
             {
                 m_accuracy = INITIAL_ACCURACY;
             }
