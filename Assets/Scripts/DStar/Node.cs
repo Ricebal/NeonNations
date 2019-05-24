@@ -11,7 +11,7 @@ public class Node
 
     private List<Tile> m_listOfObstacles = new List<Tile>();
 
-    public Node(List<Tile> listOfObstacles)
+    public Node(ref List<Tile> listOfObstacles)
     {
         m_listOfObstacles = listOfObstacles;
 
