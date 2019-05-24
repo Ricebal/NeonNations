@@ -8,7 +8,7 @@ public class ProfileMenu : MonoBehaviour
 {
     private const string USERNAME_KEY = "username";
 
-    private static List<string> s_randomNames = new List<string>()
+    private static List<string> s_randomUsernames = new List<string>()
         {
             "Tharemar",
             "Viang",
@@ -49,7 +49,7 @@ public class ProfileMenu : MonoBehaviour
 
     public static string GetRandomName()
     {
-        return s_randomNames[Random.Range(0, s_randomNames.Count)];
+        return s_randomUsernames[Random.Range(0, s_randomUsernames.Count)];
     }
 
     private static void SaveUsername(string username)
