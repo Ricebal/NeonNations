@@ -5,8 +5,9 @@ using UnityEngine.SceneManagement;
 public class EscapeMenu : NetworkBehaviour
 {
     public GameObject Canvas;
-    public delegate void PauseToggled();
-    public event PauseToggled EventPauseToggled;
+
+    public delegate void PauseToggledDelegate();
+    public event PauseToggledDelegate OnPauseToggled;
 
     private bool m_paused = false;
 
@@ -42,9 +43,9 @@ public class EscapeMenu : NetworkBehaviour
         m_paused = !m_paused;
         Cursor.visible = m_paused;
         Canvas.gameObject.SetActive(m_paused);
-        if (EventPauseToggled != null)
+        if (OnPauseToggled != null)
         {
-            EventPauseToggled();
+            OnPauseToggled();
         }
     }
 

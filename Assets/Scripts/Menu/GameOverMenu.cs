@@ -7,6 +7,9 @@ public class GameOverMenu : MonoBehaviour
     public GameObject Panel;
     public Text RespawnText;
 
+    public delegate void RespawnClickDelegate();
+    public event RespawnClickDelegate OnRespawnClick;
+
     private float m_remainingTime;
 
     void Start()
@@ -29,7 +32,10 @@ public class GameOverMenu : MonoBehaviour
 
     public void Respawn()
     {
-        //m_remainingTime = 0;
+        if(OnRespawnClick != null)
+        {
+            OnRespawnClick();
+        }
     }
 
     public void Activate(float respawnTime)

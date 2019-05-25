@@ -19,19 +19,10 @@ public class Player : Soldier
         m_cameraController = Camera.main.GetComponent<CameraController>();
         m_cameraController.SetTarget(this.transform);
         m_escapeMenu = GameObject.Find("EscapeMenu").GetComponent<EscapeMenu>();
-        m_escapeMenu.EventPauseToggled += PauseToggled;
+        m_escapeMenu.OnPauseToggled += PauseToggled;
         m_gameOverMenu = GameObject.Find("GameOverMenu").GetComponent<GameOverMenu>();
+        m_gameOverMenu.OnRespawnClick += CmdRespawn;
         m_hud = GetComponent<PlayerHUD>();
-    }
-
-    private void OnDisable()
-    {
-        if (!isLocalPlayer)
-        {
-            return;
-        }
-
-        m_escapeMenu.EventPauseToggled -= PauseToggled;
     }
 
     private void FixedUpdate()
@@ -81,5 +72,8 @@ public class Player : Soldier
 
         m_cameraController.SetInactive();
         m_cameraController.PlayerTransform = null;
+
+        m_escapeMenu.OnPauseToggled -= PauseToggled;
+        m_gameOverMenu.OnRespawnClick -= CmdRespawn;
     }
 }
