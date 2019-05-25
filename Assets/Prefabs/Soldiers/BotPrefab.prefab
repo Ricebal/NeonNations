@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8830476281594632761}
-  m_Layer: 10
+  m_Layer: 8
   m_Name: Shot Spawn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -41,7 +41,7 @@ GameObject:
   - component: {fileID: 7609436846012792386}
   - component: {fileID: 8535278424896125136}
   - component: {fileID: 6227434465976811590}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: ExplosionBeams
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4747,7 +4747,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7585781779673285552}
   - component: {fileID: 220222578891514634}
-  m_Layer: 10
+  m_Layer: 8
   m_Name: ExplosionLight
   m_TagString: Explosion
   m_Icon: {fileID: 0}
@@ -4834,7 +4834,7 @@ GameObject:
   - component: {fileID: 3484724584103712261}
   - component: {fileID: 2573536475702280004}
   - component: {fileID: 3756314019618765446}
-  m_Layer: 10
+  m_Layer: 8
   m_Name: BotPrefab
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -5170,7 +5170,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8763978311029635708}
   - component: {fileID: 5445096779193966606}
-  m_Layer: 10
+  m_Layer: 8
   m_Name: Point Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5240,7 +5240,7 @@ GameObject:
   - component: {fileID: 6343726006637644486}
   - component: {fileID: 7230179063823132004}
   - component: {fileID: 4231019255920503154}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: ImplosionBeams
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9948,7 +9948,7 @@ GameObject:
   - component: {fileID: 6279237764460178256}
   - component: {fileID: 8485685663451846563}
   - component: {fileID: 778973802340182486}
-  m_Layer: 10
+  m_Layer: 8
   m_Name: Particle System
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14843,7 +14843,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7555909981702408597}
   - component: {fileID: 3103035607344363123}
-  m_Layer: 10
+  m_Layer: 8
   m_Name: Spot Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -9,23 +9,17 @@ public abstract class Soldier : NetworkBehaviour
     public Color InitialColor;
     [SyncVar]
     public Score PlayerScore;
-    // The speed of the entity
     public float Speed;
     // The respawn time of the soldier
     public float RespawnTime;
     public bool IsDead = false;
 
-    protected float m_deathTime;
+    protected Renderer m_renderer;
     protected Stats m_stats;
-
-    private SphereCollider m_sphereCollider;
-    private MeshRenderer m_meshRenderer;
-    private Renderer m_renderer;
+    protected float m_deathTime;
 
     public override void OnStartClient()
     {
-        m_sphereCollider = GetComponent<SphereCollider>();
-        m_meshRenderer = GetComponent<MeshRenderer>();
         m_renderer = GetComponent<Renderer>();
         m_stats = GetComponent<Stats>();
     }
@@ -65,7 +59,7 @@ public abstract class Soldier : NetworkBehaviour
     protected virtual void Die()
     {
         IsDead = true;
-        m_sphereCollider.enabled = false;
+        gameObject.layer = 9; // DeadPlayers layer;
         m_deathTime = Time.time;
         PlayerScore.Deaths++;
 
@@ -95,7 +89,7 @@ public abstract class Soldier : NetworkBehaviour
     protected virtual void Respawn(Vector2 spawnPoint)
     {
         transform.position = new Vector3(spawnPoint.x, 0, spawnPoint.y);
-        m_sphereCollider.enabled = true;
+        gameObject.layer = 8; // Players layer
         m_renderer.material.color = InitialColor;
         m_stats.Reset();
         IsDead = false;
