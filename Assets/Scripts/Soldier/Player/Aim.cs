@@ -7,12 +7,18 @@ public class Aim : NetworkBehaviour
 
     private void Start()
     {
-        Cursor.visible = false;
+        if (isLocalPlayer)
+        {
+            Cursor.visible = false;
+        }
     }
 
     private void OnDisable()
     {
-        Cursor.visible = true;
+        if (isLocalPlayer)
+        {
+            Cursor.visible = true;
+        }
     }
 
     void Update()
