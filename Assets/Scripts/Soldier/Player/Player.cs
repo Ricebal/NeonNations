@@ -41,13 +41,19 @@ public class Player : Soldier
             return;
         }
 
+        Cursor.visible = m_gameOverMenu.IsActive() || m_escapeMenu.IsActive();
+
         m_stats.AddEnergy(1);
         m_hud.UpdateHUD();
     }
 
     private void PauseToggled()
     {
-        m_playerController.enabled = !m_playerController.enabled;
+        // Do not activate player controller if the player is dead
+        if (!IsDead)
+        {
+            m_playerController.enabled = !m_escapeMenu.IsActive();
+        }
     }
 
     protected override void Die()
@@ -66,7 +72,11 @@ public class Player : Soldier
         if (isLocalPlayer)
         {
             m_gameOverMenu.Deactivate();
-            m_playerController.enabled = true;
+            // Do not enable player controller if the escape menu is still opened
+            if (!m_escapeMenu.IsActive())
+            {
+                m_playerController.enabled = true;
+            }
         }
 
         base.Respawn(respawnPoint);

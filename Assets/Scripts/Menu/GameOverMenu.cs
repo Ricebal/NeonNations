@@ -9,14 +9,14 @@ public class GameOverMenu : MonoBehaviour
 
     private float m_remainingTime;
 
-    void Start()
+    private void Start()
     {
         Deactivate();
     }
 
-    void Update()
+    private void Update()
     {
-        if (Panel.gameObject.activeSelf)
+        if (Panel.activeSelf)
         {
             m_remainingTime -= Time.deltaTime;
             if (m_remainingTime < 0)
@@ -34,15 +34,18 @@ public class GameOverMenu : MonoBehaviour
 
     public void Activate(float respawnTime)
     {
-        Cursor.visible = true;
-        Panel.gameObject.SetActive(true);
+        Panel.SetActive(true);
         m_remainingTime = respawnTime;
     }
 
     public void Deactivate()
     {
-        Cursor.visible = false;
-        Panel.gameObject.SetActive(false);
+        Panel.SetActive(false);
+    }
+
+    public bool IsActive()
+    {
+        return Panel.activeSelf;
     }
 
 }
