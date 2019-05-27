@@ -1,7 +1,7 @@
-﻿using System.Text;
+﻿using Mirror;
+using System.Text;
 using TMPro;
 using UnityEngine;
-using Mirror;
 
 public class GameManager : NetworkBehaviour
 {

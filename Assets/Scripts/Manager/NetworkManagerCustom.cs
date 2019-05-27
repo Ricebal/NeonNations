@@ -69,7 +69,7 @@ public class NetworkManagerCustom : NetworkManager
 
     public override void OnStopClient()
     {
-        if(m_isConnecting)
+        if (m_isConnecting)
         {
             m_connectionText = "Connection timed out";
             m_isConnecting = false;
