@@ -47,4 +47,20 @@ public class Score
         m_kills = kills;
         m_deaths = deaths;
     }
+    
+    /// <summary>
+    /// Returns the score, depending on the gamemode.
+    /// </summary>
+    public int GetScore()
+    {
+        return Kills; // Currently just for team death match.
+    }
+
+    /// <summary>
+    /// Returns the score, depending on the gamemode. Ready to be used by a GUI.
+    /// </summary>
+    public string GetScoreForGUI()
+    {
+        return GetScoreForGUI().ToString(); // Currently just for team death match.
+    }
 }

@@ -27,11 +27,6 @@ public class Team
     {
         Score.Deaths++;
     }
-    
-    public int GetScore()
-    {
-        return Score.Kills;
-    }
 
     public override bool Equals(object obj)
     {

@@ -62,7 +62,6 @@ public class TeamScoreboard : NetworkBehaviour
     [ClientRpc]
     private void RpcRefreshScores()
     {
-        Debug.Log("Updating the score");
         foreach (KeyValuePair<int, TeamScoreboardEntry> keyValuePair in m_teamScoreboardEntries)
         {
             Team team = m_teamManager.Teams[keyValuePair.Key - 1];

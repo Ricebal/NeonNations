@@ -14,14 +14,9 @@ public class TeamScoreboardEntry : MonoBehaviour
         UpdateScore();
     }
 
-    public Score GetScore()
-    {
-        return m_score;
-    }
-
     private void UpdateScore()
     {
-        m_teamScore.text = m_score.Kills.ToString();
+        m_teamScore.text = m_score.GetScoreForGUI();
     }
 
     public void SetColor(Color teamColor)
