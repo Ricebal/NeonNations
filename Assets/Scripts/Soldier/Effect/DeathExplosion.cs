@@ -46,9 +46,19 @@ public class DeathExplosion : MonoBehaviour
 
     private void Update()
     {
-        // If the effect hasn't started yet or is over, exit the method
-        if (Time.time > m_start + LIFESPAN + DELAY || Time.time < m_start + DELAY)
+        // If the effect hasn't started yet, exit the method
+        if (Time.time < m_start + DELAY)
         {
+            return;
+        }
+        // If the effect is over, exit the method
+        if (Time.time > m_start + LIFESPAN + DELAY)
+        {
+            // If the effect is over and the light is still active, disable it
+            if (m_light.gameObject.activeSelf)
+            {
+                m_light.gameObject.SetActive(false);
+            }
             return;
         }
 

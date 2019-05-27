@@ -12,9 +12,12 @@ public class Bullet : MonoBehaviour
     public GameObject HitPrefab;
     // Offset for spawning the lights
     public float WallOffset;
-
     // The player that shot the bullet
-    private string m_shooterId;
+    public string ShooterId;
+
+    // Bullet's radius, used for sphere cast
+    private float m_radius;
+    private Rigidbody m_rigidbody;
     // Last position the bullet bounced off
     private Vector3 m_lastBouncePosition;
     // Has left player model
@@ -25,10 +28,11 @@ public class Bullet : MonoBehaviour
     public void Start()
     {
         m_lastBouncePosition = transform.position;
-        Rigidbody rigidbody = GetComponent<Rigidbody>();
+        m_radius = GetComponent<CapsuleCollider>().radius;
+        m_rigidbody = GetComponent<Rigidbody>();
 
         // Move the bullet straight ahead with constant speed
-        rigidbody.velocity = transform.forward * Speed;
+        m_rigidbody.velocity = transform.forward * Speed;
 
         // Destroy the bullet when the LivingTime is elapsed
         Destroy(gameObject, LivingTime);
@@ -37,7 +41,7 @@ public class Bullet : MonoBehaviour
     private void OnTriggerExit(Collider collider)
     {
         // Check if the bullet has left the players hitbox, so they don't shoot themself immediately
-        if (collider.transform.name == m_shooterId)
+        if (collider.transform.name == ShooterId)
         {
             m_hasLeftPlayerCollider = true;
         }
@@ -49,7 +53,7 @@ public class Bullet : MonoBehaviour
         if (collider.tag == "Mirror" && collider.GetInstanceID() != m_lastMirror)
         {
             // Get the current heading
-            Vector3 currentDirection = transform.TransformDirection(Vector3.forward);
+            Vector3 currentDirection = transform.forward;
             // Raycast from start or last bounce to collision
             RaycastHit contact = GetRaycastHit(collider.GetInstanceID());
             // Calculate the angle of reflection
@@ -57,7 +61,7 @@ public class Bullet : MonoBehaviour
             newDirection.Normalize();
             // Set the velocity to the speed var
             Vector3 newVelocity = newDirection * Speed;
-            GetComponent<Rigidbody>().velocity = newVelocity;
+            m_rigidbody.velocity = newVelocity;
             // Rotate the bullet so it faces the direction it's heading
             transform.rotation = Quaternion.LookRotation(newVelocity);
             // Set the last bounce position to current position for future raycasting
@@ -67,7 +71,7 @@ public class Bullet : MonoBehaviour
         }
 
         // If the collider is not a mirror and has left the player hitbox
-        if (collider.tag != "Mirror" && (m_hasLeftPlayerCollider || collider.transform.name != m_shooterId))
+        if (collider.tag != "Mirror" && (m_hasLeftPlayerCollider || collider.transform.name != ShooterId))
         {
             if (HitPrefab != null)
             {
@@ -97,7 +101,7 @@ public class Bullet : MonoBehaviour
 
     private RaycastHit GetRaycastHit(int id)
     {
-        RaycastHit[] hits = Physics.RaycastAll(m_lastBouncePosition, transform.forward, 80);
+        RaycastHit[] hits = Physics.SphereCastAll(m_lastBouncePosition, m_radius, transform.forward, 80);
         foreach (RaycastHit hit in hits)
         {
             if (hit.collider.GetInstanceID() == id)
@@ -115,7 +119,7 @@ public class Bullet : MonoBehaviour
         explosion.transform.Translate(0, 0, -WallOffset);
 
         // Set explosion light color to the player's color
-        Color color = GameObject.Find(m_shooterId).GetComponent<Soldier>().InitialColor;
+        Color color = GameObject.Find(ShooterId).GetComponent<Soldier>().InitialColor;
         ExplosionLight explosionLight = explosion.GetComponent<ExplosionLight>();
         explosionLight.SetColor(color);
     }
@@ -123,7 +127,7 @@ public class Bullet : MonoBehaviour
     public void SetBulletColor()
     {
         // Get the colour for the bullet
-        Color color = GameObject.Find(m_shooterId).GetComponent<Soldier>().InitialColor;
+        Color color = GameObject.Find(ShooterId).GetComponent<Soldier>().InitialColor;
 
         // Make new material
         Material mat;
@@ -165,16 +169,6 @@ public class Bullet : MonoBehaviour
             particleSystemRenderer.material = mat;
             particleSystemRenderer.trailMaterial = mat;
         }
-    }
-
-    public void SetShooterId(string shooterId)
-    {
-        m_shooterId = shooterId;
-    }
-
-    public string GetShooterId()
-    {
-        return m_shooterId;
     }
 
 }
