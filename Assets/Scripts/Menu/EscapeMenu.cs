@@ -5,12 +5,11 @@ using UnityEngine.SceneManagement;
 public class EscapeMenu : NetworkBehaviour
 {
     public GameObject Canvas;
+
     public delegate void PauseToggled();
     public event PauseToggled EventPauseToggled;
 
-    private bool m_paused = false;
-
-    void Update()
+    private void Update()
     {
         if (Input.GetKeyDown("escape"))
         {
@@ -39,13 +38,16 @@ public class EscapeMenu : NetworkBehaviour
 
     public void TogglePause()
     {
-        m_paused = !m_paused;
-        Cursor.visible = m_paused;
-        Canvas.gameObject.SetActive(m_paused);
+        Canvas.SetActive(!Canvas.activeSelf);
         if (EventPauseToggled != null)
         {
             EventPauseToggled();
         }
+    }
+
+    public bool IsActive()
+    {
+        return Canvas.activeSelf;
     }
 
 }

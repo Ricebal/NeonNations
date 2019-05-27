@@ -8,20 +8,22 @@ public abstract class Soldier : NetworkBehaviour
     [SyncVar]
     public Color InitialColor;
     [SyncVar]
-    public Score PlayerScore;
+    public Score PlayerScore = new Score();
+    // The speed of the entity
     public float Speed;
+    public string Username;
     // The respawn time of the soldier
     public float RespawnTime;
     public bool IsDead = false;
 
+    [SerializeField] protected Stat m_healthStat;
+    [SerializeField] protected Stat m_energyStat;
     protected Renderer m_renderer;
-    protected Stats m_stats;
     protected float m_deathTime;
 
     public override void OnStartClient()
     {
         m_renderer = GetComponent<Renderer>();
-        m_stats = GetComponent<Stats>();
     }
 
     protected void Update()
@@ -70,18 +72,24 @@ public abstract class Soldier : NetworkBehaviour
         }
     }
 
+    protected virtual void Respawn(Vector2 spawnPoint)
+    {
+        transform.position = new Vector3(spawnPoint.x, 0, spawnPoint.y);
+        m_sphereCollider.enabled = true;
+        m_renderer.material.color = InitialColor;
+        m_stats.Reset();
+        IsDead = false;
+    }
+
     public void SyncScore()
     {
-        if (PlayerScore == null)
-        {
-            PlayerScore = new Score();
-        }
-        RpcSetScore(PlayerScore.Kills, PlayerScore.Deaths);
+        RpcSetScore(PlayerScore.Username, PlayerScore.Kills, PlayerScore.Deaths);
     }
 
     [ClientRpc]
-    private void RpcSetScore(int kills, int deaths)
+    private void RpcSetScore(string username, int kills, int deaths)
     {
+        PlayerScore.Username = username;
         PlayerScore.Kills = kills;
         PlayerScore.Deaths = deaths;
     }
@@ -91,7 +99,8 @@ public abstract class Soldier : NetworkBehaviour
         transform.position = new Vector3(spawnPoint.x, 0, spawnPoint.y);
         gameObject.layer = 8; // Players layer
         m_renderer.material.color = InitialColor;
-        m_stats.Reset();
+        m_healthStat.Reset();
+        m_energyStat.Reset();
         IsDead = false;
     }
 
@@ -99,7 +108,7 @@ public abstract class Soldier : NetworkBehaviour
     {
         Color newColor = new Color(color.r, color.g, color.b, 1f);
         InitialColor = newColor;
-        CmdColor(this.gameObject, newColor);
+        CmdColor(gameObject, newColor);
     }
 
     [ClientRpc]
@@ -119,10 +128,23 @@ public abstract class Soldier : NetworkBehaviour
         RpcColor(obj, color);
     }
 
+    [ClientRpc]
+    protected void RpcUsername(string username)
+    {
+        Username = username;
+        PlayerScore.Username = username;
+    }
+
+    [Command]
+    protected void CmdUsername(string username)
+    {
+        RpcUsername(username);
+    }
+
     protected void TakeDamage(int damage, string playerId)
     {
         RpcTakeDamage(damage);
-        if (m_stats.GetCurrentHealth() <= 0)
+        if (m_healthStat.GetValue() <= 0)
         {
             // If the Soldier is not yet dead, the Soldier will die
             if (!IsDead)
@@ -136,7 +158,7 @@ public abstract class Soldier : NetworkBehaviour
     [ClientRpc]
     protected void RpcTakeDamage(int damage)
     {
-        m_stats.TakeDamage(damage);
+        m_healthStat.Subtract(damage);
     }
 
     [ClientRpc]
@@ -155,10 +177,10 @@ public abstract class Soldier : NetworkBehaviour
         if (collider.gameObject.tag == "Bullet")
         {
             Bullet bullet = collider.gameObject.GetComponent<Bullet>();
-            Soldier shooter = GameObject.Find(bullet.GetShooterId()).GetComponent<Soldier>();
-            if (bullet.GetShooterId() != transform.name && shooter.Team != this.Team)
+            Soldier shooter = GameObject.Find(bullet.ShooterId).GetComponent<Soldier>();
+            if (bullet.ShooterId != transform.name && shooter.Team != this.Team)
             {
-                TakeDamage(bullet.Damage, bullet.GetShooterId());
+                TakeDamage(bullet.Damage, bullet.ShooterId);
             }
         }
     }

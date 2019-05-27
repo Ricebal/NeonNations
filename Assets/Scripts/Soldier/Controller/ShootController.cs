@@ -36,7 +36,7 @@ public class ShootController : NetworkBehaviour
     {
         GameObject prefab = Instantiate(Prefab, Spawn.position, Spawn.rotation);
         Bullet bullet = prefab.GetComponent<Bullet>();
-        bullet.SetShooterId(shooterId);
+        bullet.ShooterId = shooterId;
         bullet.SetBulletColor();
         bullet.GetComponent<Identity>().SetIdentity();
     }
