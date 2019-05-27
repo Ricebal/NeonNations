@@ -161,10 +161,10 @@ public abstract class Soldier : NetworkBehaviour
         if (collider.gameObject.tag == "Bullet")
         {
             Bullet bullet = collider.gameObject.GetComponent<Bullet>();
-            Soldier shooter = GameObject.Find(bullet.GetShooterId()).GetComponent<Soldier>();
-            if (bullet.GetShooterId() != transform.name && shooter.Team != this.Team)
+            Soldier shooter = GameObject.Find(bullet.ShooterId).GetComponent<Soldier>();
+            if (bullet.ShooterId != transform.name && shooter.Team != this.Team)
             {
-                TakeDamage(bullet.Damage, bullet.GetShooterId());
+                TakeDamage(bullet.Damage, bullet.ShooterId);
             }
         }
     }
