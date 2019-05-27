@@ -47,7 +47,7 @@ public class Player : Soldier
     {
         if (isLocalPlayer)
         {
-            m_gameOverMenu.Activate(m_respawnTime);
+            m_gameOverMenu.Activate(RespawnTime);
             m_playerController.enabled = false;
         }
 
