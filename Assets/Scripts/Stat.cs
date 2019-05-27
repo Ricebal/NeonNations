@@ -4,7 +4,7 @@ public class Stat : MonoBehaviour
 {
     [SerializeField] private int m_minValue;
     [SerializeField] private int m_maxValue;
-    private int m_currentValue;
+    [SerializeField] private int m_currentValue;
 
     private void Start()
     {
