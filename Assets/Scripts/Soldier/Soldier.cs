@@ -77,15 +77,6 @@ public abstract class Soldier : NetworkBehaviour
         }
     }
 
-    protected virtual void Respawn(Vector2 spawnPoint)
-    {
-        transform.position = new Vector3(spawnPoint.x, 0, spawnPoint.y);
-        m_sphereCollider.enabled = true;
-        m_renderer.material.color = InitialColor;
-        m_stats.Reset();
-        IsDead = false;
-    }
-
     public void SyncScore()
     {
         RpcSetScore(PlayerScore.Username, PlayerScore.Kills, PlayerScore.Deaths);
