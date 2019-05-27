@@ -17,7 +17,7 @@ public class Stat : MonoBehaviour
         m_currentValue = Mathf.Max(m_minValue, Mathf.Min(m_currentValue, m_maxValue));
     }
 
-    public void Substract(int value)
+    public void Subtract(int value)
     {
         m_currentValue -= value;
         m_currentValue = Mathf.Max(m_minValue, Mathf.Min(m_currentValue, m_maxValue));

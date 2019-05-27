@@ -21,7 +21,7 @@ public class Action : NetworkBehaviour
         // If the cooldown is elapsed and the player has enough energy
         if (m_sonarController.CanSonar(m_energyStat.GetValue()))
         {
-            m_energyStat.Substract(m_sonarController.Cost);
+            m_energyStat.Subtract(m_sonarController.Cost);
             m_sonarController.Fire();
         }
     }
@@ -31,7 +31,7 @@ public class Action : NetworkBehaviour
         // If the cooldown is elapsed and the player has enough energy
         if (m_shootController.CanShoot(m_energyStat.GetValue()))
         {
-            m_energyStat.Substract(m_shootController.Cost);
+            m_energyStat.Subtract(m_shootController.Cost);
             m_shootController.Fire();
         }
 
@@ -41,7 +41,7 @@ public class Action : NetworkBehaviour
     {
         if (m_dashController.CanDash(m_energyStat.GetValue()))
         {
-            m_energyStat.Substract(m_dashController.Cost);
+            m_energyStat.Subtract(m_dashController.Cost);
             m_dashController.StartDash();
         }
     }

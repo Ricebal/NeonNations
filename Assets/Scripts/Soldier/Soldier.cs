@@ -143,7 +143,7 @@ public abstract class Soldier : NetworkBehaviour
     [ClientRpc]
     protected void RpcTakeDamage(int damage)
     {
-        m_healthStat.Substract(damage);
+        m_healthStat.Subtract(damage);
     }
 
     [ClientRpc]

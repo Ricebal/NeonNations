@@ -9,7 +9,7 @@ public class BreakableWall : MonoBehaviour
     {
         if (collider.gameObject.tag == "Bullet")
         {
-            m_healthStat.Substract(collider.gameObject.GetComponent<Bullet>().Damage);
+            m_healthStat.Subtract(collider.gameObject.GetComponent<Bullet>().Damage);
 
             if (m_healthStat.GetValue() <= 0)
             {
