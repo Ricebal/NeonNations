@@ -8,9 +8,10 @@ public abstract class Soldier : NetworkBehaviour
     [SyncVar]
     public Color InitialColor;
     [SyncVar]
-    public Score PlayerScore;
+    public Score PlayerScore = new Score();
     // The speed of the entity
     public float Speed;
+    public string Username;
     // The respawn time of the soldier
     public float RespawnTime;
     public bool IsDead = false;
@@ -76,18 +77,24 @@ public abstract class Soldier : NetworkBehaviour
         }
     }
 
+    protected virtual void Respawn(Vector2 spawnPoint)
+    {
+        transform.position = new Vector3(spawnPoint.x, 0, spawnPoint.y);
+        m_sphereCollider.enabled = true;
+        m_renderer.material.color = InitialColor;
+        m_stats.Reset();
+        IsDead = false;
+    }
+
     public void SyncScore()
     {
-        if (PlayerScore == null)
-        {
-            PlayerScore = new Score();
-        }
-        RpcSetScore(PlayerScore.Kills, PlayerScore.Deaths);
+        RpcSetScore(PlayerScore.Username, PlayerScore.Kills, PlayerScore.Deaths);
     }
 
     [ClientRpc]
-    private void RpcSetScore(int kills, int deaths)
+    private void RpcSetScore(string username, int kills, int deaths)
     {
+        PlayerScore.Username = username;
         PlayerScore.Kills = kills;
         PlayerScore.Deaths = deaths;
     }
@@ -106,7 +113,7 @@ public abstract class Soldier : NetworkBehaviour
     {
         Color newColor = new Color(color.r, color.g, color.b, 1f);
         InitialColor = newColor;
-        CmdColor(this.gameObject, newColor);
+        CmdColor(gameObject, newColor);
     }
 
     [ClientRpc]
@@ -124,6 +131,19 @@ public abstract class Soldier : NetworkBehaviour
     protected void CmdColor(GameObject obj, Color color)
     {
         RpcColor(obj, color);
+    }
+
+    [ClientRpc]
+    protected void RpcUsername(string username)
+    {
+        Username = username;
+        PlayerScore.Username = username;
+    }
+
+    [Command]
+    protected void CmdUsername(string username)
+    {
+        RpcUsername(username);
     }
 
     protected void TakeDamage(int damage, string playerId)

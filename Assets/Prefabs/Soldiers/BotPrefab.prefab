@@ -5017,6 +5017,7 @@ MonoBehaviour:
   Team: 0
   InitialColor: {r: 0, g: 0, b: 0, a: 0}
   Speed: 7.5
+  Username: Bot
   RespawnTime: 5
   IsDead: 0
   m_healthStat: {fileID: 996390647512303307}

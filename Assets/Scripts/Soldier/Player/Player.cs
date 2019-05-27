@@ -22,16 +22,9 @@ public class Player : Soldier
         m_escapeMenu.EventPauseToggled += PauseToggled;
         m_gameOverMenu = GameObject.Find("GameOverMenu").GetComponent<GameOverMenu>();
         m_hud = GetComponent<PlayerHUD>();
-    }
 
-    private void OnDisable()
-    {
-        if (!isLocalPlayer)
-        {
-            return;
-        }
-
-        m_escapeMenu.EventPauseToggled -= PauseToggled;
+        Username = ProfileMenu.GetUsername();
+        CmdUsername(Username);
     }
 
     private void FixedUpdate()
@@ -91,5 +84,6 @@ public class Player : Soldier
 
         m_cameraController.SetInactive();
         m_cameraController.PlayerTransform = null;
+        m_escapeMenu.EventPauseToggled -= PauseToggled;
     }
 }

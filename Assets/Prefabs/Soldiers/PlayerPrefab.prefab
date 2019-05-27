@@ -5287,6 +5287,7 @@ MonoBehaviour:
   Team: 0
   InitialColor: {r: 0, g: 0, b: 0, a: 0}
   Speed: 7.5
+  Username: Unknown
   RespawnTime: 5
   IsDead: 0
   m_healthStat: {fileID: 18416186091895302}
