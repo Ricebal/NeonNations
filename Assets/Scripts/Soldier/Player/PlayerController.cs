@@ -61,6 +61,11 @@ public class PlayerController : NetworkBehaviour
         float moveVertical = InputManager.GetAxis("Vertical");
 
         Vector3 movement = new Vector3(moveHorizontal, 0, moveVertical);
+        // If the player moves diagonally, movement magnitude could be superior to 1 leading to a higher speed
+        if (movement.magnitude > 1)
+        {
+            movement.Normalize();
+        }
 
         // If dashing, normalize movement vector so you are always at max speed
         if (m_playerDash.IsDashing())
