@@ -6,6 +6,10 @@ public class GameOverMenu : MonoBehaviour
 {
     public GameObject Panel;
     public Text RespawnText;
+    public Button RespawnButton;
+
+    public delegate void RespawnClickDelegate();
+    public event RespawnClickDelegate OnRespawnClick;
 
     private float m_remainingTime;
 
@@ -19,17 +23,25 @@ public class GameOverMenu : MonoBehaviour
         if (Panel.activeSelf)
         {
             m_remainingTime -= Time.deltaTime;
-            if (m_remainingTime < 0)
+            if (m_remainingTime <= 0)
             {
-                m_remainingTime = 0;
+                RespawnText.text = "You can respawn!";
+                RespawnButton.interactable = true;
             }
-            RespawnText.text = "Respawning in " + Math.Ceiling(m_remainingTime) + " seconds...";
+            else
+            {
+                RespawnText.text = "Respawning in " + Math.Ceiling(m_remainingTime) + " seconds...";
+                RespawnButton.interactable = false;
+            }
         }
     }
 
     public void Respawn()
     {
-        //m_remainingTime = 0;
+        if (OnRespawnClick != null)
+        {
+            OnRespawnClick();
+        }
     }
 
     public void Activate(float respawnTime)

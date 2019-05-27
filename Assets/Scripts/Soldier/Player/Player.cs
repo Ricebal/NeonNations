@@ -19,8 +19,9 @@ public class Player : Soldier
         m_cameraController = Camera.main.GetComponent<CameraController>();
         m_cameraController.SetTarget(this.transform);
         m_escapeMenu = GameObject.Find("EscapeMenu").GetComponent<EscapeMenu>();
-        m_escapeMenu.EventPauseToggled += PauseToggled;
+        m_escapeMenu.OnPauseToggled += PauseToggled;
         m_gameOverMenu = GameObject.Find("GameOverMenu").GetComponent<GameOverMenu>();
+        m_gameOverMenu.OnRespawnClick += CmdRespawn;
         m_hud = GetComponent<PlayerHUD>();
 
         Username = ProfileMenu.GetUsername();
@@ -35,7 +36,7 @@ public class Player : Soldier
         }
 
         Cursor.visible = m_gameOverMenu.IsActive() || m_escapeMenu.IsActive();
-        
+
         m_energyStat.Add(1);
         m_hud.UpdateHUD();
     }
@@ -84,6 +85,6 @@ public class Player : Soldier
 
         m_cameraController.SetInactive();
         m_cameraController.PlayerTransform = null;
-        m_escapeMenu.EventPauseToggled -= PauseToggled;
+        m_escapeMenu.OnPauseToggled -= PauseToggled;
     }
 }

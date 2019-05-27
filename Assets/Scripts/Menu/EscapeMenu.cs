@@ -6,8 +6,8 @@ public class EscapeMenu : NetworkBehaviour
 {
     public GameObject Canvas;
 
-    public delegate void PauseToggled();
-    public event PauseToggled EventPauseToggled;
+    public delegate void PauseToggledDelegate();
+    public event PauseToggledDelegate OnPauseToggled;
 
     private void Update()
     {
@@ -39,9 +39,9 @@ public class EscapeMenu : NetworkBehaviour
     public void TogglePause()
     {
         Canvas.SetActive(!Canvas.activeSelf);
-        if (EventPauseToggled != null)
+        if (OnPauseToggled != null)
         {
-            EventPauseToggled();
+            OnPauseToggled();
         }
     }
 

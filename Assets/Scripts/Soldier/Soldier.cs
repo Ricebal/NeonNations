@@ -39,22 +39,19 @@ public abstract class Soldier : NetworkBehaviour
             float newAlpha = Mathf.Max(0, (RespawnTime - (Time.time - m_deathTime)) / RespawnTime);
             m_renderer.material.color = new Color(1, 0.39f, 0.28f, newAlpha);
         }
-
-        if (isServer)
-        {
-            // If the soldier is able to respawn
-            if (IsDead && Time.time - m_deathTime >= RespawnTime)
-            {
-                Vector2 spawnPoint = GameObject.Find("GameManager").GetComponent<BoardManager>().GetRandomFloorTile();
-                RpcRespawn(spawnPoint);
-            }
-        }
     }
 
     [ClientRpc]
     private void RpcDead()
     {
         Die();
+    }
+
+    [Command]
+    protected void CmdRespawn()
+    {
+        Vector2 spawnPoint = GameObject.Find("GameManager").GetComponent<BoardManager>().GetRandomFloorTile();
+        RpcRespawn(spawnPoint);
     }
 
     [ClientRpc]
@@ -140,14 +137,11 @@ public abstract class Soldier : NetworkBehaviour
     protected void TakeDamage(int damage, string playerId)
     {
         RpcTakeDamage(damage);
-        if (m_healthStat.GetValue() <= 0)
+        // If the soldier has no remaining health and is not dead yet, he will die
+        if (m_healthStat.GetValue() <= 0 && !IsDead)
         {
-            // If the Soldier is not yet dead, the Soldier will die
-            if (!IsDead)
-            {
-                RpcAddKill(playerId);
-                RpcDead();
-            }
+            RpcAddKill(playerId);
+            RpcDead();
         }
     }
 
