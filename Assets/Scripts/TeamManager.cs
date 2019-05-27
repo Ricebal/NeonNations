@@ -99,6 +99,13 @@ public class TeamManager : NetworkBehaviour
         Teams[teamId - 1].Score = score;
     }
 
+    public void AddTeam(Color color)
+    {
+        Team team = new Team(Teams.Count + 1);
+        team.Color = color;
+        Teams.Add(team);
+    }
+
     public void AddTeam()
     {
         Teams.Add(new Team(Teams.Count + 1));

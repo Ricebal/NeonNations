@@ -12,12 +12,16 @@ public class TeamScoreboard : NetworkBehaviour
     private GameObject m_teamList;
     [SerializeField]
     private TeamManager m_teamManager;
-    private TextMeshProUGUI m_teamScore;
+    private GameMode m_gameMode;
+    [SerializeField]
+    private TextMeshProUGUI m_remainingTime;
     private Dictionary<int, TeamScoreboardEntry> m_teamScoreboardEntries = new Dictionary<int, TeamScoreboardEntry>();
 
     private void Start()
     {
         m_teamManager = GameObject.Find("GameManager").GetComponent<TeamManager>();
+        GameManager gm = GameObject.Find("GameManager").GetComponent<GameManager>();
+        m_gameMode = gm.GameMode;
         foreach (Team team in m_teamManager.Teams)
         {
             AddTeam(team.Id);
@@ -26,6 +30,7 @@ public class TeamScoreboard : NetworkBehaviour
                 Debug.Log("Add eventListener");
                 team.Score.OnScoreChange += RefreshScores;
             }
+            team.Score.OnScoreChange += m_gameMode.CheckForWinCondition;
         }
 
         if (isServer)
@@ -35,6 +40,11 @@ public class TeamScoreboard : NetworkBehaviour
         }
 
         GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -75);
+    }
+
+    private void FixedUpdate()
+    {
+        m_remainingTime.text = m_gameMode.FormatTimeToText();
     }
 
     private void AddTeam(int teamId)
@@ -48,6 +58,7 @@ public class TeamScoreboard : NetworkBehaviour
 
         // Set the score
         TeamScoreboardEntry entry = scorePanel.GetComponent<TeamScoreboardEntry>();
+        entry.SetGameMode(m_gameMode.CurrentGameMode);
         entry.SetScore(team.Score);
         entry.SetColor(team.Color);
         m_teamScoreboardEntries.Add(teamId, entry);

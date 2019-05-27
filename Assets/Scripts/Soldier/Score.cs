@@ -51,16 +51,21 @@ public class Score
     /// <summary>
     /// Returns the score, depending on the gamemode.
     /// </summary>
-    public int GetScore()
+    public int GetScore(GameModes gameMode)
     {
-        return Kills; // Currently just for team death match.
+        switch (gameMode)
+        {
+            case (GameModes.TeamDeathMatch):
+                return Kills;
+        }
+        return 0;
     }
 
     /// <summary>
     /// Returns the score, depending on the gamemode. Ready to be used by a GUI.
     /// </summary>
-    public string GetScoreForGUI()
+    public string GetScoreAsString(GameModes gameMode)
     {
-        return GetScoreForGUI().ToString(); // Currently just for team death match.
+        return GetScore(gameMode).ToString();
     }
 }

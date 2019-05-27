@@ -5,7 +5,13 @@ public class TeamScoreboardEntry : MonoBehaviour
 {
     [SerializeField]
     private TextMeshProUGUI m_teamScore;
+    private GameModes m_gameMode;
     private Score m_score;
+
+    public void SetGameMode(GameModes gameMode)
+    {
+        m_gameMode = gameMode;
+    }
 
     public void SetScore(Score score)
     {
@@ -16,16 +22,16 @@ public class TeamScoreboardEntry : MonoBehaviour
 
     private void UpdateScore()
     {
-        m_teamScore.text = m_score.GetScoreForGUI();
+        m_teamScore.text = m_score.GetScoreAsString(m_gameMode);
     }
 
     public void SetColor(Color teamColor)
     {
-        // Set color
+        // Set color.
         m_teamScore.outlineColor = teamColor;
         Material mat = Material.Instantiate(m_teamScore.fontSharedMaterial);
         Color32 teamColor32 = teamColor;
-        // Set alpha because that's not saved in team.Color
+        // Set alpha because that's not saved in team.Color.
         teamColor32.a = 255;
         mat.SetColor(ShaderUtilities.ID_GlowColor, teamColor32);
         m_teamScore.fontSharedMaterial = mat;
