@@ -16,8 +16,9 @@ public abstract class Soldier : NetworkBehaviour
     public float RespawnTime;
     public bool IsDead = false;
 
+    [SerializeField] protected Stat m_healthStat;
+    [SerializeField] protected Stat m_energyStat;
     protected float m_deathTime;
-    protected Stats m_stats;
 
     private SphereCollider m_sphereCollider;
     private MeshRenderer m_meshRenderer;
@@ -28,7 +29,6 @@ public abstract class Soldier : NetworkBehaviour
         m_sphereCollider = GetComponent<SphereCollider>();
         m_meshRenderer = GetComponent<MeshRenderer>();
         m_renderer = GetComponent<Renderer>();
-        m_stats = GetComponent<Stats>();
     }
 
     protected void Update()
@@ -99,6 +99,16 @@ public abstract class Soldier : NetworkBehaviour
         PlayerScore.Deaths = deaths;
     }
 
+    protected virtual void Respawn(Vector2 spawnPoint)
+    {
+        transform.position = new Vector3(spawnPoint.x, 0, spawnPoint.y);
+        m_sphereCollider.enabled = true;
+        m_renderer.material.color = InitialColor;
+        m_healthStat.Reset();
+        m_energyStat.Reset();
+        IsDead = false;
+    }
+
     public void SetInitialColor(Color color)
     {
         Color newColor = new Color(color.r, color.g, color.b, 1f);
@@ -139,7 +149,7 @@ public abstract class Soldier : NetworkBehaviour
     protected void TakeDamage(int damage, string playerId)
     {
         RpcTakeDamage(damage);
-        if (m_stats.GetCurrentHealth() <= 0)
+        if (m_healthStat.GetValue() <= 0)
         {
             // If the Soldier is not yet dead, the Soldier will die
             if (!IsDead)
@@ -153,7 +163,7 @@ public abstract class Soldier : NetworkBehaviour
     [ClientRpc]
     protected void RpcTakeDamage(int damage)
     {
-        m_stats.TakeDamage(damage);
+        m_healthStat.Subtract(damage);
     }
 
     [ClientRpc]
@@ -172,10 +182,10 @@ public abstract class Soldier : NetworkBehaviour
         if (collider.gameObject.tag == "Bullet")
         {
             Bullet bullet = collider.gameObject.GetComponent<Bullet>();
-            Soldier shooter = GameObject.Find(bullet.GetShooterId()).GetComponent<Soldier>();
-            if (bullet.GetShooterId() != transform.name && shooter.Team != this.Team)
+            Soldier shooter = GameObject.Find(bullet.ShooterId).GetComponent<Soldier>();
+            if (bullet.ShooterId != transform.name && shooter.Team != this.Team)
             {
-                TakeDamage(bullet.Damage, bullet.GetShooterId());
+                TakeDamage(bullet.Damage, bullet.ShooterId);
             }
         }
     }

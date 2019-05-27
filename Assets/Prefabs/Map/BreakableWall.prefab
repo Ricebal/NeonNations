@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 2312828223926185231}
   - component: {fileID: 299946022042251889}
   - component: {fileID: 4136794266597227520}
+  - component: {fileID: 2773178780142120316}
   - component: {fileID: 8597429118052604184}
-  - component: {fileID: 899422198185278236}
   - component: {fileID: 2261283144201084859}
   m_Layer: 0
   m_Name: BreakableWall
@@ -94,6 +94,20 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &2773178780142120316
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7737746882760392655}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85025aa8197f7e548b988dcf2c41a8f3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_minValue: 0
+  m_maxValue: 50
 --- !u!114 &8597429118052604184
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -106,20 +120,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f80fd833344af5241b494baf9be64580, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &899422198185278236
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7737746882760392655}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: be1d7aaa601c2ab4e91aca7b5d582966, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  MaxHealth: 100
-  MaxEnergy: 100
+  m_healthStat: {fileID: 2773178780142120316}
 --- !u!114 &2261283144201084859
 MonoBehaviour:
   m_ObjectHideFlags: 0

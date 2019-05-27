@@ -5,17 +5,7 @@ public class Aim : NetworkBehaviour
 {
     public Texture2D CrosshairImage;
 
-    private void Start()
-    {
-        Cursor.visible = false;
-    }
-
-    private void OnDisable()
-    {
-        Cursor.visible = true;
-    }
-
-    void Update()
+    private void Update()
     {
         if (!isLocalPlayer)
         {
