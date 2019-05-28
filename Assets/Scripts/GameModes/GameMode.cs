@@ -45,7 +45,7 @@ public abstract class GameMode: NetworkBehaviour
         }
         foreach (Team team in m_teamManager.Teams)
         {
-            if (team.Score.GetScore(CurrentGameMode) >= WinCondition) // A team has met the winconditions.
+            if (team.Score.GetScore(CurrentGameMode) >= WinCondition) // A team has met the win condition.
             {
                 OnGameFinished();
             }
