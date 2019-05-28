@@ -14,13 +14,13 @@ public abstract class GameMode: NetworkBehaviour
     /// <summary>
     /// The score needed to win the game.
     /// </summary>
-    public int WinCondition;
+    private int m_winCondition;
     public int AmountOfTeams;
     public int AmountOfPlayers;
     /// <summary>
     /// The timelimit in seconds
     /// </summary>
-    [SyncVar] public float TimeLimit;
+    [SyncVar] private float m_timeLimit;
     public delegate void OnScoreChangeDelegate();
     public event OnScoreChangeDelegate OnGameFinished;
 
@@ -30,10 +30,10 @@ public abstract class GameMode: NetworkBehaviour
     public GameMode(GameModes gameMode, int winCondition, int amountOfTeams, int amountOfPlayers, float timeLimit)
     {
         CurrentGameMode = gameMode;
-        WinCondition = winCondition;
+        m_winCondition = winCondition;
         AmountOfTeams = amountOfTeams;
         AmountOfPlayers = amountOfPlayers;
-        TimeLimit = timeLimit;
+        m_timeLimit = timeLimit;
     }
 
     private void FixedUpdate()
@@ -53,7 +53,7 @@ public abstract class GameMode: NetworkBehaviour
         }
         foreach (Team team in m_teamManager.Teams)
         {
-            if (team.Score.GetScore(CurrentGameMode) >= WinCondition) // A team has met the win condition.
+            if (team.Score.GetScore(CurrentGameMode) >= m_winCondition) // A team has met the win condition.
             {
                 if(OnGameFinished != null) 
                 {
@@ -65,8 +65,8 @@ public abstract class GameMode: NetworkBehaviour
 
     private void CheckForGameTimedOut(float deltaTime)
     {
-        TimeLimit -= deltaTime;
-        if(TimeLimit > 0)
+        m_timeLimit -= deltaTime;
+        if(m_timeLimit > 0)
         {
             return; // The game isn't finished yet.
         }
@@ -76,7 +76,7 @@ public abstract class GameMode: NetworkBehaviour
 
     public string RemainingTimeAsText()
     {
-        return TimeSpan.FromSeconds(TimeLimit).ToString(@"mm\:ss");
+        return TimeSpan.FromSeconds(m_timeLimit).ToString(@"mm\:ss");
     }
 
     private string ZeroPrefixForTime(double number)
