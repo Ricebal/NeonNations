@@ -7,10 +7,10 @@ public class TeamDeathMatch: GameMode
     public TeamDeathMatch()
     {
         CurrentGameMode = GameModes.TeamDeathMatch;
-        WinCondition = 1;
+        WinCondition = 10;
         AmountOfTeams = 2;
         AmountOfPlayers = 6;
-        TimeLimit = 60;// 300; // 5 minutes
+        TimeLimit = 300; // 5 minutes
     }
 
     /// <summary>

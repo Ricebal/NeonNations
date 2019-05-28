@@ -28,7 +28,7 @@ public class GameManager : NetworkBehaviour
     public GameMode GameMode;
 
     private GameObject m_endGameTextObject;
-    private float m_timeAfterFinishingTheGame = 20;
+    private float m_timeAfterFinishingTheGame = 3;
     public static bool GameFinished;
     private int m_localPlayersTeamId = 0;
 
