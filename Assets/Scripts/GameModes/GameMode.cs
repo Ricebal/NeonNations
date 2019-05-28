@@ -32,7 +32,7 @@ public abstract class GameMode: NetworkBehaviour
     {
         CheckForGameTimedOut(Time.deltaTime);
     }
-    public void setTeamManager(TeamManager tm)
+    public void SetTeamManager(TeamManager tm)
     {
         m_teamManager = tm;
     }
