@@ -177,12 +177,12 @@ public class GameManager : NetworkBehaviour
             if (draw)
             {
                 // Go to draw screen.
-                endGameText.text = GameMode.Draw;
+                endGameText.text = GameMode.DRAW;
             }
             else
             {
                 // Go to win screen.
-                endGameText.text = GameMode.Win;
+                endGameText.text = GameMode.WIN;
                 SetFireWorkColor(teamColor);
                 SpawnFireWorks();
             }
@@ -190,7 +190,7 @@ public class GameManager : NetworkBehaviour
         else
         {
             // Go to lose screen.
-            endGameText.text = GameMode.Lose;
+            endGameText.text = GameMode.LOSE;
         }
 
         // Set color of text.
