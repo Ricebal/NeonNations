@@ -10,7 +10,7 @@ public abstract class GameMode: NetworkBehaviour
     public static string Lose = "Lost";
     public static string Draw = "Draw";
     // List of colors just so there are some presets. This might either be expanded or be deleted if it becomes unnessecary with the color-picker.
-    public List<Color> Colors = new List<Color> { new Color32(241, 0, 204, 0), new Color32(255, 0, 0, 0), new Color32(10, 255, 0, 0) };
+    public List<Color> Colors = new List<Color> { new Color32(10, 255, 0, 0), new Color32(255, 0, 0, 0), new Color32(241, 0, 204, 0) };
     /// <summary>
     /// The score needed to win the game.
     /// </summary>

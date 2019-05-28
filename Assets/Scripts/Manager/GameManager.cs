@@ -22,6 +22,8 @@ public class GameManager : NetworkBehaviour
     [SyncVar] [SerializeField] private int m_shortcutMinSkipDistance = 20;
     [SyncVar] [SerializeField] private int m_outerWallWidth = 14;
 
+    [SerializeField] private ParticleSystem m_fireWorks;
+
     private BoardManager m_boardManager;
     private BotManager m_botManager;
     private TeamManager m_teamManager;
@@ -148,11 +150,6 @@ public class GameManager : NetworkBehaviour
 
     public void GameHasEnded()
     {
-        // Freeze all bots and players
-        if (isServer) // Freeze bots
-        {
-
-        }
         RpcGameHasEnded();
     }
 
@@ -170,6 +167,9 @@ public class GameManager : NetworkBehaviour
         {
             draw = true;
         }
+        // Get teamcolor.
+        Color teamColor = m_teamManager.Teams.Find(t => t.Id == m_localPlayersTeamId).Color;
+        // Set end game text visible.
         m_endGameTextObject.SetActive(true);
         TextMeshProUGUI endGameText = m_endGameTextObject.GetComponent<TextMeshProUGUI>();
         if (winningTeamIds.Contains(m_localPlayersTeamId)) // If the team is winning.
@@ -183,6 +183,8 @@ public class GameManager : NetworkBehaviour
             {
                 // Go to win screen.
                 endGameText.text = GameMode.Win;
+                SetFireWorkColor(teamColor);
+                SpawnFireWorks();
             }
         }
         else
@@ -191,8 +193,6 @@ public class GameManager : NetworkBehaviour
             endGameText.text = GameMode.Lose;
         }
 
-        // Get teamcolor.
-        Color teamColor = m_teamManager.Teams.Find(t => t.Id == m_localPlayersTeamId).Color;
         // Set color of text.
         endGameText.outlineColor = teamColor;
         Material mat = Material.Instantiate(endGameText.fontSharedMaterial);
@@ -202,7 +202,43 @@ public class GameManager : NetworkBehaviour
         mat.SetColor(ShaderUtilities.ID_GlowColor, teamColor32);
         endGameText.fontSharedMaterial = mat;
     }
+    private void SetFireWorkColor(Color color)
+    {
+        var main = m_fireWorks.main;
+        main.startColor = color;
 
+        ParticleSystemRenderer[] particleSystemRenderers = m_fireWorks.GetComponentsInChildren<ParticleSystemRenderer>();
+        for (int i = 0; i < particleSystemRenderers.Length; i++)
+        {
+            if (particleSystemRenderers[i].trailMaterial != null)
+            {
+                Material mat = Material.Instantiate(particleSystemRenderers[i].trailMaterial);
+                mat.SetColor("_EmissionColor", color * 3);
+                particleSystemRenderers[i].trailMaterial = mat;
+            }
+        }
+    }
+
+    private void SpawnFireWorks()
+    {
+        GameObject[] soldiers = GameObject.FindGameObjectsWithTag("Player"); 
+        foreach(GameObject go in soldiers)
+        {
+            Soldier soldier = go.GetComponent<Soldier>();
+            if(soldier.Team.Id == m_localPlayersTeamId)
+            {
+                for (int i = 0; i < 3; i++)
+                {
+                    float xPos = go.transform.position.x;
+                    float zPos = go.transform.position.z;
+                    Vector3 spawnPosition = new Vector3(UnityEngine.Random.Range(xPos - 7, xPos + 7), 1, UnityEngine.Random.Range(zPos - 5, zPos + 5));
+                    ParticleSystem ps = Instantiate(m_fireWorks, spawnPosition, Quaternion.identity);
+                    ps.Simulate(1);
+                    ps.Play();  
+                }
+            }
+        }
+    }
     private List<int> CheckWhichTeamHasWon()
     {
         List<int> winningTeamIds = new List<int>();
