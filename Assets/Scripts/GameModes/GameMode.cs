@@ -78,15 +78,4 @@ public abstract class GameMode: NetworkBehaviour
     {
         return TimeSpan.FromSeconds(m_timeLimit).ToString(@"mm\:ss");
     }
-
-    private string ZeroPrefixForTime(double number)
-    {
-        string result = "";
-        if (number < 10)
-        {
-            result += "0"; // Add the 0 for 00:03 or 02:06
-        }
-        result += number;
-        return result;
-    }
 }
