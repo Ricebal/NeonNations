@@ -47,7 +47,10 @@ public abstract class GameMode: NetworkBehaviour
         {
             if (team.Score.GetScore(CurrentGameMode) >= WinCondition) // A team has met the win condition.
             {
-                OnGameFinished();
+                if(OnGameFinished != null) 
+                {
+                    OnGameFinished();
+                }
             }
         }
     }
