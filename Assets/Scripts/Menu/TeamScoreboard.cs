@@ -27,7 +27,6 @@ public class TeamScoreboard : NetworkBehaviour
             AddTeam(team.Id);
             if (isServer)
             {
-                Debug.Log("Add eventListener");
                 team.Score.OnScoreChange += RefreshScores;
             }
             team.Score.OnScoreChange += m_gameMode.CheckForWinCondition;

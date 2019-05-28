@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Mirror;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Scoreboard : NetworkBehaviour

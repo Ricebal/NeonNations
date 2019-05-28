@@ -27,13 +27,11 @@ public class DStarLite
     /// <summary>
     /// Sets up the Algorithm.
     /// </summary>
-    /// <param name="startX">The x of the start-position</param>
-    /// <param name="startY">The y of the start-position</param>
-    /// <param name="goalY">The y of the goal-position</param>
-    /// <param name="goalX">The x of the goal-position</param>
-    public void RunDStarLite(int startX, int startY, int goalX, int goalY)
+    /// <param name="start">The start-position</param>
+    /// <param name="goal">The goal-position</param>
+    public void RunDStarLite(Vector2Int start, Vector2Int goal)
     {
-        Reset(startX, startY, goalX, goalY);
+        Reset(start, goal);
         // Calculate initial path
         ComputeShortestPath();
     }
@@ -41,13 +39,13 @@ public class DStarLite
     /// <summary>
     /// Resets the algorithm for a new location.
     /// </summary>
-    private void Reset(int startX, int startY, int goalX, int goalY)
+    private void Reset(Vector2Int start, Vector2Int goal)
     {
         //Creates an heap the size of the map
         m_heap = new MinHeap(Map.GetSize());
         Map.Reset();
-        m_goal = new Vector2Int(goalX, goalY);
-        m_start = new Vector2Int(startX, startY);
+        m_goal = goal;
+        m_start = start;
         m_previousStart = m_start;
         Map.GetNode(m_goal).Rhs = 0;
         m_heap.Insert(m_goal, CalculatePriority(m_goal));
@@ -62,7 +60,7 @@ public class DStarLite
     private void GenerateNodeMap(bool knowMap)
     {
         Tile[][] completeMap = m_environment.GetMap();
-        Map = new NavigationGraph(completeMap, knowMap);
+        Map = new NavigationGraph(completeMap, knowMap, m_environment.GetList());
     }
 
     /// <summary>
@@ -79,7 +77,7 @@ public class DStarLite
             // What the bot knows of the node
             Node knownNode = Map.GetNode(coordinates.x, coordinates.y);
             // What the node actually is
-            Tile actualNodeContent = m_environment.GetNode(coordinates.x, coordinates.y);
+            Tile actualNodeContent = m_environment.GetNode(coordinates);
             // If the obstacle was not previously known or the obstacle has been removed
             if (knownNode.Content != actualNodeContent)
             {

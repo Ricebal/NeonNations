@@ -1,9 +1,10 @@
-﻿using System;
+﻿using Mirror;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public enum GameModes { TeamDeathMatch };
-public abstract class GameMode: MonoBehaviour
+public abstract class GameMode: NetworkBehaviour
 {
     public static string Win = "Victory";
     public static string Lose = "Lost";
@@ -19,13 +20,18 @@ public abstract class GameMode: MonoBehaviour
     /// <summary>
     /// The timelimit in seconds
     /// </summary>
-    public float TimeLimit;
+    [SyncVar] public float TimeLimit;
     public delegate void OnScoreChangeDelegate();
     public event OnScoreChangeDelegate OnGameFinished;
 
     private TeamManager m_teamManager;
     public GameModes CurrentGameMode;
 
+
+    private void FixedUpdate()
+    {
+        CheckForGameTimedOut(Time.deltaTime);
+    }
     public void setTeamManager(TeamManager tm)
     {
         m_teamManager = tm;
@@ -33,6 +39,10 @@ public abstract class GameMode: MonoBehaviour
     
     public void CheckForWinCondition()
     {
+        if (GameManager.GameFinished) // Don't change the score after the game has finished.
+        {
+            return;
+        }
         foreach (Team team in m_teamManager.Teams)
         {
             if (team.Score.GetScore(CurrentGameMode) >= WinCondition) // A team has met the winconditions.
@@ -40,11 +50,6 @@ public abstract class GameMode: MonoBehaviour
                 OnGameFinished();
             }
         }
-    }
-
-    private void FixedUpdate()
-    {
-        CheckForGameTimedOut(Time.deltaTime);
     }
 
     private void CheckForGameTimedOut(float deltaTime)

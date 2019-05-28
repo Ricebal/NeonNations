@@ -326,8 +326,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   serverOnly: 0
   localPlayerAuthority: 0
-  m_AssetId: 
-  m_SceneId: 446775486
+  m_AssetId: ff6331ee681933a49a95f9bcbb22c5ce
+  m_SceneId: 0
 --- !u!1 &7375908384261505458
 GameObject:
   m_ObjectHideFlags: 0
@@ -620,7 +620,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7375908384395104214}
   m_Layer: 5
-  m_Name: MenuPanel
+  m_Name: EscapePanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

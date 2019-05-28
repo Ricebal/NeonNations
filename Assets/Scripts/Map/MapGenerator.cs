@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using UnityEngine;
 
@@ -18,6 +18,7 @@ public class MapGenerator
     private int m_maxTunnelLength;
     private int m_tunnelWidth;
     private int m_breakableTunnelChance;
+    private int m_shortcutMinSkipDistance;
 
 
     private const int MAX_PLACE_ATTEMPTS = 10;
@@ -33,7 +34,7 @@ public class MapGenerator
     // --------------------------------------------------------------------------------------------
     // Generate maps
     // --------------------------------------------------------------------------------------------
-    public MapGenerator(int mapWidth, int mapHeight, int maxRoomAmount, int maxShortcutAmount, int minRoomLength, int maxRoomLength, int minTunnelLength, int maxTunnelLength, int tunnelWidth, int breakableTunnelChance)
+    public MapGenerator(int mapWidth, int mapHeight, int maxRoomAmount, int maxShortcutAmount, int minRoomLength, int maxRoomLength, int minTunnelLength, int maxTunnelLength, int tunnelWidth, int breakableTunnelChance, int shortcutMinSkipDistance)
     {
         m_mapWidth = mapWidth;
         m_mapHeight = mapHeight;
@@ -45,6 +46,7 @@ public class MapGenerator
         m_maxTunnelLength = maxTunnelLength;
         m_tunnelWidth = tunnelWidth;
         m_breakableTunnelChance = breakableTunnelChance;
+        m_shortcutMinSkipDistance = shortcutMinSkipDistance;
     }
 
     /// <summary>
@@ -144,7 +146,6 @@ public class MapGenerator
             }
             currentBuildAttempt++;
         }
-
         // Add shortcuts
         AddShortcuts();
 
@@ -344,19 +345,58 @@ public class MapGenerator
     /// <returns>A Vector2Int containing the position of the wall</returns>
     private Vector2Int GetRandomWallTile(Vector2Int direction)
     {
-        int tryCount = 0;
-        while (tryCount < MAX_WALL_ATTEMPTS)
+        List<Vector2Int> list = GetAllWallTilesInDirection(direction, 1).ToList();
+        if (list.Count > 0)
         {
-            // get a random tile in the map
-            Vector2Int randomTile = new Vector2Int(UnityEngine.Random.Range(1, m_mapWidth - 2), UnityEngine.Random.Range(1, m_mapHeight - 2));
-
-            if (CheckWallTile(randomTile, direction))
-            {
-                return randomTile;
-            }
-            tryCount++;
+            int r = UnityEngine.Random.Range(0, list.Count);
+            return list[r];
         }
+
         return new Vector2Int(-1, -1);
+    }
+
+    /// <summary>
+    /// Gets a list of all the wall tiles in a certain direction
+    /// </summary>
+    /// <param name="direction">Direction that should be searched</param>
+    /// <param name="outerWidth">The distance between the edge of the map and the area that should be searched</param>
+    /// <returns></returns>
+    private IEnumerable<Vector2Int> GetAllWallTilesInDirection(Vector2Int direction, int outerWidth)
+    {
+        for (int i = outerWidth; i < m_tileMap.Length - m_tunnelWidth - outerWidth; i++)
+        {
+            for (int j = outerWidth; j < m_tileMap[0].Length - m_tunnelWidth - outerWidth; j++)
+            {
+                Vector2Int tile = new Vector2Int(i, j);
+                if (CheckWallTile(tile, direction))
+                {
+                    yield return (tile);
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Gets a list of all the wall tiles in the map, and what their direction is
+    /// </summary>
+    /// <param name="outerWidth">The distance between the edge of the map and the area that should be searched</param>
+    /// <returns>List containing all the wall tiles</returns>
+    private List<KeyValuePair<Vector2Int, Vector2Int>> GetAllWallTiles(int outerWidth)
+    {
+        List<KeyValuePair<Vector2Int, Vector2Int>> result = new List<KeyValuePair<Vector2Int, Vector2Int>>();
+
+        for (int i = 1; i <= 4; i++)
+        {
+            Vector2Int direction = GetDirection(i);
+            List<Vector2Int> list = GetAllWallTilesInDirection(direction, outerWidth).ToList();
+            for (int j = 0; j < list.Count; j++)
+            {
+                result.Add(new KeyValuePair<Vector2Int, Vector2Int>(list[j], direction));
+            }
+        }
+
+        Shuffle(result);
+        return result;
     }
 
     /// <summary>
@@ -372,7 +412,7 @@ public class MapGenerator
         {
             Vector2Int wallTile = new Vector2Int(randomTile.x + i * Math.Abs(direction.y), randomTile.y + i * Math.Abs(direction.x));
             if (!(m_tileMap[wallTile.x][wallTile.y] == Tile.Wall
-                    && m_tileMap[wallTile.x + direction.x][wallTile.y + direction.y] == Tile.Wall
+                    //&& m_tileMap[wallTile.x + direction.x][wallTile.y + direction.y] == Tile.Wall
                     && m_tileMap[wallTile.x - direction.x][wallTile.y - direction.y] == Tile.Floor))
             {
                 return false;
@@ -491,81 +531,131 @@ public class MapGenerator
     /// </summary>
     private void AddShortcuts()
     {
-        int currentShortcutAttempt = 0;
         int currentShortcutAmount = 0;
-        while (currentShortcutAttempt < MAX_SHORTCUT_ATTEMPTS && currentShortcutAmount < m_maxShortcutAmount)
+
+        while (currentShortcutAmount < m_maxShortcutAmount)
         {
-            // get random direction to create a shortcut
-            Vector2Int direction = GenerateRandomDirection();
+            // get list of all wall tiles and their direction
+            bool shortcutPlaced = false;
+            List<KeyValuePair<Vector2Int, Vector2Int>> list = GetAllWallTiles(1);
 
-            // get random walltile for that direction
-            Vector2Int wallTile = GetRandomWallTile(direction);
-            if (wallTile.x == -1 && wallTile.y == -1)
+            for (int i = 0; i < list.Count; i++)
             {
-                return;
-            }
-            Vector2Int otherWallTile = Vector2Int.zero;
+                Vector2Int wallTile = list[i].Key;
+                Vector2Int otherWallTile = Vector2Int.zero;
+                Vector2Int direction = list[i].Value;
 
-            for (int i = m_minTunnelLength; i < m_maxTunnelLength; i++)
-            {
-                otherWallTile = new Vector2Int(wallTile.x + direction.x * (i - 1), (wallTile.y + direction.y * (i - 1)));
-                if (!(otherWallTile.x <= 1 || otherWallTile.x >= m_mapWidth - 1 || otherWallTile.y <= 1 || otherWallTile.y >= m_mapHeight - 1)
-                    && CheckWallTile(otherWallTile, new Vector2Int(direction.x * -1, direction.y * -1)))
+                for (int j = m_minTunnelLength - 1; j < m_maxTunnelLength - 1; j++)
                 {
-                    // generate tunnel
-                    Tile[][] tunnel = new Tile[(m_tunnelWidth * Math.Abs(direction.y) + i * Math.Abs(direction.x))][];
+                    otherWallTile = new Vector2Int(wallTile.x + direction.x * (j - 1), (wallTile.y + direction.y * (j - 1)));
+                    if (!(otherWallTile.x <= 1 || otherWallTile.x >= m_mapWidth - 1 || otherWallTile.y <= 1 || otherWallTile.y >= m_mapHeight - 1)
+                        && CheckWallTile(otherWallTile, new Vector2Int(direction.x * -1, direction.y * -1)))
+                    {
+                        // generate tunnel
+                        Tile[][] tunnel = new Tile[(m_tunnelWidth * Math.Abs(direction.y) + j * Math.Abs(direction.x))][];
 
-                    for (int j = 0; j < tunnel.Length; j++)
-                    {
-                        tunnel[j] = new Tile[(m_tunnelWidth * Math.Abs(direction.x) + i * Math.Abs(direction.y))];
-                    }
-
-                    // generate position of tunnel
-                    Vector2Int pos = new Vector2Int();
-                    if (direction == Vector2Int.right || direction == Vector2Int.up)
-                    {
-                        pos = wallTile;
-                    }
-                    else
-                    {
-                        pos = otherWallTile;
-                    }
-
-                    // set entrances
-                    List<Vector2Int> entranceTiles = new List<Vector2Int>();
-                    for (int j = 0; j < m_tunnelWidth; j++)
-                    {
-                        Vector2Int absDirection = new Vector2Int(Math.Abs(direction.x), Math.Abs(direction.y));
-                        entranceTiles.Add(new Vector2Int(absDirection.y * j, absDirection.x * j));
-                        entranceTiles.Add(new Vector2Int(absDirection.y * j + absDirection.x * (tunnel.Length - 1), absDirection.y * (tunnel[0].Length - 1) + absDirection.x * j));
-                    }
-
-                    // check if placeable
-                    if (CanPlace(tunnel, pos, entranceTiles, direction))
-                    {
-                        // if breakable, make entrance tiles a breakable block
-                        if (IsBreakable())
+                        for (int k = 0; k < tunnel.Length; k++)
                         {
-                            for (int j = 0; j < entranceTiles.Count; j++)
-                            {
-                                // change the according tile on the map
-                                tunnel[entranceTiles[j].x][entranceTiles[j].y] = Tile.BreakableWall;
-                            }
+                            tunnel[k] = new Tile[(m_tunnelWidth * Math.Abs(direction.x) + j * Math.Abs(direction.y))];
                         }
 
-                        PasteTileMap(tunnel, m_tileMap, pos);
-                        currentShortcutAmount++;
+                        // generate position of tunnel
+                        Vector2Int pos = new Vector2Int();
+                        if (direction == Vector2Int.right || direction == Vector2Int.up)
+                        {
+                            pos = wallTile;
+                        }
+                        else
+                        {
+                            pos = otherWallTile;
+                        }
+
+                        // set entrances
+                        List<Vector2Int> entranceTiles = new List<Vector2Int>();
+                        for (int k = 0; k < m_tunnelWidth; k++)
+                        {
+                            Vector2Int absDirection = new Vector2Int(Math.Abs(direction.x), Math.Abs(direction.y));
+                            entranceTiles.Add(new Vector2Int(absDirection.y * k, absDirection.x * k));
+                            entranceTiles.Add(new Vector2Int(absDirection.y * k + absDirection.x * (tunnel.Length - 1), absDirection.y * (tunnel[0].Length - 1) + absDirection.x * k));
+                        }
+
+                        // check if placeable
+                        if (CanPlace(tunnel, pos, entranceTiles, direction) && CheckIfUsefulToPlace(wallTile, otherWallTile, direction))
+                        {
+                            // if breakable, make entrance tiles a breakable block
+                            if (IsBreakable())
+                            {
+                                for (int k = 0; k < entranceTiles.Count; k++)
+                                {
+                                    // change the according tile on the map
+                                    tunnel[entranceTiles[k].x][entranceTiles[k].y] = Tile.BreakableWall;
+                                }
+                            }
+
+                            PasteTileMap(tunnel, m_tileMap, pos);
+                            shortcutPlaced = true;
+                            currentShortcutAmount++;
+                            break;
+                        }
                     }
                 }
+                if (shortcutPlaced)
+                {
+                    break;
+                }
             }
-            currentShortcutAttempt++;
+            if (!shortcutPlaced)
+            {
+                break;
+            }
         }
     }
 
+    /// <summary>
+    /// Determines if a shortcut should be secret or not
+    /// </summary>
+    /// <returns>True if secret</returns>
     private bool IsBreakable()
     {
         int i = UnityEngine.Random.Range(1, 101);
         return i <= m_breakableTunnelChance;
+    }
+
+    /// <summary>
+    /// Calculates if shortcut should be placed. 
+    /// </summary>
+    /// <param name="wallTile"></param>
+    /// <param name="otherWallTile"></param>
+    /// <param name="direction"></param>
+    /// <returns></returns>
+    private bool CheckIfUsefulToPlace(Vector2Int wallTile, Vector2Int otherWallTile, Vector2Int direction)
+    {
+        // calculate tiles to run pathfinding on
+        Vector2Int[] tilesToCalculateFrom = new Vector2Int[2];
+        Vector2Int[] tilesToCalculateTo = new Vector2Int[2];
+        double[] costs = new double[2];
+        tilesToCalculateFrom[0] = new Vector2Int(wallTile.x - direction.x, wallTile.y - direction.y);
+        tilesToCalculateFrom[1] = new Vector2Int(wallTile.x - direction.x + direction.y * m_tunnelWidth, wallTile.y - direction.y + direction.x * m_tunnelWidth);
+        tilesToCalculateTo[0] = new Vector2Int(otherWallTile.x + direction.x, otherWallTile.y + direction.y);
+        tilesToCalculateTo[1] = new Vector2Int(otherWallTile.x + direction.x + direction.y * m_tunnelWidth, otherWallTile.y + direction.y + direction.x * m_tunnelWidth);
+
+        // run DStarLite twice
+        GameEnvironment ge = GameEnvironment.CreateInstance(m_tileMap, new List<Tile>() { Tile.Wall });
+        DStarLite dStarLite = new DStarLite(ge, true);
+        dStarLite.RunDStarLite(tilesToCalculateFrom[0], tilesToCalculateTo[0]);
+        costs[0] = dStarLite.Map.GetNode(tilesToCalculateFrom[0].x, tilesToCalculateFrom[0].y).CostFromStartingPoint;
+        dStarLite.RunDStarLite(tilesToCalculateFrom[1], tilesToCalculateTo[1]);
+        costs[1] = dStarLite.Map.GetNode(tilesToCalculateFrom[1].x, tilesToCalculateFrom[1].y).CostFromStartingPoint;
+
+        // see if the distance between the two points without a shortcut is larger than the minimum distance
+        if (costs[0] >= m_shortcutMinSkipDistance && costs[1] >= m_shortcutMinSkipDistance)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     // --------------------------------------------------------------------------------------------
@@ -593,6 +683,26 @@ public class MapGenerator
         }
     }
 
+    /// <summary>
+    /// Shuffles a list using the Fisher-Yates shuffle
+    /// </summary>
+    /// <param name="list">List to be shuffled</param>
+    private void Shuffle<T>(IList<T> list)
+    {
+        int n = list.Count;
+        while (n > 1)
+        {
+            n--;
+            int k = UnityEngine.Random.Range(0, n + 1);
+            T value = list[k];
+            list[k] = list[n];
+            list[n] = value;
+        }
+    }
+
+    /// <summary>
+    /// Checks if all the settings are correct, and corrects them if necessary
+    /// </summary>
     private void CheckSettings()
     {
         // check map width
@@ -644,10 +754,10 @@ public class MapGenerator
         }
 
         // check minimum tunnel length
-        if (m_minTunnelLength > Math.Min(m_mapWidth, m_mapHeight)/2 - m_maxRoomLength*2)
+        if (m_minTunnelLength > Math.Min(m_mapWidth, m_mapHeight) / 2 - m_maxRoomLength * 2)
         {
             Debug.LogWarning("Minimum tunnel length is too high for this map size, using minimum size possible");
-            m_minTunnelLength = Math.Min(m_mapWidth, m_mapHeight)/2 - m_maxRoomLength*2;
+            m_minTunnelLength = Math.Min(m_mapWidth, m_mapHeight) / 2 - m_maxRoomLength * 2;
         }
         if (m_minTunnelLength < 1)
         {

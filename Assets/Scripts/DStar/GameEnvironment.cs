@@ -5,33 +5,63 @@ using UnityEngine;
 
 public class GameEnvironment : ScriptableObject
 {
-    private static Tile[][] s_map;
+    private Tile[][] m_map;
+    private List<Tile> m_listOfObstacles = new List<Tile>();
     private const int SONAR_RANGE = 5;
     private const int BULLET_RANGE = 1;
     private const int IMPACT_RANGE = 2;
 
-    private void OnEnable()
+    /// <summary>
+    /// Acts as a constructor for GameEnvironment, since it's real constructor can't be used because it's a ScriptableObject
+    /// It uses Init to set the values
+    /// </summary>
+    /// <param name="map">Map to set</param>
+    /// <param name="list">List to set</param>
+    /// <returns>A new GameEnvironment with the set values</returns>
+    public static GameEnvironment CreateInstance(Tile[][] map, List<Tile> list)
     {
-        s_map = GameObject.Find("GameManager").GetComponent<BoardManager>().GetTileMap();
+        var data = CreateInstance<GameEnvironment>();
+        data.Init(map, list);
+        return data;
+    }
+
+    /// <summary>
+    /// Initializes this GameEnvironment
+    /// </summary>
+    /// <param name="map">Map to set</param>
+    /// <param name="list">List to set</param>
+    private void Init(Tile[][] map, List<Tile> list)
+    {
+        m_map = map;
+        m_listOfObstacles = list;
     }
 
     /// <summary>
     /// Gives the current map
     /// </summary>
-    /// <returns>int[][] Map</returns>
+    /// <returns>Tile[][] Map</returns>
     public Tile[][] GetMap()
     {
-        return s_map;
+        return m_map;
     }
 
-    public Tile GetNode(int x, int y)
+    /// <summary>
+    /// Gets the list of obstacles the pathfinding algorithm should worry about
+    /// </summary>
+    /// <returns>List of Tile types containing the obstacles</returns>
+    public List<Tile> GetList()
     {
-        return s_map[x][y];
+        return m_listOfObstacles;
     }
 
-    public static void UpdateNode(int x, int y, Tile newNode)
+    /// <summary>
+    /// Gets the content at a certain position
+    /// </summary>
+    /// <param name="pos">Position of node</param>
+    /// <returns>Tile enum containing the type of tile</returns>
+    public Tile GetNode(Vector2Int pos)
     {
-        s_map[x][y] = newNode;
+        return m_map[pos.x][pos.y];
     }
 
     /// <summary>
@@ -44,18 +74,18 @@ public class GameEnvironment : ScriptableObject
         foreach (Vector2Int coordinate in coordinates)
         {
             // If the coordinates are outside the map they shouldn't be checked (to prevent out of index exception)
-            if (coordinate.x < 0 || coordinate.y < 0 || coordinate.x >= s_map.Length || coordinate.y >= s_map[0].Length)
+            if (coordinate.x < 0 || coordinate.y < 0 || coordinate.x >= m_map.Length || coordinate.y >= m_map[0].Length)
             {
                 coordinatesToDelete.AddLast(coordinate);
                 continue;
             }
             // If the coordinates are inside the map, check if the coordinate contains an obstacle
-            if (s_map[coordinate.x][coordinate.y] == Tile.Floor)
+            if (!m_listOfObstacles.Contains(m_map[coordinate.x][coordinate.y]))
             {
                 coordinatesToDelete.AddLast(coordinate);
             }
         }
-        // Delete the coordintes that contain no obstacles
+        // Delete the coordinates that contain no obstacles
         foreach (Vector2Int coordinate in coordinatesToDelete)
         {
             coordinates.Remove(coordinate);
@@ -98,7 +128,7 @@ public class GameEnvironment : ScriptableObject
                 int y = objectCoordinates.y + j;
 
                 // Check if coordinate is inside the map
-                if (x < 0 || x >= s_map.Length || y < 0 || y >= s_map[0].Length)
+                if (x < 0 || x >= m_map.Length || y < 0 || y >= m_map[0].Length)
                 {
                     continue;
                 }
