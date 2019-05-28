@@ -4,13 +4,8 @@ using UnityEngine;
 
 public class TeamDeathMatch: GameMode
 {
-    public TeamDeathMatch()
+    public TeamDeathMatch(): base(GameModes.TeamDeathMatch, 10, 2, 6, 300) // 300 = 5 minutes
     {
-        CurrentGameMode = GameModes.TeamDeathMatch;
-        WinCondition = 10;
-        AmountOfTeams = 2;
-        AmountOfPlayers = 6;
-        TimeLimit = 300; // 5 minutes
     }
 
     /// <summary>
@@ -20,12 +15,7 @@ public class TeamDeathMatch: GameMode
     /// <param name="teams">Amount of teams in the game.</param>
     /// <param name="players">Amount of players in the game.</param>
     /// <param name="timeLimit">How long the match should take.</param>
-    public TeamDeathMatch(int kills, int teams, int players, int timeLimit)
+    public TeamDeathMatch(int kills, int teams, int players, int timeLimit): base(GameModes.TeamDeathMatch, kills, teams, players, timeLimit)
     {
-        CurrentGameMode = GameModes.TeamDeathMatch;
-        WinCondition = kills;
-        AmountOfTeams = teams;
-        AmountOfPlayers = players;
-        TimeLimit = timeLimit;
     }
 }

@@ -27,6 +27,14 @@ public abstract class GameMode: NetworkBehaviour
     private TeamManager m_teamManager;
     public GameModes CurrentGameMode;
 
+    public GameMode(GameModes gameMode, int winCondition, int amountOfTeams, int amountOfPlayers, float timeLimit)
+    {
+        CurrentGameMode = gameMode;
+        WinCondition = winCondition;
+        AmountOfTeams = amountOfTeams;
+        AmountOfPlayers = amountOfPlayers;
+        TimeLimit = timeLimit;
+    }
 
     private void FixedUpdate()
     {
