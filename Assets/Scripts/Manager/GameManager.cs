@@ -51,7 +51,7 @@ public class GameManager : NetworkBehaviour
         }
         GameObject hud = GameObject.FindGameObjectWithTag("HUD");
         m_endGameTextObject = hud.transform.Find("EndGameText").gameObject;
-        GameMode.setTeamManager(m_teamManager);
+        GameMode.SetTeamManager(m_teamManager);
         GameFinished = false;
         InitGame();
     }

@@ -66,19 +66,9 @@ public abstract class GameMode: NetworkBehaviour
         OnGameFinished(); // The game is finished.
     }
 
-    public string FormatTimeToText()
+    public string RemainingTimeAsText()
     {
-        if(TimeLimit < 0)
-        {
-            return "00:00";
-        }
-        string result = "";
-        double minutes = Math.Floor(TimeLimit / 60);
-        result += ZeroPrefixForTime(minutes);
-        result += ":";
-        double seconds = Math.Floor(TimeLimit % 60);
-        result += ZeroPrefixForTime(seconds);
-        return result;
+        return TimeSpan.FromSeconds(TimeLimit).ToString(@"mm\:ss");
     }
 
     private string ZeroPrefixForTime(double number)

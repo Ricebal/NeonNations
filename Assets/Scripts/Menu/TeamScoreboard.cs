@@ -43,7 +43,7 @@ public class TeamScoreboard : NetworkBehaviour
 
     private void FixedUpdate()
     {
-        m_remainingTime.text = m_gameMode.FormatTimeToText();
+        m_remainingTime.text = m_gameMode.RemainingTimeAsText();
     }
 
     private void AddTeam(int teamId)
