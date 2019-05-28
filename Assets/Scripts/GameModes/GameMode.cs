@@ -32,7 +32,7 @@ public abstract class GameMode: NetworkBehaviour
     {
         CheckForGameTimedOut(Time.deltaTime);
     }
-    public void setTeamManager(TeamManager tm)
+    public void SetTeamManager(TeamManager tm)
     {
         m_teamManager = tm;
     }
@@ -45,9 +45,12 @@ public abstract class GameMode: NetworkBehaviour
         }
         foreach (Team team in m_teamManager.Teams)
         {
-            if (team.Score.GetScore(CurrentGameMode) >= WinCondition) // A team has met the winconditions.
+            if (team.Score.GetScore(CurrentGameMode) >= WinCondition) // A team has met the win condition.
             {
-                OnGameFinished();
+                if(OnGameFinished != null) 
+                {
+                    OnGameFinished();
+                }
             }
         }
     }
