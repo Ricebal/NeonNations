@@ -2,6 +2,8 @@
 using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
+using UnityEngine.UI;
 
 public class Scoreboard : NetworkBehaviour
 {
@@ -88,16 +90,36 @@ public class Scoreboard : NetworkBehaviour
     }
 
     [ClientRpc]
+    private void RpcSortPlayerList()
+    {
+        int amountOfScorePanels = m_playerList.transform.GetChildCount();
+        List<Transform> scorePanels = new List<Transform>();
+        for(int i = 0; i < amountOfScorePanels; i++)
+        {
+            scorePanels.Add(m_playerList.transform.GetChild(i));
+        }
+        scorePanels = scorePanels.OrderByDescending(entry => entry.gameObject.GetComponent<ScoreboardEntry>().Score.Kills)  // Sort by kills,
+                  .ThenBy(entry => entry.gameObject.GetComponent<ScoreboardEntry>().Score.Deaths)                           // Then by lowest deaths.
+                  .ToList();
+        VerticalLayoutGroup layoutGroup = m_playerList.GetComponent<VerticalLayoutGroup>();
+        for (int i = 0; i < amountOfScorePanels; i++)
+        {
+            // Add the panels to the right place.
+            scorePanels[i].SetSiblingIndex(i);
+        }
+    }
+
+    [ClientRpc]
     private void RpcAddPlayer(string playerId)
     {
         // Make a new entry on the scoreboard
         GameObject scorePanel = Instantiate(m_playerScorePrefab) as GameObject;
         scorePanel.transform.SetParent(m_playerList.transform, false);
-
+        ScoreboardEntry scoreboardEntry = scorePanel.GetComponent<ScoreboardEntry>();
         // Try to add the player to the scoreboard, if it fails add it to the list of outdated players
-        if (!AddPlayer(playerId, scorePanel.GetComponent<ScoreboardEntry>()))
+        if (!AddPlayer(playerId, scoreboardEntry))
         {
-            m_outdatedPlayers.Add(playerId, scorePanel.GetComponent<ScoreboardEntry>());
+            m_outdatedPlayers.Add(playerId, scoreboardEntry);
         }
     }
 
@@ -116,6 +138,7 @@ public class Scoreboard : NetworkBehaviour
         scoreboardColor.a = 100f/255f; // Set alpha to 100. Color.a works with a value between 0 and 1.
         scoreboardEntry.SetColor(scoreboardColor);
         scoreboardEntry.SetScore(playerScript.PlayerScore);
+        scoreboardEntry.Score.OnScoreChange += RpcSortPlayerList;
         if (playerScript.isLocalPlayer)
         {
             scoreboardEntry.EnableOutline();

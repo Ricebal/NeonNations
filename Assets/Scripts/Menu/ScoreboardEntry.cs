@@ -14,11 +14,11 @@ public class ScoreboardEntry : MonoBehaviour
     private TextMeshProUGUI m_deaths;
     [SerializeField]
     private Outline m_outline;
-    private Score m_score;
+    public Score Score;
 
     public void SetScore(Score score)
     {
-        m_score = score;
+        Score = score;
         score.OnScoreChange += Refresh;
         Refresh();
     }
@@ -35,8 +35,8 @@ public class ScoreboardEntry : MonoBehaviour
 
     private void Refresh()
     {
-        m_username.text = m_score.Username;
-        m_kills.text = m_score.Kills.ToString();
-        m_deaths.text = m_score.Deaths.ToString();
+        m_username.text = Score.Username;
+        m_kills.text = Score.Kills.ToString();
+        m_deaths.text = Score.Deaths.ToString();
     }
 }

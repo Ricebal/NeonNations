@@ -51,6 +51,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   syncInterval: 0.1
+  GameMode: {fileID: 0}
   m_seed: 
   m_mapWidth: 50
   m_mapHeight: 50
@@ -66,7 +67,6 @@ MonoBehaviour:
   m_outerWallWidth: 14
   m_fireWorks: {fileID: 3599376716146521321, guid: 27f5446eba1e75c408fdc65871eed296,
     type: 3}
-  GameMode: {fileID: 0}
 --- !u!114 &4331448404734817727
 MonoBehaviour:
   m_ObjectHideFlags: 0

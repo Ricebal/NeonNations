@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class TeamDeathMatch: GameMode
 {
-    public TeamDeathMatch(): base(1, 2, 6, 60) // 300 = 5 minutes
+    public TeamDeathMatch(): base(10, 2, 6, 300) // 300 = 5 minutes
     {
     }
 
