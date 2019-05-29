@@ -70,6 +70,11 @@ public class Player : Soldier
         base.Die();
     }
 
+    public override void DisableMovement()
+    {
+        m_playerController.enabled = false;
+    }
+
     protected override void Respawn(Vector2 respawnPoint)
     {
         if (isLocalPlayer)

@@ -159,6 +159,17 @@ public class GameManager : NetworkBehaviour
     [ClientRpc]
     public void RpcFinishGame()
     {
+        GameObject[] soldierGameObjects = GameObject.FindGameObjectsWithTag("Player");
+        List<Soldier> soldiers = new List<Soldier>();
+        foreach (GameObject go in soldierGameObjects)
+        {
+            Soldier soldier = go.GetComponent<Soldier>();
+            if(soldier != null)
+            {
+                soldier.DisableMovement();
+                soldiers.Add(soldier);
+            }
+        }
         List<int> winningTeamIds = CheckWinningTeam();
         GameFinished = true;
         bool draw = false;
@@ -182,8 +193,8 @@ public class GameManager : NetworkBehaviour
             {
                 // Go to win screen.
                 endGameText.text = GameMode.WIN;
-                SetFireWorkColor(teamColor);
-                SpawnFireWorks();
+                //SetFireWorkColor(teamColor);
+                //SpawnFireWorks(soldiers);
             }
         }
         else
@@ -192,6 +203,8 @@ public class GameManager : NetworkBehaviour
             endGameText.text = GameMode.LOSE;
         }
 
+        SetFireWorkColor(teamColor);
+        SpawnFireWorks(soldiers);
         // Set color of text.
         endGameText.outlineColor = teamColor;
         Material mat = Material.Instantiate(endGameText.fontSharedMaterial);
@@ -218,18 +231,16 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-    private void SpawnFireWorks()
+    private void SpawnFireWorks(List<Soldier> soldiers)
     {
-        GameObject[] soldiers = GameObject.FindGameObjectsWithTag("Player"); 
-        foreach(GameObject go in soldiers)
-        {
-            Soldier soldier = go.GetComponent<Soldier>();
+        foreach(Soldier soldier in soldiers)
+        { 
             if(soldier.Team.Id == m_localPlayersTeamId)
             {
                 for (int i = 0; i < 3; i++)
                 {
-                    float xPos = go.transform.position.x;
-                    float zPos = go.transform.position.z;
+                    float xPos = soldier.gameObject.transform.position.x;
+                    float zPos = soldier.gameObject.transform.position.z;
                     Vector3 spawnPosition = new Vector3(UnityEngine.Random.Range(xPos - 7, xPos + 7), 1, UnityEngine.Random.Range(zPos - 5, zPos + 5));
                     ParticleSystem ps = Instantiate(m_fireWorks, spawnPosition, Quaternion.identity);
                     ps.Simulate(1);
