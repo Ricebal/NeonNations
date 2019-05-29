@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 211955809961756075}
   - component: {fileID: 6313430760678921903}
   - component: {fileID: 2779895204483061265}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: VFX
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -93,7 +93,7 @@ GameObject:
   - component: {fileID: 3200705619309674890}
   - component: {fileID: 4845729790688797601}
   - component: {fileID: 3848261291730812577}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: BulletPrefab
   m_TagString: Bullet
   m_Icon: {fileID: 0}
@@ -323,7 +323,7 @@ GameObject:
   - component: {fileID: 1142514984333960867}
   - component: {fileID: 9194994751711678487}
   - component: {fileID: 4066015100102112992}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Particle System
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5020,7 +5020,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7236026709018545051}
   - component: {fileID: 1913503297473824945}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Point Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}

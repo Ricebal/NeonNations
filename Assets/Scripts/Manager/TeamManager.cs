@@ -146,12 +146,12 @@ public class TeamManager : NetworkBehaviour
         SetTeamScore(teamId, new Score(kills, deaths));
     }
 
-    public List<Soldier> GetEnemiesByTeam(int teamId)
+    public List<Soldier> GetAliveEnemiesByTeam(int teamId)
     {
         List<Soldier> enemies = new List<Soldier>();
         foreach (Soldier player in m_players)
         {
-            if (player != null && player.Team.Id != teamId)
+            if (player != null && player.Team.Id != teamId && !player.IsDead)
             {
                 enemies.Add(player);
             }

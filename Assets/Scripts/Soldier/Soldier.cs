@@ -18,16 +18,11 @@ public abstract class Soldier : NetworkBehaviour
 
     [SerializeField] protected Stat m_healthStat;
     [SerializeField] protected Stat m_energyStat;
+    protected Renderer m_renderer;
     protected float m_deathTime;
-
-    private SphereCollider m_sphereCollider;
-    private MeshRenderer m_meshRenderer;
-    private Renderer m_renderer;
 
     public override void OnStartClient()
     {
-        m_sphereCollider = GetComponent<SphereCollider>();
-        m_meshRenderer = GetComponent<MeshRenderer>();
         m_renderer = GetComponent<Renderer>();
     }
 
@@ -66,7 +61,7 @@ public abstract class Soldier : NetworkBehaviour
     protected virtual void Die()
     {
         IsDead = true;
-        m_sphereCollider.enabled = false;
+        gameObject.layer = 9; // DeadPlayers layer;
         m_deathTime = Time.time;
         PlayerScore.Deaths++;
         Team.AddDeath();
@@ -97,7 +92,7 @@ public abstract class Soldier : NetworkBehaviour
     protected virtual void Respawn(Vector2 spawnPoint)
     {
         transform.position = new Vector3(spawnPoint.x, 0, spawnPoint.y);
-        m_sphereCollider.enabled = true;
+        gameObject.layer = 8; // Players layer
         m_renderer.material.color = InitialColor;
         m_healthStat.Reset();
         m_energyStat.Reset();

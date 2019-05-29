@@ -38,7 +38,7 @@ public class AttackBehaviour : BotBehaviour
     private void FireAtClosestEnemy()
     {
         // Get all players that aren't on the bot's team
-        List<Soldier> enemies = m_teamManager.GetEnemiesByTeam(m_bot.Team.Id);
+        List<Soldier> enemies = m_teamManager.GetAliveEnemiesByTeam(m_bot.Team.Id);
         Vector3 aimTarget;
         Vector3 targetPosition = FindClosestEnemyPosition(enemies);
         // Worldspace -> localspace
