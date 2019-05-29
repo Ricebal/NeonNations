@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6409165800256132571}
   - component: {fileID: 5412707345643600251}
-  m_Layer: 10
+  m_Layer: 8
   m_Name: ExplosionLight
   m_TagString: Explosion
   m_Icon: {fileID: 0}
@@ -78,7 +78,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8830476281594632761}
-  m_Layer: 10
+  m_Layer: 8
   m_Name: Shot Spawn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -111,7 +111,7 @@ GameObject:
   - component: {fileID: 6088414052061496354}
   - component: {fileID: 6179457024493987321}
   - component: {fileID: 3826325767461259043}
-  m_Layer: 10
+  m_Layer: 8
   m_Name: Particle System
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5025,7 +5025,7 @@ GameObject:
   - component: {fileID: 3409436682290840765}
   - component: {fileID: 629880366995975402}
   - component: {fileID: 3748597400768038582}
-  m_Layer: 10
+  m_Layer: 8
   m_Name: PlayerPrefab
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -5287,6 +5287,7 @@ MonoBehaviour:
   Team: 0
   InitialColor: {r: 0, g: 0, b: 0, a: 0}
   Speed: 7.5
+  Username: Unknown
   RespawnTime: 5
   IsDead: 0
   m_healthStat: {fileID: 18416186091895302}
@@ -5383,7 +5384,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8763978311029635708}
   - component: {fileID: 5445096779193966606}
-  m_Layer: 10
+  m_Layer: 8
   m_Name: Point Light
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -5453,7 +5454,7 @@ GameObject:
   - component: {fileID: 4209374501307928135}
   - component: {fileID: 8043311387450361047}
   - component: {fileID: 2111763267330044312}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: ExplosionBeams
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10160,7 +10161,7 @@ GameObject:
   - component: {fileID: 4119792582392296754}
   - component: {fileID: 5862970095453569857}
   - component: {fileID: 6252512516745243982}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: ImplosionBeams
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14866,7 +14867,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7555909981702408597}
   - component: {fileID: 3103035607344363123}
-  m_Layer: 10
+  m_Layer: 8
   m_Name: Spot Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}

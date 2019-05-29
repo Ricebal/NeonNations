@@ -12,6 +12,9 @@ public class Bot : Soldier
         }
 
         m_rigidbody = GetComponent<Rigidbody>();
+
+        Username = ProfileMenu.GetRandomName() + " (Bot)";
+        CmdUsername(Username);
     }
 
     protected new void Update()

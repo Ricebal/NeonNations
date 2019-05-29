@@ -1,9 +1,28 @@
 ﻿public class Score
 {
+    private string m_username = "Unknown";
     private int m_kills = 0;
     private int m_deaths = 0;
+
     public delegate void OnScoreChangeDelegate();
     public event OnScoreChangeDelegate OnScoreChange;
+
+    public string Username
+    {
+        get
+        {
+            return m_username;
+        }
+        set
+        {
+            m_username = value;
+            if (OnScoreChange != null)
+            {
+                OnScoreChange();
+            }
+        }
+    }
+
     public int Kills
     {
         get
@@ -19,6 +38,7 @@
             }
         }
     }
+
     public int Deaths
     {
         get

@@ -8,25 +8,21 @@ public abstract class Soldier : NetworkBehaviour
     [SyncVar]
     public Color InitialColor;
     [SyncVar]
-    public Score PlayerScore;
+    public Score PlayerScore = new Score();
     // The speed of the entity
     public float Speed;
+    public string Username;
     // The respawn time of the soldier
     public float RespawnTime;
     public bool IsDead = false;
 
     [SerializeField] protected Stat m_healthStat;
     [SerializeField] protected Stat m_energyStat;
+    protected Renderer m_renderer;
     protected float m_deathTime;
-
-    private SphereCollider m_sphereCollider;
-    private MeshRenderer m_meshRenderer;
-    private Renderer m_renderer;
 
     public override void OnStartClient()
     {
-        m_sphereCollider = GetComponent<SphereCollider>();
-        m_meshRenderer = GetComponent<MeshRenderer>();
         m_renderer = GetComponent<Renderer>();
     }
 
@@ -65,7 +61,7 @@ public abstract class Soldier : NetworkBehaviour
     protected virtual void Die()
     {
         IsDead = true;
-        m_sphereCollider.enabled = false;
+        gameObject.layer = 9; // DeadPlayers layer;
         m_deathTime = Time.time;
         PlayerScore.Deaths++;
 
@@ -78,16 +74,13 @@ public abstract class Soldier : NetworkBehaviour
 
     public void SyncScore()
     {
-        if (PlayerScore == null)
-        {
-            PlayerScore = new Score();
-        }
-        RpcSetScore(PlayerScore.Kills, PlayerScore.Deaths);
+        RpcSetScore(PlayerScore.Username, PlayerScore.Kills, PlayerScore.Deaths);
     }
 
     [ClientRpc]
-    private void RpcSetScore(int kills, int deaths)
+    private void RpcSetScore(string username, int kills, int deaths)
     {
+        PlayerScore.Username = username;
         PlayerScore.Kills = kills;
         PlayerScore.Deaths = deaths;
     }
@@ -95,7 +88,7 @@ public abstract class Soldier : NetworkBehaviour
     protected virtual void Respawn(Vector2 spawnPoint)
     {
         transform.position = new Vector3(spawnPoint.x, 0, spawnPoint.y);
-        m_sphereCollider.enabled = true;
+        gameObject.layer = 8; // Players layer
         m_renderer.material.color = InitialColor;
         m_healthStat.Reset();
         m_energyStat.Reset();
@@ -106,7 +99,7 @@ public abstract class Soldier : NetworkBehaviour
     {
         Color newColor = new Color(color.r, color.g, color.b, 1f);
         InitialColor = newColor;
-        CmdColor(this.gameObject, newColor);
+        CmdColor(gameObject, newColor);
     }
 
     [ClientRpc]
@@ -124,6 +117,19 @@ public abstract class Soldier : NetworkBehaviour
     protected void CmdColor(GameObject obj, Color color)
     {
         RpcColor(obj, color);
+    }
+
+    [ClientRpc]
+    protected void RpcUsername(string username)
+    {
+        Username = username;
+        PlayerScore.Username = username;
+    }
+
+    [Command]
+    protected void CmdUsername(string username)
+    {
+        RpcUsername(username);
     }
 
     protected void TakeDamage(int damage, string playerId)

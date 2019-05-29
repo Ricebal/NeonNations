@@ -7,6 +7,7 @@ public class TeamManager : MonoBehaviour
     public List<Team> Teams;
     private int m_playerCount;
     private Soldier[] m_players = new Soldier[8];
+
     public delegate void OnPlayersChangeDelegate();
     public event OnPlayersChangeDelegate OnPlayersChange;
 
@@ -130,12 +131,12 @@ public class TeamManager : MonoBehaviour
         return m_players;
     }
 
-    public List<Soldier> GetEnemiesByTeam(int teamId)
+    public List<Soldier> GetAliveEnemiesByTeam(int teamId)
     {
         List<Soldier> enemies = new List<Soldier>();
         foreach (Soldier player in m_players)
         {
-            if (player != null && player.Team != teamId)
+            if (player != null && player.Team != teamId && !player.IsDead)
             {
                 enemies.Add(player);
             }
