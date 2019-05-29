@@ -40,7 +40,7 @@ public abstract class Soldier : NetworkBehaviour
             // If the soldier is able to respawn
             if (IsDead && Time.time - m_deathTime >= RespawnTime)
             {
-                Vector2 spawnPoint = GameObject.Find("GameManager").GetComponent<BoardManager>().GetRandomFloorTile();
+                Vector2 spawnPoint = GameObject.Find("GameManager").GetComponent<BoardManager>().GetMap().GetRandomFloorTile();
                 RpcRespawn(spawnPoint);
             }
         }

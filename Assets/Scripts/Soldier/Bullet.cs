@@ -22,8 +22,8 @@ public class Bullet : MonoBehaviour
     private Vector3 m_lastBouncePosition;
     // Has left player model
     private bool m_hasLeftPlayerCollider = false;
-    // Last hit mirror
-    private int m_lastMirror;
+    // Last hit reflector
+    private int m_lastReflector;
     private float m_startingTime;
 
     public void Start()
@@ -58,8 +58,8 @@ public class Bullet : MonoBehaviour
 
     private void OnTriggerEnter(Collider collider)
     {
-        // If the bullet hits a mirror and it's not the same as the last mirror bounce
-        if (collider.tag == "Reflector" && collider.GetInstanceID() != m_lastMirror)
+        // If the bullet hits a reflector and it's not the same as the last reflector bounce
+        if (collider.tag == "Reflector" && collider.GetInstanceID() != m_lastReflector)
         {
             // Raycast from start or last bounce to collision
             RaycastHit contact = GetRaycastHit(collider.GetInstanceID());
@@ -84,11 +84,11 @@ public class Bullet : MonoBehaviour
             transform.rotation = Quaternion.LookRotation(newVelocity);
             // Set the last bounce position to current position for future raycasting
             m_lastBouncePosition = transform.position;
-            // Set last hit mirror to the hit mirror
-            m_lastMirror = collider.GetInstanceID();
+            // Set last hit reflector to the hit reflector
+            m_lastReflector = collider.GetInstanceID();
         }
 
-        // If the collider is not a mirror and has left the player hitbox
+        // If the collider is not a reflector and has left the player hitbox
         if (collider.tag != "Reflector" && (m_hasLeftPlayerCollider || collider.transform.name != ShooterId))
         {
             DestroyBullet();

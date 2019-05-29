@@ -51,8 +51,9 @@ public class GameManager : NetworkBehaviour
 
         MapGenerator mapGenerator = new MapGenerator(m_mapWidth, m_mapHeight, m_maxRoomAmount, m_maxShortcutAmount, m_minRoomLength,
             m_maxRoomLength, m_minTunnelLength, m_maxTunnelLength, m_tunnelWidth, m_breakableTunnelChance, m_shortcutMinSkipDistance, m_reflectorAreaSize);
-        m_boardManager.SetupScene(mapGenerator.GenerateRandomMap(m_seed), m_outerWallWidth);
-        m_botManager.SetupBots();
+        Map map = mapGenerator.GenerateRandomMap(m_seed);
+        m_boardManager.SetupScene(map, m_outerWallWidth);
+        m_botManager.SetupBots(map);
     }
 
     public void AddPlayer(Soldier player)

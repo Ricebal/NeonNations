@@ -51,7 +51,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   syncInterval: 0.1
-  m_seed: 
+  m_seed: mljlniousvadyjxrxcoi
   m_mapWidth: 50
   m_mapHeight: 50
   m_maxRoomAmount: 100
@@ -82,7 +82,7 @@ MonoBehaviour:
     type: 3}
   m_breakableWallPrefab: {fileID: 7737746882760392655, guid: d780423ce27d7d948bfe4bab56b66701,
     type: 3}
-  m_mirrorPrefab: {fileID: 7451038652050229078, guid: aae966a7cdf451e49af8bc7c3f5cf80c,
+  m_reflectorPrefab: {fileID: 7451038652050229078, guid: aae966a7cdf451e49af8bc7c3f5cf80c,
     type: 3}
 --- !u!114 &4331448404734817723
 MonoBehaviour:

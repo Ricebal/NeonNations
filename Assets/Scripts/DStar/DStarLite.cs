@@ -59,7 +59,7 @@ public class DStarLite
     /// <param name="knowMap">Set to true if the algorithm should know the full map</param>
     private void GenerateNodeMap(bool knowMap)
     {
-        Tile[][] completeMap = m_environment.GetMap();
+        Map completeMap = m_environment.GetMap();
         Map = new NavigationGraph(completeMap, knowMap, m_environment.GetList());
     }
 

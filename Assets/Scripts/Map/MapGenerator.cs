@@ -4,8 +4,6 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-public enum Tile { Unknown = -1, Floor, Wall, BreakableWall, Reflector }
-
 public class MapGenerator
 {
     private int m_mapWidth;
@@ -29,8 +27,8 @@ public class MapGenerator
     private const int MINIMUM_ROOM_LENGTH = 1;
     private const int MINIMUM_MAP_SIDE = 20;
     private const int MAXIMUM_MAP_SIDE = 400;
-
-    private Tile[][] m_tileMap;
+    
+    private Map m_map;
 
     // --------------------------------------------------------------------------------------------
     // Generate maps
@@ -52,31 +50,12 @@ public class MapGenerator
     }
 
     /// <summary>
-    /// Generates a map based on the content
-    /// </summary>
-    /// <param name="content">The tile to fill the map with</param>
-    /// <returns>A jagged array of Tiles representing the tilemap</returns>
-    public Tile[][] GenerateEmptyMap(Tile content)
-    {
-        m_tileMap = new Tile[m_mapWidth][];
-        for (int x = 0; x < m_mapWidth; x++)
-        {
-            m_tileMap[x] = new Tile[m_mapHeight];
-            for (int y = 0; y < m_mapHeight; y++)
-            {
-                m_tileMap[x][y] = content;
-            }
-        }
-        return m_tileMap;
-    }
-
-    /// <summary>
     /// Generates the hardcoded test map
     /// </summary>
     /// <returns>A jagged array of Tiles representing the tilemap</returns>
-    public Tile[][] GenerateTestMap()
+    public Map GenerateTestMap()
     {
-        GenerateEmptyMap(Tile.Wall);
+        m_map = Map.GenerateEmptyMap(Tile.Wall, m_mapWidth, m_mapHeight);
 
         for (int x = 0; x < m_mapWidth; x++)
         {
@@ -105,11 +84,11 @@ public class MapGenerator
                     || x >= 23 && x <= 24 && y == 2
                     || x >= 25 && x <= 26 && y >= 11 && y <= 16)
                 {
-                    m_tileMap[x][y] = Tile.Floor;
+                    m_map.TileMap[x][y] = Tile.Floor;
                 }
             }
         }
-        return m_tileMap;
+        return m_map;
     }
 
     /// <summary>
@@ -117,21 +96,23 @@ public class MapGenerator
     /// </summary>
     /// <param name="seed">Seed to be used with the generation</param>
     /// <returns>A jagged array of Tiles representing the tilemap</returns>
-    public Tile[][] GenerateRandomMap(string seed)
+    public Map GenerateRandomMap(string seed)
     {
         // Check if settings can be used
         CheckSettings();
 
         // Create level with only walls
-        GenerateEmptyMap(Tile.Wall);
+        m_map = Map.GenerateEmptyMap(Tile.Wall, m_mapWidth, m_mapHeight);
+        m_map.DebugMap();
 
         // Change seed of randomizer
         UnityEngine.Random.InitState(seed.GetHashCode());
 
         // Generate first room (in the middle) and add it to the map
-        Room room = GenerateRandomRoom();
-        room.Pos = new Vector2Int(m_mapWidth / 2 - room.RoomMap.Length / 2, m_mapHeight / 2 - room.RoomMap[0].Length / 2);
+        Map room = GenerateRandomRoom();
+        room.Pos = new Vector2Int(m_mapWidth / 2 - room.TileMap.Length / 2, m_mapHeight / 2 - room.TileMap[0].Length / 2);
         AddRoom(room);
+        m_map.DebugMap();
 
         int currentRoomAmount = 1;
         int currentBuildAttempt = 0;
@@ -145,19 +126,22 @@ public class MapGenerator
             if (placed)
             {
                 currentRoomAmount++;
+                m_map.DebugMap();
             }
             currentBuildAttempt++;
         }
         // Add shortcuts
         AddShortcuts();
+        m_map.DebugMap();
 
         // Add mirrors
         AddReflectors();
+        m_map.DebugMap();
 
         // Set seed to random again
         UnityEngine.Random.InitState((int)DateTime.Now.Ticks);
 
-        return m_tileMap;
+        return m_map;
     }
 
     // --------------------------------------------------------------------------------------------
@@ -168,48 +152,21 @@ public class MapGenerator
     /// Generates a random square room based on the settings
     /// </summary>
     /// <returns>A Room object</returns>
-    private Room GenerateRandomRoom()
+    private Map GenerateRandomRoom()
     {
         int width = UnityEngine.Random.Range(m_minRoomLength, Math.Min(m_maxRoomLength, m_mapWidth));
         int height = UnityEngine.Random.Range(m_minRoomLength, Math.Min(m_maxRoomLength, m_mapHeight));
 
-        Tile[][] roomMap = new Tile[width][];
-        for (int x = 0; x < width; x++)
-        {
-            roomMap[x] = new Tile[height];
-        }
-        return new Room(roomMap);
+        return Map.GenerateEmptyMap(Tile.Floor, width, height);
     }
 
     /// <summary>
     /// Adds the room to the map
     /// </summary>
     /// <param name="room">Room to be added to the map</param>
-    private void AddRoom(Room room)
+    private void AddRoom(Map room)
     {
-        PasteTileMap(room.RoomMap, m_tileMap, room.Pos);
-    }
-
-    /// <summary>
-    /// Add a small tilemap to a big tilemap
-    /// </summary>
-    /// <param name="smallMap">Small tile map to be added</param>
-    /// <param name="bigMap">Big tilemap to be added to</param>
-    /// <param name="pos">Position of where the small map should be pasted within the big map</param>
-    private void PasteTileMap(Tile[][] smallMap, Tile[][] bigMap, Vector2Int pos)
-    {
-        // for every tile in the small map
-        for (int x = 0; x < smallMap.Length; x++)
-        {
-            for (int y = 0; y < smallMap[0].Length; y++)
-            {
-                // change the according tile on the big map
-                if (smallMap[x][y] != Tile.Wall)
-                {
-                    bigMap[x + pos.x][y + pos.y] = smallMap[x][y];
-                }
-            }
-        }
+        Map.PasteTileMap(room.Pos, room.TileMap, m_map.TileMap);
     }
 
     /// <summary>
@@ -217,14 +174,15 @@ public class MapGenerator
     /// </summary>
     /// <param name="room">Room to be added to the map</param>
     /// <returns>True if successful</returns>
-    private bool PlaceRoom(Room room)
+    private bool PlaceRoom(Map room)
     {
         for (int i = 1; i <= MAX_PLACE_ATTEMPTS; i++)
         {
-            if (TryPlacement(room))
+            Map tryMap = TryPlacement(room);
+            if (tryMap != null)
             {
                 // add room to the map
-                AddRoom(room);
+                AddRoom(tryMap);
                 return true;
             }
         }
@@ -236,7 +194,7 @@ public class MapGenerator
     /// </summary>
     /// <param name="room">Room to be added</param>
     /// <returns>True if succeeded</returns>
-    private bool TryPlacement(Room room)
+    private Map TryPlacement(Map room)
     {
         // get random direction to attach the room to the map
         Vector2Int direction = GenerateRandomDirection();
@@ -245,14 +203,14 @@ public class MapGenerator
         Vector2Int wallTile = GetRandomWallTile(direction);
         if (wallTile.x == -1 && wallTile.y == -1)
         {
-            return false;
+            return null;
         }
 
         // get a random tile within the room, to attach the corridor to
-        Vector2Int entrance = new Vector2Int(UnityEngine.Random.Range(0, room.RoomMap.Length + 1 - m_tunnelWidth), UnityEngine.Random.Range(0, room.RoomMap[0].Length + 1 - m_tunnelWidth));
+        Vector2Int entrance = new Vector2Int(UnityEngine.Random.Range(0, room.TileMap.Length + 1 - m_tunnelWidth), UnityEngine.Random.Range(0, room.TileMap[0].Length + 1 - m_tunnelWidth));
         if (direction == Vector2Int.down)
         {
-            entrance.y = room.RoomMap[0].Length - 1;
+            entrance.y = room.TileMap[0].Length - 1;
         }
         else if (direction == Vector2Int.up)
         {
@@ -260,7 +218,7 @@ public class MapGenerator
         }
         else if (direction == Vector2Int.left)
         {
-            entrance.x = room.RoomMap.Length - 1;
+            entrance.x = room.TileMap.Length - 1;
         }
         else if (direction == Vector2Int.right)
         {
@@ -276,19 +234,19 @@ public class MapGenerator
         foreach (int i in tunnelLengths)
         {
             // create temporary values for this length
-            Tile[][] tempMap = AddTunnelToMap(room.RoomMap, i, entrance, direction);
+            Map tempMap = room.AddTunnelToMap(i, entrance, direction, m_tunnelWidth);
+            tempMap.Pos = new Vector2Int(room.Pos.x, room.Pos.y);
             Vector2Int tempEntrance = new Vector2Int(entrance.x, entrance.y);
-            Vector2Int tempPos = new Vector2Int(room.Pos.x, room.Pos.y);
 
             // adjust position and entrance of the room based on the length of the tunnel
             if (direction == Vector2Int.down)
             {
-                tempPos.y = wallTile.y + 1 - tempMap[0].Length;
+                tempMap.Pos.y = wallTile.y + 1 - tempMap.TileMap[0].Length;
                 tempEntrance.y += i;
             }
             else if (direction == Vector2Int.left)
             {
-                tempPos.x = wallTile.x + 1 - tempMap.Length;
+                tempMap.Pos.x = wallTile.x + 1 - tempMap.TileMap.Length;
                 tempEntrance.x += i;
             }
 
@@ -300,16 +258,14 @@ public class MapGenerator
             }
 
             // if it can be placed, return the room
-            if (CanPlace(tempMap, tempPos, entranceTiles, direction))
+            if (CanPlace(tempMap.TileMap, tempMap.Pos, entranceTiles, direction))
             {
-                room.RoomMap = tempMap;
-                room.Pos = tempPos;
-                return true;
+                return tempMap;
             }
         }
 
-        // for every length of the tunnel, this room doesn't fit. return false
-        return false;
+        // for every length of the tunnel, this room doesn't fit. return null
+        return null;
     }
 
     /// <summary>
@@ -368,9 +324,9 @@ public class MapGenerator
     /// <returns></returns>
     private IEnumerable<Vector2Int> GetAllWallTilesInDirection(Vector2Int direction, int outerWidth)
     {
-        for (int i = outerWidth; i < m_tileMap.Length - m_tunnelWidth - outerWidth; i++)
+        for (int i = outerWidth; i < m_map.TileMap.Length - m_tunnelWidth - outerWidth; i++)
         {
-            for (int j = outerWidth; j < m_tileMap[0].Length - m_tunnelWidth - outerWidth; j++)
+            for (int j = outerWidth; j < m_map.TileMap[0].Length - m_tunnelWidth - outerWidth; j++)
             {
                 Vector2Int tile = new Vector2Int(i, j);
                 if (CheckWallTile(tile, direction))
@@ -416,72 +372,13 @@ public class MapGenerator
         for (int i = 0; i < m_tunnelWidth; i++)
         {
             Vector2Int wallTile = new Vector2Int(randomTile.x + i * Math.Abs(direction.y), randomTile.y + i * Math.Abs(direction.x));
-            if (!(m_tileMap[wallTile.x][wallTile.y] == Tile.Wall
-                    //&& m_tileMap[wallTile.x + direction.x][wallTile.y + direction.y] == Tile.Wall
-                    && m_tileMap[wallTile.x - direction.x][wallTile.y - direction.y] == Tile.Floor))
+            if (!(m_map.TileMap[wallTile.x][wallTile.y] == Tile.Wall
+                    && m_map.TileMap[wallTile.x - direction.x][wallTile.y - direction.y] == Tile.Floor))
             {
                 return false;
             }
         }
         return true;
-    }
-
-    /// <summary>
-    /// Adds a tunnel to a given room
-    /// </summary>
-    /// <param name="map">Map the tunnel should be added to</param>
-    /// <param name="tunnelLength">Length of the tunnel</param>
-    /// <param name="entrance">The tile within the room that the tunnel will be adjacent to</param>
-    /// <param name="direction">Direction of the tunnel</param>
-    /// <returns>The new map with the tunnel added to it</returns>
-    private Tile[][] AddTunnelToMap(Tile[][] map, int tunnelLength, Vector2Int entrance, Vector2Int direction)
-    {
-        // create new map with right size
-        Tile[][] newMap = new Tile[map.Length + Math.Abs(direction.x) * tunnelLength][];
-        for (int x = 0; x < newMap.Length; x++)
-        {
-            newMap[x] = new Tile[map[0].Length + Math.Abs(direction.y) * tunnelLength];
-            for (int y = 0; y < newMap[0].Length; y++)
-            {
-                newMap[x][y] = Tile.Wall;
-            }
-        }
-
-        // copy roommap into new map
-        PasteTileMap(map, newMap, new Vector2Int(Math.Abs(Math.Max(0, direction.x)) * tunnelLength, Math.Abs(Math.Max(0, direction.y)) * tunnelLength));
-
-        // generate tunnel
-        Tile[][] tunnel = new Tile[(m_tunnelWidth * Math.Abs(direction.y) + tunnelLength * Math.Abs(direction.x))][];
-
-        for (int x = 0; x < tunnel.Length; x++)
-        {
-            tunnel[x] = new Tile[(m_tunnelWidth * Math.Abs(direction.x) + tunnelLength * Math.Abs(direction.y))];
-        }
-
-        // generate position within new map
-        Vector2Int pos = new Vector2Int(entrance.x + Math.Abs(Math.Max(0, direction.x)) * tunnelLength, entrance.y + Math.Abs(Math.Max(0, direction.y)) * tunnelLength);
-        if (direction == Vector2Int.right)
-        {
-            pos.x -= tunnelLength;
-        }
-        else if (direction == Vector2Int.left)
-        {
-            pos.x += 1;
-        }
-        else if (direction == Vector2Int.up)
-        {
-            pos.y -= tunnelLength;
-        }
-        else if (direction == Vector2Int.down)
-        {
-            pos.y += 1;
-        }
-
-        // add tunnel to new map
-        PasteTileMap(tunnel, newMap, pos);
-
-        // return new map
-        return newMap;
     }
 
     /// <summary>
@@ -495,7 +392,7 @@ public class MapGenerator
     private bool CanPlace(Tile[][] map, Vector2Int pos, List<Vector2Int> entranceTiles, Vector2Int direction)
     {
         // check out of bounds
-        if (CheckOutOfBounds(m_tileMap, pos, new Vector2Int(pos.x + map.Length, pos.y + map[0].Length)))
+        if (m_map.CheckOutOfBounds(pos, new Vector2Int(pos.x + map.Length, pos.y + map[0].Length)))
         {
             return false;
         }
@@ -507,37 +404,27 @@ public class MapGenerator
             {
                 if (map[x][y] == Tile.Floor && // check if position in room is a floor tile
                     (!entranceTiles.Contains(new Vector2Int(x, y)) && // if the tile isn't an entrance
-                    (m_tileMap[x + pos.x][y + pos.y] != Tile.Wall || // if so, check if the same position on map isn't a wall
-                    m_tileMap[x + pos.x][y + pos.y + 1] != Tile.Wall || // and check all tiles around the position on the map, starting with north
-                    m_tileMap[x + pos.x + 1][y + pos.y + 1] != Tile.Wall || // northeast
-                    m_tileMap[x + pos.x + 1][y + pos.y] != Tile.Wall || // east
-                    m_tileMap[x + pos.x + 1][y + pos.y - 1] != Tile.Wall || // southeast
-                    m_tileMap[x + pos.x][y + pos.y - 1] != Tile.Wall || // south
-                    m_tileMap[x + pos.x - 1][y + pos.y - 1] != Tile.Wall || // southwest
-                    m_tileMap[x + pos.x - 1][y + pos.y] != Tile.Wall || // west
-                    m_tileMap[x + pos.x - 1][y + pos.y + 1] != Tile.Wall // northwest
+                    (m_map.TileMap[x + pos.x][y + pos.y] != Tile.Wall || // if so, check if the same position on map isn't a wall
+                    m_map.TileMap[x + pos.x][y + pos.y + 1] != Tile.Wall || // and check all tiles around the position on the map, starting with north
+                    m_map.TileMap[x + pos.x + 1][y + pos.y + 1] != Tile.Wall || // northeast
+                    m_map.TileMap[x + pos.x + 1][y + pos.y] != Tile.Wall || // east
+                    m_map.TileMap[x + pos.x + 1][y + pos.y - 1] != Tile.Wall || // southeast
+                    m_map.TileMap[x + pos.x][y + pos.y - 1] != Tile.Wall || // south
+                    m_map.TileMap[x + pos.x - 1][y + pos.y - 1] != Tile.Wall || // southwest
+                    m_map.TileMap[x + pos.x - 1][y + pos.y] != Tile.Wall || // west
+                    m_map.TileMap[x + pos.x - 1][y + pos.y + 1] != Tile.Wall // northwest
                     )) ||
                     (entranceTiles.Contains(new Vector2Int(x, y)) && // if the tile is an entrance
-                    (m_tileMap[x + pos.x][y + pos.y] != Tile.Wall || // if so, check if the same position on map isn't a wall
-                    (Math.Abs(direction.x) == 1 && m_tileMap[x + pos.x][y + pos.y + 1] != Tile.Wall) || // and check certain tiles around the position on the map, based on direction, starting with north
-                    (Math.Abs(direction.y) == 1 && m_tileMap[x + pos.x + 1][y + pos.y] != Tile.Wall) || // east
-                    (Math.Abs(direction.x) == 1 && m_tileMap[x + pos.x][y + pos.y - 1] != Tile.Wall) || // south
-                    (Math.Abs(direction.y) == 1 && m_tileMap[x + pos.x - 1][y + pos.y] != Tile.Wall)))) // west
+                    (m_map.TileMap[x + pos.x][y + pos.y] != Tile.Wall || // if so, check if the same position on map isn't a wall
+                    (Math.Abs(direction.x) == 1 && m_map.TileMap[x + pos.x][y + pos.y + 1] != Tile.Wall) || // and check certain tiles around the position on the map, based on direction, starting with north
+                    (Math.Abs(direction.y) == 1 && m_map.TileMap[x + pos.x + 1][y + pos.y] != Tile.Wall) || // east
+                    (Math.Abs(direction.x) == 1 && m_map.TileMap[x + pos.x][y + pos.y - 1] != Tile.Wall) || // south
+                    (Math.Abs(direction.y) == 1 && m_map.TileMap[x + pos.x - 1][y + pos.y] != Tile.Wall)))) // west
                 {
                     return false;
                 }
             }
         }
-        return true;
-    }
-
-    private bool CheckOutOfBounds(Tile[][] map, Vector2Int from, Vector2Int to)
-    {
-        if ((from.x > 0 && from.x <= map.Length - 1 && from.y > 0 && from.y <= map[0].Length - 1) && (to.x > 0 && to.x <= map.Length - 1 && to.y > 0 && to.y <= map[0].Length - 1))
-        {
-            return false;
-        }
-
         return true;
     }
 
@@ -607,7 +494,7 @@ public class MapGenerator
                                 }
                             }
 
-                            PasteTileMap(tunnel, m_tileMap, pos);
+                            Map.PasteTileMap(pos, tunnel, m_map.TileMap);
                             shortcutPlaced = true;
                             currentShortcutAmount++;
                             break;
@@ -655,7 +542,7 @@ public class MapGenerator
         tilesToCalculateTo[1] = new Vector2Int(otherWallTile.x + direction.x + direction.y * m_tunnelWidth, otherWallTile.y + direction.y + direction.x * m_tunnelWidth);
 
         // run DStarLite twice
-        GameEnvironment ge = GameEnvironment.CreateInstance(m_tileMap, new List<Tile>() { Tile.Wall, Tile.Reflector });
+        GameEnvironment ge = GameEnvironment.CreateInstance(m_map, new List<Tile>() { Tile.Wall, Tile.Reflector });
         DStarLite dStarLite = new DStarLite(ge, true);
         dStarLite.RunDStarLite(tilesToCalculateFrom[0], tilesToCalculateTo[0]);
         costs[0] = dStarLite.Map.GetNode(tilesToCalculateFrom[0].x, tilesToCalculateFrom[0].y).CostFromStartingPoint;
@@ -676,7 +563,7 @@ public class MapGenerator
     private void AddReflectors()
     {
         // setup
-        Vector2Int startingPos = GetRandomFloorTile();
+        Vector2Int startingPos = m_map.GetRandomFloorTile();
         Queue<Vector2Int> positionsToCheck = new Queue<Vector2Int>();
         positionsToCheck.Enqueue(startingPos);
         List<Vector2Int> positionsChecked = new List<Vector2Int>();
@@ -690,14 +577,14 @@ public class MapGenerator
             {
                 Vector2Int nextToCurrent = current + directions[i];
                 // if the tile is a wall, convert to mirror
-                if (m_tileMap[nextToCurrent.x][nextToCurrent.y] == Tile.Wall)
+                if (m_map.TileMap[nextToCurrent.x][nextToCurrent.y] == Tile.Wall)
                 {
-                    m_tileMap[nextToCurrent.x][nextToCurrent.y] = Tile.Reflector;
+                    m_map.TileMap[nextToCurrent.x][nextToCurrent.y] = Tile.Reflector;
                 }
 
                 // if the tile hasn't been checked and is not in the list to be checked, and it's either a floor or breakable wall, add to check list
                 if (!positionsChecked.Contains(nextToCurrent) && !positionsToCheck.Contains(nextToCurrent)
-                    && (m_tileMap[nextToCurrent.x][nextToCurrent.y] == Tile.Floor || m_tileMap[nextToCurrent.x][nextToCurrent.y] == Tile.BreakableWall))
+                    && (m_map.TileMap[nextToCurrent.x][nextToCurrent.y] == Tile.Floor || m_map.TileMap[nextToCurrent.x][nextToCurrent.y] == Tile.BreakableWall))
                 {
                     positionsToCheck.Enqueue(nextToCurrent);
                 }
@@ -705,18 +592,6 @@ public class MapGenerator
 
             positionsChecked.Add(current);
         }
-    }
-
-    // TODO fix this
-    private Vector2Int GetRandomFloorTile()
-    {
-        Vector2Int randomTile;
-        do
-        {
-            // get a random tile in the map
-            randomTile = new Vector2Int(UnityEngine.Random.Range(1, m_tileMap.Length - 1), UnityEngine.Random.Range(1, m_tileMap[0].Length - 1));
-        } while (m_tileMap[randomTile.x][randomTile.y] != Tile.Floor);
-        return randomTile;
     }
 
     // --------------------------------------------------------------------------------------------
@@ -851,70 +726,5 @@ public class MapGenerator
         }
 
         return;
-    }
-
-
-    // --------------------------------------------------------------------------------------------
-    // Debug functions
-    // --------------------------------------------------------------------------------------------
-
-    /// <summary>
-    /// Prints the map given
-    /// </summary>
-    /// <param name="map">Map to print</param>
-    private void DebugMap(Tile[][] map)
-    {
-        StringBuilder builder = new StringBuilder();
-        builder.Append('\n');
-        for (int y = map[0].Length - 1; y >= 0; y--)
-        {
-            for (int x = 0; x < map.Length; x++)
-            {
-                builder.Append((int)map[x][y]);
-            }
-            builder.Append('\n');
-        }
-        string s = builder.ToString();
-        Debug.Log(s);
-    }
-
-    /// <summary>
-    /// Prints the adding of a roommap to a map
-    /// </summary>
-    /// <param name="map">Map to print</param>
-    /// <param name="roomMap">Room to add to the map</param>
-    /// <param name="pos">Position of the room within the map</param>
-    private void DebugAddingRoom(Tile[][] map, Tile[][] roomMap, Vector2Int pos)
-    {
-        StringBuilder builder = new StringBuilder();
-        builder.Append('\n');
-        for (int y = map[0].Length - 1; y >= 0; y--)
-        {
-            for (int x = 0; x < map.Length; x++)
-            {
-                if (x >= pos.x && x < pos.x + roomMap.Length && y >= pos.y && y < pos.y + roomMap[0].Length)
-                {
-                    builder.Append((int)roomMap[x - pos.x][y - pos.y]);
-                }
-                else
-                {
-                    builder.Append((int)map[x][y]);
-                }
-            }
-            builder.Append('\n');
-        }
-        string s = builder.ToString();
-        Debug.Log(s);
-    }
-
-    private class Room
-    {
-        public Tile[][] RoomMap;
-        public Vector2Int Pos;
-
-        public Room(Tile[][] roomMap)
-        {
-            RoomMap = roomMap;
-        }
     }
 }
