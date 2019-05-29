@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-public enum Tile { Unknown = -1, Floor, Wall, BreakableWall, Mirror }
+public enum Tile { Unknown = -1, Floor, Wall, BreakableWall, Reflector }
 
 public class MapGenerator
 {
@@ -19,6 +19,7 @@ public class MapGenerator
     private int m_tunnelWidth;
     private int m_breakableTunnelChance;
     private int m_shortcutMinSkipDistance;
+    private int m_reflectorAreaSize;
 
 
     private const int MAX_PLACE_ATTEMPTS = 10;
@@ -34,7 +35,7 @@ public class MapGenerator
     // --------------------------------------------------------------------------------------------
     // Generate maps
     // --------------------------------------------------------------------------------------------
-    public MapGenerator(int mapWidth, int mapHeight, int maxRoomAmount, int maxShortcutAmount, int minRoomLength, int maxRoomLength, int minTunnelLength, int maxTunnelLength, int tunnelWidth, int breakableTunnelChance, int shortcutMinSkipDistance)
+    public MapGenerator(int mapWidth, int mapHeight, int maxRoomAmount, int maxShortcutAmount, int minRoomLength, int maxRoomLength, int minTunnelLength, int maxTunnelLength, int tunnelWidth, int breakableTunnelChance, int shortcutMinSkipDistance, int reflectorAreaSize)
     {
         m_mapWidth = mapWidth;
         m_mapHeight = mapHeight;
@@ -47,6 +48,7 @@ public class MapGenerator
         m_tunnelWidth = tunnelWidth;
         m_breakableTunnelChance = breakableTunnelChance;
         m_shortcutMinSkipDistance = shortcutMinSkipDistance;
+        m_reflectorAreaSize = reflectorAreaSize;
     }
 
     /// <summary>
@@ -150,7 +152,7 @@ public class MapGenerator
         AddShortcuts();
 
         // Add mirrors
-        AddMirrorsToArea(m_tileMap, new Vector2Int(1,1), new Vector2Int(m_mapWidth-1,m_mapHeight-1));
+        AddReflectors();
 
         // Set seed to random again
         UnityEngine.Random.InitState((int)DateTime.Now.Ticks);
@@ -653,7 +655,7 @@ public class MapGenerator
         tilesToCalculateTo[1] = new Vector2Int(otherWallTile.x + direction.x + direction.y * m_tunnelWidth, otherWallTile.y + direction.y + direction.x * m_tunnelWidth);
 
         // run DStarLite twice
-        GameEnvironment ge = GameEnvironment.CreateInstance(m_tileMap, new List<Tile>() { Tile.Wall, Tile.Mirror });
+        GameEnvironment ge = GameEnvironment.CreateInstance(m_tileMap, new List<Tile>() { Tile.Wall, Tile.Reflector });
         DStarLite dStarLite = new DStarLite(ge, true);
         dStarLite.RunDStarLite(tilesToCalculateFrom[0], tilesToCalculateTo[0]);
         costs[0] = dStarLite.Map.GetNode(tilesToCalculateFrom[0].x, tilesToCalculateFrom[0].y).CostFromStartingPoint;
@@ -671,25 +673,50 @@ public class MapGenerator
         }
     }
 
-    private void AddMirrorsToArea(Tile[][] area, Vector2Int from, Vector2Int to)
+    private void AddReflectors()
     {
-        if (CheckOutOfBounds(area, from, to))
-        {
-            return;
-        }
+        // setup
+        Vector2Int startingPos = GetRandomFloorTile();
+        Queue<Vector2Int> positionsToCheck = new Queue<Vector2Int>();
+        positionsToCheck.Enqueue(startingPos);
+        List<Vector2Int> positionsChecked = new List<Vector2Int>();
+        Vector2Int[] directions = new Vector2Int[] { Vector2Int.up, Vector2Int.right, Vector2Int.down, Vector2Int.left };
 
-        // for every tile in the small map
-        for (int x = 0; x < to.x - from.x; x++)
+        // floodfill algorithm
+        while (positionsToCheck.Count != 0 && positionsChecked.Count < m_reflectorAreaSize)
         {
-            for (int y = 0; y < to.y - from.y; y++)
+            Vector2Int current = positionsToCheck.Dequeue();
+            for (int i = 0; i < directions.Length; i++)
             {
-                // change the according tile on the big map
-                if (area[from.x + x][from.y + y] == Tile.Wall)
+                Vector2Int nextToCurrent = current + directions[i];
+                // if the tile is a wall, convert to mirror
+                if (m_tileMap[nextToCurrent.x][nextToCurrent.y] == Tile.Wall)
                 {
-                    area[from.x + x][from.y + y] = Tile.Mirror;
+                    m_tileMap[nextToCurrent.x][nextToCurrent.y] = Tile.Reflector;
+                }
+
+                // if the tile hasn't been checked and is not in the list to be checked, and it's either a floor or breakable wall, add to check list
+                if (!positionsChecked.Contains(nextToCurrent) && !positionsToCheck.Contains(nextToCurrent)
+                    && (m_tileMap[nextToCurrent.x][nextToCurrent.y] == Tile.Floor || m_tileMap[nextToCurrent.x][nextToCurrent.y] == Tile.BreakableWall))
+                {
+                    positionsToCheck.Enqueue(nextToCurrent);
                 }
             }
+
+            positionsChecked.Add(current);
         }
+    }
+
+    // TODO fix this
+    private Vector2Int GetRandomFloorTile()
+    {
+        Vector2Int randomTile;
+        do
+        {
+            // get a random tile in the map
+            randomTile = new Vector2Int(UnityEngine.Random.Range(1, m_tileMap.Length - 1), UnityEngine.Random.Range(1, m_tileMap[0].Length - 1));
+        } while (m_tileMap[randomTile.x][randomTile.y] != Tile.Floor);
+        return randomTile;
     }
 
     // --------------------------------------------------------------------------------------------

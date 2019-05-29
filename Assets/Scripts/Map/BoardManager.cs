@@ -42,7 +42,7 @@ public class BoardManager : NetworkBehaviour
     private GameObject m_mirrors;
     private List<GameObject> m_mapParts = new List<GameObject>();
 
-    private readonly List<Tile> m_permanentObstacles = new List<Tile>() { Tile.Wall, Tile.Mirror };
+    private readonly List<Tile> m_permanentObstacles = new List<Tile>() { Tile.Wall, Tile.Reflector };
 
     // --------------------------------------------------------------------------------------------
     // Public functions
@@ -157,7 +157,7 @@ public class BoardManager : NetworkBehaviour
                     instance.transform.SetParent(m_breakableWalls.transform);
                     NetworkServer.Spawn(instance);
                 }
-                else if (m_tileMap[i][j] == Tile.Mirror)
+                else if (m_tileMap[i][j] == Tile.Reflector)
                 {
                     GameObject instance;
                     Vector2Int[] directions = new Vector2Int[] { Vector2Int.up, Vector2Int.right, Vector2Int.down, Vector2Int.left };
@@ -373,7 +373,7 @@ public class BoardManager : NetworkBehaviour
 
     private List<KeyValuePair<Vector2Int, Vector2Int>> GetAdjacentMirrors(List<KeyValuePair<Vector2Int, Vector2Int>> list, Vector2Int pos, Vector2Int direction)
     {
-        if (m_tileMap[pos.x][pos.y] == Tile.Mirror)
+        if (m_tileMap[pos.x][pos.y] == Tile.Reflector)
         {
             if (direction.x == 1)
             {

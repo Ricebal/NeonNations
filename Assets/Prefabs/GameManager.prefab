@@ -51,7 +51,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   syncInterval: 0.1
-  m_seed: nmsgykknfeyklxybbcyy
+  m_seed: 
   m_mapWidth: 50
   m_mapHeight: 50
   m_maxRoomAmount: 100
@@ -63,6 +63,7 @@ MonoBehaviour:
   m_tunnelWidth: 2
   m_breakableTunnelChance: 20
   m_shortcutMinSkipDistance: 20
+  m_reflectorAreaSize: 200
   m_outerWallWidth: 14
 --- !u!114 &4331448404734817727
 MonoBehaviour:
