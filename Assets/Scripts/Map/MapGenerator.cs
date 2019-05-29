@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-public enum Tile { Unknown = -1, Floor, Wall, BreakableWall }
+public enum Tile { Unknown = -1, Floor, Wall, BreakableWall, Mirror }
 
 public class MapGenerator
 {
@@ -148,6 +148,11 @@ public class MapGenerator
         }
         // Add shortcuts
         AddShortcuts();
+
+        // Add mirrors
+        AddMirrorsToArea(m_tileMap, new Vector2Int(10,10), new Vector2Int(20,20));
+
+        DebugMap(m_tileMap);
 
         // Set seed to random again
         UnityEngine.Random.InitState((int)DateTime.Now.Ticks);
@@ -490,7 +495,7 @@ public class MapGenerator
     private bool CanPlace(Tile[][] map, Vector2Int pos, List<Vector2Int> entranceTiles, Vector2Int direction)
     {
         // check out of bounds
-        if (pos.x <= 0 || pos.x > m_mapWidth - map.Length - 1 || pos.y <= 0 || pos.y > m_mapHeight - map[0].Length - 1)
+        if (CheckOutOfBounds(m_tileMap, pos, new Vector2Int(pos.x + map.Length, pos.y + map[0].Length)))
         {
             return false;
         }
@@ -514,7 +519,7 @@ public class MapGenerator
                     )) ||
                     (entranceTiles.Contains(new Vector2Int(x, y)) && // if the tile is an entrance
                     (m_tileMap[x + pos.x][y + pos.y] != Tile.Wall || // if so, check if the same position on map isn't a wall
-                    (Math.Abs(direction.x) == 1 && m_tileMap[x + pos.x][y + pos.y + 1] != Tile.Wall) || // and check all tiles around the position on the map, starting with north
+                    (Math.Abs(direction.x) == 1 && m_tileMap[x + pos.x][y + pos.y + 1] != Tile.Wall) || // and check certain tiles around the position on the map, based on direction, starting with north
                     (Math.Abs(direction.y) == 1 && m_tileMap[x + pos.x + 1][y + pos.y] != Tile.Wall) || // east
                     (Math.Abs(direction.x) == 1 && m_tileMap[x + pos.x][y + pos.y - 1] != Tile.Wall) || // south
                     (Math.Abs(direction.y) == 1 && m_tileMap[x + pos.x - 1][y + pos.y] != Tile.Wall)))) // west
@@ -523,6 +528,16 @@ public class MapGenerator
                 }
             }
         }
+        return true;
+    }
+
+    private bool CheckOutOfBounds(Tile[][] map, Vector2Int from, Vector2Int to)
+    {
+        if ((from.x > 0 && from.x <= map.Length - 1 && from.y > 0 && from.y <= map[0].Length - 1) && (to.x > 0 && to.x <= map.Length - 1 && to.y > 0 && to.y <= map[0].Length - 1))
+        {
+            return false;
+        }
+
         return true;
     }
 
@@ -655,6 +670,27 @@ public class MapGenerator
         else
         {
             return false;
+        }
+    }
+
+    private void AddMirrorsToArea(Tile[][] area, Vector2Int from, Vector2Int to)
+    {
+        if (CheckOutOfBounds(area, from, to))
+        {
+            return;
+        }
+
+        // for every tile in the small map
+        for (int x = 0; x < to.x - from.x; x++)
+        {
+            for (int y = 0; y < to.y - from.y; y++)
+            {
+                // change the according tile on the big map
+                if (area[from.x + x][from.y + y] == Tile.Wall)
+                {
+                    area[from.x + x][from.y + y] = Tile.Mirror;
+                }
+            }
         }
     }
 

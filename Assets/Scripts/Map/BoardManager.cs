@@ -22,20 +22,27 @@ public class BoardManager : NetworkBehaviour
     private GameObject m_mapPrefab;
     [SerializeField]
     private GameObject m_breakableWallPrefab;
+    [SerializeField]
+    private GameObject m_mirrorPrefab;
 
     // So that a position is in the middle of a tile
     private const float MAP_OFFSET = -0.5f;
     private const int VERTEX_LIMIT = 30000;
     private const string MAP = "Map";
+    private const string MAP_PART = "Map Part";
     private const string BREAKABLE_WALLS = "Breakable Walls";
     private const string BREAKABLE_WALL = "Breakable Wall";
-    private const string MAP_PART = "Map Part";
+    private const string MIRRORS = "Mirrors";
+    private const string MIRROR = "Mirror";
 
     private Tile[][] m_tileMap;
     private int m_outerWallWidth;
     private GameObject m_map;
     private GameObject m_breakableWalls;
+    private GameObject m_mirrors;
     private List<GameObject> m_mapParts = new List<GameObject>();
+
+    private readonly List<Tile> m_permanentObstacles = new List<Tile>() { Tile.Wall, Tile.Mirror };
 
     // --------------------------------------------------------------------------------------------
     // Public functions
@@ -102,9 +109,15 @@ public class BoardManager : NetworkBehaviour
     /// </summary>
     private void LoadMap()
     {
+        // init
         m_breakableWalls = new GameObject();
         m_breakableWalls.name = BREAKABLE_WALLS;
         m_breakableWalls.transform.SetParent(m_map.transform);
+        m_mirrors = new GameObject();
+        m_mirrors.name = MIRRORS;
+        m_mirrors.transform.SetParent(m_map.transform);
+        List<KeyValuePair<Vector2Int,Vector2Int>> mirrorList = new List<KeyValuePair<Vector2Int, Vector2Int>>();
+
         for (int i = 0; i < m_tileMap.Length; i++)
         {
             for (int j = 0; j < m_tileMap[0].Length; j++)
@@ -115,19 +128,19 @@ public class BoardManager : NetworkBehaviour
 
                     // calculate walls
                     Walls walls = Walls.None;
-                    if (j + 1 < m_tileMap[0].Length && m_tileMap[i][j + 1] != Tile.Wall)
+                    if (j + 1 < m_tileMap[0].Length && !m_permanentObstacles.Contains(m_tileMap[i][j + 1]))
                     {
                         walls = walls | Walls.Up;
                     }
-                    if (i + 1 < m_tileMap.Length && m_tileMap[i + 1][j] != Tile.Wall)
+                    if (i + 1 < m_tileMap.Length && !m_permanentObstacles.Contains(m_tileMap[i + 1][j]))
                     {
                         walls = walls | Walls.Right;
                     }
-                    if (j - 1 >= 0 && m_tileMap[i][j - 1] != Tile.Wall)
+                    if (j - 1 >= 0 && !m_permanentObstacles.Contains(m_tileMap[i][j - 1]))
                     {
                         walls = walls | Walls.Down;
                     }
-                    if (i - 1 >= 0 && m_tileMap[i - 1][j] != Tile.Wall)
+                    if (i - 1 >= 0 && !m_permanentObstacles.Contains(m_tileMap[i - 1][j]))
                     {
                         walls = walls | Walls.Left;
                     }
@@ -143,6 +156,37 @@ public class BoardManager : NetworkBehaviour
                     instance.name = BREAKABLE_WALL;
                     instance.transform.SetParent(m_breakableWalls.transform);
                     NetworkServer.Spawn(instance);
+                }
+                else if (m_tileMap[i][j] == Tile.Mirror)
+                {
+                    Vector2Int[] directions = new Vector2Int[] { Vector2Int.up, Vector2Int.right, Vector2Int.down, Vector2Int.left };
+                    for (int k = 0; k < directions.Length; k++)
+                    {
+                        if (!mirrorList.Contains(new KeyValuePair<Vector2Int, Vector2Int>(new Vector2Int(i, j), directions[k])))
+                        {
+                            List<KeyValuePair<Vector2Int, Vector2Int>> currentList = new List<KeyValuePair<Vector2Int, Vector2Int>>();
+                            GetAdjacentMirrors(currentList, new Vector2Int(i, j), directions[k]);
+                            if (currentList.Count > 0)
+                            {
+                                GameObject instance = Instantiate(m_mirrorPrefab, new Vector3(i, 0f, j), Quaternion.identity);
+                                instance.name = MIRROR;
+                                float xchange = Math.Abs(directions[k].y) * ((float)(0.5 * currentList.Count) - 0.5f);
+                                float ychange = Math.Abs(directions[k].x) * ((float)(0.5 * currentList.Count) - 0.5f);
+
+                                instance.transform.Translate(new Vector3(xchange, 0f, ychange));
+                                instance.transform.rotation = Quaternion.AngleAxis((Math.Abs(directions[k].y) * ((directions[k].y + 1) * 90)) + (Math.Abs(directions[k].x) * (90 + (directions[k].x + 1) * 90)), Vector3.up);
+                                instance.transform.localScale = new Vector3(currentList.Count, 1, 1);
+                                instance.transform.SetParent(m_mirrors.transform);
+
+                                mirrorList.AddRange(currentList);
+                                currentList.Clear();
+                            }
+                        }
+                    }
+
+                    //instance.transform.GetComponent<MeshFilter>().sharedMesh = GenerateNewMesh(walls);
+
+
                 }
             }
         }
@@ -252,7 +296,7 @@ public class BoardManager : NetworkBehaviour
         List<MeshFilter> meshFilters = new List<MeshFilter>();
         foreach (Transform child in m_map.transform)
         {
-            if (child.gameObject.name != BREAKABLE_WALLS)
+            if (child.gameObject.name != BREAKABLE_WALLS && child.gameObject.name != MIRRORS)
             {
                 meshFilters.Add(child.GetComponent<MeshFilter>());
             }
@@ -287,7 +331,7 @@ public class BoardManager : NetworkBehaviour
         // destroy all the objects the map was made up of
         foreach (Transform child in m_map.transform)
         {
-            if (child.gameObject.name != BREAKABLE_WALLS)
+            if (child.gameObject.name != BREAKABLE_WALLS && child.gameObject.name != MIRRORS)
             {
                 Destroy(child.gameObject);
             }
@@ -321,5 +365,45 @@ public class BoardManager : NetworkBehaviour
         // add part to list
         m_mapParts.Add(mapPart);
         mapPart.name = MAP_PART + " " + m_mapParts.Count;
+    }
+
+    private List<KeyValuePair<Vector2Int, Vector2Int>> GetAdjacentMirrors(List<KeyValuePair<Vector2Int, Vector2Int>> list, Vector2Int pos, Vector2Int direction)
+    {
+        if (m_tileMap[pos.x][pos.y] == Tile.Mirror)
+        {
+            if (direction.x == 1)
+            {
+                if (pos.x + 1 < m_tileMap.Length && !m_permanentObstacles.Contains(m_tileMap[pos.x + 1][pos.y]))
+                {
+                    list.Add(new KeyValuePair<Vector2Int, Vector2Int>(pos, direction));
+                    GetAdjacentMirrors(list, new Vector2Int(pos.x, pos.y + 1), direction);
+                }
+            }
+            else if (direction.x == -1)
+            {
+                if (pos.x - 1 >= 0 && !m_permanentObstacles.Contains(m_tileMap[pos.x - 1][pos.y]))
+                {
+                    list.Add(new KeyValuePair<Vector2Int, Vector2Int>(pos, direction));
+                    GetAdjacentMirrors(list, new Vector2Int(pos.x, pos.y + 1), direction);
+                }
+            }
+            else if (direction.y == 1)
+            {
+                if (pos.y + 1 < m_tileMap[0].Length && !m_permanentObstacles.Contains(m_tileMap[pos.x][pos.y + 1]))
+                {
+                    list.Add(new KeyValuePair<Vector2Int, Vector2Int>(pos, direction));
+                    GetAdjacentMirrors(list, new Vector2Int(pos.x + 1, pos.y), direction);
+                }
+            }
+            else if (direction.y == -1)
+            {
+                if (pos.y - 1 >= 0 && !m_permanentObstacles.Contains(m_tileMap[pos.x][pos.y - 1]))
+                {
+                    list.Add(new KeyValuePair<Vector2Int, Vector2Int>(pos, direction));
+                    GetAdjacentMirrors(list, new Vector2Int(pos.x + 1, pos.y), direction);
+                }
+            }
+        }
+        return list;
     }
 }
