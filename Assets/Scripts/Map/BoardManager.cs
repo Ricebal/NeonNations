@@ -159,6 +159,7 @@ public class BoardManager : NetworkBehaviour
                 }
                 else if (m_tileMap[i][j] == Tile.Mirror)
                 {
+                    GameObject instance;
                     Vector2Int[] directions = new Vector2Int[] { Vector2Int.up, Vector2Int.right, Vector2Int.down, Vector2Int.left };
                     for (int k = 0; k < directions.Length; k++)
                     {
@@ -168,12 +169,9 @@ public class BoardManager : NetworkBehaviour
                             GetAdjacentMirrors(currentList, new Vector2Int(i, j), directions[k]);
                             if (currentList.Count > 0)
                             {
-                                GameObject instance = Instantiate(m_mirrorPrefab, new Vector3(i, 0f, j), Quaternion.identity);
+                                instance = Instantiate(m_mirrorPrefab, new Vector3(i, 0f, j), Quaternion.identity);
                                 instance.name = MIRROR;
-                                float xchange = Math.Abs(directions[k].y) * ((float)(0.5 * currentList.Count) - 0.5f);
-                                float ychange = Math.Abs(directions[k].x) * ((float)(0.5 * currentList.Count) - 0.5f);
-
-                                instance.transform.Translate(new Vector3(xchange, 0f, ychange));
+                                instance.transform.Translate(new Vector3(Math.Abs(directions[k].y) * ((float)(0.5 * currentList.Count) - 0.5f) + directions[k].x*0.5f, 0f, Math.Abs(directions[k].x) * ((float)(0.5 * currentList.Count) - 0.5f) + directions[k].y * 0.5f));
                                 instance.transform.rotation = Quaternion.AngleAxis((Math.Abs(directions[k].y) * ((directions[k].y + 1) * 90)) + (Math.Abs(directions[k].x) * (90 + (directions[k].x + 1) * 90)), Vector3.up);
                                 instance.transform.localScale = new Vector3(currentList.Count, 1, 1);
                                 instance.transform.SetParent(m_mirrors.transform);
@@ -184,9 +182,15 @@ public class BoardManager : NetworkBehaviour
                         }
                     }
 
-                    //instance.transform.GetComponent<MeshFilter>().sharedMesh = GenerateNewMesh(walls);
+                    instance = GameObject.CreatePrimitive(PrimitiveType.Cube);
 
+                    // calculate walls
+                    Walls walls = Walls.None;
 
+                    instance.transform.GetComponent<MeshFilter>().sharedMesh = GenerateNewMesh(walls);
+
+                    instance.transform.position = new Vector3(i + MAP_OFFSET, 0f, j + MAP_OFFSET);
+                    instance.transform.SetParent(m_map.transform);
                 }
             }
         }

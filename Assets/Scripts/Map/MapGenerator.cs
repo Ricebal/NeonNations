@@ -150,9 +150,7 @@ public class MapGenerator
         AddShortcuts();
 
         // Add mirrors
-        AddMirrorsToArea(m_tileMap, new Vector2Int(10,10), new Vector2Int(20,20));
-
-        DebugMap(m_tileMap);
+        AddMirrorsToArea(m_tileMap, new Vector2Int(1,1), new Vector2Int(m_mapWidth-1,m_mapHeight-1));
 
         // Set seed to random again
         UnityEngine.Random.InitState((int)DateTime.Now.Ticks);
@@ -655,7 +653,7 @@ public class MapGenerator
         tilesToCalculateTo[1] = new Vector2Int(otherWallTile.x + direction.x + direction.y * m_tunnelWidth, otherWallTile.y + direction.y + direction.x * m_tunnelWidth);
 
         // run DStarLite twice
-        GameEnvironment ge = GameEnvironment.CreateInstance(m_tileMap, new List<Tile>() { Tile.Wall });
+        GameEnvironment ge = GameEnvironment.CreateInstance(m_tileMap, new List<Tile>() { Tile.Wall, Tile.Mirror });
         DStarLite dStarLite = new DStarLite(ge, true);
         dStarLite.RunDStarLite(tilesToCalculateFrom[0], tilesToCalculateTo[0]);
         costs[0] = dStarLite.Map.GetNode(tilesToCalculateFrom[0].x, tilesToCalculateFrom[0].y).CostFromStartingPoint;

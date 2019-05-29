@@ -1,16 +1,7 @@
 fileFormatVersion: 2
-guid: 977d462d3da090443aa549827d636355
-labels:
-- Mirror
-- Reflection
-- Camera
-- Shiny
-- Fogged
-- Film
-- Magic
-timeCreated: 1429139875
-licenseType: Store
-NativeFormatImporter:
+guid: aae966a7cdf451e49af8bc7c3f5cf80c
+PrefabImporter:
+  externalObjects: {}
   userData: 
   assetBundleName: 
   assetBundleVariant: 
