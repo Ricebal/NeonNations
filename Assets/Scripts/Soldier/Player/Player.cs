@@ -3,7 +3,6 @@
 public class Player : Soldier
 {
     private PlayerController m_playerController;
-    private CameraController m_cameraController;
 
     private void Start()
     {
@@ -13,8 +12,7 @@ public class Player : Soldier
         }
 
         m_playerController = GetComponent<PlayerController>();
-        m_cameraController = Camera.main.GetComponent<CameraController>();
-        m_cameraController.SetTarget(this.transform);
+        CameraController.SetTarget(this.transform);
         EscapeMenu.Singleton.EventPauseToggled += PauseToggled;
 
         Username = ProfileMenu.GetUsername();
@@ -76,8 +74,8 @@ public class Player : Soldier
             return;
         }
 
-        m_cameraController.SetInactive();
-        m_cameraController.PlayerTransform = null;
+        CameraController.SetInactive();
+        CameraController.Singleton.PlayerTransform = null;
         EscapeMenu.Singleton.EventPauseToggled -= PauseToggled;
     }
 }
