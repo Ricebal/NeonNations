@@ -112,6 +112,9 @@ public class Scoreboard : NetworkBehaviour
 
         Soldier playerScript = player.GetComponent<Soldier>();
 
+        Color scoreboardColor = playerScript.InitialColor;
+        scoreboardColor.a = 100f/255f; // Set alpha to 100. Color.a works with a value between 0 and 1.
+        scoreboardEntry.SetColor(scoreboardColor);
         scoreboardEntry.SetScore(playerScript.PlayerScore);
         if (playerScript.isLocalPlayer)
         {

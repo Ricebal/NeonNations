@@ -5,6 +5,8 @@ using UnityEngine.UI;
 public class ScoreboardEntry : MonoBehaviour
 {
     [SerializeField]
+    private Image m_scoreboardEntryBackground;
+    [SerializeField]
     private TextMeshProUGUI m_username;
     [SerializeField]
     private TextMeshProUGUI m_kills;
@@ -19,6 +21,11 @@ public class ScoreboardEntry : MonoBehaviour
         m_score = score;
         score.OnScoreChange += Refresh;
         Refresh();
+    }
+
+    public void SetColor(Color color)
+    {
+        m_scoreboardEntryBackground.color = color;
     }
 
     public void EnableOutline()
