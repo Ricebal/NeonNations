@@ -16,7 +16,7 @@ public class Scoreboard : NetworkBehaviour
     [SerializeField]
     private TeamManager m_teamManager;
     private Dictionary<string, ScoreboardEntry> m_outdatedPlayers = new Dictionary<string, ScoreboardEntry>();
-    private float m_timeAfterFinishingTheGame = 3;
+    private float m_delayBeforeShowingScoreboarsAfterGameIsFinished = 3;
 
     private void Start()
     {
@@ -44,6 +44,14 @@ public class Scoreboard : NetworkBehaviour
                 m_scoreBoard.SetActive(false);
             }
         }
+        else
+        {
+            m_delayBeforeShowingScoreboarsAfterGameIsFinished -= Time.deltaTime;
+            if(m_delayBeforeShowingScoreboarsAfterGameIsFinished <=0) // After 3 seconds.
+            {
+                SetActive(); // Show final scoreboard.
+            }
+        }
 
         // If there are outdated players try to add them.
         if (m_outdatedPlayers != null && m_outdatedPlayers.Count > 0)
@@ -51,14 +59,6 @@ public class Scoreboard : NetworkBehaviour
             RetryOutdatedPlayers();
         }
 
-        if (GameManager.GameFinished)
-        {
-            m_timeAfterFinishingTheGame -= Time.deltaTime;
-            if(m_timeAfterFinishingTheGame <=0) // After 3 seconds.
-            {
-                SetActive(); // Show final scoreboard.
-            }
-        }
     }
 
     private void SetActive()
