@@ -50,7 +50,7 @@ public class Bullet : MonoBehaviour
     private void OnTriggerEnter(Collider collider)
     {
         // If the bullet hits a mirror and it's not the same as the last mirror bounce
-        if (collider.tag == "Mirror" && collider.GetInstanceID() != m_lastMirror)
+        if (collider.tag == "Reflector" && collider.GetInstanceID() != m_lastMirror)
         {
             // Get the current heading
             Vector3 currentDirection = transform.forward;
@@ -71,7 +71,7 @@ public class Bullet : MonoBehaviour
         }
 
         // If the collider is not a mirror and has left the player hitbox
-        if (collider.tag != "Mirror" && (m_hasLeftPlayerCollider || collider.transform.name != ShooterId))
+        if (collider.tag != "Reflector" && (m_hasLeftPlayerCollider || collider.transform.name != ShooterId))
         {
             if (HitPrefab != null)
             {

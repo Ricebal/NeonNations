@@ -9,7 +9,7 @@ TagManager:
   - Bullet
   - Impact
   - HUD
-  - Mirror
+  - Reflector
   layers:
   - Default
   - TransparentFX
