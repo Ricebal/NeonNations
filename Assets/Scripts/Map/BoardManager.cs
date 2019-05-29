@@ -1,11 +1,12 @@
-﻿using Mirror;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Mirror;
 using UnityEngine;
 
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 public class BoardManager : NetworkBehaviour
 {
+    public static BoardManager Singleton;
     // Walls is used for loading the map
     [Flags]
     private enum Walls
@@ -38,46 +39,67 @@ public class BoardManager : NetworkBehaviour
     private List<GameObject> m_mapParts = new List<GameObject>();
 
     // --------------------------------------------------------------------------------------------
+    // Singleton
+    // --------------------------------------------------------------------------------------------
+
+    private void Awake()
+    {
+        InitializeSingleton();
+    }
+
+    private void InitializeSingleton()
+    {
+        if (Singleton != null && Singleton != this)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            Singleton = this;
+        }
+    }
+
+    // --------------------------------------------------------------------------------------------
     // Public functions
     // --------------------------------------------------------------------------------------------
 
     /// <summary>
     /// Creates a random map object 
     /// </summary>
-    public void SetupScene(Tile[][] tileMap, int outerWallWidth)
+    public static void SetupScene(Tile[][] tileMap, int outerWallWidth)
     {
-        m_tileMap = tileMap;
-        m_outerWallWidth = outerWallWidth;
-        m_map = new GameObject();
-        m_map.name = MAP;
+        Singleton.m_tileMap = tileMap;
+        Singleton.m_outerWallWidth = outerWallWidth;
+        Singleton.m_map = new GameObject();
+        Singleton.m_map.name = MAP;
 
-        LoadFloor();
-        LoadMap();
-        CreateOuterWalls();
-        CombineAllMeshes();
+        Singleton.LoadFloor();
+        Singleton.LoadMap();
+        Singleton.CreateOuterWalls();
+        Singleton.CombineAllMeshes();
     }
 
     /// <summary>
     /// Gets the tilemap
     /// </summary>
     /// <returns>A jagged array of Tiles containing the map data</returns>
-    public Tile[][] GetTileMap()
+    public static Tile[][] GetTileMap()
     {
-        return m_tileMap;
+        return Singleton.m_tileMap;
     }
 
     /// <summary>
     /// Gets a random floor tile
     /// </summary>
     /// <returns>Vector2Int containing the position of the floortile</returns>
-    public Vector2Int GetRandomFloorTile()
+    public static Vector2Int GetRandomFloorTile()
     {
         Vector2Int randomTile;
         do
         {
             // get a random tile in the map
-            randomTile = new Vector2Int(UnityEngine.Random.Range(1, m_tileMap.Length - 1), UnityEngine.Random.Range(1, m_tileMap[0].Length - 1));
-        } while (m_tileMap[randomTile.x][randomTile.y] != Tile.Floor);
+            randomTile = new Vector2Int(UnityEngine.Random.Range(1, Singleton.m_tileMap.Length - 1), UnityEngine.Random.Range(1, Singleton.m_tileMap[0].Length - 1));
+        } while (Singleton.m_tileMap[randomTile.x][randomTile.y] != Tile.Floor);
         return randomTile;
     }
 
@@ -311,7 +333,7 @@ public class BoardManager : NetworkBehaviour
         newMesh.CombineMeshes(meshDataList.ToArray());
 
         // create new map object to hold part of the map
-        GameObject mapPart = Instantiate(m_mapPrefab, Vector3.zero, Quaternion.identity) as GameObject;
+        GameObject mapPart = Instantiate(m_mapPrefab, Vector3.zero, Quaternion.identity)as GameObject;
 
         // handle new map object
         mapPart.transform.GetComponent<MeshFilter>().sharedMesh = newMesh;
