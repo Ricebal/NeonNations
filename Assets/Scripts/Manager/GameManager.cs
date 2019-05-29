@@ -36,7 +36,7 @@ public class GameManager : NetworkBehaviour
     void Awake()
     {
         m_boardManager = GetComponent<BoardManager>();
-        GameMode = gameObject.AddComponent<TeamDeathMatch>(); // Temperary untill we can pick game modes.
+        GameMode = gameObject.AddComponent<TeamDeathMatch>(); // Temporary untill we can pick game modes.
         m_teamManager = GetComponent<TeamManager>();
         SetTeams();
         m_botManager = GetComponent<BotManager>();
