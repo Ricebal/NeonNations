@@ -37,4 +37,12 @@ public class Aim : NetworkBehaviour
         float yMin = (Screen.height - Input.mousePosition.y) - (CrosshairImage.height / 2);
         GUI.DrawTexture(new Rect(xMin, yMin, CrosshairImage.width, CrosshairImage.height), CrosshairImage);
     }
+
+    private void OnDestroy()
+    {
+        if (isLocalPlayer)
+        {
+            Cursor.visible = true;
+        }
+    }
 }
