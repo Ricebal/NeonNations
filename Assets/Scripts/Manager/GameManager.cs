@@ -193,8 +193,8 @@ public class GameManager : NetworkBehaviour
             {
                 // Go to win screen.
                 endGameText.text = GameMode.WIN;
-                //SetFireWorkColor(teamColor);
-                //SpawnFireWorks(soldiers);
+                SetFireWorkColor(teamColor);
+                SpawnFireWorks(soldiers);
             }
         }
         else
@@ -202,9 +202,7 @@ public class GameManager : NetworkBehaviour
             // Go to lose screen.
             endGameText.text = GameMode.LOSE;
         }
-
-        SetFireWorkColor(teamColor);
-        SpawnFireWorks(soldiers);
+        
         // Set color of text.
         endGameText.outlineColor = teamColor;
         Material mat = Material.Instantiate(endGameText.fontSharedMaterial);

@@ -66,7 +66,7 @@ public abstract class GameMode: NetworkBehaviour
     private void CheckForGameTimedOut(float deltaTime)
     {
         m_timeLimit -= deltaTime;
-        if(m_timeLimit <= 0)
+        if(m_timeLimit <= 0 && !GameManager.GameFinished)
         {
             OnGameFinished(); // The game is finished.
         }

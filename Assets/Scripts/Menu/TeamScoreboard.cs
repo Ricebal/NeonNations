@@ -38,7 +38,7 @@ public class TeamScoreboard : NetworkBehaviour
             RpcRefreshScores();
         }
 
-        GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -75); // -75 for the offset. Otherwise the Score-display would be only half on screen.
+        GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -37.5f); // -37.5 for the offset. Otherwise the Score-display would be only half on screen.
     }
 
     private void FixedUpdate()
