@@ -14,7 +14,7 @@ public class TeamManager : NetworkBehaviour
 
     public void AddPlayer(Soldier player)
     {
-        Team team = new Team(-1);
+        Team team = new Team();
 
         // Add player to list of players
         m_players[m_playerCount] = player;

@@ -20,8 +20,8 @@ public class TeamScoreboard : NetworkBehaviour
     private void Start()
     {
         m_teamManager = GameObject.Find("GameManager").GetComponent<TeamManager>();
-        GameManager gm = GameObject.Find("GameManager").GetComponent<GameManager>();
-        m_gameMode = gm.GameMode;
+        GameManager gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        m_gameMode = gameManager.GameMode;
         foreach (Team team in m_teamManager.Teams)
         {
             AddTeam(team.Id);
@@ -38,7 +38,7 @@ public class TeamScoreboard : NetworkBehaviour
             RpcRefreshScores();
         }
 
-        GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -75);
+        GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -75); // -75 for the offset. Otherwise the Score-display would be only half on screen.
     }
 
     private void FixedUpdate()

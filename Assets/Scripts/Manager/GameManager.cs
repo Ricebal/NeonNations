@@ -8,6 +8,9 @@ using System;
 
 public class GameManager : NetworkBehaviour
 {
+    public GameMode GameMode;
+    public static bool GameFinished;
+
     [SyncVar] [SerializeField] private string m_seed = "";
     [SyncVar] [SerializeField] private int m_mapWidth = 50;
     [SyncVar] [SerializeField] private int m_mapHeight = 50;
@@ -21,17 +24,13 @@ public class GameManager : NetworkBehaviour
     [SyncVar] [SerializeField] private int m_breakableTunnelChance = 20;
     [SyncVar] [SerializeField] private int m_shortcutMinSkipDistance = 20;
     [SyncVar] [SerializeField] private int m_outerWallWidth = 14;
-
     [SerializeField] private ParticleSystem m_fireWorks;
 
     private BoardManager m_boardManager;
     private BotManager m_botManager;
     private TeamManager m_teamManager;
-    public GameMode GameMode;
-
     private GameObject m_endGameTextObject;
     private float m_timeAfterFinishingTheGame = 3;
-    public static bool GameFinished;
     private int m_localPlayersTeamId = 0;
 
     void Awake()
@@ -47,7 +46,7 @@ public class GameManager : NetworkBehaviour
     {
         if (isServer)
         {
-            GameMode.OnGameFinished += GameHasEnded;
+            GameMode.OnGameFinished += FinishGame;
         }
         GameObject hud = GameObject.FindGameObjectWithTag("HUD");
         m_endGameTextObject = hud.transform.Find("EndGameText").gameObject;
@@ -148,9 +147,9 @@ public class GameManager : NetworkBehaviour
         return builder.ToString();
     }
 
-    public void GameHasEnded()
+    public void FinishGame()
     {
-        RpcGameHasEnded();
+        RpcFinishGame();
     }
 
     /// <summary>
@@ -158,9 +157,9 @@ public class GameManager : NetworkBehaviour
     /// </summary>
     /// <param name="teamIds">The ids of the winning teams</param>
     [ClientRpc]
-    public void RpcGameHasEnded()
+    public void RpcFinishGame()
     {
-        List<int> winningTeamIds = CheckWhichTeamHasWon();
+        List<int> winningTeamIds = CheckWinningTeam();
         GameFinished = true;
         bool draw = false;
         if(winningTeamIds.Count > 1) // If there are more winning teams, it will be a draw.
@@ -239,7 +238,7 @@ public class GameManager : NetworkBehaviour
             }
         }
     }
-    private List<int> CheckWhichTeamHasWon()
+    private List<int> CheckWinningTeam()
     {
         List<int> winningTeamIds = new List<int>();
         int maxScore = 0;

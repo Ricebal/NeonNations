@@ -16,6 +16,7 @@ public class Team
     public Team()
     {
         Score = new Score();
+        Id = 0;
     }
 
     public void AddKill()

@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ScoreboardEntry: MonoBehaviour
+public class ScoreboardEntry : MonoBehaviour
 {
     [SerializeField]
     private TextMeshProUGUI m_username;

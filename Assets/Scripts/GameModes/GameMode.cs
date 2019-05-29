@@ -21,8 +21,8 @@ public abstract class GameMode: NetworkBehaviour
     /// The timelimit in seconds
     /// </summary>
     [SyncVar] private float m_timeLimit;
-    public delegate void OnScoreChangeDelegate();
-    public event OnScoreChangeDelegate OnGameFinished;
+    public delegate void OnGameFinishedDelegate();
+    public event OnGameFinishedDelegate OnGameFinished;
 
     private TeamManager m_teamManager;
     public GameModes CurrentGameMode;
@@ -66,12 +66,10 @@ public abstract class GameMode: NetworkBehaviour
     private void CheckForGameTimedOut(float deltaTime)
     {
         m_timeLimit -= deltaTime;
-        if(m_timeLimit > 0)
+        if(m_timeLimit <= 0)
         {
-            return; // The game isn't finished yet.
+            OnGameFinished(); // The game is finished.
         }
-
-        OnGameFinished(); // The game is finished.
     }
 
     public string RemainingTimeAsText()
