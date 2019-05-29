@@ -52,9 +52,7 @@ public class GameManager : NetworkBehaviour
         }
 
         // Display seed on the hud
-        GameObject hud = GameObject.FindGameObjectWithTag("HUD");
-        TextMeshProUGUI text = hud.GetComponent<TextMeshProUGUI>();
-        text.text = m_seed;
+        PlayerHUD.SetSeed(m_seed);
 
         MapGenerator mapGenerator = new MapGenerator(m_mapWidth, m_mapHeight, m_maxRoomAmount, m_maxShortcutAmount, m_minRoomLength,
             m_maxRoomLength, m_minTunnelLength, m_maxTunnelLength, m_tunnelWidth, m_breakableTunnelChance, m_shortcutMinSkipDistance);
