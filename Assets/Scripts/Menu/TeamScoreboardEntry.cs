@@ -5,10 +5,10 @@ public class TeamScoreboardEntry : MonoBehaviour
 {
     [SerializeField]
     private TextMeshProUGUI m_teamScore;
-    private GameModes m_gameMode;
+    private GameMode m_gameMode;
     private Score m_score;
 
-    public void SetGameMode(GameModes gameMode)
+    public void SetGameMode(GameMode gameMode)
     {
         m_gameMode = gameMode;
     }
@@ -22,7 +22,7 @@ public class TeamScoreboardEntry : MonoBehaviour
 
     private void UpdateScore()
     {
-        m_teamScore.text = m_score.GetScoreAsString(m_gameMode);
+        m_teamScore.text = m_gameMode.CalculateScore(m_score).ToString();
     }
 
     public void SetColor(Color teamColor)

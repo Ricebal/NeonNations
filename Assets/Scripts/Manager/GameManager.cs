@@ -30,7 +30,7 @@ public class GameManager : NetworkBehaviour
     private BotManager m_botManager;
     private TeamManager m_teamManager;
     private GameObject m_endGameTextObject;
-    private float m_timeAfterFinishingTheGame = 3;
+    private float m_timeAfterFinishingTheGame = 6;
     private int m_localPlayersTeamId = 0;
 
     void Awake()
@@ -62,7 +62,11 @@ public class GameManager : NetworkBehaviour
             return;
         }
         m_timeAfterFinishingTheGame -= Time.deltaTime;
-        if(m_timeAfterFinishingTheGame <= 0)
+        if (m_timeAfterFinishingTheGame < 3) // For first 3 seconds show endgame text.
+        {
+            m_endGameTextObject.SetActive(false); // Hide endgame text.
+        }
+        if (m_timeAfterFinishingTheGame < 0) // After last 3 seconds, go back to lobby.
         {
             if (isServer)
             {
@@ -255,7 +259,7 @@ public class GameManager : NetworkBehaviour
         //Check for the team with the highest score.
         foreach (Team team in m_teamManager.Teams)
         {
-            int score = team.Score.GetScore(GameMode.CurrentGameMode);
+            int score = GameMode.CalculateScore(team.Score);
             if (score > maxScore)   // New highest score is found.
             {
                 winningTeamIds.Clear();

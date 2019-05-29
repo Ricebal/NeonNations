@@ -57,7 +57,7 @@ public class TeamScoreboard : NetworkBehaviour
 
         // Set the score
         TeamScoreboardEntry entry = scorePanel.GetComponent<TeamScoreboardEntry>();
-        entry.SetGameMode(m_gameMode.CurrentGameMode);
+        entry.SetGameMode(m_gameMode);
         entry.SetScore(team.Score);
         entry.SetColor(team.Color);
         m_teamScoreboardEntries.Add(teamId, entry);

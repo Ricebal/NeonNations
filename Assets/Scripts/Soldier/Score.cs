@@ -64,25 +64,4 @@ public class Score
         m_kills = kills;
         m_deaths = deaths;
     }
-    
-    /// <summary>
-    /// Returns the score, depending on the gamemode.
-    /// </summary>
-    public int GetScore(GameModes gameMode)
-    {
-        switch (gameMode)
-        {
-            case (GameModes.TeamDeathMatch):
-                return Kills;
-        }
-        return 0;
-    }
-
-    /// <summary>
-    /// Returns the score, depending on the gamemode. Ready to be used by a GUI.
-    /// </summary>
-    public string GetScoreAsString(GameModes gameMode)
-    {
-        return GetScore(gameMode).ToString();
-    }
 }

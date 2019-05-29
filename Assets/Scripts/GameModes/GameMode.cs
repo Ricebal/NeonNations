@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum GameModes { TeamDeathMatch };
 public abstract class GameMode: NetworkBehaviour
 {
     public const string WIN = "Victory";
@@ -25,11 +24,9 @@ public abstract class GameMode: NetworkBehaviour
     public event OnGameFinishedDelegate OnGameFinished;
 
     private TeamManager m_teamManager;
-    public GameModes CurrentGameMode;
 
-    public GameMode(GameModes gameMode, int winCondition, int amountOfTeams, int amountOfPlayers, float timeLimit)
+    public GameMode(int winCondition, int amountOfTeams, int amountOfPlayers, float timeLimit)
     {
-        CurrentGameMode = gameMode;
         m_winCondition = winCondition;
         AmountOfTeams = amountOfTeams;
         AmountOfPlayers = amountOfPlayers;
@@ -53,7 +50,7 @@ public abstract class GameMode: NetworkBehaviour
         }
         foreach (Team team in m_teamManager.Teams)
         {
-            if (team.Score.GetScore(CurrentGameMode) >= m_winCondition) // A team has met the win condition.
+            if (CalculateScore(team.Score) >= m_winCondition) // A team has met the win condition.
             {
                 if(OnGameFinished != null) 
                 {
@@ -71,6 +68,11 @@ public abstract class GameMode: NetworkBehaviour
             OnGameFinished(); // The game is finished.
         }
     }
+
+    /// <summary>
+    /// Returns the score, depending on the gamemode.
+    /// </summary>
+    public abstract int CalculateScore(Score score);
 
     public string RemainingTimeAsText()
     {

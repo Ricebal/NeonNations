@@ -14,10 +14,12 @@ public class Scoreboard : NetworkBehaviour
     [SerializeField]
     private TeamManager m_teamManager;
     private Dictionary<string, ScoreboardEntry> m_outdatedPlayers = new Dictionary<string, ScoreboardEntry>();
+    private float m_timeAfterFinishingTheGame = 3;
 
     private void Start()
     {
-        m_teamManager = GameObject.Find("GameManager").GetComponent<TeamManager>();
+        GameObject gameManagerObject = GameObject.Find("GameManager");
+        m_teamManager = gameManagerObject.GetComponent<TeamManager>();
         if (isServer)
         {
             m_teamManager.OnPlayersChange += Refresh;
@@ -29,13 +31,16 @@ public class Scoreboard : NetworkBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown("tab"))
+        if (!GameManager.GameFinished)
         {
-            m_scoreBoard.SetActive(true);
-        }
-        else if (Input.GetKeyUp("tab"))
-        {
-            m_scoreBoard.SetActive(false);
+            if (Input.GetKeyDown("tab"))
+            {
+                SetActive();
+            }
+            else if (Input.GetKeyUp("tab"))
+            {
+                m_scoreBoard.SetActive(false);
+            }
         }
 
         // If there are outdated players try to add them.
@@ -43,6 +48,20 @@ public class Scoreboard : NetworkBehaviour
         {
             RetryOutdatedPlayers();
         }
+
+        if (GameManager.GameFinished)
+        {
+            m_timeAfterFinishingTheGame -= Time.deltaTime;
+            if(m_timeAfterFinishingTheGame <=0) // After 3 seconds.
+            {
+                SetActive(); // Show final scoreboard.
+            }
+        }
+    }
+
+    private void SetActive()
+    {
+        m_scoreBoard.SetActive(true);
     }
 
     private void Refresh()
