@@ -63,7 +63,7 @@ public class NetworkManagerCustom : NetworkManager
     public override void OnClientError(NetworkConnection conn, int errorCode)
     {
         UnityEngine.Networking.NetworkError error = (UnityEngine.Networking.NetworkError)errorCode;
-        m_connectionText = "Connection failed due to error: " + error.ToString();;
+        m_connectionText = "Connection failed due to error: " + error.ToString();
         m_isConnecting = false;
     }
 
