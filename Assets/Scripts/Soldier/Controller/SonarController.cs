@@ -3,14 +3,22 @@ using UnityEngine;
 
 public class SonarController : NetworkBehaviour
 {
+    // Amount of energy a sonar will consume
+    public int Cost;
+
+    [SerializeField] private AudioClip m_sonarSound;
+    private AudioSource m_audioSource;
     // Prefab representing the sonar
     [SerializeField] private GameObject m_prefab;
     // Sonar cooldown in seconds
     [SerializeField] private float m_cooldown;
-    // Amount of energy a sonar will consume
-    public int Cost;
     // The next time the entity will be able to use the sonar, in seconds
     private float m_next;
+
+    private void Start()
+    {
+        m_audioSource = GetComponent<AudioSource>();
+    }
 
     public bool CanSonar(int energy)
     {
@@ -37,5 +45,6 @@ public class SonarController : NetworkBehaviour
         Sonar script = prefab.GetComponent<Sonar>();
         Soldier soldier = GetComponent<Soldier>();
         script.SetColor(soldier.InitialColor);
+        m_audioSource.PlayOneShot(m_sonarSound, 0.5f);
     }
 }

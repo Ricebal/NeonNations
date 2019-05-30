@@ -10,6 +10,7 @@ public class MusicManager : MonoBehaviour
     [Scene] [SerializeField] private List<string> m_menuScenes;
     [Scene] [SerializeField] private List<string> m_gameScenes;
 
+    //TODO: Singleton initialized in GameManager
     // Instantiate the MusicManager when the game starts
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void OnGameStart()
