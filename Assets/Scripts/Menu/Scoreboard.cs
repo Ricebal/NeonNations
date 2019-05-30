@@ -37,7 +37,7 @@ public class Scoreboard : NetworkBehaviour
         {
             if (Input.GetKeyDown("tab"))
             {
-                SetActive();
+                m_scoreBoard.SetActive(true);
             }
             else if (Input.GetKeyUp("tab"))
             {
@@ -47,9 +47,9 @@ public class Scoreboard : NetworkBehaviour
         else
         {
             m_delayBeforeShowingScoreboard -= Time.deltaTime;
-            if(m_delayBeforeShowingScoreboard <=0) // After 3 seconds.
+            if (m_delayBeforeShowingScoreboard <= 0) // After 3 seconds.
             {
-                SetActive(); // Show final scoreboard.
+                m_scoreBoard.SetActive(true); // Show final scoreboard.
             }
         }
 
@@ -59,11 +59,6 @@ public class Scoreboard : NetworkBehaviour
             RetryOutdatedPlayers();
         }
 
-    }
-
-    private void SetActive()
-    {
-        m_scoreBoard.SetActive(true);
     }
 
     private void Refresh()
@@ -98,7 +93,7 @@ public class Scoreboard : NetworkBehaviour
     {
         int amountOfScorePanels = m_playerList.transform.GetChildCount();
         List<Transform> scorePanels = new List<Transform>();
-        for(int i = 0; i < amountOfScorePanels; i++)
+        for (int i = 0; i < amountOfScorePanels; i++)
         {
             scorePanels.Add(m_playerList.transform.GetChild(i));
         }
@@ -139,7 +134,7 @@ public class Scoreboard : NetworkBehaviour
         Soldier playerScript = player.GetComponent<Soldier>();
 
         Color scoreboardColor = playerScript.InitialColor;
-        scoreboardColor.a = 100f/255f; // Set alpha to 100. Color.a works with a value between 0 and 1.
+        scoreboardColor.a = 100f / 255f; // Set alpha to 100. Color.a works with a value between 0 and 1.
         scoreboardEntry.SetColor(scoreboardColor);
         scoreboardEntry.SetScore(playerScript.PlayerScore);
         scoreboardEntry.Score.OnScoreChange += RpcSortPlayerList;
