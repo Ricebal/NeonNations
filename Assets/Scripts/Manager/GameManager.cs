@@ -30,7 +30,7 @@ public class GameManager : NetworkBehaviour
     private BotManager m_botManager;
     private TeamManager m_teamManager;
     private GameObject m_endGameTextObject;
-    private float m_waitingTimeAfterGameEnded = 6; // The time after the game is finished, before it will return to the lobby.
+    public static float WaitingTimeAfterGameEnded = 6; // The time after the game is finished, before it will return to the lobby.
     private int m_localPlayersTeamId = 0;
 
     void Awake()
@@ -61,12 +61,12 @@ public class GameManager : NetworkBehaviour
         {
             return;
         }
-        m_waitingTimeAfterGameEnded -= Time.deltaTime;
-        if (m_waitingTimeAfterGameEnded < 3) // For first 3 seconds show endgame text.
+        WaitingTimeAfterGameEnded -= Time.deltaTime;
+        if (WaitingTimeAfterGameEnded < 3) // For first 3 seconds show endgame text.
         {
             m_endGameTextObject.SetActive(false); // Hide endgame text.
         }
-        if (m_waitingTimeAfterGameEnded < 0) // After the delay, go back to lobby.
+        if (WaitingTimeAfterGameEnded < 0) // After the delay, go back to lobby.
         {
             if (isServer)
             {

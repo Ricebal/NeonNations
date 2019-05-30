@@ -15,7 +15,6 @@ public class Scoreboard : NetworkBehaviour
     [SerializeField]
     private TeamManager m_teamManager;
     private Dictionary<string, ScoreboardEntry> m_outdatedPlayers = new Dictionary<string, ScoreboardEntry>();
-    private float m_delayBeforeShowingScoreboard = 3; // The time it waits for showing the scoreboard after the game has finished.
 
     private void Start()
     {
@@ -45,8 +44,7 @@ public class Scoreboard : NetworkBehaviour
         }
         else
         {
-            m_delayBeforeShowingScoreboard -= Time.deltaTime;
-            if (m_delayBeforeShowingScoreboard <= 0) // After 3 seconds.
+            if (GameManager.WaitingTimeAfterGameEnded < 3) // Show the scoreboard for the last 3 seconds.
             {
                 m_scoreBoard.SetActive(true); // Show final scoreboard.
             }
