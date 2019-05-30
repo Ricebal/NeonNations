@@ -15,7 +15,6 @@ public class MusicManager : MonoBehaviour
     [Scene] [SerializeField] private List<string> m_gameScenes;
     private string m_lastSceneName;
 
-    //TODO: Singleton initialized in GameManager
     // Instantiate the MusicManager when the game starts
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void OnGameStart()
@@ -47,6 +46,7 @@ public class MusicManager : MonoBehaviour
             m_audioSource.Stop();
             m_audioSource.PlayOneShot(m_gameMusic, m_gameMusicVolume);
         }
+        // previousScene does not work and always returns an empty scene with no name, we need to store the last scene on our own
         m_lastSceneName = newScene.name;
     }
 }
