@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2302226258172003179}
   - component: {fileID: 2302226258172003181}
   - component: {fileID: 2302226258172003178}
-  m_Layer: 4
+  m_Layer: 0
   m_Name: ExplosionParticles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4766,7 +4766,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2302226259342091655}
   - component: {fileID: 2302226259342091652}
-  m_Layer: 4
+  m_Layer: 0
   m_Name: Point Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4837,7 +4837,7 @@ GameObject:
   - component: {fileID: 2302226259571672646}
   - component: {fileID: 794481677199707160}
   - component: {fileID: 7800752770005150913}
-  m_Layer: 4
+  m_Layer: 0
   m_Name: ImpactPrefab
   m_TagString: Impact
   m_Icon: {fileID: 0}
@@ -4890,8 +4890,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   serverOnly: 0
   localPlayerAuthority: 0
-  m_AssetId: 
-  m_SceneId: 3780864497
+  m_AssetId: 5a5341eef4aad1241958b2c797b6b2e7
+  m_SceneId: 0
 --- !u!114 &7800752770005150913
 MonoBehaviour:
   m_ObjectHideFlags: 0
