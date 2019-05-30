@@ -9,7 +9,7 @@ public class Team
     [SerializeField]
     public Score Score;
 
-    public Team(int id): this()
+    public Team(int id) : this()
     {
         Id = id;
     }
@@ -21,7 +21,7 @@ public class Team
 
     public void AddKill()
     {
-        Score.Kills++;   
+        Score.Kills++;
     }
 
     public void AddDeath()
@@ -31,7 +31,7 @@ public class Team
 
     public override bool Equals(object obj)
     {
-        if(obj is Team casted)
+        if (obj is Team casted)
         {
             return casted.Id == Id;
         }

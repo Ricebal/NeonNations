@@ -19,7 +19,7 @@ public static class PathSmoothing
     /// <param name="entityWidth">The with of the entity.</param>
     public static Vector2Int FarthestCoordinateToReach(PointF currentPosition, List<Vector2Int> coordinatesToTraverse, NavigationGraph map, float entityWidth)
     {
-        if(coordinatesToTraverse.Count == 0)
+        if (coordinatesToTraverse.Count == 0)
         {
             return new Vector2Int();
         }

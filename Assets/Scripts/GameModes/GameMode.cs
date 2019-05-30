@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class GameMode: NetworkBehaviour
+public abstract class GameMode : NetworkBehaviour
 {
     public const string WIN = "Victory";
     public const string LOSE = "Lost";
@@ -41,7 +41,7 @@ public abstract class GameMode: NetworkBehaviour
     {
         m_teamManager = tm;
     }
-    
+
     public void CheckForWinCondition()
     {
         if (GameManager.GameFinished) // Don't change the score after the game has finished.
@@ -52,7 +52,7 @@ public abstract class GameMode: NetworkBehaviour
         {
             if (CalculateScore(team.Score) >= m_winCondition) // A team has met the win condition.
             {
-                if(OnGameFinished != null) 
+                if (OnGameFinished != null)
                 {
                     OnGameFinished();
                 }
@@ -63,7 +63,7 @@ public abstract class GameMode: NetworkBehaviour
     private void CheckForGameTimedOut(float deltaTime)
     {
         m_timeLimit -= deltaTime;
-        if(m_timeLimit <= 0 && !GameManager.GameFinished)
+        if (m_timeLimit <= 0 && !GameManager.GameFinished)
         {
             OnGameFinished(); // The game is finished.
         }

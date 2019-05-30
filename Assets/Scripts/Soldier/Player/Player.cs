@@ -35,7 +35,7 @@ public class Player : Soldier
         }
 
         Cursor.visible = m_gameOverMenu.IsActive() || m_escapeMenu.IsActive();
-        
+
         m_energyStat.Add(1);
         m_hud.UpdateHUD();
         if (GameManager.GameFinished)

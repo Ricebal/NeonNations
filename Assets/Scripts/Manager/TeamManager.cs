@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Mirror;
+using System.Collections.Generic;
 using System.Linq;
-using Mirror;
 using UnityEngine;
 
 public class TeamManager : NetworkBehaviour

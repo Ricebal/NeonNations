@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-public class Score
+﻿public class Score
 {
     private string m_username = "Unknown";
     private int m_kills = 0;

@@ -1,8 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class TeamDeathMatch: GameMode
+﻿public class TeamDeathMatch : GameMode
 {
     public TeamDeathMatch() : base(10, 2, 6, 300) { }// 300 = 5 minutes
 

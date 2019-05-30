@@ -1,8 +1,7 @@
-﻿using System.Collections.Generic;
-using Mirror;
+﻿using Mirror;
 using System.Collections.Generic;
-using UnityEngine;
 using System.Linq;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class Scoreboard : NetworkBehaviour
@@ -91,7 +90,7 @@ public class Scoreboard : NetworkBehaviour
     [ClientRpc]
     private void RpcSortPlayerList()
     {
-        int amountOfScorePanels = m_playerList.transform.GetChildCount();
+        int amountOfScorePanels = m_playerList.transform.childCount;
         List<Transform> scorePanels = new List<Transform>();
         for (int i = 0; i < amountOfScorePanels; i++)
         {

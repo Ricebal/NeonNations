@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
-using UnityEngine.SceneManagement;
+﻿using Mirror;
+using System;
+using System.Collections.Generic;
 using System.Text;
-using Mirror;
 using TMPro;
 using UnityEngine;
-using System;
+using UnityEngine.SceneManagement;
 
 public class GameManager : NetworkBehaviour
 {
@@ -82,13 +82,13 @@ public class GameManager : NetworkBehaviour
 
     private void SetTeams()
     {
-        for(int i = 0; i < GameMode.AmountOfTeams; i++) // Add the teams
+        for (int i = 0; i < GameMode.AmountOfTeams; i++) // Add the teams
         {
             try
             {
                 m_teamManager.AddTeam(GameMode.Colors[i]);
             }
-            catch (Exception e) // For if you want to add more teams than in the List. The list is just temperary untill we can pick teamcolors.
+            catch (Exception) // For if you want to add more teams than in the List. The list is just temperary untill we can pick teamcolors.
             {
                 m_teamManager.AddTeam(new Color(0, 0, 1, 1));
             }
@@ -117,7 +117,7 @@ public class GameManager : NetworkBehaviour
     [ClientRpc]
     private void RpcSetLocalPlayerTeamId(int teamId)
     {
-        if(m_localPlayersTeamId == 0) // Only set the team id if it's not set yet.
+        if (m_localPlayersTeamId == 0) // Only set the team id if it's not set yet.
         {
             m_localPlayersTeamId = teamId;
         }
@@ -127,7 +127,7 @@ public class GameManager : NetworkBehaviour
     {
         m_teamManager.SyncTeams();
         m_teamManager.AddPlayer(player);
-        if(player as Player)
+        if (player as Player)
         {
             RpcSetLocalPlayerTeamId(player.Team.Id);
         }
@@ -155,7 +155,7 @@ public class GameManager : NetworkBehaviour
     {
         RpcFinishGame();
     }
-    
+
     [ClientRpc]
     public void RpcFinishGame()
     {
@@ -164,7 +164,7 @@ public class GameManager : NetworkBehaviour
         foreach (GameObject go in soldierGameObjects)
         {
             Soldier soldier = go.GetComponent<Soldier>();
-            if(soldier != null)
+            if (soldier != null)
             {
                 soldier.DisableMovement();
                 soldiers.Add(soldier);
@@ -199,7 +199,7 @@ public class GameManager : NetworkBehaviour
             // Go to lose screen.
             endGameText.text = GameMode.LOSE;
         }
-        
+
         // Set color of text.
         endGameText.outlineColor = teamColor;
         Material mat = Material.Instantiate(endGameText.fontSharedMaterial);
@@ -228,9 +228,9 @@ public class GameManager : NetworkBehaviour
 
     private void SpawnFireWorks(List<Soldier> soldiers)
     {
-        foreach(Soldier soldier in soldiers)
-        { 
-            if(soldier.Team.Id == m_localPlayersTeamId)
+        foreach (Soldier soldier in soldiers)
+        {
+            if (soldier.Team.Id == m_localPlayersTeamId)
             {
                 for (int i = 0; i < 3; i++)
                 {
@@ -239,7 +239,7 @@ public class GameManager : NetworkBehaviour
                     Vector3 spawnPosition = new Vector3(UnityEngine.Random.Range(xPos - 7, xPos + 7), 1, UnityEngine.Random.Range(zPos - 5, zPos + 5));
                     ParticleSystem ps = Instantiate(m_fireWorks, spawnPosition, Quaternion.identity);
                     ps.Simulate(1);
-                    ps.Play();  
+                    ps.Play();
                 }
             }
         }
