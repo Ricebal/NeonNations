@@ -6,6 +6,7 @@ public class SonarController : NetworkBehaviour
     // Amount of energy a sonar will consume
     public int Cost;
 
+    [SerializeField] private float m_soundVolume;
     [SerializeField] private AudioClip m_sonarSound;
     private AudioSource m_audioSource;
     // Prefab representing the sonar
@@ -45,6 +46,6 @@ public class SonarController : NetworkBehaviour
         Sonar script = prefab.GetComponent<Sonar>();
         Soldier soldier = GetComponent<Soldier>();
         script.SetColor(soldier.InitialColor);
-        m_audioSource.PlayOneShot(m_sonarSound, 0.5f);
+        m_audioSource.PlayOneShot(m_sonarSound, m_soundVolume);
     }
 }

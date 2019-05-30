@@ -6,6 +6,7 @@ public class ShootController : NetworkBehaviour
     // Amount of energy a bullet will consume
     public int Cost;
 
+    [SerializeField] private float m_soundVolume;
     [SerializeField] private AudioClip m_shootSound;
     private AudioSource m_audioSource;
     // Prefab representing the bullet
@@ -47,6 +48,6 @@ public class ShootController : NetworkBehaviour
         bullet.ShooterId = shooterId;
         bullet.SetBulletColor();
         bullet.GetComponent<Identity>().SetIdentity();
-        m_audioSource.PlayOneShot(m_shootSound, 0.2f);
+        m_audioSource.PlayOneShot(m_shootSound, m_soundVolume);
     }
 }

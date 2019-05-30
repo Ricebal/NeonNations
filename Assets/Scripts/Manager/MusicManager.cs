@@ -3,12 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+[RequireComponent(typeof(AudioSource))]
 public class MusicManager : MonoBehaviour
 {
-    [SerializeField] private AudioSource m_menuAudioSource;
-    [SerializeField] private AudioSource m_gameAudioSource;
+    private AudioSource m_audioSource;
+    [SerializeField] private float m_menuMusicVolume;
+    [SerializeField] private float m_gameMusicVolume;
+    [SerializeField] private AudioClip m_menuMusic;
+    [SerializeField] private AudioClip m_gameMusic;
     [Scene] [SerializeField] private List<string> m_menuScenes;
     [Scene] [SerializeField] private List<string> m_gameScenes;
+    private string m_lastSceneName;
 
     //TODO: Singleton initialized in GameManager
     // Instantiate the MusicManager when the game starts
@@ -24,20 +29,24 @@ public class MusicManager : MonoBehaviour
     private void Awake()
     {
         DontDestroyOnLoad(gameObject);
+        m_audioSource = GetComponent<AudioSource>();
         SceneManager.activeSceneChanged += OnSceneChanged;
     }
 
     private void OnSceneChanged(Scene previousScene, Scene newScene)
     {
-        if (m_menuScenes.Contains(newScene.name) && !m_menuAudioSource.isPlaying)
+        // If the new scene is a menu scene and the previous scene was a game scene or the game just started, play menu music
+        if (m_menuScenes.Contains(newScene.name) && m_gameScenes.Contains(m_lastSceneName) || m_lastSceneName == null)
         {
-            m_menuAudioSource.Play();
-            m_gameAudioSource.Stop();
+            m_audioSource.Stop();
+            m_audioSource.PlayOneShot(m_menuMusic, m_menuMusicVolume);
         }
-        else if (m_gameScenes.Contains(newScene.name) && !m_gameAudioSource.isPlaying)
+        // If the new scene is a game scene and the previous scene was a menu scene, play game music
+        else if (m_gameScenes.Contains(newScene.name) && m_menuScenes.Contains(m_lastSceneName))
         {
-            m_menuAudioSource.Stop();
-            m_gameAudioSource.Play();
+            m_audioSource.Stop();
+            m_audioSource.PlayOneShot(m_gameMusic, m_gameMusicVolume);
         }
+        m_lastSceneName = newScene.name;
     }
 }
