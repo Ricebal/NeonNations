@@ -1,12 +1,12 @@
-﻿using TMPro;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.UI;
 
 public class DebugMode : MonoBehaviour
 {
     public static DebugMode Singleton;
 
     [SerializeField] private Light m_directionalLight;
-    [SerializeField] private TextMeshProUGUI m_text;
+    [SerializeField] private Text m_text;
 
     private void Awake()
     {
@@ -28,6 +28,7 @@ public class DebugMode : MonoBehaviour
     private void Start()
     {
         m_directionalLight.gameObject.SetActive(false);
+        m_text.gameObject.SetActive(false);
     }
 
     private void Update()
@@ -35,11 +36,12 @@ public class DebugMode : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Return))
         {
             m_directionalLight.gameObject.SetActive(!m_directionalLight.gameObject.activeSelf);
+            m_text.gameObject.SetActive(!m_text.gameObject.activeSelf);
         }
     }
 
     public static void SetSeed(string seed)
     {
-        Singleton.m_text.text = seed;
+        Singleton.m_text.text = "Map seed: " + seed;
     }
 }
