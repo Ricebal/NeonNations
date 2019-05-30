@@ -30,7 +30,7 @@ public class GameManager : NetworkBehaviour
     private BotManager m_botManager;
     private TeamManager m_teamManager;
     private GameObject m_endGameTextObject;
-    private float m_delayBeforeGoingBackToLobbyAfterGameIsFinished = 6;
+    private float m_waitingTimeAfterGameEnded = 6; // The time after the game is finished, before it will return to the lobby.
     private int m_localPlayersTeamId = 0;
 
     void Awake()
@@ -61,12 +61,12 @@ public class GameManager : NetworkBehaviour
         {
             return;
         }
-        m_delayBeforeGoingBackToLobbyAfterGameIsFinished -= Time.deltaTime;
-        if (m_delayBeforeGoingBackToLobbyAfterGameIsFinished < 3) // For first 3 seconds show endgame text.
+        m_waitingTimeAfterGameEnded -= Time.deltaTime;
+        if (m_waitingTimeAfterGameEnded < 3) // For first 3 seconds show endgame text.
         {
             m_endGameTextObject.SetActive(false); // Hide endgame text.
         }
-        if (m_delayBeforeGoingBackToLobbyAfterGameIsFinished < 0) // After the delay, go back to lobby.
+        if (m_waitingTimeAfterGameEnded < 0) // After the delay, go back to lobby.
         {
             if (isServer)
             {
@@ -155,11 +155,7 @@ public class GameManager : NetworkBehaviour
     {
         RpcFinishGame();
     }
-
-    /// <summary>
-    /// Will regulate which player will see the victory, losing or draw-screen.
-    /// </summary>
-    /// <param name="teamIds">The ids of the winning teams</param>
+    
     [ClientRpc]
     public void RpcFinishGame()
     {
@@ -174,13 +170,10 @@ public class GameManager : NetworkBehaviour
                 soldiers.Add(soldier);
             }
         }
-        List<int> winningTeamIds = CheckWinningTeam();
+        List<int> winningTeamIds = GetWinningTeams();
         GameFinished = true;
-        bool draw = false;
-        if(winningTeamIds.Count > 1) // If there are more winning teams, it will be a draw.
-        {
-            draw = true;
-        }
+        bool draw = (winningTeamIds.Count > 1); // If there are more winning teams, it will be a draw.
+
         // Get teamcolor.
         Color teamColor = m_teamManager.Teams.Find(t => t.Id == m_localPlayersTeamId).Color;
         // Set end game text visible.
@@ -251,7 +244,7 @@ public class GameManager : NetworkBehaviour
             }
         }
     }
-    private List<int> CheckWinningTeam()
+    private List<int> GetWinningTeams()
     {
         List<int> winningTeamIds = new List<int>();
         int maxScore = 0;

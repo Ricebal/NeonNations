@@ -16,7 +16,7 @@ public class Scoreboard : NetworkBehaviour
     [SerializeField]
     private TeamManager m_teamManager;
     private Dictionary<string, ScoreboardEntry> m_outdatedPlayers = new Dictionary<string, ScoreboardEntry>();
-    private float m_delayBeforeShowingScoreboarsAfterGameIsFinished = 3;
+    private float m_delayBeforeShowingScoreboard = 3; // The time it waits for showing the scoreboard after the game has finished.
 
     private void Start()
     {
@@ -46,8 +46,8 @@ public class Scoreboard : NetworkBehaviour
         }
         else
         {
-            m_delayBeforeShowingScoreboarsAfterGameIsFinished -= Time.deltaTime;
-            if(m_delayBeforeShowingScoreboarsAfterGameIsFinished <=0) // After 3 seconds.
+            m_delayBeforeShowingScoreboard -= Time.deltaTime;
+            if(m_delayBeforeShowingScoreboard <=0) // After 3 seconds.
             {
                 SetActive(); // Show final scoreboard.
             }
@@ -68,6 +68,10 @@ public class Scoreboard : NetworkBehaviour
 
     private void Refresh()
     {
+        if (GameManager.GameFinished)
+        {
+            return; // prevent players from disappearing on the host score-board once the game has ended.
+        }
         // Clear the list and add all players
         RpcEmpty();
         foreach (Soldier player in m_teamManager.GetAllPlayers())

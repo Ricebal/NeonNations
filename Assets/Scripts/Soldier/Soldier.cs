@@ -37,8 +37,8 @@ public abstract class Soldier : NetworkBehaviour
 
         if (isServer)
         {
-            // If the soldier is able to respawn
-            if (IsDead && Time.time - m_deathTime >= RespawnTime)
+            // If the soldier is able to respawn AND the game isn't finished yet.
+            if (IsDead && Time.time - m_deathTime >= RespawnTime && !GameManager.GameFinished)
             {
                 Vector2 spawnPoint = GameObject.Find("GameManager").GetComponent<BoardManager>().GetRandomFloorTile();
                 RpcRespawn(spawnPoint);

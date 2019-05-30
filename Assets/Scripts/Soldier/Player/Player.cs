@@ -72,7 +72,10 @@ public class Player : Soldier
 
     public override void DisableMovement()
     {
-        m_playerController.enabled = false;
+        if (isLocalPlayer)
+        {
+            m_playerController.enabled = false;
+        }
     }
 
     protected override void Respawn(Vector2 respawnPoint)
