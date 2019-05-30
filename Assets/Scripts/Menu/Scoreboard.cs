@@ -1,5 +1,5 @@
-﻿using Mirror;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Mirror;
 using UnityEngine;
 
 public class Scoreboard : NetworkBehaviour
@@ -10,16 +10,13 @@ public class Scoreboard : NetworkBehaviour
     private GameObject m_playerList;
     [SerializeField]
     private GameObject m_scoreBoard;
-    [SerializeField]
-    private TeamManager m_teamManager;
     private Dictionary<string, ScoreboardEntry> m_outdatedPlayers = new Dictionary<string, ScoreboardEntry>();
 
     private void Start()
     {
         if (isServer)
         {
-            m_teamManager = GameObject.Find("GameManager").GetComponent<TeamManager>();
-            m_teamManager.OnPlayersChange += Refresh;
+            TeamManager.Singleton.OnPlayersChange += Refresh;
             Refresh();
         }
 
@@ -48,7 +45,7 @@ public class Scoreboard : NetworkBehaviour
     {
         // Clear the list and add all players
         RpcEmpty();
-        foreach (Soldier player in m_teamManager.GetAllPlayers())
+        foreach (Soldier player in TeamManager.GetAllPlayers())
         {
             if (player != null)
             {
@@ -71,7 +68,7 @@ public class Scoreboard : NetworkBehaviour
     private void RpcAddPlayer(string playerId)
     {
         // Make a new entry on the scoreboard
-        GameObject scorePanel = Instantiate(m_playerScorePrefab) as GameObject;
+        GameObject scorePanel = Instantiate(m_playerScorePrefab)as GameObject;
         scorePanel.transform.SetParent(m_playerList.transform, false);
 
         // Try to add the player to the scoreboard, if it fails add it to the list of outdated players

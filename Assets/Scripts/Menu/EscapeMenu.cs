@@ -4,10 +4,28 @@ using UnityEngine.SceneManagement;
 
 public class EscapeMenu : NetworkBehaviour
 {
+    public static EscapeMenu Singleton;
     public GameObject Canvas;
 
     public delegate void PauseToggled();
     public event PauseToggled EventPauseToggled;
+
+    private void Awake()
+    {
+        InitializeSingleton();
+    }
+
+    private void InitializeSingleton()
+    {
+        if (Singleton != null && Singleton != this)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            Singleton = this;
+        }
+    }
 
     private void Update()
     {
@@ -45,9 +63,9 @@ public class EscapeMenu : NetworkBehaviour
         }
     }
 
-    public bool IsActive()
+    public static bool IsActive()
     {
-        return Canvas.activeSelf;
+        return Singleton.Canvas.activeSelf;
     }
 
 }
