@@ -4,19 +4,19 @@ using UnityEngine;
 
 public class GameManager : NetworkBehaviour
 {
-    [SyncVar] [SerializeField] private string m_seed = "";
-    [SyncVar] [SerializeField] private int m_mapWidth = 50;
-    [SyncVar] [SerializeField] private int m_mapHeight = 50;
-    [SyncVar] [SerializeField] private int m_maxRoomAmount = 100;
-    [SyncVar] [SerializeField] private int m_maxShortcutAmount = 10;
-    [SyncVar] [SerializeField] private int m_minRoomLength = 6;
-    [SyncVar] [SerializeField] private int m_maxRoomLength = 9;
-    [SyncVar] [SerializeField] private int m_minTunnelLength = 1;
-    [SyncVar] [SerializeField] private int m_maxTunnelLength = 7;
-    [SyncVar] [SerializeField] private int m_tunnelWidth = 2;
-    [SyncVar] [SerializeField] private int m_breakableTunnelChance = 20;
-    [SyncVar] [SerializeField] private int m_shortcutMinSkipDistance = 20;
-    [SyncVar] [SerializeField] private int m_outerWallWidth = 14;
+    [SyncVar][SerializeField] private string m_seed = "";
+    [SyncVar][SerializeField] private int m_mapWidth = 50;
+    [SyncVar][SerializeField] private int m_mapHeight = 50;
+    [SyncVar][SerializeField] private int m_maxRoomAmount = 100;
+    [SyncVar][SerializeField] private int m_maxShortcutAmount = 10;
+    [SyncVar][SerializeField] private int m_minRoomLength = 6;
+    [SyncVar][SerializeField] private int m_maxRoomLength = 9;
+    [SyncVar][SerializeField] private int m_minTunnelLength = 1;
+    [SyncVar][SerializeField] private int m_maxTunnelLength = 7;
+    [SyncVar][SerializeField] private int m_tunnelWidth = 2;
+    [SyncVar][SerializeField] private int m_breakableTunnelChance = 20;
+    [SyncVar][SerializeField] private int m_shortcutMinSkipDistance = 20;
+    [SyncVar][SerializeField] private int m_outerWallWidth = 14;
 
     public static GameManager Singleton;
 
