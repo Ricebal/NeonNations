@@ -33,9 +33,12 @@ public class DebugMode : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Return))
+        if (Input.GetKeyDown(KeyCode.F1))
         {
-            m_directionalLight.gameObject.SetActive(!m_directionalLight.gameObject.activeSelf);
+            if(Application.isEditor)
+            {
+                m_directionalLight.gameObject.SetActive(!m_directionalLight.gameObject.activeSelf);
+            }
             m_text.gameObject.SetActive(!m_text.gameObject.activeSelf);
         }
     }
