@@ -6,7 +6,7 @@ public class MainMenu : MonoBehaviour
     // Play game button
     public void PlayGame()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 2);
+        SceneManager.LoadScene("NetworkMenu", LoadSceneMode.Single);
     }
 
     // Quit game button

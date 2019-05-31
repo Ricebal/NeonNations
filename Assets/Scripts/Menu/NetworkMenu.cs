@@ -66,7 +66,7 @@ public class NetworkMenu : MonoBehaviour
     private void LoadMainMenu()
     {
         m_networkManagerCustom.Stop();
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 2);
+        SceneManager.LoadScene("MainMenu", LoadSceneMode.Single);
     }
 
 }
