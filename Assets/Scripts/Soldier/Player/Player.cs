@@ -80,6 +80,6 @@ public class Player : Soldier
         CameraController.SetInactive();
         CameraController.Singleton.PlayerTransform = null;
         EscapeMenu.Singleton.OnPauseToggled -= PauseToggled;
-        GameOverMenu.Singleton.OnRespawnClick -= CmdRespawn;
+        GameOverMenu.Singleton.OnRespawnClick -= Respawn;
     }
 }
