@@ -18,7 +18,7 @@ public class PlayerHUD : MonoBehaviour
 
     public void UpdateHUD()
     {
-        m_healthSlider.value = Singleton.m_healthStat.GetValue();
-        m_energySlider.value = Singleton.m_energyStat.GetValue();
+        m_healthSlider.value = m_healthStat.GetValue();
+        m_energySlider.value = m_energyStat.GetValue();
     }
 }
