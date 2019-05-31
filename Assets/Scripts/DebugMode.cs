@@ -35,10 +35,11 @@ public class DebugMode : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.F1))
         {
-            if(Application.isEditor)
+            #if (UNITY_EDITOR)
             {
                 m_directionalLight.gameObject.SetActive(!m_directionalLight.gameObject.activeSelf);
             }
+            #endif
             m_text.gameObject.SetActive(!m_text.gameObject.activeSelf);
         }
     }
