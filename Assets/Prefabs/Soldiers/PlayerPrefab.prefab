@@ -129,8 +129,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 4209374501307928135}
   - {fileID: 4119792582392296754}
+  - {fileID: 4209374501307928135}
   m_Father: {fileID: 8638977763130829894}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
@@ -5286,9 +5286,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   syncInterval: 0.1
-  Team: 0
+  Team:
+    Id: 0
+    Color: {r: 0, g: 0, b: 0, a: 0}
+    PlayerCount: 0
   Color: {r: 0, g: 0, b: 0, a: 0}
-  Speed: 7.5
+  Speed: 8
   Username: Unknown
   RespawnTime: 5
   IsDead: 0
@@ -5475,7 +5478,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 3106903350180281742}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!198 &8043311387450361047
 ParticleSystem:
@@ -10182,7 +10185,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 3106903350180281742}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!198 &5862970095453569857
 ParticleSystem:

@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using Mirror;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class TeamManager : MonoBehaviour
+public class TeamManager : NetworkBehaviour
 {
     public static TeamManager Singleton;
     public List<Team> Teams;
@@ -29,9 +30,9 @@ public class TeamManager : MonoBehaviour
         }
     }
 
-    public static int AddPlayer(Soldier player)
+    public static void AddPlayer(Soldier player)
     {
-        int team = 0;
+        Team team = new Team();
 
         // Add player to list of players
         Singleton.m_players[Singleton.m_playerCount] = player;
@@ -42,7 +43,7 @@ public class TeamManager : MonoBehaviour
             // Get the team with the least players
             Team toJoin = Singleton.Teams.Aggregate((min, next) => min.PlayerCount < next.PlayerCount ? min : next);
             toJoin.PlayerCount++;
-            team = toJoin.Id;
+            team = toJoin;
         }
         else
         {
@@ -57,24 +58,23 @@ public class TeamManager : MonoBehaviour
         {
             if (Singleton.m_players[i] != null)
             {
-                Singleton.m_players[i].SetInitialColor(GetColor(Singleton.m_players[i].Team));
+                Singleton.m_players[i].SetInitialColor(GetColor(Singleton.m_players[i].Team.Id));
                 Singleton.m_players[i].SyncScore();
             }
         }
 
         // Set player colour for new player
-        player.SetInitialColor(GetColor(team));
+        player.SetInitialColor(GetColor(team.Id));
         player.GetComponent<Identity>().SetIdentity();
+        player.Team = team;
 
         Singleton.OnPlayersChange?.Invoke();
-
-        return team;
     }
 
     public static void RemovePlayer(Soldier player)
     {
         // Decrease the playercount in the team the player was in
-        Singleton.Teams.Find(e => e.Id == player.Team).PlayerCount--;
+        Singleton.Teams.Find(e => e.Id == player.Team.Id).PlayerCount--;
 
         // Decrease total player count
         Singleton.m_playerCount--;
@@ -113,6 +113,18 @@ public class TeamManager : MonoBehaviour
         return new Color(0, 0, 0, 0);
     }
 
+    public static void SetTeamScore(int teamId, Score score)
+    {
+        Singleton.Teams[teamId - 1].Score = score;
+    }
+
+    public static void AddTeam(Color color)
+    {
+        Team team = new Team(Singleton.Teams.Count + 1);
+        team.Color = color;
+        Singleton.Teams.Add(team);
+    }
+
     public static void AddTeam()
     {
         Singleton.Teams.Add(new Team(Singleton.Teams.Count + 1));
@@ -129,15 +141,32 @@ public class TeamManager : MonoBehaviour
             for (int j = 0; j < 8; j++)
             {
                 // If there are players in a team fix played team id's
-                if (Singleton.m_players[j] != null && Singleton.m_players[j].Team == e.Id)
+                if (Singleton.m_players[j] != null && Singleton.m_players[j].Team.Id == e.Id)
                 {
-                    Singleton.m_players[j].Team = i;
+                    Singleton.m_players[j].Team.Id = i;
                 }
             }
             e.Id = i;
         });
     }
+    public static void SyncTeams()
+    {
+        Singleton.Teams.ForEach(team =>
+        {
+            Singleton.RpcSyncTeamScore(team.Id, team.Score.Kills, team.Score.Deaths);
+        });
+    }
 
+    [ClientRpc]
+    private void RpcSyncTeamScore(int teamId, int kills, int deaths)
+    {
+        // Sync the score for all the teams.
+        if (Singleton.isServer)   // Except for the server since that is the correct score.
+        {
+            return;
+        }
+        SetTeamScore(teamId, new Score(kills, deaths));
+    }
     public static Soldier[] GetAllPlayers()
     {
         return Singleton.m_players;
@@ -148,7 +177,7 @@ public class TeamManager : MonoBehaviour
         List<Soldier> enemies = new List<Soldier>();
         foreach (Soldier player in Singleton.m_players)
         {
-            if (player != null && player.Team != teamId && !player.IsDead)
+            if (player != null && player.Team.Id != teamId && !player.IsDead)
             {
                 enemies.Add(player);
             }

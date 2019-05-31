@@ -3,7 +3,7 @@ using UnityEngine;
 
 public abstract class Soldier : NetworkBehaviour
 {
-    [SyncVar] public int Team;
+    [SyncVar] public Team Team;
     [SyncVar] public Color Color;
     [SyncVar] public Score PlayerScore = new Score();
     // The speed of the entity
@@ -45,12 +45,16 @@ public abstract class Soldier : NetworkBehaviour
         gameObject.layer = 9; // DeadPlayers layer;
         m_deathTime = Time.time;
         PlayerScore.Deaths++;
+        Team.AddDeath();
 
         DeathExplosion deathExplosion = GetComponentInChildren<DeathExplosion>();
         if (deathExplosion != null)
         {
             deathExplosion.Fire();
         }
+    }
+    public virtual void DisableMovement()
+    {
     }
 
     protected virtual void Respawn()
@@ -151,7 +155,9 @@ public abstract class Soldier : NetworkBehaviour
     [ClientRpc]
     protected void RpcAddKill(string playerId)
     {
-        GameObject.Find(playerId).GetComponent<Soldier>().PlayerScore.Kills++;
+        Soldier otherSoldier = GameObject.Find(playerId).GetComponent<Soldier>();
+        otherSoldier.PlayerScore.Kills++;
+        otherSoldier.Team.AddKill();
     }
 
     protected void OnTriggerEnter(Collider collider)

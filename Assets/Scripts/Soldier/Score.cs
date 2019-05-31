@@ -45,4 +45,12 @@
             OnScoreChange?.Invoke();
         }
     }
+
+    public Score() : this(0, 0) { }
+
+    public Score(int kills, int deaths)
+    {
+        m_kills = kills;
+        m_deaths = deaths;
+    }
 }
