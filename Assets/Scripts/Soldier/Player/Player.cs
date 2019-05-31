@@ -3,10 +3,6 @@
 public class Player : Soldier
 {
     private PlayerController m_playerController;
-    private CameraController m_cameraController;
-    private EscapeMenu m_escapeMenu;
-    private GameOverMenu m_gameOverMenu;
-    private PlayerHUD m_hud;
 
     private void Start()
     {
@@ -16,13 +12,9 @@ public class Player : Soldier
         }
 
         m_playerController = GetComponent<PlayerController>();
-        m_cameraController = Camera.main.GetComponent<CameraController>();
-        m_cameraController.SetTarget(this.transform);
-        m_escapeMenu = GameObject.Find("EscapeMenu").GetComponent<EscapeMenu>();
-        m_escapeMenu.OnPauseToggled += PauseToggled;
-        m_gameOverMenu = GameObject.Find("GameOverMenu").GetComponent<GameOverMenu>();
-        m_gameOverMenu.OnRespawnClick += CmdRespawn;
-        m_hud = GetComponent<PlayerHUD>();
+        CameraController.SetTarget(this.transform);
+        EscapeMenu.Singleton.OnPauseToggled += PauseToggled;
+        GameOverMenu.Singleton.OnRespawnClick += CmdRespawn;
 
         Username = ProfileMenu.GetUsername();
         CmdUsername(Username);
@@ -35,10 +27,10 @@ public class Player : Soldier
             return;
         }
 
-        Cursor.visible = m_gameOverMenu.IsActive() || m_escapeMenu.IsActive();
+        Cursor.visible = GameOverMenu.IsActive() || EscapeMenu.IsActive();
 
         m_energyStat.Add(1);
-        m_hud.UpdateHUD();
+        PlayerHUD.UpdateHUD();
     }
 
     private void PauseToggled()
@@ -46,7 +38,7 @@ public class Player : Soldier
         // Activate player controller if the player is alive and the escape menu is not activated
         if (!IsDead)
         {
-            m_playerController.enabled = !m_escapeMenu.IsActive();
+            m_playerController.enabled = !EscapeMenu.IsActive();
         }
     }
 
@@ -54,7 +46,7 @@ public class Player : Soldier
     {
         if (isLocalPlayer)
         {
-            m_gameOverMenu.Activate(RespawnTime);
+            GameOverMenu.Activate(RespawnTime);
             m_playerController.enabled = false;
         }
 
@@ -65,9 +57,9 @@ public class Player : Soldier
     {
         if (isLocalPlayer)
         {
-            m_gameOverMenu.Deactivate();
+            GameOverMenu.Deactivate();
             // Activate player controller if the escape menu is not activated
-            if (!m_escapeMenu.IsActive())
+            if (!EscapeMenu.IsActive())
             {
                 m_playerController.enabled = true;
             }
@@ -83,8 +75,9 @@ public class Player : Soldier
             return;
         }
 
-        m_cameraController.SetInactive();
-        m_cameraController.PlayerTransform = null;
-        m_escapeMenu.OnPauseToggled -= PauseToggled;
+        CameraController.SetInactive();
+        CameraController.Singleton.PlayerTransform = null;
+        EscapeMenu.Singleton.OnPauseToggled -= PauseToggled;
+        GameOverMenu.Singleton.OnRespawnClick -= CmdRespawn;
     }
 }

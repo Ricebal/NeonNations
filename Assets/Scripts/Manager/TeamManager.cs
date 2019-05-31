@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class TeamManager : MonoBehaviour
 {
+    public static TeamManager Singleton;
     public List<Team> Teams;
     private int m_playerCount;
     private Soldier[] m_players = new Soldier[8];
@@ -11,18 +12,35 @@ public class TeamManager : MonoBehaviour
     public delegate void OnPlayersChangeDelegate();
     public event OnPlayersChangeDelegate OnPlayersChange;
 
-    public int AddPlayer(Soldier player)
+    private void Awake()
+    {
+        InitializeSingleton();
+    }
+
+    private void InitializeSingleton()
+    {
+        if (Singleton != null && Singleton != this)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            Singleton = this;
+        }
+    }
+
+    public static int AddPlayer(Soldier player)
     {
         int team = 0;
 
         // Add player to list of players
-        m_players[m_playerCount] = player;
+        Singleton.m_players[Singleton.m_playerCount] = player;
 
         // If there's no team throw a debug
-        if (Teams.Count > 0)
+        if (Singleton.Teams.Count > 0)
         {
             // Get the team with the least players
-            Team toJoin = Teams.Aggregate((min, next) => min.PlayerCount < next.PlayerCount ? min : next);
+            Team toJoin = Singleton.Teams.Aggregate((min, next) => min.PlayerCount < next.PlayerCount ? min : next);
             toJoin.PlayerCount++;
             team = toJoin.Id;
         }
@@ -32,15 +50,15 @@ public class TeamManager : MonoBehaviour
         }
 
         // Increment player count
-        m_playerCount++;
+        Singleton.m_playerCount++;
 
         // Sync player colour and score
         for (int i = 0; i < 8; i++)
         {
-            if (m_players[i] != null)
+            if (Singleton.m_players[i] != null)
             {
-                m_players[i].SetInitialColor(GetColor(m_players[i].Team));
-                m_players[i].SyncScore();
+                Singleton.m_players[i].SetInitialColor(GetColor(Singleton.m_players[i].Team));
+                Singleton.m_players[i].SyncScore();
             }
         }
 
@@ -48,18 +66,18 @@ public class TeamManager : MonoBehaviour
         player.SetInitialColor(GetColor(team));
         player.GetComponent<Identity>().SetIdentity();
 
-        OnPlayersChange?.Invoke();
+        Singleton.OnPlayersChange?.Invoke();
 
         return team;
     }
 
-    public void RemovePlayer(Soldier player)
+    public static void RemovePlayer(Soldier player)
     {
         // Decrease the playercount in the team the player was in
-        Teams.Find(e => e.Id == player.Team).PlayerCount--;
+        Singleton.Teams.Find(e => e.Id == player.Team).PlayerCount--;
 
         // Decrease total player count
-        m_playerCount--;
+        Singleton.m_playerCount--;
 
         // Remove player from list of players
         Soldier[] tempArray = new Soldier[8];
@@ -67,26 +85,26 @@ public class TeamManager : MonoBehaviour
         // Fix the player array so that there are no gaps
         for (int i = 0; i < 8; i++)
         {
-            if (m_players[i] != null && m_players[i] != player)
+            if (Singleton.m_players[i] != null && Singleton.m_players[i] != player)
             {
-                tempArray[index] = m_players[i];
+                tempArray[index] = Singleton.m_players[i];
                 index++;
             }
         }
 
-        m_players = tempArray;
-        OnPlayersChange?.Invoke();
+        Singleton.m_players = tempArray;
+        Singleton.OnPlayersChange?.Invoke();
     }
 
-    public Soldier[] GetPlayers()
+    public static Soldier[] GetPlayers()
     {
-        return m_players;
+        return Singleton.m_players;
     }
 
-    public Color GetColor(int teamId)
+    public static Color GetColor(int teamId)
     {
         // Find the team with corresponding team id
-        Team team = Teams.Find(e => e.Id == teamId);
+        Team team = Singleton.Teams.Find(e => e.Id == teamId);
         if (team != null)
         {
             return team.Color;
@@ -95,40 +113,40 @@ public class TeamManager : MonoBehaviour
         return new Color(0, 0, 0, 0);
     }
 
-    public void AddTeam()
+    public static void AddTeam()
     {
-        Teams.Add(new Team(Teams.Count + 1));
+        Singleton.Teams.Add(new Team(Singleton.Teams.Count + 1));
     }
 
-    public void RemoveTeam(Team team)
+    public static void RemoveTeam(Team team)
     {
-        Teams.Remove(team);
+        Singleton.Teams.Remove(team);
         int i = 0;
         // Fix team id's so there are no gaps
-        Teams.ForEach(e =>
+        Singleton.Teams.ForEach(e =>
         {
             i++;
             for (int j = 0; j < 8; j++)
             {
                 // If there are players in a team fix played team id's
-                if (m_players[j] != null && m_players[j].Team == e.Id)
+                if (Singleton.m_players[j] != null && Singleton.m_players[j].Team == e.Id)
                 {
-                    m_players[j].Team = i;
+                    Singleton.m_players[j].Team = i;
                 }
             }
             e.Id = i;
         });
     }
 
-    public Soldier[] GetAllPlayers()
+    public static Soldier[] GetAllPlayers()
     {
-        return m_players;
+        return Singleton.m_players;
     }
 
-    public List<Soldier> GetAliveEnemiesByTeam(int teamId)
+    public static List<Soldier> GetAliveEnemiesByTeam(int teamId)
     {
         List<Soldier> enemies = new List<Soldier>();
-        foreach (Soldier player in m_players)
+        foreach (Soldier player in Singleton.m_players)
         {
             if (player != null && player.Team != teamId && !player.IsDead)
             {
