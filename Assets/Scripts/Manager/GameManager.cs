@@ -24,7 +24,7 @@ public class GameManager : NetworkBehaviour
     public GameMode GameMode;
     public bool GameFinished;
     [SerializeField] private ParticleSystem m_fireWorks;
-    
+
     private GameObject m_endGameTextObject;
     public float WaitingTimeAfterGameEnded; // The time after the game is finished, before it will return to the lobby.
     private int m_localPlayersTeamId;
@@ -55,7 +55,7 @@ public class GameManager : NetworkBehaviour
         WaitingTimeAfterGameEnded = 6; // 6 seconds.
         m_localPlayersTeamId = 0;
         GameFinished = false;
-}
+    }
 
     private void Start()
     {
@@ -180,9 +180,9 @@ public class GameManager : NetworkBehaviour
             {
                 soldier.DisableMovement();
                 Player player = soldier.GetComponent<Player>();
-                if (player.isLocalPlayer && player != null) // Set the local player.
+                if (player != null && player.isLocalPlayer) // Set the local player.
                 {
-                    localPlayer = soldier; 
+                    localPlayer = soldier;
                 }
             }
         }
@@ -206,8 +206,8 @@ public class GameManager : NetworkBehaviour
             {
                 // Go to win screen.
                 endGameText.text = GameMode.WIN;
-                //SetFireWorkColor(teamColor);
-                //SpawnFireWorks(localPlayer);
+                SetFireWorkColor(teamColor);
+                SpawnFireWorks(localPlayer);
             }
         }
         else
@@ -215,8 +215,6 @@ public class GameManager : NetworkBehaviour
             // Go to lose screen.
             endGameText.text = GameMode.LOSE;
         }
-        SetFireWorkColor(teamColor);
-        SpawnFireWorks(localPlayer);
 
         // Set color of text.
         endGameText.outlineColor = teamColor;
