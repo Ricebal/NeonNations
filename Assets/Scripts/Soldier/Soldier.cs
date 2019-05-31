@@ -4,7 +4,7 @@ using UnityEngine;
 public abstract class Soldier : NetworkBehaviour
 {
     [SyncVar] public int Team;
-    [SyncVar] public Color InitialColor;
+    [SyncVar] public Color Color;
     [SyncVar] public Score PlayerScore = new Score();
     // The speed of the entity
     public float Speed;
@@ -29,7 +29,7 @@ public abstract class Soldier : NetworkBehaviour
         if (IsDead)
         {
             float newAlpha = Mathf.Max(0, (RespawnTime - (Time.time - m_deathTime)) / RespawnTime);
-            m_renderer.material.color = new Color(1, 0.39f, 0.28f, newAlpha);
+            m_renderer.material.color = new Color(Color.r, Color.g, Color.b, newAlpha);
         }
     }
 
@@ -75,7 +75,7 @@ public abstract class Soldier : NetworkBehaviour
     {
         transform.position = new Vector3(spawnPoint.x, 0, spawnPoint.y);
         gameObject.layer = 8; // Players layer
-        m_renderer.material.color = InitialColor;
+        m_renderer.material.color = Color;
         m_healthStat.Reset();
         m_energyStat.Reset();
         IsDead = false;
@@ -97,7 +97,7 @@ public abstract class Soldier : NetworkBehaviour
     public void SetInitialColor(Color color)
     {
         Color newColor = new Color(color.r, color.g, color.b, 1f);
-        InitialColor = newColor;
+        Color = newColor;
         CmdColor(gameObject, newColor);
     }
 
