@@ -1,5 +1,5 @@
-﻿using Mirror;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Mirror;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,17 +12,13 @@ public class Scoreboard : NetworkBehaviour
     private GameObject m_playerList;
     [SerializeField]
     private GameObject m_scoreBoard;
-    [SerializeField]
-    private TeamManager m_teamManager;
     private Dictionary<string, ScoreboardEntry> m_outdatedPlayers = new Dictionary<string, ScoreboardEntry>();
 
     private void Start()
     {
-        GameObject gameManagerObject = GameObject.Find("GameManager");
-        m_teamManager = gameManagerObject.GetComponent<TeamManager>();
         if (isServer)
         {
-            m_teamManager.OnPlayersChange += Refresh;
+            TeamManager.Singleton.OnPlayersChange += Refresh;
             Refresh();
         }
 
@@ -31,7 +27,7 @@ public class Scoreboard : NetworkBehaviour
 
     private void Update()
     {
-        if (!GameManager.GameFinished)
+        if (!GameManager.Singleton.GameFinished)
         {
             if (Input.GetKeyDown("tab"))
             {
@@ -44,7 +40,7 @@ public class Scoreboard : NetworkBehaviour
         }
         else
         {
-            if (GameManager.WaitingTimeAfterGameEnded < 3) // Show the scoreboard for the last 3 seconds.
+            if (GameManager.Singleton.WaitingTimeAfterGameEnded < 3) // Show the scoreboard for the last 3 seconds.
             {
                 m_scoreBoard.SetActive(true); // Show final scoreboard.
             }
@@ -55,18 +51,17 @@ public class Scoreboard : NetworkBehaviour
         {
             RetryOutdatedPlayers();
         }
-
     }
 
     private void Refresh()
     {
-        if (GameManager.GameFinished)
+        if (GameManager.Singleton.GameFinished)
         {
             return; // prevent players from disappearing on the host score-board once the game has ended.
         }
         // Clear the list and add all players
         RpcEmpty();
-        foreach (Soldier player in m_teamManager.GetAllPlayers())
+        foreach (Soldier player in TeamManager.GetAllPlayers())
         {
             if (player != null)
             {
@@ -109,7 +104,7 @@ public class Scoreboard : NetworkBehaviour
     private void RpcAddPlayer(string playerId)
     {
         // Make a new entry on the scoreboard
-        GameObject scorePanel = Instantiate(m_playerScorePrefab) as GameObject;
+        GameObject scorePanel = Instantiate(m_playerScorePrefab)as GameObject;
         scorePanel.transform.SetParent(m_playerList.transform, false);
         ScoreboardEntry scoreboardEntry = scorePanel.GetComponent<ScoreboardEntry>();
         // Try to add the player to the scoreboard, if it fails add it to the list of outdated players

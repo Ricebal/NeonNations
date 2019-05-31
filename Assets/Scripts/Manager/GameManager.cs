@@ -8,39 +8,54 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : NetworkBehaviour
 {
+    [SyncVar][SerializeField] private string m_seed = "";
+    [SyncVar][SerializeField] private int m_mapWidth = 50;
+    [SyncVar][SerializeField] private int m_mapHeight = 50;
+    [SyncVar][SerializeField] private int m_maxRoomAmount = 100;
+    [SyncVar][SerializeField] private int m_maxShortcutAmount = 10;
+    [SyncVar][SerializeField] private int m_minRoomLength = 6;
+    [SyncVar][SerializeField] private int m_maxRoomLength = 9;
+    [SyncVar][SerializeField] private int m_minTunnelLength = 1;
+    [SyncVar][SerializeField] private int m_maxTunnelLength = 7;
+    [SyncVar][SerializeField] private int m_tunnelWidth = 2;
+    [SyncVar][SerializeField] private int m_breakableTunnelChance = 20;
+    [SyncVar][SerializeField] private int m_shortcutMinSkipDistance = 20;
+    [SyncVar][SerializeField] private int m_outerWallWidth = 14;
     public GameMode GameMode;
-    public static bool GameFinished;
-
-    [SyncVar] [SerializeField] private string m_seed = "";
-    [SyncVar] [SerializeField] private int m_mapWidth = 50;
-    [SyncVar] [SerializeField] private int m_mapHeight = 50;
-    [SyncVar] [SerializeField] private int m_maxRoomAmount = 100;
-    [SyncVar] [SerializeField] private int m_maxShortcutAmount = 10;
-    [SyncVar] [SerializeField] private int m_minRoomLength = 6;
-    [SyncVar] [SerializeField] private int m_maxRoomLength = 9;
-    [SyncVar] [SerializeField] private int m_minTunnelLength = 1;
-    [SyncVar] [SerializeField] private int m_maxTunnelLength = 7;
-    [SyncVar] [SerializeField] private int m_tunnelWidth = 2;
-    [SyncVar] [SerializeField] private int m_breakableTunnelChance = 20;
-    [SyncVar] [SerializeField] private int m_shortcutMinSkipDistance = 20;
-    [SyncVar] [SerializeField] private int m_outerWallWidth = 14;
+    public bool GameFinished;
     [SerializeField] private ParticleSystem m_fireWorks;
-
-    private BoardManager m_boardManager;
-    private BotManager m_botManager;
-    private TeamManager m_teamManager;
+    
     private GameObject m_endGameTextObject;
-    public static float WaitingTimeAfterGameEnded = 6; // The time after the game is finished, before it will return to the lobby.
-    private int m_localPlayersTeamId = 0;
+    public float WaitingTimeAfterGameEnded; // The time after the game is finished, before it will return to the lobby.
+    private int m_localPlayersTeamId;
+    public static GameManager Singleton;
 
     void Awake()
     {
-        m_boardManager = GetComponent<BoardManager>();
+        InitializeSingleton();
         GameMode = gameObject.AddComponent<TeamDeathMatch>(); // Temporary untill we can pick game modes.
-        m_teamManager = GetComponent<TeamManager>();
         SetTeams();
-        m_botManager = GetComponent<BotManager>();
     }
+
+    private void InitializeSingleton()
+    {
+        if (Singleton != null && Singleton != this)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            Singleton = this;
+        }
+        InitializeVariables();
+    }
+
+    private void InitializeVariables()
+    {
+        WaitingTimeAfterGameEnded = 6; // 6 seconds.
+        m_localPlayersTeamId = 0;
+        GameFinished = false;
+}
 
     private void Start()
     {
@@ -50,7 +65,6 @@ public class GameManager : NetworkBehaviour
         }
         GameObject hud = GameObject.FindGameObjectWithTag("HUD");
         m_endGameTextObject = hud.transform.Find("EndGameText").gameObject;
-        GameMode.SetTeamManager(m_teamManager);
         GameFinished = false;
         InitGame();
     }
@@ -86,11 +100,11 @@ public class GameManager : NetworkBehaviour
         {
             try
             {
-                m_teamManager.AddTeam(GameMode.Colors[i]);
+                TeamManager.AddTeam(GameMode.Colors[i]);
             }
             catch (Exception) // For if you want to add more teams than in the List. The list is just temperary untill we can pick teamcolors.
             {
-                m_teamManager.AddTeam(new Color(0, 0, 1, 1));
+                TeamManager.AddTeam(new Color(0, 0, 1, 1));
             }
         }
     }
@@ -104,14 +118,12 @@ public class GameManager : NetworkBehaviour
         }
 
         // Display seed on the hud
-        GameObject hud = GameObject.FindGameObjectWithTag("HUD");
-        TextMeshProUGUI text = hud.GetComponent<TextMeshProUGUI>();
-        text.text = m_seed;
+        PlayerHUD.SetSeed(m_seed);
 
         MapGenerator mapGenerator = new MapGenerator(m_mapWidth, m_mapHeight, m_maxRoomAmount, m_maxShortcutAmount, m_minRoomLength,
             m_maxRoomLength, m_minTunnelLength, m_maxTunnelLength, m_tunnelWidth, m_breakableTunnelChance, m_shortcutMinSkipDistance);
-        m_boardManager.SetupScene(mapGenerator.GenerateRandomMap(m_seed), m_outerWallWidth);
-        m_botManager.SetupBots();
+        BoardManager.SetupScene(mapGenerator.GenerateRandomMap(m_seed), m_outerWallWidth);
+        BotManager.SetupBots();
     }
 
     [ClientRpc]
@@ -123,17 +135,17 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-    public void AddPlayer(Soldier player)
+    public static void AddPlayer(Soldier player)
     {
-        m_teamManager.SyncTeams();
-        m_teamManager.AddPlayer(player);
+        TeamManager.SyncTeams();
+        TeamManager.AddPlayer(player);
         if (player as Player)
         {
-            RpcSetLocalPlayerTeamId(player.Team.Id);
+            Singleton.RpcSetLocalPlayerTeamId(player.Team.Id);
         }
     }
 
-    public void RemovePlayer(Soldier player) => m_teamManager.RemovePlayer(player);
+    public static void RemovePlayer(Soldier player) => TeamManager.RemovePlayer(player);
 
     /// <summary>
     /// Generate a random seed
@@ -160,14 +172,18 @@ public class GameManager : NetworkBehaviour
     public void RpcFinishGame()
     {
         GameObject[] soldierGameObjects = GameObject.FindGameObjectsWithTag("Player");
-        List<Soldier> soldiers = new List<Soldier>();
+        Soldier localPlayer = new Player();
         foreach (GameObject go in soldierGameObjects)
         {
             Soldier soldier = go.GetComponent<Soldier>();
             if (soldier != null)
             {
                 soldier.DisableMovement();
-                soldiers.Add(soldier);
+                Player player = soldier.GetComponent<Player>();
+                if (player.isLocalPlayer && player != null) // Set the local player.
+                {
+                    localPlayer = soldier; 
+                }
             }
         }
         List<int> winningTeamIds = GetWinningTeams();
@@ -175,7 +191,7 @@ public class GameManager : NetworkBehaviour
         bool draw = (winningTeamIds.Count > 1); // If there are more winning teams, it will be a draw.
 
         // Get teamcolor.
-        Color teamColor = m_teamManager.Teams.Find(t => t.Id == m_localPlayersTeamId).Color;
+        Color teamColor = TeamManager.Singleton.Teams.Find(t => t.Id == m_localPlayersTeamId).Color;
         // Set end game text visible.
         m_endGameTextObject.SetActive(true);
         TextMeshProUGUI endGameText = m_endGameTextObject.GetComponent<TextMeshProUGUI>();
@@ -190,8 +206,8 @@ public class GameManager : NetworkBehaviour
             {
                 // Go to win screen.
                 endGameText.text = GameMode.WIN;
-                SetFireWorkColor(teamColor);
-                SpawnFireWorks(soldiers);
+                //SetFireWorkColor(teamColor);
+                //SpawnFireWorks(localPlayer);
             }
         }
         else
@@ -199,6 +215,8 @@ public class GameManager : NetworkBehaviour
             // Go to lose screen.
             endGameText.text = GameMode.LOSE;
         }
+        SetFireWorkColor(teamColor);
+        SpawnFireWorks(localPlayer);
 
         // Set color of text.
         endGameText.outlineColor = teamColor;
@@ -226,22 +244,17 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-    private void SpawnFireWorks(List<Soldier> soldiers)
+    private void SpawnFireWorks(Soldier soldier)
     {
-        foreach (Soldier soldier in soldiers)
+        int amountOfFirworks = UnityEngine.Random.Range(5, 7);
+        for (int i = 0; i < amountOfFirworks; i++)
         {
-            if (soldier.Team.Id == m_localPlayersTeamId)
-            {
-                for (int i = 0; i < 3; i++)
-                {
-                    float xPos = soldier.gameObject.transform.position.x;
-                    float zPos = soldier.gameObject.transform.position.z;
-                    Vector3 spawnPosition = new Vector3(UnityEngine.Random.Range(xPos - 7, xPos + 7), 1, UnityEngine.Random.Range(zPos - 5, zPos + 5));
-                    ParticleSystem ps = Instantiate(m_fireWorks, spawnPosition, Quaternion.identity);
-                    ps.Simulate(1);
-                    ps.Play();
-                }
-            }
+            float xPos = soldier.gameObject.transform.position.x;
+            float zPos = soldier.gameObject.transform.position.z;
+            Vector3 spawnPosition = new Vector3(UnityEngine.Random.Range(xPos - 7, xPos + 7), 1, UnityEngine.Random.Range(zPos - 5, zPos + 5));
+            ParticleSystem ps = Instantiate(m_fireWorks, spawnPosition, Quaternion.identity);
+            ps.Simulate(1);
+            ps.Play();
         }
     }
     private List<int> GetWinningTeams()
@@ -250,7 +263,7 @@ public class GameManager : NetworkBehaviour
         int maxScore = 0;
 
         //Check for the team with the highest score.
-        foreach (Team team in m_teamManager.Teams)
+        foreach (Team team in TeamManager.Singleton.Teams)
         {
             int score = GameMode.CalculateScore(team.Score);
             if (score > maxScore)   // New highest score is found.

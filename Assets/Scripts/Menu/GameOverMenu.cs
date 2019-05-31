@@ -4,10 +4,28 @@ using UnityEngine.UI;
 
 public class GameOverMenu : MonoBehaviour
 {
+    public static GameOverMenu Singleton;
     public GameObject Panel;
     public Text RespawnText;
 
     private float m_remainingTime;
+
+    private void Awake()
+    {
+        InitializeSingleton();
+    }
+
+    private void InitializeSingleton()
+    {
+        if (Singleton != null && Singleton != this)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            Singleton = this;
+        }
+    }
 
     private void Start()
     {
@@ -32,20 +50,20 @@ public class GameOverMenu : MonoBehaviour
         //m_remainingTime = 0;
     }
 
-    public void Activate(float respawnTime)
+    public static void Activate(float respawnTime)
     {
-        Panel.SetActive(true);
-        m_remainingTime = respawnTime;
+        Singleton.Panel.SetActive(true);
+        Singleton.m_remainingTime = respawnTime;
     }
 
-    public void Deactivate()
+    public static void Deactivate()
     {
-        Panel.SetActive(false);
+        Singleton.Panel.SetActive(false);
     }
 
-    public bool IsActive()
+    public static bool IsActive()
     {
-        return Panel.activeSelf;
+        return Singleton.Panel.activeSelf;
     }
 
 }

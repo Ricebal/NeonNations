@@ -10,20 +10,19 @@ public abstract class GameMode : NetworkBehaviour
     public const string DRAW = "Draw";
     // List of colors just so there are some presets. This might either be expanded or be deleted if it becomes unnessecary with the color-picker.
     public List<Color> Colors = new List<Color> { new Color32(10, 255, 0, 0), new Color32(255, 0, 0, 0), new Color32(241, 0, 204, 0) };
+    public int AmountOfTeams;
+    public int AmountOfPlayers;
     /// <summary>
     /// The score needed to win the game.
     /// </summary>
     private int m_winCondition;
-    public int AmountOfTeams;
-    public int AmountOfPlayers;
     /// <summary>
     /// The timelimit in seconds
     /// </summary>
     [SyncVar] private float m_timeLimit;
+
     public delegate void OnGameFinishedDelegate();
     public event OnGameFinishedDelegate OnGameFinished;
-
-    private TeamManager m_teamManager;
 
     public GameMode(int winCondition, int amountOfTeams, int amountOfPlayers, float timeLimit)
     {
@@ -37,18 +36,14 @@ public abstract class GameMode : NetworkBehaviour
     {
         CheckForGameTimedOut(Time.deltaTime);
     }
-    public void SetTeamManager(TeamManager tm)
-    {
-        m_teamManager = tm;
-    }
 
     public void CheckForWinCondition()
     {
-        if (GameManager.GameFinished) // Don't change the score after the game has finished.
+        if (GameManager.Singleton.GameFinished) // Don't change the score after the game has finished.
         {
             return;
         }
-        foreach (Team team in m_teamManager.Teams)
+        foreach (Team team in TeamManager.Singleton.Teams)
         {
             if (CalculateScore(team.Score) >= m_winCondition) // A team has met the win condition.
             {
@@ -62,7 +57,7 @@ public abstract class GameMode : NetworkBehaviour
 
     private void CheckForGameTimedOut(float deltaTime)
     {
-        if (!GameManager.GameFinished)
+        if (!GameManager.Singleton.GameFinished)
         {
             m_timeLimit -= deltaTime;
             if (m_timeLimit <= 0)

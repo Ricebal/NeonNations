@@ -6,7 +6,6 @@ public class AttackBehaviour : BotBehaviour
 {
     private Action m_action;
     private Bot m_bot;
-    private TeamManager m_teamManager;
     private Vector3 m_lastShotPosition;
     private float m_accuracy = 1f;
 
@@ -23,7 +22,6 @@ public class AttackBehaviour : BotBehaviour
     {
         m_action = GetComponent<Action>();
         m_bot = GetComponent<Bot>();
-        m_teamManager = GameObject.Find("GameManager").GetComponent<TeamManager>();
     }
 
     private void FixedUpdate()
@@ -38,7 +36,7 @@ public class AttackBehaviour : BotBehaviour
     private void FireAtClosestEnemy()
     {
         // Get all players that aren't on the bot's team
-        List<Soldier> enemies = m_teamManager.GetAliveEnemiesByTeam(m_bot.Team.Id);
+        List<Soldier> enemies = TeamManager.GetAliveEnemiesByTeam(m_bot.Team.Id);
         Vector3 aimTarget;
         Vector3 targetPosition = FindClosestEnemyPosition(enemies);
         // Worldspace -> localspace

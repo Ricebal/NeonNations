@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class TeamManager : NetworkBehaviour
 {
+    public static TeamManager Singleton;
     public List<Team> Teams;
     private int m_playerCount;
     private Soldier[] m_players = new Soldier[8];
@@ -12,17 +13,35 @@ public class TeamManager : NetworkBehaviour
     public delegate void OnPlayersChangeDelegate();
     public event OnPlayersChangeDelegate OnPlayersChange;
 
-    public void AddPlayer(Soldier player)
+    private void Awake()
+    {
+        InitializeSingleton();
+    }
+
+    private void InitializeSingleton()
+    {
+        if (Singleton != null && Singleton != this)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            Singleton = this;
+        }
+    }
+
+    public static void AddPlayer(Soldier player)
     {
         Team team = new Team();
 
         // Add player to list of players
-        m_players[m_playerCount] = player;
+        Singleton.m_players[Singleton.m_playerCount] = player;
+
         // If there's no team throw a debug
-        if (Teams.Count > 0)
+        if (Singleton.Teams.Count > 0)
         {
             // Get the team with the least players
-            Team toJoin = Teams.Aggregate((min, next) => min.PlayerCount < next.PlayerCount ? min : next);
+            Team toJoin = Singleton.Teams.Aggregate((min, next) => min.PlayerCount < next.PlayerCount ? min : next);
             toJoin.PlayerCount++;
             team = toJoin;
         }
@@ -32,15 +51,15 @@ public class TeamManager : NetworkBehaviour
         }
 
         // Increment player count
-        m_playerCount++;
+        Singleton.m_playerCount++;
 
         // Sync player colour and score
         for (int i = 0; i < 8; i++)
         {
-            if (m_players[i] != null)
+            if (Singleton.m_players[i] != null)
             {
-                m_players[i].SetInitialColor(GetColor(m_players[i].Team.Id));
-                m_players[i].SyncScore();
+                Singleton.m_players[i].SetInitialColor(GetColor(Singleton.m_players[i].Team.Id));
+                Singleton.m_players[i].SyncScore();
             }
         }
 
@@ -49,19 +68,16 @@ public class TeamManager : NetworkBehaviour
         player.GetComponent<Identity>().SetIdentity();
         player.Team = team;
 
-        if (OnPlayersChange != null)
-        {
-            OnPlayersChange();
-        }
+        Singleton.OnPlayersChange?.Invoke();
     }
 
-    public void RemovePlayer(Soldier player)
+    public static void RemovePlayer(Soldier player)
     {
         // Decrease the playercount in the team the player was in
-        Teams.Find(e => e == player.Team).PlayerCount--;
+        Singleton.Teams.Find(e => e.Id == player.Team.Id).PlayerCount--;
 
         // Decrease total player count
-        m_playerCount--;
+        Singleton.m_playerCount--;
 
         // Remove player from list of players
         Soldier[] tempArray = new Soldier[8];
@@ -69,24 +85,26 @@ public class TeamManager : NetworkBehaviour
         // Fix the player array so that there are no gaps
         for (int i = 0; i < 8; i++)
         {
-            if (m_players[i] != null && m_players[i] != player)
+            if (Singleton.m_players[i] != null && Singleton.m_players[i] != player)
             {
-                tempArray[index] = m_players[i];
+                tempArray[index] = Singleton.m_players[i];
                 index++;
             }
         }
 
-        m_players = tempArray;
-        if (OnPlayersChange != null)
-        {
-            OnPlayersChange();
-        }
+        Singleton.m_players = tempArray;
+        Singleton.OnPlayersChange?.Invoke();
     }
 
-    public Color GetColor(int teamId)
+    public static Soldier[] GetPlayers()
+    {
+        return Singleton.m_players;
+    }
+
+    public static Color GetColor(int teamId)
     {
         // Find the team with corresponding team id
-        Team team = Teams.Find(e => e.Id == teamId);
+        Team team = Singleton.Teams.Find(e => e.Id == teamId);
         if (team != null)
         {
             return team.Color;
@@ -95,61 +113,69 @@ public class TeamManager : NetworkBehaviour
         return new Color(0, 0, 0, 0);
     }
 
-    public void SetTeamScore(int teamId, Score score)
+    public static void SetTeamScore(int teamId, Score score)
     {
-        Teams[teamId - 1].Score = score;
+        Singleton.Teams[teamId - 1].Score = score;
     }
 
-    public void AddTeam(Color color)
+    public static void AddTeam(Color color)
     {
-        Team team = new Team(Teams.Count + 1);
+        Team team = new Team(Singleton.Teams.Count + 1);
         team.Color = color;
-        Teams.Add(team);
+        Singleton.Teams.Add(team);
     }
 
-    public void AddTeam()
+    public static void AddTeam()
     {
-        Teams.Add(new Team(Teams.Count + 1));
+        Singleton.Teams.Add(new Team(Singleton.Teams.Count + 1));
     }
 
-    public void RemoveTeam(Team team)
+    public static void RemoveTeam(Team team)
     {
-        Teams.Remove(team);
+        Singleton.Teams.Remove(team);
+        int i = 0;
         // Fix team id's so there are no gaps
-        for (int i = 0; i < Teams.Count; i++)
+        Singleton.Teams.ForEach(e =>
         {
-            Teams[i].Id = i;
-        }
+            i++;
+            for (int j = 0; j < 8; j++)
+            {
+                // If there are players in a team fix played team id's
+                if (Singleton.m_players[j] != null && Singleton.m_players[j].Team.Id == e.Id)
+                {
+                    Singleton.m_players[j].Team.Id = i;
+                }
+            }
+            e.Id = i;
+        });
     }
-
-    public Soldier[] GetAllPlayers()
+    public static void SyncTeams()
     {
-        return m_players;
-    }
-
-    public void SyncTeams()
-    {
-        Teams.ForEach(team =>
+        Singleton.Teams.ForEach(team =>
         {
-            RpcSyncTeamScore(team.Id, team.Score.Kills, team.Score.Deaths);
+            Singleton.RpcSyncTeamScore(team.Id, team.Score.Kills, team.Score.Deaths);
         });
     }
 
     [ClientRpc]
-    public void RpcSyncTeamScore(int teamId, int kills, int deaths)
+    private void RpcSyncTeamScore(int teamId, int kills, int deaths)
     {
         // Sync the score for all the teams.
-        if (isServer)   // Except for the server since that is the correct score.
+        if (Singleton.isServer)   // Except for the server since that is the correct score.
         {
             return;
         }
         SetTeamScore(teamId, new Score(kills, deaths));
     }
+    public static Soldier[] GetAllPlayers()
+    {
+        return Singleton.m_players;
+    }
 
-    public List<Soldier> GetAliveEnemiesByTeam(int teamId)
+    public static List<Soldier> GetAliveEnemiesByTeam(int teamId)
     {
         List<Soldier> enemies = new List<Soldier>();
-        foreach (Soldier player in m_players)
+        foreach (Soldier player in Singleton.m_players)
         {
             if (player != null && player.Team.Id != teamId && !player.IsDead)
             {

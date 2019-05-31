@@ -74,6 +74,11 @@ public class MinHeap
         {
             return;
         }
+        if (m_count <= 0)
+        {
+            m_count = 0;
+            return;
+        }
         m_hash[coordinates] = 0;
         m_heap[i] = m_heap[m_count];
         m_hash[m_heap[i].Coordinates] = i;

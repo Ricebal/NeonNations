@@ -9,8 +9,6 @@ public class TeamScoreboard : NetworkBehaviour
     private GameObject m_teamScorePrefab;
     [SerializeField]
     private GameObject m_teamList;
-    [SerializeField]
-    private TeamManager m_teamManager;
     private GameMode m_gameMode;
     [SerializeField]
     private TextMeshProUGUI m_remainingTime;
@@ -18,10 +16,8 @@ public class TeamScoreboard : NetworkBehaviour
 
     private void Start()
     {
-        m_teamManager = GameObject.Find("GameManager").GetComponent<TeamManager>();
-        GameManager gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
-        m_gameMode = gameManager.GameMode;
-        foreach (Team team in m_teamManager.Teams)
+        m_gameMode = GameManager.Singleton.GameMode;
+        foreach (Team team in TeamManager.Singleton.Teams)
         {
             AddTeam(team.Id);
             if (isServer)
@@ -33,7 +29,7 @@ public class TeamScoreboard : NetworkBehaviour
 
         if (isServer)
         {
-            m_teamManager.OnPlayersChange += RefreshScores;
+            TeamManager.Singleton.OnPlayersChange += RefreshScores;
             RpcRefreshScores();
         }
 
@@ -48,7 +44,7 @@ public class TeamScoreboard : NetworkBehaviour
     private void AddTeam(int teamId)
     {
         // Get team, -1 for array.
-        Team team = m_teamManager.Teams[teamId - 1];
+        Team team = TeamManager.Singleton.Teams[teamId - 1];
 
         // Make a new entry on the scoreboard
         GameObject scorePanel = Instantiate(m_teamScorePrefab) as GameObject;
@@ -64,7 +60,7 @@ public class TeamScoreboard : NetworkBehaviour
 
     private void RefreshScores()
     {
-        m_teamManager.SyncTeams();
+        TeamManager.SyncTeams();
         RpcRefreshScores();
     }
 
@@ -73,7 +69,7 @@ public class TeamScoreboard : NetworkBehaviour
     {
         foreach (KeyValuePair<int, TeamScoreboardEntry> keyValuePair in m_teamScoreboardEntries)
         {
-            Team team = m_teamManager.Teams[keyValuePair.Key - 1];
+            Team team = TeamManager.Singleton.Teams[keyValuePair.Key - 1];
             keyValuePair.Value.SetScore(team.Score);
         }
     }
