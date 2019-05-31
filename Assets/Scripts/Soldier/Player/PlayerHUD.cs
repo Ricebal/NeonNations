@@ -1,12 +1,10 @@
-﻿using TMPro;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class PlayerHUD : MonoBehaviour
 {
     [SerializeField] private Stat m_healthStat;
     [SerializeField] private Stat m_energyStat;
-    private GameObject m_hud;
     private Slider m_healthSlider;
     private Slider m_energySlider;
 
