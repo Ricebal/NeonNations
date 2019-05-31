@@ -41,7 +41,6 @@ public class DeathExplosion : MonoBehaviour
                 particleSystemRenderers[i].trailMaterial = mat;
             }
         }
-
     }
 
     private void Update()

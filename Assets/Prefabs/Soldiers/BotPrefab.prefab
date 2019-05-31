@@ -4987,6 +4987,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_minValue: 0
   m_maxValue: 100
+  m_currentValue: 0
 --- !u!114 &8274355627883046309
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5001,6 +5002,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_minValue: 0
   m_maxValue: 100
+  m_currentValue: 0
 --- !u!114 &7122264329543758612
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5014,9 +5016,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   syncInterval: 0.1
-  Team: 0
+  Team:
+    Id: 0
+    Color: {r: 0, g: 0, b: 0, a: 0}
+    PlayerCount: 0
   InitialColor: {r: 0, g: 0, b: 0, a: 0}
-  Speed: 7.5
+  Speed: 8
   Username: Bot
   RespawnTime: 5
   IsDead: 0

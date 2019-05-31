@@ -51,6 +51,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   syncInterval: 0.1
+  GameMode: {fileID: 0}
   m_seed: 
   m_mapWidth: 50
   m_mapHeight: 50
@@ -64,6 +65,8 @@ MonoBehaviour:
   m_breakableTunnelChance: 20
   m_shortcutMinSkipDistance: 20
   m_outerWallWidth: 14
+  m_fireWorks: {fileID: 3599376716146521321, guid: 27f5446eba1e75c408fdc65871eed296,
+    type: 3}
 --- !u!114 &4331448404734817727
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -181,6 +184,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 371f18629be778f4ab67a230d11c3ae3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncInterval: 0.1
   Teams:
   - Id: 1
     Color: {r: 0.9433962, g: 0, b: 0.7984193, a: 0}
