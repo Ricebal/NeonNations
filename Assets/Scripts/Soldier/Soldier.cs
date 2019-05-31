@@ -45,7 +45,7 @@ public abstract class Soldier : NetworkBehaviour
     [Command]
     protected void CmdRespawn()
     {
-        Vector2 spawnPoint = GameManager.Singleton.GetRandomFloorTile();
+        Vector2 spawnPoint = BoardManager.GetRandomFloorTile();
         RpcRespawn(spawnPoint);
     }
 
