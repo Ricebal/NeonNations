@@ -32,6 +32,13 @@ public class Player : Soldier
 
         m_energyStat.Add(1);
         m_hud.UpdateHUD();
+        if (GameManager.Singleton.GameFinished)
+        {
+            if (GameOverMenu.IsActive())
+            {
+                GameOverMenu.Deactivate();
+            }
+        }
     }
 
     private void PauseToggled()
@@ -47,11 +54,22 @@ public class Player : Soldier
     {
         if (isLocalPlayer)
         {
-            GameOverMenu.Activate(RespawnTime);
+            if (!GameManager.Singleton.GameFinished)
+            {
+                GameOverMenu.Activate(RespawnTime);
+            }
             m_playerController.enabled = false;
         }
 
         base.Die();
+    }
+
+    public override void DisableMovement()
+    {
+        if (isLocalPlayer)
+        {
+            m_playerController.enabled = false;
+        }
     }
 
     protected override void Respawn(Vector2 respawnPoint)

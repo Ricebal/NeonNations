@@ -385,7 +385,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.392}
+  m_Color: {r: 0.9433962, g: 0, b: 0, a: 0.392}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -433,6 +433,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a23e37617a3ce8e45a012b26a4d28e35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_scoreboardEntryBackground: {fileID: 5498904180268347201}
   m_username: {fileID: 5950138729186079414}
   m_kills: {fileID: 363167116775533465}
   m_deaths: {fileID: 1952919762941324894}

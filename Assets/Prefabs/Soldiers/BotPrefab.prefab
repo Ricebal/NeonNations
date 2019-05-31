@@ -5016,7 +5016,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   syncInterval: 0.1
-  Team: 0
+  Team:
+    Id: 0
+    Color: {r: 0, g: 0, b: 0, a: 0}
+    PlayerCount: 0
   InitialColor: {r: 0, g: 0, b: 0, a: 0}
   Speed: 8
   Username: Bot

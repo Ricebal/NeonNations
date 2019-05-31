@@ -4,7 +4,7 @@ using UnityEngine;
 public abstract class Soldier : NetworkBehaviour
 {
     [SyncVar]
-    public int Team;
+    public Team Team;
     [SyncVar]
     public Color InitialColor;
     [SyncVar]
@@ -37,8 +37,8 @@ public abstract class Soldier : NetworkBehaviour
 
         if (isServer)
         {
-            // If the soldier is able to respawn
-            if (IsDead && Time.time - m_deathTime >= RespawnTime)
+            // If the soldier is able to respawn AND the game isn't finished yet.
+            if (IsDead && Time.time - m_deathTime >= RespawnTime && !GameManager.Singleton.GameFinished)
             {
                 Vector2 spawnPoint = BoardManager.GetRandomFloorTile();
                 RpcRespawn(spawnPoint);
@@ -64,12 +64,16 @@ public abstract class Soldier : NetworkBehaviour
         gameObject.layer = 9; // DeadPlayers layer;
         m_deathTime = Time.time;
         PlayerScore.Deaths++;
+        Team.AddDeath();
 
         DeathExplosion deathExplosion = GetComponentInChildren<DeathExplosion>();
         if (deathExplosion != null)
         {
             deathExplosion.Fire();
         }
+    }
+    public virtual void DisableMovement()
+    {
     }
 
     public void SyncScore()
@@ -155,7 +159,9 @@ public abstract class Soldier : NetworkBehaviour
     [ClientRpc]
     protected void RpcAddKill(string playerId)
     {
-        GameObject.Find(playerId).GetComponent<Soldier>().PlayerScore.Kills++;
+        Soldier otherSoldier = GameObject.Find(playerId).GetComponent<Soldier>();
+        otherSoldier.PlayerScore.Kills++;
+        otherSoldier.Team.AddKill();
     }
 
     protected void OnTriggerEnter(Collider collider)
