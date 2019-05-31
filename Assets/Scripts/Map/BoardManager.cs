@@ -7,6 +7,7 @@ using UnityEngine;
 public class BoardManager : NetworkBehaviour
 {
     public static BoardManager Singleton;
+
     // Walls is used for loading the map
     [Flags]
     private enum Walls
@@ -19,10 +20,8 @@ public class BoardManager : NetworkBehaviour
         Left = 8 // 001000
     }
 
-    [SerializeField]
-    private GameObject m_mapPrefab;
-    [SerializeField]
-    private GameObject m_breakableWallPrefab;
+    [SerializeField] private GameObject m_mapPrefab;
+    [SerializeField] private GameObject m_breakableWallPrefab;
 
     // So that a position is in the middle of a tile
     private const float MAP_OFFSET = -0.5f;

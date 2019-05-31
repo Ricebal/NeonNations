@@ -28,7 +28,7 @@ public class CameraController : MonoBehaviour
         }
     }
 
-    void LateUpdate()
+    private void LateUpdate()
     {
         // for debugging
         transform.eulerAngles = new Vector3((float)CameraTilt, 0, 0);

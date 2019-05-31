@@ -149,6 +149,7 @@ public class TeamManager : NetworkBehaviour
             e.Id = i;
         });
     }
+
     public static void SyncTeams()
     {
         Singleton.Teams.ForEach(team =>
@@ -167,6 +168,7 @@ public class TeamManager : NetworkBehaviour
         }
         SetTeamScore(teamId, new Score(kills, deaths));
     }
+
     public static Soldier[] GetAllPlayers()
     {
         return Singleton.m_players;

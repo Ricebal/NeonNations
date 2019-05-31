@@ -5,11 +5,12 @@ using UnityEngine;
 
 public class GameEnvironment : ScriptableObject
 {
-    private Tile[][] m_map;
-    private List<Tile> m_listOfObstacles = new List<Tile>();
     private const int SONAR_RANGE = 5;
     private const int BULLET_RANGE = 1;
     private const int IMPACT_RANGE = 2;
+
+    private Tile[][] m_map;
+    private List<Tile> m_listOfObstacles = new List<Tile>();
 
     /// <summary>
     /// Acts as a constructor for GameEnvironment, since it's real constructor can't be used because it's a ScriptableObject

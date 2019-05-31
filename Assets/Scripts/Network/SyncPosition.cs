@@ -4,20 +4,15 @@ using UnityEngine;
 public class SyncPosition : NetworkBehaviour
 {
     // Threshold in meters
-    [SerializeField]
-    private float m_threshold = 0.025f;
+    [SerializeField] private float m_threshold = 0.025f;
     // Interpolation factor
-    [SerializeField]
-    private float m_lerpRate = 7;
+    [SerializeField] private float m_lerpRate = 7;
     // Non-local soldiers are teleported when the difference between their current position and the real one is lower than this value
-    [SerializeField]
-    private float m_closeEnough = 0.01f;
+    [SerializeField] private float m_closeEnough = 0.01f;
     // Non-local soldiers are teleported when the difference between their current position and the real one is higher than this value
-    [SerializeField]
-    private float m_tooFar = 10;
+    [SerializeField] private float m_tooFar = 10;
     // Whether or not the GameObject is a bot
-    [SerializeField]
-    private bool m_isBot = false;
+    [SerializeField] private bool m_isBot = false;
 
     private Vector3 m_syncPos;
     private Vector3 m_lastPos;

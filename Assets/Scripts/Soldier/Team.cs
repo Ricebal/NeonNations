@@ -6,8 +6,7 @@ public class Team
     public int Id;
     public Color Color;
     public int PlayerCount;
-    [SerializeField]
-    public Score Score;
+    [SerializeField] public Score Score;
 
     public Team(int id) : this()
     {
