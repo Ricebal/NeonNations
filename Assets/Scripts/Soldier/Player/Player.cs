@@ -14,7 +14,7 @@ public class Player : Soldier
         m_playerController = GetComponent<PlayerController>();
         CameraController.SetTarget(this.transform);
         EscapeMenu.Singleton.OnPauseToggled += PauseToggled;
-        GameOverMenu.Singleton.OnRespawnClick += CmdRespawn;
+        GameOverMenu.Singleton.OnRespawnClick += Respawn;
 
         Username = ProfileMenu.GetUsername();
         CmdUsername(Username);

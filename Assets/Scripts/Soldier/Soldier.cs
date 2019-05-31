@@ -3,12 +3,9 @@ using UnityEngine;
 
 public abstract class Soldier : NetworkBehaviour
 {
-    [SyncVar]
-    public int Team;
-    [SyncVar]
-    public Color InitialColor;
-    [SyncVar]
-    public Score PlayerScore = new Score();
+    [SyncVar] public int Team;
+    [SyncVar] public Color InitialColor;
+    [SyncVar] public Score PlayerScore = new Score();
     // The speed of the entity
     public float Speed;
     public string Username;
@@ -42,6 +39,25 @@ public abstract class Soldier : NetworkBehaviour
         Die();
     }
 
+    protected virtual void Die()
+    {
+        IsDead = true;
+        gameObject.layer = 9; // DeadPlayers layer;
+        m_deathTime = Time.time;
+        PlayerScore.Deaths++;
+
+        DeathExplosion deathExplosion = GetComponentInChildren<DeathExplosion>();
+        if (deathExplosion != null)
+        {
+            deathExplosion.Fire();
+        }
+    }
+
+    protected virtual void Respawn()
+    {
+        CmdRespawn();
+    }
+
     [Command]
     protected void CmdRespawn()
     {
@@ -55,18 +71,14 @@ public abstract class Soldier : NetworkBehaviour
         Respawn(spawnPoint);
     }
 
-    protected virtual void Die()
+    protected virtual void Respawn(Vector2 spawnPoint)
     {
-        IsDead = true;
-        gameObject.layer = 9; // DeadPlayers layer;
-        m_deathTime = Time.time;
-        PlayerScore.Deaths++;
-
-        DeathExplosion deathExplosion = GetComponentInChildren<DeathExplosion>();
-        if (deathExplosion != null)
-        {
-            deathExplosion.Fire();
-        }
+        transform.position = new Vector3(spawnPoint.x, 0, spawnPoint.y);
+        gameObject.layer = 8; // Players layer
+        m_renderer.material.color = InitialColor;
+        m_healthStat.Reset();
+        m_energyStat.Reset();
+        IsDead = false;
     }
 
     public void SyncScore()
@@ -82,21 +94,17 @@ public abstract class Soldier : NetworkBehaviour
         PlayerScore.Deaths = deaths;
     }
 
-    protected virtual void Respawn(Vector2 spawnPoint)
-    {
-        transform.position = new Vector3(spawnPoint.x, 0, spawnPoint.y);
-        gameObject.layer = 8; // Players layer
-        m_renderer.material.color = InitialColor;
-        m_healthStat.Reset();
-        m_energyStat.Reset();
-        IsDead = false;
-    }
-
     public void SetInitialColor(Color color)
     {
         Color newColor = new Color(color.r, color.g, color.b, 1f);
         InitialColor = newColor;
         CmdColor(gameObject, newColor);
+    }
+
+    [Command]
+    protected void CmdColor(GameObject obj, Color color)
+    {
+        RpcColor(obj, color);
     }
 
     [ClientRpc]
@@ -111,9 +119,9 @@ public abstract class Soldier : NetworkBehaviour
     }
 
     [Command]
-    protected void CmdColor(GameObject obj, Color color)
+    protected void CmdUsername(string username)
     {
-        RpcColor(obj, color);
+        RpcUsername(username);
     }
 
     [ClientRpc]
@@ -121,12 +129,6 @@ public abstract class Soldier : NetworkBehaviour
     {
         Username = username;
         PlayerScore.Username = username;
-    }
-
-    [Command]
-    protected void CmdUsername(string username)
-    {
-        RpcUsername(username);
     }
 
     protected void TakeDamage(int damage, string playerId)
