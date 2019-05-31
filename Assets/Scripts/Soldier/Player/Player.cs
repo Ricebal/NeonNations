@@ -3,6 +3,7 @@
 public class Player : Soldier
 {
     private PlayerController m_playerController;
+    private PlayerHUD m_hud;
 
     private void Start()
     {
@@ -11,6 +12,7 @@ public class Player : Soldier
             return;
         }
 
+        m_hud = GetComponent<PlayerHUD>();
         m_playerController = GetComponent<PlayerController>();
         CameraController.SetTarget(this.transform);
         EscapeMenu.Singleton.OnPauseToggled += PauseToggled;
@@ -30,7 +32,7 @@ public class Player : Soldier
         Cursor.visible = GameOverMenu.IsActive() || EscapeMenu.IsActive();
 
         m_energyStat.Add(1);
-        PlayerHUD.UpdateHUD();
+        m_hud.UpdateHUD();
     }
 
     private void PauseToggled()
