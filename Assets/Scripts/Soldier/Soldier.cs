@@ -133,7 +133,7 @@ public abstract class Soldier : NetworkBehaviour
     {
         RpcTakeDamage(damage);
         // If the soldier has no remaining health and is not dead yet, he will die
-        if (m_healthStat.GetValue() <= 0 && !IsDead)
+        if (!IsDead && m_healthStat.GetValue() <= 0)
         {
             RpcAddKill(playerId);
             RpcDead();

@@ -16,10 +16,7 @@
         set
         {
             m_username = value;
-            if (OnScoreChange != null)
-            {
-                OnScoreChange();
-            }
+            OnScoreChange?.Invoke();
         }
     }
 
@@ -32,10 +29,7 @@
         set
         {
             m_kills = value;
-            if (OnScoreChange != null)
-            {
-                OnScoreChange();
-            }
+            OnScoreChange?.Invoke();
         }
     }
 
@@ -48,10 +42,7 @@
         set
         {
             m_deaths = value;
-            if (OnScoreChange != null)
-            {
-                OnScoreChange();
-            }
+            OnScoreChange?.Invoke();
         }
     }
 }

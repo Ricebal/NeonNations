@@ -48,10 +48,7 @@ public class TeamManager : MonoBehaviour
         player.SetInitialColor(GetColor(team));
         player.GetComponent<Identity>().SetIdentity();
 
-        if (OnPlayersChange != null)
-        {
-            OnPlayersChange();
-        }
+        OnPlayersChange?.Invoke();
 
         return team;
     }
@@ -78,10 +75,7 @@ public class TeamManager : MonoBehaviour
         }
 
         m_players = tempArray;
-        if (OnPlayersChange != null)
-        {
-            OnPlayersChange();
-        }
+        OnPlayersChange?.Invoke();
     }
 
     public Soldier[] GetPlayers()

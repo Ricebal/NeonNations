@@ -39,10 +39,7 @@ public class EscapeMenu : NetworkBehaviour
     public void TogglePause()
     {
         Canvas.SetActive(!Canvas.activeSelf);
-        if (OnPauseToggled != null)
-        {
-            OnPauseToggled();
-        }
+        OnPauseToggled?.Invoke();
     }
 
     public bool IsActive()

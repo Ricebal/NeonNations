@@ -38,10 +38,7 @@ public class GameOverMenu : MonoBehaviour
 
     public void Respawn()
     {
-        if (OnRespawnClick != null)
-        {
-            OnRespawnClick();
-        }
+        OnRespawnClick?.Invoke();
     }
 
     public void Activate(float respawnTime)
