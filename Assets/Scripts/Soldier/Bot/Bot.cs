@@ -26,10 +26,17 @@ public class Bot : Soldier
             return;
         }
 
-        // if the bot is dead, set its velocity to 0
         if (IsDead)
         {
+            // Set the bot velocity to 0 while it's dead
             m_rigidbody.velocity = Vector3.zero;
+
+            // Respawn the bot if it's able to respawn
+            if (Time.time - m_deathTime >= RespawnTime)
+            {
+                CmdRespawn();
+            }
+
         }
     }
 
@@ -70,7 +77,6 @@ public class Bot : Soldier
         Vector3 direction = target - transform.position;
         float rotation = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(0, rotation, 0);
-
     }
 
     // Aims the bot at the input vector in local space

@@ -13,7 +13,7 @@ public class AfterImageController : NetworkBehaviour
 
     private void Start()
     {
-        Color color = GetComponent<Soldier>().InitialColor;
+        Color color = GetComponent<Soldier>().Color;
         m_color = new Color(color.r, color.g, color.b, 0.5f);
     }
 

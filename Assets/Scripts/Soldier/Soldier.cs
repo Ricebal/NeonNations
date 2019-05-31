@@ -3,12 +3,9 @@ using UnityEngine;
 
 public abstract class Soldier : NetworkBehaviour
 {
-    [SyncVar]
-    public Team Team;
-    [SyncVar]
-    public Color InitialColor;
-    [SyncVar]
-    public Score PlayerScore = new Score();
+    [SyncVar] public Team Team;
+    [SyncVar] public Color Color;
+    [SyncVar] public Score PlayerScore = new Score();
     // The speed of the entity
     public float Speed;
     public string Username;
@@ -32,17 +29,7 @@ public abstract class Soldier : NetworkBehaviour
         if (IsDead)
         {
             float newAlpha = Mathf.Max(0, (RespawnTime - (Time.time - m_deathTime)) / RespawnTime);
-            m_renderer.material.color = new Color(1, 0.39f, 0.28f, newAlpha);
-        }
-
-        if (isServer)
-        {
-            // If the soldier is able to respawn AND the game isn't finished yet.
-            if (IsDead && Time.time - m_deathTime >= RespawnTime && !GameManager.Singleton.GameFinished)
-            {
-                Vector2 spawnPoint = BoardManager.GetRandomFloorTile();
-                RpcRespawn(spawnPoint);
-            }
+            m_renderer.material.color = new Color(Color.r, Color.g, Color.b, newAlpha);
         }
     }
 
@@ -50,12 +37,6 @@ public abstract class Soldier : NetworkBehaviour
     private void RpcDead()
     {
         Die();
-    }
-
-    [ClientRpc]
-    private void RpcRespawn(Vector2 spawnPoint)
-    {
-        Respawn(spawnPoint);
     }
 
     protected virtual void Die()
@@ -76,6 +57,34 @@ public abstract class Soldier : NetworkBehaviour
     {
     }
 
+    protected virtual void Respawn()
+    {
+        CmdRespawn();
+    }
+
+    [Command]
+    protected void CmdRespawn()
+    {
+        Vector2 spawnPoint = BoardManager.GetRandomFloorTile();
+        RpcRespawn(spawnPoint);
+    }
+
+    [ClientRpc]
+    private void RpcRespawn(Vector2 spawnPoint)
+    {
+        Respawn(spawnPoint);
+    }
+
+    protected virtual void Respawn(Vector2 spawnPoint)
+    {
+        transform.position = new Vector3(spawnPoint.x, 0, spawnPoint.y);
+        gameObject.layer = 8; // Players layer
+        m_renderer.material.color = Color;
+        m_healthStat.Reset();
+        m_energyStat.Reset();
+        IsDead = false;
+    }
+
     public void SyncScore()
     {
         RpcSetScore(PlayerScore.Username, PlayerScore.Kills, PlayerScore.Deaths);
@@ -89,21 +98,17 @@ public abstract class Soldier : NetworkBehaviour
         PlayerScore.Deaths = deaths;
     }
 
-    protected virtual void Respawn(Vector2 spawnPoint)
-    {
-        transform.position = new Vector3(spawnPoint.x, 0, spawnPoint.y);
-        gameObject.layer = 8; // Players layer
-        m_renderer.material.color = InitialColor;
-        m_healthStat.Reset();
-        m_energyStat.Reset();
-        IsDead = false;
-    }
-
     public void SetInitialColor(Color color)
     {
         Color newColor = new Color(color.r, color.g, color.b, 1f);
-        InitialColor = newColor;
+        Color = newColor;
         CmdColor(gameObject, newColor);
+    }
+
+    [Command]
+    protected void CmdColor(GameObject obj, Color color)
+    {
+        RpcColor(obj, color);
     }
 
     [ClientRpc]
@@ -118,9 +123,9 @@ public abstract class Soldier : NetworkBehaviour
     }
 
     [Command]
-    protected void CmdColor(GameObject obj, Color color)
+    protected void CmdUsername(string username)
     {
-        RpcColor(obj, color);
+        RpcUsername(username);
     }
 
     [ClientRpc]
@@ -130,23 +135,14 @@ public abstract class Soldier : NetworkBehaviour
         PlayerScore.Username = username;
     }
 
-    [Command]
-    protected void CmdUsername(string username)
-    {
-        RpcUsername(username);
-    }
-
     protected void TakeDamage(int damage, string playerId)
     {
         RpcTakeDamage(damage);
-        if (m_healthStat.GetValue() <= 0)
+        // If the soldier has no remaining health and is not dead yet, he will die
+        if (!IsDead && m_healthStat.GetValue() <= 0)
         {
-            // If the Soldier is not yet dead, the Soldier will die
-            if (!IsDead)
-            {
-                RpcAddKill(playerId);
-                RpcDead();
-            }
+            RpcAddKill(playerId);
+            RpcDead();
         }
     }
 
