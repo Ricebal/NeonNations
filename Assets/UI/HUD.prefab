@@ -322,7 +322,6 @@ GameObject:
   - component: {fileID: 554816597113025820}
   - component: {fileID: 8971493596410351257}
   - component: {fileID: 1569657582489831987}
-  - component: {fileID: 702961341822398188}
   - component: {fileID: 7354764442901588293}
   m_Layer: 5
   m_Name: TeamScore
@@ -376,37 +375,7 @@ MonoBehaviour:
   m_teamScorePrefab: {fileID: 2226107171521314961, guid: c72c9d1e051bd38499a8f45e362d89c9,
     type: 3}
   m_teamList: {fileID: 3039216186996607917}
-  m_teamManager: {fileID: 0}
   m_remainingTime: {fileID: 7078166930350357348}
---- !u!114 &702961341822398188
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1180176020245855257}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 0.3584906, g: 0.3584906, b: 0.3584906, a: 0.21568628}
-  m_RaycastTarget: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
-      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 7fb83828fb4ce524c833e47bc94213ed, type: 3}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
 --- !u!114 &7354764442901588293
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -593,7 +562,6 @@ GameObject:
   m_Component:
   - component: {fileID: 8599046781966183617}
   - component: {fileID: 7838926912098385951}
-  - component: {fileID: 2830822987808445390}
   m_Layer: 5
   m_Name: TimePanel
   m_TagString: Untagged
@@ -629,35 +597,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1413628085612551894}
   m_CullTransparentMesh: 0
---- !u!114 &2830822987808445390
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1413628085612551894}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 0.1509434, g: 0.1509434, b: 0.1509434, a: 0.392}
-  m_RaycastTarget: 0
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
-      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 1cb4e7fbc7b0b0745885ab8c0621fc58, type: 3}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
 --- !u!1 &2328500249236287391
 GameObject:
   m_ObjectHideFlags: 0
@@ -1883,7 +1822,6 @@ MonoBehaviour:
     type: 3}
   m_playerList: {fileID: 3747269461985483638}
   m_scoreBoard: {fileID: 979628349474498990}
-  m_teamManager: {fileID: 0}
 --- !u!114 &1376595315368991327
 MonoBehaviour:
   m_ObjectHideFlags: 0

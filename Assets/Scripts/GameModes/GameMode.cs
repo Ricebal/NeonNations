@@ -39,7 +39,7 @@ public abstract class GameMode : NetworkBehaviour
 
     public void CheckForWinCondition()
     {
-        if (GameManager.Singleton.GameFinished) // Don't change the score after the game has finished.
+        if (GameManager.Singleton.GameFinished) // Don't change the outcome after the game has finished.
         {
             return;
         }
@@ -47,10 +47,7 @@ public abstract class GameMode : NetworkBehaviour
         {
             if (CalculateScore(team.Score) >= m_winCondition) // A team has met the win condition.
             {
-                if (OnGameFinished != null)
-                {
-                    OnGameFinished();
-                }
+                OnGameFinished?.Invoke();
             }
         }
     }
@@ -62,7 +59,7 @@ public abstract class GameMode : NetworkBehaviour
             m_timeLimit -= deltaTime;
             if (m_timeLimit <= 0)
             {
-                OnGameFinished(); // The game is finished.
+                OnGameFinished?.Invoke(); // The game is finished.
             }
         }
     }
