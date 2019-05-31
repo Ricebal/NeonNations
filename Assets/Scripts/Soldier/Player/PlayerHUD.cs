@@ -21,9 +21,4 @@ public class PlayerHUD : MonoBehaviour
         m_healthSlider.value = Singleton.m_healthStat.GetValue();
         m_energySlider.value = Singleton.m_energyStat.GetValue();
     }
-
-    public void SetSeed(string seed)
-    {
-        m_hud.GetComponent<TextMeshProUGUI>().text = seed;
-    }
 }
