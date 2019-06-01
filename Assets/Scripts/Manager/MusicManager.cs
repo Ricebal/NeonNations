@@ -37,16 +37,23 @@ public class MusicManager : MonoBehaviour
         // If the new scene is a menu scene and the previous scene was a game scene or the game just started, play menu music
         if (m_menuScenes.Contains(newScene.name) && m_gameScenes.Contains(m_lastSceneName) || m_lastSceneName == null)
         {
-            m_audioSource.Stop();
-            m_audioSource.PlayOneShot(m_menuMusic, m_menuMusicVolume);
+            Play(m_menuMusic, m_menuMusicVolume);
         }
         // If the new scene is a game scene and the previous scene was a menu scene, play game music
         else if (m_gameScenes.Contains(newScene.name) && m_menuScenes.Contains(m_lastSceneName))
         {
-            m_audioSource.Stop();
-            m_audioSource.PlayOneShot(m_gameMusic, m_gameMusicVolume);
+            Play(m_gameMusic, m_gameMusicVolume);
         }
-        // previousScene does not work and always returns an empty scene with no name, we need to store the last scene on our own
+        // previousScene always returns an empty scene with no name, we need to store the last scene on our own
         m_lastSceneName = newScene.name;
+    }
+
+    // Play in loop the clip with the provided volume
+    private void Play(AudioClip clip, float volume)
+    {
+        m_audioSource.Stop();
+        m_audioSource.clip = clip;
+        m_audioSource.volume = volume;
+        m_audioSource.Play();
     }
 }
