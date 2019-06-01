@@ -3,7 +3,7 @@ using Mirror;
 public class LightController : NetworkBehaviour
 {
 
-    void Start()
+    private void Start()
     {
         if (!isLocalPlayer)
         {

@@ -3,6 +3,7 @@
 public class Player : Soldier
 {
     private PlayerController m_playerController;
+    private PlayerHUD m_hud;
 
     private void Start()
     {
@@ -11,9 +12,11 @@ public class Player : Soldier
             return;
         }
 
+        m_hud = GetComponent<PlayerHUD>();
         m_playerController = GetComponent<PlayerController>();
         CameraController.SetTarget(this.transform);
-        EscapeMenu.Singleton.EventPauseToggled += PauseToggled;
+        EscapeMenu.Singleton.OnPauseToggled += PauseToggled;
+        GameOverMenu.Singleton.OnRespawnClick += Respawn;
 
         Username = ProfileMenu.GetUsername();
         CmdUsername(Username);
@@ -29,7 +32,14 @@ public class Player : Soldier
         Cursor.visible = GameOverMenu.IsActive() || EscapeMenu.IsActive();
 
         m_energyStat.Add(1);
-        PlayerHUD.UpdateHUD();
+        m_hud.UpdateHUD();
+        if (GameManager.Singleton.GameFinished)
+        {
+            if (GameOverMenu.IsActive())
+            {
+                GameOverMenu.Deactivate();
+            }
+        }
     }
 
     private void PauseToggled()
@@ -45,11 +55,22 @@ public class Player : Soldier
     {
         if (isLocalPlayer)
         {
-            GameOverMenu.Activate(RespawnTime);
+            if (!GameManager.Singleton.GameFinished)
+            {
+                GameOverMenu.Activate(RespawnTime);
+            }
             m_playerController.enabled = false;
         }
 
         base.Die();
+    }
+
+    public override void DisableMovement()
+    {
+        if (isLocalPlayer)
+        {
+            m_playerController.enabled = false;
+        }
     }
 
     protected override void Respawn(Vector2 respawnPoint)
@@ -76,6 +97,7 @@ public class Player : Soldier
 
         CameraController.SetInactive();
         CameraController.Singleton.PlayerTransform = null;
-        EscapeMenu.Singleton.EventPauseToggled -= PauseToggled;
+        EscapeMenu.Singleton.OnPauseToggled -= PauseToggled;
+        GameOverMenu.Singleton.OnRespawnClick -= Respawn;
     }
 }

@@ -6,22 +6,18 @@ using UnityEngine.UI;
 
 public class DisplayMenu : MonoBehaviour
 {
-    [SerializeField]
-    private Dropdown m_resolutionDropdown;
-    [SerializeField]
-    private Toggle m_fullScreenToggle;
-    [SerializeField]
-    private Dropdown m_qualityDropdown;
+    [SerializeField] private Dropdown m_resolutionDropdown;
+    [SerializeField] private Toggle m_fullScreenToggle;
+    [SerializeField] private Dropdown m_qualityDropdown;
     // Text displayed when the settings are saved
-    [SerializeField]
-    private TextMeshProUGUI m_savingText;
+    [SerializeField] private TextMeshProUGUI m_savingText;
 
     // List of resolutions
     private Resolution[] m_resolutions;
 
     private int m_isFullScreen;
 
-    void Start()
+    private void Start()
     {
         // List of resolutions converted to string in order to add them to the dropdown
         List<string> options = new List<string>();

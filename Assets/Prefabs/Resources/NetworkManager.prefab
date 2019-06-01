@@ -53,7 +53,7 @@ MonoBehaviour:
   onlineScene: Game
   transport: {fileID: 3448717826135486326}
   networkAddress: localhost
-  maxConnections: 4
+  maxConnections: 8
   playerPrefab: {fileID: 6654271199680664771, guid: 073989fcfeb340f43b1b3ad5cb563d7a,
     type: 3}
   autoCreatePlayer: 1

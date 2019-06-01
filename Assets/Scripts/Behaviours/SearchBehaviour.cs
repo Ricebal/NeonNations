@@ -13,7 +13,7 @@ public class SearchBehaviour : BotBehaviour
     private DStarLite m_dStarLite;
     private Bot m_bot;
 
-    void Start()
+    private void Start()
     {
         m_environment = GameEnvironment.CreateInstance(BoardManager.GetTileMap(), new List<Tile>() { Tile.Wall, Tile.BreakableWall });
         m_dStarLite = new DStarLite(m_environment, false);
@@ -22,12 +22,13 @@ public class SearchBehaviour : BotBehaviour
         m_bot = GetComponent<Bot>();
     }
 
-    void FixedUpdate()
+    private void FixedUpdate()
     {
         if (!m_active)
         {
             return;
         }
+
         Vector2Int currentCoordinates = m_environment.ConvertGameObjectToCoordinates(gameObject.transform);
         // If the goal hasn't been reached
         if (currentCoordinates.x != m_goalCoordinates.x || currentCoordinates.y != m_goalCoordinates.y)

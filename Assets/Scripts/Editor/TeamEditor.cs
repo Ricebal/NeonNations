@@ -1,5 +1,7 @@
 ﻿using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 [CustomEditor(typeof(TeamManager))]
 public class TeamEditor : Editor
@@ -34,7 +36,7 @@ public class TeamEditor : Editor
         GUILayout.EndVertical();
 
         EditorUtility.SetDirty(target);
-        EditorApplication.MarkSceneDirty();
+        EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
         serializedObject.ApplyModifiedProperties();
     }
 
