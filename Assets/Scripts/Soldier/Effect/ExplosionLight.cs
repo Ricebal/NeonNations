@@ -5,6 +5,7 @@ public class ExplosionLight : MonoBehaviour
     [SerializeField] private float m_rangeMultiplier;
     [SerializeField] private float m_intensityMultiplier;
     [SerializeField] private float m_lifetime;
+    [SerializeField] private float m_maxRangeForSoldierLight;
     [SerializeField] private Light m_lightForMap;
     [SerializeField] private Light m_lightForSoldiers;
 
@@ -30,12 +31,15 @@ public class ExplosionLight : MonoBehaviour
             m_lightForMap.intensity += m_intensityMultiplier * Time.deltaTime;
             m_lightForSoldiers.range += m_rangeMultiplier * Time.deltaTime;
             m_lightForSoldiers.intensity += m_intensityMultiplier * Time.deltaTime;
+            if(m_lightForSoldiers.range > m_maxRangeForSoldierLight)
+            {
+                m_lightForSoldiers.range = m_maxRangeForSoldierLight;
+            }
         }
         else
         {
             m_lightForMap.range -= m_rangeMultiplier * Time.deltaTime;
             m_lightForMap.intensity -= m_intensityMultiplier * Time.deltaTime;
-            m_lightForSoldiers.range -= m_rangeMultiplier * Time.deltaTime;
             m_lightForSoldiers.intensity -= m_intensityMultiplier * Time.deltaTime;
         }
     }

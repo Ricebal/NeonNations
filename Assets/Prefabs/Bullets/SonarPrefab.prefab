@@ -190,6 +190,7 @@ MonoBehaviour:
   m_lightForSoldiers: {fileID: 7672510747151505622}
   m_maxIntensity: 2
   m_maxRange: 32
+  m_maxRangeForSoldierLight: 8
   m_lifeSpan: 0.85
 --- !u!114 &7673788601802070293
 MonoBehaviour:

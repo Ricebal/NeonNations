@@ -6,6 +6,7 @@ public class Sonar : MonoBehaviour
     [SerializeField] private Light m_lightForSoldiers;
     [SerializeField] private float m_maxIntensity;
     [SerializeField] private float m_maxRange;
+    [SerializeField] private float m_maxRangeForSoldierLight;
     [SerializeField] private float m_lifeSpan;
     private bool m_growing;
 
@@ -44,6 +45,10 @@ public class Sonar : MonoBehaviour
             m_lightForMap.range += rangeAmount * 2f;
             m_lightForSoldiers.intensity += intensityAmount * 2f;
             m_lightForSoldiers.range += rangeAmount * 2f;
+            if(m_lightForSoldiers.range > m_maxRangeForSoldierLight)
+            {
+                m_lightForSoldiers.range = m_maxRangeForSoldierLight;
+            }
             
         }
         else
@@ -52,7 +57,6 @@ public class Sonar : MonoBehaviour
             m_lightForMap.intensity -= intensityAmount * 0.75f;
             m_lightForMap.range -= rangeAmount * 0.75f;
             m_lightForSoldiers.intensity -= intensityAmount * 0.75f;
-            m_lightForSoldiers.range -= rangeAmount * 0.75f;
         }
 
         if (m_lightForMap.intensity <= 0 && m_lightForMap.range <= 0)

@@ -21,6 +21,8 @@ public abstract class Soldier : NetworkBehaviour
     protected Renderer m_renderer;
     protected float m_deathTime;
 
+    public float TimerForSpotLight = 0;
+
     public override void OnStartClient()
     {
         m_renderer = GetComponent<Renderer>();
@@ -42,6 +44,15 @@ public abstract class Soldier : NetworkBehaviour
             {
                 Vector2 spawnPoint = BoardManager.GetRandomFloorTile();
                 RpcRespawn(spawnPoint);
+            }
+        }
+
+        if (TimerForSpotLight > 0)
+        {
+            TimerForSpotLight -= Time.deltaTime;
+            if(TimerForSpotLight <= 0 && !isLocalPlayer)
+            {
+                transform.GetChild(2).gameObject.SetActive(false); // Stop showing the spotlight of the soldier.
             }
         }
     }
@@ -153,6 +164,8 @@ public abstract class Soldier : NetworkBehaviour
     [ClientRpc]
     protected void RpcTakeDamage(int damage)
     {
+        transform.GetChild(2).gameObject.SetActive(true); // Show the spotlight of the soldier when he is hit by a bullet.
+        TimerForSpotLight = 0.5f;
         m_healthStat.Subtract(damage);
     }
 

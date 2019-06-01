@@ -4945,6 +4945,7 @@ MonoBehaviour:
   m_rangeMultiplier: 50
   m_intensityMultiplier: 10
   m_lifetime: 0.25
+  m_maxRangeForSoldierLight: 8
   m_lightForMap: {fileID: 2302226259342091652}
   m_lightForSoldiers: {fileID: 1394025172953417731}
 --- !u!114 &794481677199707160
