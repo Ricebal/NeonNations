@@ -1,8 +1,8 @@
 ﻿using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(AudioSource))]
 public class AudioManager : MonoBehaviour
@@ -18,7 +18,7 @@ public class AudioManager : MonoBehaviour
     [Scene] [SerializeField] private List<string> m_gameScenes;
     private string m_lastSceneName;
 
-    // Instantiate the MusicManager when the game starts
+    // Instantiate the AudioManager when the game starts
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void OnGameStart()
     {
@@ -37,6 +37,7 @@ public class AudioManager : MonoBehaviour
 
     private void Update()
     {
+        // If mouse-left button is pressed and the mouse is over a button, play the button click sound
         if (Input.GetMouseButtonDown(0) && EventSystem.current.currentSelectedGameObject?.GetComponent<ButtonHovering>() != null)
         {
             m_audioSource.PlayOneShot(m_buttonClickSound, m_buttonClickVolume);
