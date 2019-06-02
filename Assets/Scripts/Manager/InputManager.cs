@@ -23,7 +23,7 @@ public class InputManager : MonoBehaviour
     private const KeyCode SONAR_KEY = KeyCode.Space;
     private const KeyCode DASH_KEY = KeyCode.LeftShift;
 
-    private const float ACCELERATION = 0.2f;
+    private const float ACCELERATION = 0.3f;
     // These 2 variables take values between -1 and 1
     private static float m_horizMovement = 0;
     private static float m_vertMovement = 0;

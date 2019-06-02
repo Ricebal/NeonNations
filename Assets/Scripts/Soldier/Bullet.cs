@@ -134,7 +134,7 @@ public class Bullet : MonoBehaviour
         explosion.transform.Translate(0, 0, -WallOffset);
 
         // Set explosion light color to the player's color
-        Color color = GameObject.Find(ShooterId).GetComponent<Soldier>().InitialColor;
+        Color color = GameObject.Find(ShooterId).GetComponent<Soldier>().Color;
         ExplosionLight explosionLight = explosion.GetComponent<ExplosionLight>();
         explosionLight.SetColor(color);
     }
@@ -142,7 +142,7 @@ public class Bullet : MonoBehaviour
     public void SetBulletColor()
     {
         // Get the colour for the bullet
-        Color color = GameObject.Find(ShooterId).GetComponent<Soldier>().InitialColor;
+        Color color = GameObject.Find(ShooterId).GetComponent<Soldier>().Color;
 
         // Make new material
         Material mat;

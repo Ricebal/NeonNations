@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
+    public static CameraController Singleton;
     public Transform PlayerTransform;
     public float DistanceFromPlayer = 11;
     public double CameraTilt = 80;
@@ -10,7 +11,24 @@ public class CameraController : MonoBehaviour
     private Vector3 m_offset;
     private bool m_active;
 
-    void LateUpdate()
+    private void Awake()
+    {
+        InitializeSingleton();
+    }
+
+    private void InitializeSingleton()
+    {
+        if (Singleton != null && Singleton != this)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            Singleton = this;
+        }
+    }
+
+    private void LateUpdate()
     {
         // for debugging
         transform.eulerAngles = new Vector3((float)CameraTilt, 0, 0);
@@ -24,15 +42,15 @@ public class CameraController : MonoBehaviour
         }
     }
 
-    public void SetTarget(Transform target)
+    public static void SetTarget(Transform target)
     {
-        m_active = true;
-        PlayerTransform = target;
-        transform.position = PlayerTransform.position;
+        Singleton.m_active = true;
+        Singleton.PlayerTransform = target;
+        Singleton.transform.position = Singleton.PlayerTransform.position;
     }
 
-    public void SetInactive()
+    public static void SetInactive()
     {
-        m_active = false;
+        Singleton.m_active = false;
     }
 }

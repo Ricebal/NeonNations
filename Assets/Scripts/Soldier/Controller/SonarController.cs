@@ -36,6 +36,6 @@ public class SonarController : NetworkBehaviour
 
         Sonar script = prefab.GetComponent<Sonar>();
         Soldier soldier = GetComponent<Soldier>();
-        script.SetColor(soldier.InitialColor);
+        script.SetColor(soldier.Color);
     }
 }

@@ -40,7 +40,6 @@ public class NavigationGraph
         }
     }
 
-
     /// <summary>
     /// Returns the Node that corresponds to a specific x- and y-value.
     /// </summary>

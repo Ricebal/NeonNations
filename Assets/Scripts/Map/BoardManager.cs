@@ -6,6 +6,8 @@ using UnityEngine;
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 public class BoardManager : NetworkBehaviour
 {
+    public static BoardManager Singleton;
+
     // Walls is used for loading the map
     [Flags]
     private enum Walls
@@ -17,13 +19,9 @@ public class BoardManager : NetworkBehaviour
         Down = 4, // 000100
         Left = 8 // 001000
     }
-
-    [SerializeField]
-    private GameObject m_mapPrefab;
-    [SerializeField]
-    private GameObject m_breakableWallPrefab;
-    [SerializeField]
-    private GameObject m_reflectorPrefab;
+    [SerializeField] private GameObject m_mapPrefab;
+    [SerializeField] private GameObject m_breakableWallPrefab;
+    [SerializeField] private GameObject m_reflectorPrefab;
 
     // So that a position is in the middle of a tile
     private const float MAP_OFFSET = -0.5f;
@@ -45,32 +43,53 @@ public class BoardManager : NetworkBehaviour
     private readonly List<Tile> m_permanentObstacles = new List<Tile>() { Tile.Wall, Tile.Reflector };
 
     // --------------------------------------------------------------------------------------------
+    // Singleton
+    // --------------------------------------------------------------------------------------------
+
+    private void Awake()
+    {
+        InitializeSingleton();
+    }
+
+    private void InitializeSingleton()
+    {
+        if (Singleton != null && Singleton != this)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            Singleton = this;
+        }
+    }
+
+    // --------------------------------------------------------------------------------------------
     // Public functions
     // --------------------------------------------------------------------------------------------
 
     /// <summary>
     /// Creates a random map object 
     /// </summary>
-    public void SetupScene(Map map, int outerWallWidth)
+    public static void SetupScene(Map map, int outerWallWidth)
     {
-        m_map = map;
-        m_outerWallWidth = outerWallWidth;
-        m_mapObject = new GameObject();
-        m_mapObject.name = MAP;
+        Singleton.m_map = map;
+        Singleton.m_outerWallWidth = outerWallWidth;
+        Singleton.m_mapObject = new GameObject();
+        Singleton.m_mapObject.name = MAP;
 
-        LoadFloor();
-        LoadMap();
-        CreateOuterWalls();
-        CombineAllMeshes();
+        Singleton.LoadFloor();
+        Singleton.LoadMap();
+        Singleton.CreateOuterWalls();
+        Singleton.CombineAllMeshes();
     }
 
     /// <summary>
     /// Gets the map
     /// </summary>
     /// <returns>A map</returns>
-    public Map GetMap()
+    public static Map GetMap()
     {
-        return m_map;
+        return Singleton.m_map;
     }
 
     // --------------------------------------------------------------------------------------------

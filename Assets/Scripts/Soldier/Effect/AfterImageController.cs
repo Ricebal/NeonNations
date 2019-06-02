@@ -13,7 +13,7 @@ public class AfterImageController : NetworkBehaviour
 
     private void Start()
     {
-        Color color = GetComponent<Soldier>().InitialColor;
+        Color color = GetComponent<Soldier>().Color;
         m_color = new Color(color.r, color.g, color.b, 0.5f);
     }
 
@@ -29,8 +29,7 @@ public class AfterImageController : NetworkBehaviour
         m_endTime = Time.time;
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
         // Exit if not generating images and linger time is over
         if (!m_generateImages && Time.time >= m_endTime + m_linger)

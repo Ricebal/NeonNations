@@ -8,7 +8,7 @@ public class PlayerController : NetworkBehaviour
     private Action m_action;
     private DashController m_playerDash;
 
-    void Start()
+    private void Start()
     {
         if (!isLocalPlayer)
         {
@@ -20,11 +20,11 @@ public class PlayerController : NetworkBehaviour
         m_action = GetComponent<Action>();
         m_playerDash = GetComponent<DashController>();
 
-        Vector2Int spawnPoint = GameObject.Find("GameManager").GetComponent<BoardManager>().GetMap().GetRandomFloorTile();
+        Vector2Int spawnPoint = BoardManager.GetMap().GetRandomFloorTile();
         transform.position = new Vector3(spawnPoint.x, 0, spawnPoint.y);
     }
 
-    void Update()
+    private void Update()
     {
         if (!isLocalPlayer)
         {
@@ -50,7 +50,7 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
-    void FixedUpdate()
+    private void FixedUpdate()
     {
         if (!isLocalPlayer)
         {
@@ -61,6 +61,11 @@ public class PlayerController : NetworkBehaviour
         float moveVertical = InputManager.GetAxis("Vertical");
 
         Vector3 movement = new Vector3(moveHorizontal, 0, moveVertical);
+        // If the player moves diagonally, movement magnitude could be superior to 1 leading to a higher speed
+        if (movement.magnitude > 1)
+        {
+            movement.Normalize();
+        }
 
         // If dashing, normalize movement vector so you are always at max speed
         if (m_playerDash.IsDashing())
@@ -71,7 +76,7 @@ public class PlayerController : NetworkBehaviour
         m_rigidbody.velocity = movement * m_player.Speed * m_playerDash.GetMultiplier();
     }
 
-    void OnDisable()
+    private void OnDisable()
     {
         if (!isLocalPlayer)
         {

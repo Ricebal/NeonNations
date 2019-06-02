@@ -1,25 +1,21 @@
-﻿using Mirror;
+using Mirror;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Scoreboard : NetworkBehaviour
 {
-    [SerializeField]
-    private GameObject m_playerScorePrefab;
-    [SerializeField]
-    private GameObject m_playerList;
-    [SerializeField]
-    private GameObject m_scoreBoard;
-    [SerializeField]
-    private TeamManager m_teamManager;
+    [SerializeField] private GameObject m_playerScorePrefab;
+    [SerializeField] private GameObject m_playerList;
+    [SerializeField] private GameObject m_scoreBoard;
     private Dictionary<string, ScoreboardEntry> m_outdatedPlayers = new Dictionary<string, ScoreboardEntry>();
 
     private void Start()
     {
         if (isServer)
         {
-            m_teamManager = GameObject.Find("GameManager").GetComponent<TeamManager>();
-            m_teamManager.OnPlayersChange += Refresh;
+            TeamManager.Singleton.OnPlayersChange += Refresh;
             Refresh();
         }
 
@@ -28,13 +24,23 @@ public class Scoreboard : NetworkBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown("tab"))
+        if (!GameManager.Singleton.GameFinished)
         {
-            m_scoreBoard.SetActive(true);
+            if (Input.GetKeyDown("tab"))
+            {
+                m_scoreBoard.SetActive(true);
+            }
+            else if (Input.GetKeyUp("tab"))
+            {
+                m_scoreBoard.SetActive(false);
+            }
         }
-        else if (Input.GetKeyUp("tab"))
+        else
         {
-            m_scoreBoard.SetActive(false);
+            if (GameManager.Singleton.WaitingTimeAfterGameEnded < 3) // Show the scoreboard for the last 3 seconds.
+            {
+                m_scoreBoard.SetActive(true); // Show final scoreboard.
+            }
         }
 
         // If there are outdated players try to add them.
@@ -46,9 +52,13 @@ public class Scoreboard : NetworkBehaviour
 
     private void Refresh()
     {
+        if (GameManager.Singleton.GameFinished)
+        {
+            return; // prevent players from disappearing on the host score-board once the game has ended.
+        }
         // Clear the list and add all players
         RpcEmpty();
-        foreach (Soldier player in m_teamManager.GetAllPlayers())
+        foreach (Soldier player in TeamManager.GetAllPlayers())
         {
             if (player != null)
             {
@@ -68,16 +78,36 @@ public class Scoreboard : NetworkBehaviour
     }
 
     [ClientRpc]
+    private void RpcSortPlayerList()
+    {
+        int amountOfScorePanels = m_playerList.transform.childCount;
+        List<Transform> scorePanels = new List<Transform>();
+        for (int i = 0; i < amountOfScorePanels; i++)
+        {
+            scorePanels.Add(m_playerList.transform.GetChild(i));
+        }
+        scorePanels = scorePanels.OrderByDescending(entry => entry.gameObject.GetComponent<ScoreboardEntry>().Score.Kills)  // Sort by kills,
+                  .ThenBy(entry => entry.gameObject.GetComponent<ScoreboardEntry>().Score.Deaths)                           // Then by lowest deaths.
+                  .ToList();
+        VerticalLayoutGroup layoutGroup = m_playerList.GetComponent<VerticalLayoutGroup>();
+        for (int i = 0; i < amountOfScorePanels; i++)
+        {
+            // Add the panels to the right place.
+            scorePanels[i].SetSiblingIndex(i);
+        }
+    }
+
+    [ClientRpc]
     private void RpcAddPlayer(string playerId)
     {
         // Make a new entry on the scoreboard
         GameObject scorePanel = Instantiate(m_playerScorePrefab) as GameObject;
         scorePanel.transform.SetParent(m_playerList.transform, false);
-
+        ScoreboardEntry scoreboardEntry = scorePanel.GetComponent<ScoreboardEntry>();
         // Try to add the player to the scoreboard, if it fails add it to the list of outdated players
-        if (!AddPlayer(playerId, scorePanel.GetComponent<ScoreboardEntry>()))
+        if (!AddPlayer(playerId, scoreboardEntry))
         {
-            m_outdatedPlayers.Add(playerId, scorePanel.GetComponent<ScoreboardEntry>());
+            m_outdatedPlayers.Add(playerId, scoreboardEntry);
         }
     }
 
@@ -92,7 +122,11 @@ public class Scoreboard : NetworkBehaviour
 
         Soldier playerScript = player.GetComponent<Soldier>();
 
+        Color scoreboardColor = playerScript.Color;
+        scoreboardColor.a = 100f / 255f; // Set alpha to 100. Color.a works with a value between 0 and 1.
+        scoreboardEntry.SetColor(scoreboardColor);
         scoreboardEntry.SetScore(playerScript.PlayerScore);
+        scoreboardEntry.Score.OnScoreChange += RpcSortPlayerList;
         if (playerScript.isLocalPlayer)
         {
             scoreboardEntry.EnableOutline();

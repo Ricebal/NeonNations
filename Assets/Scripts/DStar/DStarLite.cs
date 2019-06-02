@@ -14,7 +14,6 @@ public class DStarLite
     private List<Vector2Int> m_previousCoordinatesToTraverse = new List<Vector2Int>();
     private Vector2Int m_goal;
     private Vector2Int m_previousGoal;
-
     private Vector2Int m_start;
     private Vector2Int m_previousStart;
 

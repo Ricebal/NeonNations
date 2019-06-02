@@ -8,8 +8,7 @@ public class Sonar : MonoBehaviour
     [SerializeField] private float m_lifeSpan;
     private bool m_growing;
 
-    // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         m_light.intensity = 0;
         m_light.range = 0;
@@ -26,8 +25,7 @@ public class Sonar : MonoBehaviour
         particleSystemRenderer.trailMaterial = mat;
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
         // Times two for half the lifespan
         float intensityAmount = Time.deltaTime / m_lifeSpan * m_maxIntensity * 2f;

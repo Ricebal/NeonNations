@@ -19,7 +19,6 @@ public class MapGenerator
     private int m_shortcutMinSkipDistance;
     private int m_reflectorAreaSize;
 
-
     private const int MAX_PLACE_ATTEMPTS = 10;
     private const int MAX_BUILD_ATTEMPTS = 250;
     private const int MAX_SHORTCUT_ATTEMPTS = 250;

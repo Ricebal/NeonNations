@@ -63,7 +63,7 @@ public class NetworkManagerCustom : NetworkManager
     public override void OnClientError(NetworkConnection conn, int errorCode)
     {
         UnityEngine.Networking.NetworkError error = (UnityEngine.Networking.NetworkError)errorCode;
-        m_connectionText = "Connection failed due to error: " + error.ToString(); ;
+        m_connectionText = "Connection failed due to error: " + error.ToString();
         m_isConnecting = false;
     }
 
@@ -79,7 +79,7 @@ public class NetworkManagerCustom : NetworkManager
     public override void OnServerDisconnect(NetworkConnection conn)
     {
         // Remove disconnecting player from team
-        GameObject.Find("GameManager").GetComponent<GameManager>().RemovePlayer(conn.playerController.gameObject.GetComponent<Player>());
+        GameManager.RemovePlayer(conn.playerController.gameObject.GetComponent<Player>());
         base.OnServerDisconnect(conn);
     }
 
@@ -88,7 +88,7 @@ public class NetworkManagerCustom : NetworkManager
         // Instantiate new player and assign a team
         GameObject player = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
         NetworkServer.AddPlayerForConnection(conn, player);
-        GameObject.Find("GameManager").GetComponent<GameManager>().AddPlayer(player.GetComponent<Player>());
+        GameManager.AddPlayer(player.GetComponent<Player>());
     }
 
     // Set the IP address of the network manager for the StartClient function
