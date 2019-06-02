@@ -53,9 +53,7 @@ public abstract class Soldier : NetworkBehaviour
             deathExplosion.Fire();
         }
     }
-    public virtual void DisableMovement()
-    {
-    }
+    public virtual void DisableMovement() { }
 
     protected virtual void Respawn()
     {
@@ -116,10 +114,10 @@ public abstract class Soldier : NetworkBehaviour
     {
         obj.GetComponent<Renderer>().material.color = color;
         DeathExplosion deathExplosion = obj.GetComponentInChildren<DeathExplosion>();
-        if (deathExplosion != null)
-        {
-            deathExplosion.SetColor(color);
-        }
+        deathExplosion?.SetColor(color);
+
+        HeadController headController = obj.GetComponentInChildren<HeadController>();
+        headController?.SetColor(color);
     }
 
     [Command]
