@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(AudioSource))]
-public class MusicManager : MonoBehaviour
+public class AudioManager : MonoBehaviour
 {
     private AudioSource m_audioSource;
+    [SerializeField] private float m_buttonClickVolume;
     [SerializeField] private float m_menuMusicVolume;
     [SerializeField] private float m_gameMusicVolume;
+    [SerializeField] private AudioClip m_buttonClickSound;
     [SerializeField] private AudioClip m_menuMusic;
     [SerializeField] private AudioClip m_gameMusic;
     [Scene] [SerializeField] private List<string> m_menuScenes;
@@ -19,10 +22,10 @@ public class MusicManager : MonoBehaviour
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void OnGameStart()
     {
-        Object obj = Resources.Load("MusicManager");
-        GameObject musicManager = Instantiate(obj) as GameObject;
-        // Rename MusicManager(Clone) to MusicManager
-        musicManager.name = obj.name;
+        Object obj = Resources.Load("AudioManager");
+        GameObject audioManager = Instantiate(obj) as GameObject;
+        // Rename AudioManager(Clone) to AudioManager
+        audioManager.name = obj.name;
     }
 
     private void Awake()
@@ -30,6 +33,14 @@ public class MusicManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
         m_audioSource = GetComponent<AudioSource>();
         SceneManager.activeSceneChanged += OnSceneChanged;
+    }
+
+    private void Update()
+    {
+        if (Input.GetMouseButtonDown(0) && EventSystem.current.currentSelectedGameObject?.GetComponent<ButtonHovering>() != null)
+        {
+            m_audioSource.PlayOneShot(m_buttonClickSound, m_buttonClickVolume);
+        }
     }
 
     private void OnSceneChanged(Scene previousScene, Scene newScene)

@@ -44,8 +44,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1c42071ff0c4984991a8d4db54b687f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_buttonClickVolume: 0.05
   m_menuMusicVolume: 0.6
   m_gameMusicVolume: 0.1
+  m_buttonClickSound: {fileID: 8300000, guid: 31199df57cd9f6f4ebcb572939f9d1db, type: 3}
   m_menuMusic: {fileID: 8300000, guid: e10d213bc163b204f96c46ec54295a03, type: 3}
   m_gameMusic: {fileID: 8300000, guid: 9d0ed07ad5124a6458231f3cc8e4c9f4, type: 3}
   m_menuScenes:
