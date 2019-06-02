@@ -1,6 +1,7 @@
 using Mirror;
 using UnityEngine;
 
+[RequireComponent(typeof(AudioSource))]
 public abstract class Soldier : NetworkBehaviour
 {
     [SyncVar] public Team Team;
@@ -15,11 +16,15 @@ public abstract class Soldier : NetworkBehaviour
 
     [SerializeField] protected Stat m_healthStat;
     [SerializeField] protected Stat m_energyStat;
+    [SerializeField] protected AudioClip m_hitSound;
+    [SerializeField] protected float m_hitSoundVolume;
+    protected AudioSource m_audioSource;
     protected Renderer m_renderer;
     protected float m_deathTime;
 
     public override void OnStartClient()
     {
+        m_audioSource = GetComponent<AudioSource>();
         m_renderer = GetComponent<Renderer>();
     }
 
@@ -150,6 +155,7 @@ public abstract class Soldier : NetworkBehaviour
     protected void RpcTakeDamage(int damage)
     {
         m_healthStat.Subtract(damage);
+        m_audioSource.PlayOneShot(m_hitSound, m_hitSoundVolume);
     }
 
     [ClientRpc]

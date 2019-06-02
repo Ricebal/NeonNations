@@ -5305,6 +5305,8 @@ MonoBehaviour:
   IsDead: 0
   m_healthStat: {fileID: 18416186091895302}
   m_energyStat: {fileID: 7324937023197695252}
+  m_hitSound: {fileID: 8300000, guid: 271d717f5160150419fdf58ed4606d2f, type: 3}
+  m_hitSoundVolume: 0.05
 --- !u!114 &5337140830429242400
 MonoBehaviour:
   m_ObjectHideFlags: 0
