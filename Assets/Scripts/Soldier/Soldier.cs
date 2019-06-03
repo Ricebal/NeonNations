@@ -3,10 +3,10 @@ using UnityEngine;
 
 public abstract class Soldier : NetworkBehaviour
 {
+    [SyncVar] public int Index;
     [SyncVar] public Team Team;
     [SyncVar] public Color Color;
     [SyncVar] public Score PlayerScore = new Score();
-    // The speed of the entity
     public float Speed;
     public string Username;
     // The respawn time of the soldier
@@ -17,6 +17,22 @@ public abstract class Soldier : NetworkBehaviour
     [SerializeField] protected Stat m_energyStat;
     protected Renderer m_renderer;
     protected float m_deathTime;
+
+    protected void Start()
+    {
+        if (isServer)
+        {
+            GameManager.AddPlayer(this);
+        }
+    }
+
+    protected void OnDestroy()
+    {
+        if (isServer)
+        {
+            GameManager.RemovePlayer(this);
+        }
+    }
 
     public override void OnStartClient()
     {
@@ -53,9 +69,8 @@ public abstract class Soldier : NetworkBehaviour
             deathExplosion.Fire();
         }
     }
-    public virtual void DisableMovement()
-    {
-    }
+
+    public virtual void DisableMovement() { }
 
     protected virtual void Respawn()
     {

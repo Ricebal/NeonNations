@@ -32,12 +32,12 @@ public class BotManager : NetworkBehaviour
         {
             return;
         }
+
         for (int i = 0; i < BotManager.AMOUNT_OF_BOTS; i++)
         {
             Vector2Int spawnPoint = BoardManager.GetRandomFloorTile();
             GameObject bot = Instantiate(Singleton.Bot, new Vector3(spawnPoint.x, 0, spawnPoint.y), Quaternion.identity);
             NetworkServer.Spawn(bot);
-            GameManager.AddPlayer(bot.GetComponent<Bot>());
         }
     }
 }
