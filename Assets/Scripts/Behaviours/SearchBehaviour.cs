@@ -52,7 +52,7 @@ public class SearchBehaviour : BotBehaviour
         Vector2Int farthestReachableNode = m_previousFarthestNode;
         if (m_dStarLite.CoordinatesToTraverseChanged || botCoordinate.Equals(m_previousFarthestNode)) // Perform pathsmoothing if either the path has changed, or if the bot is on the same position as the old farthest node.
         {
-            farthestReachableNode = PathSmoothing.FarthestCoordinateToReach(new PointF(gameObject.transform.position.x, gameObject.transform.position.z), coordinatesToTraverse, m_dStarLite.Map, OFFSET_FOR_LINE_CALCULATION);
+            farthestReachableNode = PathSmoothing.FarthestCoordinateToReach(new Vector2(gameObject.transform.position.x, gameObject.transform.position.z), coordinatesToTraverse, m_dStarLite.Map, OFFSET_FOR_LINE_CALCULATION);
         }
         m_previousFarthestNode = farthestReachableNode;
         MoveTo(farthestReachableNode);
