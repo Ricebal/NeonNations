@@ -5,47 +5,26 @@ using UnityEngine.UI;
 
 public class NetworkMenu : MonoBehaviour
 {
-    public Button ButtonStartHost;
-    public Button ButtonJoingGame;
-    public Button ButtonBack;
-    public InputField IpAddressField;
+    [SerializeField] private NetworkLobbyManagerCustom m_lobbyManager;
+    [SerializeField] private Button m_buttonStartHost;
+    [SerializeField] private Button m_buttonJoinGame;
+    [SerializeField] private InputField m_ipAddressField;
+    
     // Text displayed when there is a client connection or disconnection
-    public TextMeshProUGUI ConnectionText;
+    [SerializeField] private TextMeshProUGUI m_connectionText;
 
     private void Update()
     {
+        m_connectionText.text = m_lobbyManager.GetConnectionText();
+        // The buttons are disabled when a client is trying to connect and vice versa
+        m_buttonStartHost.interactable = !m_lobbyManager.IsConnecting();
+        m_buttonJoinGame.interactable = !m_lobbyManager.IsConnecting();
+
         // Trigger join game button click when the user presses 'enter' and the ip address is specified
-        if (Input.GetKey(KeyCode.Return) && IpAddressField.text.Length != 0)
+        if (Input.GetKey(KeyCode.Return) && m_ipAddressField.text.Length != 0)
         {
-            ButtonJoingGame.onClick.Invoke();
+            m_lobbyManager.JoinGame();
         }
-    }
-
-    private void OnEnable()
-    {
-        SceneManager.sceneLoaded += OnNetworkMenuLoaded;
-    }
-
-    private void OnDisable()
-    {
-        SceneManager.sceneLoaded -= OnNetworkMenuLoaded;
-    }
-
-    private void OnNetworkMenuLoaded(Scene scene, LoadSceneMode mode)
-    {
-        // If the NetworkMenu scene is loaded...
-        if (scene.name == "NetworkMenu")
-        {
-            // if the button start host is clicked, call the LoadMainMenu function
-            ButtonBack.onClick.RemoveAllListeners();
-            ButtonBack.onClick.AddListener(LoadMainMenu);
-        }
-    }
-
-    // Go to the MainMenu scene
-    private void LoadMainMenu()
-    {
-        SceneManager.LoadScene("MainMenu", LoadSceneMode.Single);
     }
 
 }

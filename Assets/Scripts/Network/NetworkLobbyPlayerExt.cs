@@ -1,29 +1,19 @@
 ﻿using Mirror;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class NetworkLobbyPlayerExt : NetworkLobbyPlayer
 {
-    public string Name;
+    [SyncVar(hook = nameof(OnUsernameSet))] private string m_username;
+    [SerializeField] private TextMeshProUGUI m_textUsername;
+    [SerializeField] private Button m_buttonReady;
+
     public override void OnStartClient()
     {
-        if (LogFilter.Debug)
-        {
-            Debug.LogFormat("OnStartClient {0}", SceneManager.GetActiveScene().name);
-        }
-
         base.OnStartClient();
         NetworkLobbyManager lobby = NetworkManager.singleton as NetworkLobbyManager;
-
-        /*
-            This demonstrates how to set the parent of the LobbyPlayerPrefab to an arbitrary scene object
-            A similar technique would be used if a full canvas layout UI existed and we wanted to show
-            something more visual for each player in that layout, such as a name, avatar, etc.
-
-            Note: LobbyPlayer prefab will be marked DontDestroyOnLoad and carried forward to the game scene.
-                  Because of this, NetworkLobbyManager must automatically set the parent to null
-                  in ServerChangeScene and OnClientChangeScene.
-        */
 
         if (lobby != null && SceneManager.GetActiveScene().name == lobby.LobbyScene)
         {
@@ -31,19 +21,57 @@ public class NetworkLobbyPlayerExt : NetworkLobbyPlayer
         }
     }
 
-    public override void OnClientEnterLobby()
+    public override void OnStartLocalPlayer()
     {
-        if (LogFilter.Debug)
+        if (isLocalPlayer)
         {
-            Debug.LogFormat("OnClientEnterLobby {0}", SceneManager.GetActiveScene().name);
+            CmdUsername(ProfileMenu.GetUsername());
+        }
+        else
+        {
+            m_buttonReady.interactable = false;
         }
     }
 
-    public override void OnClientExitLobby()
+    [Command]
+    private void CmdUsername(string username)
     {
-        if (LogFilter.Debug)
+        m_username = username;
+    }
+
+    private void OnUsernameSet(string username)
+    {
+        m_textUsername.text = username;
+    }
+
+    // Change the state of the player (ready or not) when clicking on the checkmark button
+    public void ChangeReadyState()
+    {
+        if (NetworkClient.active && isLocalPlayer)
         {
-            Debug.LogFormat("OnClientExitLobby {0}", SceneManager.GetActiveScene().name);
+            if (ReadyToBegin)
+            {
+                CmdChangeReadyState(false);
+            }
+            else
+            {
+                CmdChangeReadyState(true);
+            }
         }
     }
+
+    public override void OnClientReady(bool readyState)
+    {
+        // Change the color of the checkmark button depending on the state of the player
+        Image image = m_buttonReady.GetComponent<Image>();
+        if (readyState)
+        {
+            image.color = new Color32(83, 255, 40, 255);
+        }
+        else
+        {
+            image.color = new Color32(255, 255, 255, 255);
+        }
+    }
+
 }
