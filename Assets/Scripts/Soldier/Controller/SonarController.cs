@@ -41,6 +41,6 @@ public class SonarController : NetworkBehaviour
 
 
         Soldier soldier = GetComponent<Soldier>();
-        sonarScript.SetColor(soldier.InitialColor);
+        sonarScript.SetColor(soldier.Color);
     }
 }

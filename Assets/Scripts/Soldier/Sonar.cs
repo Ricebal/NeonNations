@@ -10,8 +10,7 @@ public class Sonar : MonoBehaviour
     public float LifeSpan;
     private bool m_growing;
 
-    // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         Destroy(gameObject, LifeSpan);
         m_growing = true;
@@ -27,8 +26,7 @@ public class Sonar : MonoBehaviour
         particleSystemRenderer.trailMaterial = mat;
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
         // Times two for half the lifespan
         float intensityAmount = Time.deltaTime / LifeSpan * m_maxIntensity * 2f;

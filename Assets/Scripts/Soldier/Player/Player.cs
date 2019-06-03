@@ -15,7 +15,8 @@ public class Player : Soldier
         m_hud = GetComponent<PlayerHUD>();
         m_playerController = GetComponent<PlayerController>();
         CameraController.SetTarget(this.transform);
-        EscapeMenu.Singleton.EventPauseToggled += PauseToggled;
+        EscapeMenu.Singleton.OnPauseToggled += PauseToggled;
+        GameOverMenu.Singleton.OnRespawnClick += Respawn;
 
         Username = ProfileMenu.GetUsername();
         CmdUsername(Username);
@@ -96,6 +97,7 @@ public class Player : Soldier
 
         CameraController.SetInactive();
         CameraController.Singleton.PlayerTransform = null;
-        EscapeMenu.Singleton.EventPauseToggled -= PauseToggled;
+        EscapeMenu.Singleton.OnPauseToggled -= PauseToggled;
+        GameOverMenu.Singleton.OnRespawnClick -= Respawn;
     }
 }

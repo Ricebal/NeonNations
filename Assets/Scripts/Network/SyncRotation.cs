@@ -4,20 +4,15 @@ using UnityEngine;
 public class SyncRotation : NetworkBehaviour
 {
     // Threshold in degrees
-    [SerializeField]
-    private float m_threshold = 1;
+    [SerializeField] private float m_threshold = 1;
     // Interpolation factor
-    [SerializeField]
-    private float m_lerpRate = 15;
+    [SerializeField] private float m_lerpRate = 15;
     // Non-local soldiers are instantly rotated when the difference between their current rotation and the real one is lower than this value
-    [SerializeField]
-    private float m_closeEnough = 1.5f;
+    [SerializeField] private float m_closeEnough = 1.5f;
     // Non-local soldiers are instantly rotated when the difference between their current rotation and the real one is higher than this value
-    [SerializeField]
-    private float m_tooFar = 90;
+    [SerializeField] private float m_tooFar = 90;
     // Whether or not the GameObject is a bot
-    [SerializeField]
-    private bool m_isBot = false;
+    [SerializeField] private bool m_isBot = false;
 
     private float m_syncRotation;
     private float m_lastRotation;

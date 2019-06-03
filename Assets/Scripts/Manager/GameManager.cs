@@ -8,29 +8,31 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : NetworkBehaviour
 {
-    [SyncVar][SerializeField] private string m_seed = "";
-    [SyncVar][SerializeField] private int m_mapWidth = 50;
-    [SyncVar][SerializeField] private int m_mapHeight = 50;
-    [SyncVar][SerializeField] private int m_maxRoomAmount = 100;
-    [SyncVar][SerializeField] private int m_maxShortcutAmount = 10;
-    [SyncVar][SerializeField] private int m_minRoomLength = 6;
-    [SyncVar][SerializeField] private int m_maxRoomLength = 9;
-    [SyncVar][SerializeField] private int m_minTunnelLength = 1;
-    [SyncVar][SerializeField] private int m_maxTunnelLength = 7;
-    [SyncVar][SerializeField] private int m_tunnelWidth = 2;
-    [SyncVar][SerializeField] private int m_breakableTunnelChance = 20;
-    [SyncVar][SerializeField] private int m_shortcutMinSkipDistance = 20;
-    [SyncVar][SerializeField] private int m_outerWallWidth = 14;
+    public static GameManager Singleton;
+
     public GameMode GameMode;
     public bool GameFinished;
+    public float WaitingTimeAfterGameEnded; // The time after the game is finished, before it will return to the lobby.
+
+    [SyncVar] [SerializeField] private string m_seed = "";
+    [SyncVar] [SerializeField] private int m_mapWidth = 50;
+    [SyncVar] [SerializeField] private int m_mapHeight = 50;
+    [SyncVar] [SerializeField] private int m_maxRoomAmount = 100;
+    [SyncVar] [SerializeField] private int m_maxShortcutAmount = 10;
+    [SyncVar] [SerializeField] private int m_minRoomLength = 6;
+    [SyncVar] [SerializeField] private int m_maxRoomLength = 9;
+    [SyncVar] [SerializeField] private int m_minTunnelLength = 1;
+    [SyncVar] [SerializeField] private int m_maxTunnelLength = 7;
+    [SyncVar] [SerializeField] private int m_tunnelWidth = 2;
+    [SyncVar] [SerializeField] private int m_breakableTunnelChance = 20;
+    [SyncVar] [SerializeField] private int m_shortcutMinSkipDistance = 20;
+    [SyncVar] [SerializeField] private int m_outerWallWidth = 14;
     [SerializeField] private ParticleSystem m_fireWorks;
 
     private GameObject m_endGameTextObject;
-    public float WaitingTimeAfterGameEnded; // The time after the game is finished, before it will return to the lobby.
     private int m_localPlayersTeamId;
-    public static GameManager Singleton;
 
-    void Awake()
+    private void Awake()
     {
         InitializeSingleton();
         GameMode = gameObject.AddComponent<TeamDeathMatch>(); // Temporary untill we can pick game modes.
@@ -117,9 +119,8 @@ public class GameManager : NetworkBehaviour
             m_seed = GenerateSeed();
         }
 
-        // Display seed on the hud
-        GameObject hud = GameObject.FindGameObjectWithTag("HUD");
-        hud.GetComponent<TextMeshProUGUI>().text = m_seed;
+        // Display seed on the debug mode
+        DebugMode.SetSeed(m_seed);
 
         MapGenerator mapGenerator = new MapGenerator(m_mapWidth, m_mapHeight, m_maxRoomAmount, m_maxShortcutAmount, m_minRoomLength,
             m_maxRoomLength, m_minTunnelLength, m_maxTunnelLength, m_tunnelWidth, m_breakableTunnelChance, m_shortcutMinSkipDistance);
@@ -226,6 +227,7 @@ public class GameManager : NetworkBehaviour
         mat.SetColor(ShaderUtilities.ID_GlowColor, teamColor32);
         endGameText.fontSharedMaterial = mat;
     }
+
     private void SetFireWorkColor(Color color)
     {
         var main = m_fireWorks.main;
@@ -256,6 +258,7 @@ public class GameManager : NetworkBehaviour
             ps.Play();
         }
     }
+
     private List<int> GetWinningTeams()
     {
         List<int> winningTeamIds = new List<int>();

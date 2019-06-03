@@ -10,7 +10,7 @@ public class InputFieldHovering : MonoBehaviour, IPointerEnterHandler, IPointerE
     private Image m_image;
     private Color m_initialColor;
 
-    void Start()
+    private void Start()
     {
         m_image = GetComponent<Image>();
         m_initialColor = GetComponent<Image>().color;

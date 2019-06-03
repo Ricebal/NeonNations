@@ -8,7 +8,7 @@ public class ButtonHovering : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     private Button m_button;
 
-    void Start()
+    private void Start()
     {
         m_button = GetComponent<Button>();
     }

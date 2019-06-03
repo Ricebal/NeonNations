@@ -1,17 +1,14 @@
-﻿using System.Collections.Generic;
 using Mirror;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class Scoreboard : NetworkBehaviour
 {
-    [SerializeField]
-    private GameObject m_playerScorePrefab;
-    [SerializeField]
-    private GameObject m_playerList;
-    [SerializeField]
-    private GameObject m_scoreBoard;
+    [SerializeField] private GameObject m_playerScorePrefab;
+    [SerializeField] private GameObject m_playerList;
+    [SerializeField] private GameObject m_scoreBoard;
     private Dictionary<string, ScoreboardEntry> m_outdatedPlayers = new Dictionary<string, ScoreboardEntry>();
 
     private void Start()
@@ -104,7 +101,7 @@ public class Scoreboard : NetworkBehaviour
     private void RpcAddPlayer(string playerId)
     {
         // Make a new entry on the scoreboard
-        GameObject scorePanel = Instantiate(m_playerScorePrefab)as GameObject;
+        GameObject scorePanel = Instantiate(m_playerScorePrefab) as GameObject;
         scorePanel.transform.SetParent(m_playerList.transform, false);
         ScoreboardEntry scoreboardEntry = scorePanel.GetComponent<ScoreboardEntry>();
         // Try to add the player to the scoreboard, if it fails add it to the list of outdated players
@@ -125,7 +122,7 @@ public class Scoreboard : NetworkBehaviour
 
         Soldier playerScript = player.GetComponent<Soldier>();
 
-        Color scoreboardColor = playerScript.InitialColor;
+        Color scoreboardColor = playerScript.Color;
         scoreboardColor.a = 100f / 255f; // Set alpha to 100. Color.a works with a value between 0 and 1.
         scoreboardEntry.SetColor(scoreboardColor);
         scoreboardEntry.SetScore(playerScript.PlayerScore);

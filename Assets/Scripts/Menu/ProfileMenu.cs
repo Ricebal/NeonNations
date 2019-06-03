@@ -22,10 +22,8 @@ public class ProfileMenu : MonoBehaviour
             "Unaunna"
         };
 
-    [SerializeField]
-    private InputField m_usernameField;
-    [SerializeField]
-    private TextMeshProUGUI m_savingText;
+    [SerializeField] private InputField m_usernameField;
+    [SerializeField] private TextMeshProUGUI m_savingText;
 
     private void Awake()
     {

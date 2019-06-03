@@ -5375,7 +5375,7 @@ MonoBehaviour:
     Id: 0
     Color: {r: 0, g: 0, b: 0, a: 0}
     PlayerCount: 0
-  InitialColor: {r: 0, g: 0, b: 0, a: 0}
+  Color: {r: 0, g: 0, b: 0, a: 0}
   Speed: 8
   Username: Unknown
   RespawnTime: 5

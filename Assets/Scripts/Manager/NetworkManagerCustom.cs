@@ -12,7 +12,7 @@ public class NetworkManagerCustom : NetworkManager
     private static void OnGameStart()
     {
         Object obj = Resources.Load("NetworkManager");
-        GameObject networkManager = Instantiate(obj)as GameObject;
+        GameObject networkManager = Instantiate(obj) as GameObject;
         // Rename NetworkManager(Clone) to NetworkManager
         networkManager.name = obj.name;
     }

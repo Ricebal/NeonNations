@@ -434,6 +434,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Panel: {fileID: 3093128335276401593}
   RespawnText: {fileID: 6346354781906209980}
+  RespawnButton: {fileID: 8744680623678064578}
 --- !u!1 &8949049338906197989
 GameObject:
   m_ObjectHideFlags: 0

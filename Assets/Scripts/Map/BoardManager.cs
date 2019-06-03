@@ -1,12 +1,13 @@
-﻿using System;
+﻿using Mirror;
+using System;
 using System.Collections.Generic;
-using Mirror;
 using UnityEngine;
 
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 public class BoardManager : NetworkBehaviour
 {
     public static BoardManager Singleton;
+
     // Walls is used for loading the map
     [Flags]
     private enum Walls
@@ -19,10 +20,8 @@ public class BoardManager : NetworkBehaviour
         Left = 8 // 001000
     }
 
-    [SerializeField]
-    private GameObject m_mapPrefab;
-    [SerializeField]
-    private GameObject m_breakableWallPrefab;
+    [SerializeField] private GameObject m_mapPrefab;
+    [SerializeField] private GameObject m_breakableWallPrefab;
 
     // So that a position is in the middle of a tile
     private const float MAP_OFFSET = -0.5f;
@@ -333,7 +332,7 @@ public class BoardManager : NetworkBehaviour
         newMesh.CombineMeshes(meshDataList.ToArray());
 
         // create new map object to hold part of the map
-        GameObject mapPart = Instantiate(m_mapPrefab, Vector3.zero, Quaternion.identity)as GameObject;
+        GameObject mapPart = Instantiate(m_mapPrefab, Vector3.zero, Quaternion.identity) as GameObject;
 
         // handle new map object
         mapPart.transform.GetComponent<MeshFilter>().sharedMesh = newMesh;

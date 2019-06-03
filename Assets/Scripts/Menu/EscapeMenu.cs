@@ -7,8 +7,8 @@ public class EscapeMenu : NetworkBehaviour
     public static EscapeMenu Singleton;
     public GameObject Canvas;
 
-    public delegate void PauseToggled();
-    public event PauseToggled EventPauseToggled;
+    public delegate void PauseToggledDelegate();
+    public event PauseToggledDelegate OnPauseToggled;
 
     private void Awake()
     {
@@ -51,16 +51,13 @@ public class EscapeMenu : NetworkBehaviour
         {
             NetworkManager.singleton.StopClient();
         }
-        SceneManager.LoadScene(2);
+        SceneManager.LoadScene("NetworkMenu", LoadSceneMode.Single);
     }
 
     public void TogglePause()
     {
         Canvas.SetActive(!Canvas.activeSelf);
-        if (EventPauseToggled != null)
-        {
-            EventPauseToggled();
-        }
+        OnPauseToggled?.Invoke();
     }
 
     public static bool IsActive()

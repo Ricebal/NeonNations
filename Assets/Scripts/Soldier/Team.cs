@@ -6,13 +6,13 @@ public class Team
     public int Id;
     public Color Color;
     public int PlayerCount;
-    [SerializeField]
-    public Score Score;
+    [SerializeField] public Score Score;
 
     public Team(int id) : this()
     {
         Id = id;
     }
+
     public Team()
     {
         Score = new Score();
@@ -37,5 +37,10 @@ public class Team
         }
 
         return false;
+    }
+
+    public override int GetHashCode()
+    {
+        return 2108858624 + Id.GetHashCode();
     }
 }

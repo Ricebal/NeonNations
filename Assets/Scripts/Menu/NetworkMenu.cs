@@ -14,12 +14,12 @@ public class NetworkMenu : MonoBehaviour
 
     private NetworkManagerCustom m_networkManagerCustom;
 
-    void Awake()
+    private void Awake()
     {
         m_networkManagerCustom = GameObject.Find("NetworkManager").GetComponent<NetworkManagerCustom>();
     }
 
-    void Update()
+    private void Update()
     {
         ConnectionText.text = m_networkManagerCustom.GetConnectionText();
         // The buttons are disabled when a client is trying to connect and vice versa
@@ -33,12 +33,12 @@ public class NetworkMenu : MonoBehaviour
         }
     }
 
-    void OnEnable()
+    private void OnEnable()
     {
         SceneManager.sceneLoaded += OnNetworkMenuLoaded;
     }
 
-    void OnDisable()
+    private void OnDisable()
     {
         SceneManager.sceneLoaded -= OnNetworkMenuLoaded;
     }
@@ -66,7 +66,7 @@ public class NetworkMenu : MonoBehaviour
     private void LoadMainMenu()
     {
         m_networkManagerCustom.Stop();
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 2);
+        SceneManager.LoadScene("MainMenu", LoadSceneMode.Single);
     }
 
 }

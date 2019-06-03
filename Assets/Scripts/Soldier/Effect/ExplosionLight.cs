@@ -13,13 +13,13 @@ public class ExplosionLight : MonoBehaviour
     private bool m_growing = true;
     private float m_timeCount = 0.0f;
 
-    void Start()
+    private void Start()
     {
         //Destroys explosion after certain time
         Destroy(gameObject, LIFE_TIME * 2);
     }
 
-    void Update()
+    private void Update()
     {
         m_timeCount += Time.deltaTime;
         if (m_timeCount > LIFE_TIME && m_growing)

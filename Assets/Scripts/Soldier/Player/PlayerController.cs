@@ -8,7 +8,7 @@ public class PlayerController : NetworkBehaviour
     private Action m_action;
     private DashController m_playerDash;
 
-    void Start()
+    private void Start()
     {
         if (!isLocalPlayer)
         {
@@ -24,7 +24,7 @@ public class PlayerController : NetworkBehaviour
         transform.position = new Vector3(spawnPoint.x, 0, spawnPoint.y);
     }
 
-    void Update()
+    private void Update()
     {
         if (!isLocalPlayer)
         {
@@ -50,7 +50,7 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
-    void FixedUpdate()
+    private void FixedUpdate()
     {
         if (!isLocalPlayer)
         {
@@ -76,7 +76,7 @@ public class PlayerController : NetworkBehaviour
         m_rigidbody.velocity = movement * m_player.Speed * m_playerDash.GetMultiplier();
     }
 
-    void OnDisable()
+    private void OnDisable()
     {
         if (!isLocalPlayer)
         {
