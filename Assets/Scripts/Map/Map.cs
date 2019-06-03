@@ -57,6 +57,12 @@ public class Map
         }
     }
 
+    /// <summary>
+    /// Checks if a rectangle between from and to is inside the tilemap bounds
+    /// </summary>
+    /// <param name="from">Rectangle from</param>
+    /// <param name="to">Rectangle to</param>
+    /// <returns>Returns true if valid rectangle within tilemap</returns>
     public bool CheckOutOfBounds(Vector2Int from, Vector2Int to)
     {
         if ((from.x > 0 && from.x <= TileMap.Length - 1 && from.y > 0 && from.y <= TileMap[0].Length - 1) && (to.x > 0 && to.x <= TileMap.Length - 1 && to.y > 0 && to.y <= TileMap[0].Length - 1))
@@ -67,6 +73,10 @@ public class Map
         return true;
     }
     
+    /// <summary>
+    /// Gets a random floor tile from the tilemap
+    /// </summary>
+    /// <returns>Vector2Int containing the position of the floor tile</returns>
     public Vector2Int GetRandomFloorTile()
     {
         Vector2Int randomTile;
@@ -82,10 +92,10 @@ public class Map
     /// <summary>
     /// Adds a tunnel to a given room
     /// </summary>
-    /// <param name="map">Map the tunnel should be added to</param>
     /// <param name="tunnelLength">Length of the tunnel</param>
     /// <param name="entrance">The tile within the room that the tunnel will be adjacent to</param>
     /// <param name="direction">Direction of the tunnel</param>
+    /// <param name="tunnelWidth">Width of the tunnel</param>
     /// <returns>The new map with the tunnel added to it</returns>
     public Map AddTunnelToMap(int tunnelLength, Vector2Int entrance, Vector2Int direction, int tunnelWidth)
     {
@@ -134,7 +144,8 @@ public class Map
     /// Gets a random wall tile based on a direction
     /// </summary>
     /// <param name="direction">Direction the tunnel will face if added to the wall</param>
-    /// <returns>A Vector2Int containing the position of the wall</returns>
+    /// <param name="tunnelWidth">Width of a tunnel, to make sure a tunnel isn't half connected when it is added to the wall tile</param>
+    /// <returns>A Vector2Int containing the position of the wall, returns -1,-1 if no walls were found in the given direction with the given tunnel width</returns>
     public Vector2Int GetRandomWallTile(Vector2Int direction, int tunnelWidth)
     {
         List<Vector2Int> list = GetAllWallTilesInDirection(direction, 1, tunnelWidth).ToList();
@@ -151,7 +162,8 @@ public class Map
     /// Gets a list of all the wall tiles in the map, and what their direction is
     /// </summary>
     /// <param name="outerWidth">The distance between the edge of the map and the area that should be searched</param>
-    /// <returns>List containing all the wall tiles</returns>
+    /// <param name="tunnelWidth">Width of a tunnel, to make sure a tunnel isn't half connected when it is added to the wall tile</param>
+    /// <returns>List containing all the wall tiles with direction they face</returns>
     public List<KeyValuePair<Vector2Int, Vector2Int>> GetAllWallTiles(int outerWidth, int tunnelWidth)
     {
         List<KeyValuePair<Vector2Int, Vector2Int>> result = new List<KeyValuePair<Vector2Int, Vector2Int>>();
@@ -175,6 +187,7 @@ public class Map
     /// </summary>
     /// <param name="randomTile">Tile to be checked</param>
     /// <param name="direction">Direction the tunnel will face if added to the wall</param>
+    /// <param name="tunnelWidth">Width of the tunnel to check if a tunnel connected to this tile won't be half connected</param>
     /// <returns>True if tile is indeed a wall based on the direction</returns>
     public bool CheckWallTile(Vector2Int randomTile, Vector2Int direction, int tunnelWidth)
     {
@@ -196,6 +209,7 @@ public class Map
     /// </summary>
     /// <param name="direction">Direction that should be searched</param>
     /// <param name="outerWidth">The distance between the edge of the map and the area that should be searched</param>
+    /// <param name="tunnelWidth">Width of a tunnel, to make sure a tunnel isn't half connected when it is added to the wall tile</param>
     /// <returns></returns>
     private IEnumerable<Vector2Int> GetAllWallTilesInDirection(Vector2Int direction, int outerWidth, int tunnelWidth)
     {
@@ -236,7 +250,6 @@ public class Map
     /// <summary>
     /// Prints the map given
     /// </summary>
-    /// <param name="map">Map to print</param>
     public void DebugMap()
     {
         StringBuilder builder = new StringBuilder();
@@ -256,10 +269,8 @@ public class Map
     /// <summary>
     /// Prints the adding of a roommap to a map
     /// </summary>
-    /// <param name="map">Map to print</param>
-    /// <param name="roomMap">Room to add to the map</param>
-    /// <param name="pos">Position of the room within the map</param>
-    public void DebugAddingRoom(Tile[][] roomMap, Vector2Int pos)
+    /// <param name="map">Room to add to the map</param>
+    public void DebugAddingRoom(Map map)
     {
         StringBuilder builder = new StringBuilder();
         builder.Append('\n');
@@ -267,9 +278,9 @@ public class Map
         {
             for (int x = 0; x < TileMap.Length; x++)
             {
-                if (x >= pos.x && x < pos.x + roomMap.Length && y >= pos.y && y < pos.y + roomMap[0].Length)
+                if (x >= map.Pos.x && x < map.Pos.x + map.TileMap.Length && y >= map.Pos.y && y < map.Pos.y + map.TileMap[0].Length)
                 {
-                    builder.Append((int)roomMap[x - pos.x][y - pos.y]);
+                    builder.Append((int)map.TileMap[x - map.Pos.x][y - map.Pos.y]);
                 }
                 else
                 {

@@ -51,7 +51,7 @@ public class MapGenerator
     /// <summary>
     /// Generates the hardcoded test map
     /// </summary>
-    /// <returns>A jagged array of Tiles representing the tilemap</returns>
+    /// <returns>A Map object containing a test map</returns>
     public Map GenerateTestMap()
     {
         m_map = Map.GenerateEmptyMap(Tile.Wall, m_mapWidth, m_mapHeight);
@@ -94,7 +94,7 @@ public class MapGenerator
     /// Generates a random map, based on the settings
     /// </summary>
     /// <param name="seed">Seed to be used with the generation</param>
-    /// <returns>A jagged array of Tiles representing the tilemap</returns>
+    /// <returns>A Map object containing the random map</returns>
     public Map GenerateRandomMap(string seed)
     {
         // Check if settings can be used
@@ -129,7 +129,7 @@ public class MapGenerator
         // Add shortcuts
         AddShortcuts();
 
-        // Add mirrors
+        // Add reflectors
         AddReflectors();
 
         // Set seed to random again
@@ -145,7 +145,7 @@ public class MapGenerator
     /// <summary>
     /// Generates a random square room based on the settings
     /// </summary>
-    /// <returns>A Room object</returns>
+    /// <returns>A Map object containing the room</returns>
     private Map GenerateRandomRoom()
     {
         int width = UnityEngine.Random.Range(m_minRoomLength, Math.Min(m_maxRoomLength, m_mapWidth));
@@ -187,7 +187,7 @@ public class MapGenerator
     /// Generates a random position on the map to add a room, and sees if the room fits there
     /// </summary>
     /// <param name="room">Room to be added</param>
-    /// <returns>True if succeeded</returns>
+    /// <returns>Returns a valid map if succeeded, returns null when failed</returns>
     private Map TryPlacement(Map room)
     {
         // get random direction to attach the room to the map
@@ -252,7 +252,7 @@ public class MapGenerator
             }
 
             // if it can be placed, return the room
-            if (CanPlace(tempMap.TileMap, tempMap.Pos, entranceTiles, direction))
+            if (CanPlace(tempMap, entranceTiles, direction))
             {
                 return tempMap;
             }
@@ -263,44 +263,43 @@ public class MapGenerator
     }
 
     /// <summary>
-    /// Checks if a map can be added to the m_tilemap
+    /// Checks if a map can be added to the m_map
     /// </summary>
     /// <param name="map">Small map to be added</param>
-    /// <param name="pos">Position of the small map within the m_tilemap</param>
     /// <param name="entranceTiles">Tiles that should be excluded of checking</param>
     /// <param name="direction">Direction of entrance</param>
-    /// <returns>True if the map can indeed be placed inside the m_tilemap</returns>
-    private bool CanPlace(Tile[][] map, Vector2Int pos, List<Vector2Int> entranceTiles, Vector2Int direction)
+    /// <returns>True if the map can indeed be placed inside the m_map</returns>
+    private bool CanPlace(Map map, List<Vector2Int> entranceTiles, Vector2Int direction)
     {
         // check out of bounds
-        if (m_map.CheckOutOfBounds(pos, new Vector2Int(pos.x + map.Length, pos.y + map[0].Length)))
+        if (m_map.CheckOutOfBounds(map.Pos, new Vector2Int(map.Pos.x + map.TileMap.Length, map.Pos.y + map.TileMap[0].Length)))
         {
             return false;
         }
 
         // check overlap
-        for (int x = 0; x < map.Length; x++)
+        for (int x = 0; x < map.TileMap.Length; x++)
         {
-            for (int y = 0; y < map[0].Length; y++)
+            for (int y = 0; y < map.TileMap[0].Length; y++)
             {
-                if (map[x][y] == Tile.Floor && // check if position in room is a floor tile
+                if (map.TileMap[x][y] == Tile.Floor && // check if position in room is a floor tile
                     (!entranceTiles.Contains(new Vector2Int(x, y)) && // if the tile isn't an entrance
-                    (m_map.TileMap[x + pos.x][y + pos.y] != Tile.Wall || // if so, check if the same position on map isn't a wall
-                    m_map.TileMap[x + pos.x][y + pos.y + 1] != Tile.Wall || // and check all tiles around the position on the map, starting with north
-                    m_map.TileMap[x + pos.x + 1][y + pos.y + 1] != Tile.Wall || // northeast
-                    m_map.TileMap[x + pos.x + 1][y + pos.y] != Tile.Wall || // east
-                    m_map.TileMap[x + pos.x + 1][y + pos.y - 1] != Tile.Wall || // southeast
-                    m_map.TileMap[x + pos.x][y + pos.y - 1] != Tile.Wall || // south
-                    m_map.TileMap[x + pos.x - 1][y + pos.y - 1] != Tile.Wall || // southwest
-                    m_map.TileMap[x + pos.x - 1][y + pos.y] != Tile.Wall || // west
-                    m_map.TileMap[x + pos.x - 1][y + pos.y + 1] != Tile.Wall // northwest
+                    (m_map.TileMap[x + map.Pos.x][y + map.Pos.y] != Tile.Wall || // if so, check if the same position on map isn't a wall
+                    m_map.TileMap[x + map.Pos.x][y + map.Pos.y + 1] != Tile.Wall || // and check all tiles around the position on the map, starting with north
+                    m_map.TileMap[x + map.Pos.x + 1][y + map.Pos.y + 1] != Tile.Wall || // northeast
+                    m_map.TileMap[x + map.Pos.x + 1][y + map.Pos.y] != Tile.Wall || // east
+                    m_map.TileMap[x + map.Pos.x + 1][y + map.Pos.y - 1] != Tile.Wall || // southeast
+                    m_map.TileMap[x + map.Pos.x][y + map.Pos.y - 1] != Tile.Wall || // south
+                    m_map.TileMap[x + map.Pos.x - 1][y + map.Pos.y - 1] != Tile.Wall || // southwest
+                    m_map.TileMap[x + map.Pos.x - 1][y + map.Pos.y] != Tile.Wall || // west
+                    m_map.TileMap[x + map.Pos.x - 1][y + map.Pos.y + 1] != Tile.Wall // northwest
                     )) ||
                     (entranceTiles.Contains(new Vector2Int(x, y)) && // if the tile is an entrance
-                    (m_map.TileMap[x + pos.x][y + pos.y] != Tile.Wall || // if so, check if the same position on map isn't a wall
-                    (Math.Abs(direction.x) == 1 && m_map.TileMap[x + pos.x][y + pos.y + 1] != Tile.Wall) || // and check certain tiles around the position on the map, based on direction, starting with north
-                    (Math.Abs(direction.y) == 1 && m_map.TileMap[x + pos.x + 1][y + pos.y] != Tile.Wall) || // east
-                    (Math.Abs(direction.x) == 1 && m_map.TileMap[x + pos.x][y + pos.y - 1] != Tile.Wall) || // south
-                    (Math.Abs(direction.y) == 1 && m_map.TileMap[x + pos.x - 1][y + pos.y] != Tile.Wall)))) // west
+                    (m_map.TileMap[x + map.Pos.x][y + map.Pos.y] != Tile.Wall || // if so, check if the same position on map isn't a wall
+                    (Math.Abs(direction.x) == 1 && m_map.TileMap[x + map.Pos.x][y + map.Pos.y + 1] != Tile.Wall) || // and check certain tiles around the position on the map, based on direction, starting with north
+                    (Math.Abs(direction.y) == 1 && m_map.TileMap[x + map.Pos.x + 1][y + map.Pos.y] != Tile.Wall) || // east
+                    (Math.Abs(direction.x) == 1 && m_map.TileMap[x + map.Pos.x][y + map.Pos.y - 1] != Tile.Wall) || // south
+                    (Math.Abs(direction.y) == 1 && m_map.TileMap[x + map.Pos.x - 1][y + map.Pos.y] != Tile.Wall)))) // west
                 {
                     return false;
                 }
@@ -310,7 +309,7 @@ public class MapGenerator
     }
 
     /// <summary>
-    /// Add shortcuts to m_tilemap based on the settings
+    /// Add shortcuts to m_map based on the settings
     /// </summary>
     private void AddShortcuts()
     {
@@ -363,7 +362,7 @@ public class MapGenerator
                         }
 
                         // check if placeable
-                        if (CanPlace(tunnel.TileMap, tunnel.Pos, entranceTiles, direction) && CheckIfUsefulToPlace(wallTile, otherWallTile, direction))
+                        if (CanPlace(tunnel, entranceTiles, direction) && CheckIfUsefulToPlace(wallTile, otherWallTile, direction))
                         {
                             // if breakable, make entrance tiles a breakable block
                             if (IsBreakable())
@@ -400,8 +399,7 @@ public class MapGenerator
     /// <returns>True if secret</returns>
     private bool IsBreakable()
     {
-        int i = UnityEngine.Random.Range(1, 101);
-        return i <= m_breakableTunnelChance;
+        return UnityEngine.Random.Range(1, 101) <= m_breakableTunnelChance;
     }
 
     /// <summary>
@@ -441,6 +439,9 @@ public class MapGenerator
         }
     }
 
+    /// <summary>
+    /// Adds reflectors to m_map
+    /// </summary>
     private void AddReflectors()
     {
         // setup
@@ -456,7 +457,7 @@ public class MapGenerator
             for (int i = 0; i < Map.DIRECTIONS.Length; i++)
             {
                 Vector2Int nextToCurrent = current + Map.DIRECTIONS[i];
-                // if the tile is a wall, convert to mirror
+                // if the tile is a wall, convert to reflector
                 if (m_map.TileMap[nextToCurrent.x][nextToCurrent.y] == Tile.Wall)
                 {
                     m_map.TileMap[nextToCurrent.x][nextToCurrent.y] = Tile.Reflector;
