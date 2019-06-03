@@ -51,7 +51,7 @@ public class EscapeMenu : NetworkBehaviour
         {
             NetworkManager.singleton.StopClient();
         }
-        SceneManager.LoadScene("NetworkMenu", LoadSceneMode.Single);
+        SceneManager.LoadScene("Lobby", LoadSceneMode.Single);
     }
 
     public void TogglePause()

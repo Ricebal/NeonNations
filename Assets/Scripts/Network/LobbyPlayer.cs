@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class NetworkLobbyPlayerExt : NetworkLobbyPlayer
+public class LobbyPlayer : NetworkLobbyPlayer
 {
     [SyncVar(hook = nameof(OnUsernameSet))] private string m_username;
     [SerializeField] private TextMeshProUGUI m_textUsername;

@@ -92,7 +92,7 @@ public class GameManager : NetworkBehaviour
             {
                 NetworkManager.singleton.StopClient();
             }
-            SceneManager.LoadScene("NetworkMenu", LoadSceneMode.Single);
+            SceneManager.LoadScene("Lobby", LoadSceneMode.Single);
         }
     }
 

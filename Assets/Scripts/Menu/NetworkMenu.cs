@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class NetworkMenu : MonoBehaviour
 {
-    [SerializeField] private NetworkLobbyManagerCustom m_lobbyManager;
+    [SerializeField] private LobbyManager m_lobbyManager;
     [SerializeField] private Button m_buttonStartHost;
     [SerializeField] private Button m_buttonJoinGame;
     [SerializeField] private InputField m_ipAddressField;

@@ -47,6 +47,7 @@ namespace Mirror
 
         void ReadyStateChanged(bool NewReadyState)
         {
+            ReadyToBegin = NewReadyState;
             OnClientReady(ReadyToBegin);
         }
 
