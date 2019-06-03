@@ -53,7 +53,7 @@ public abstract class Soldier : NetworkBehaviour
             deathExplosion.Fire();
         }
     }
-    public virtual void DisableMovement()
+    public virtual void StopMovement()
     {
     }
 

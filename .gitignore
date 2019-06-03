@@ -56,7 +56,5 @@ sysinfo.txt
 
 # Crashlytics generated file
 crashlytics-build.properties
+*.orig.meta
 *.orig
-Assets/Scripts/Behaviours/AttackBehaviour.cs.orig.meta
-Assets/Scripts/Soldier/Player/Player.cs.orig.meta
-Assets/Scripts/Manager/TeamManager.cs.orig.meta

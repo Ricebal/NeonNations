@@ -65,7 +65,7 @@ public class Player : Soldier
         base.Die();
     }
 
-    public override void DisableMovement()
+    public override void StopMovement()
     {
         if (isLocalPlayer)
         {

@@ -92,7 +92,7 @@ public class Bot : Soldier
         transform.rotation = Quaternion.LookRotation(newDirection);
     }
 
-    public override void DisableMovement()
+    public override void StopMovement()
     {
         m_rigidbody.velocity = Vector3.zero;
     }
