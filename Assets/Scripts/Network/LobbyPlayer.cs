@@ -18,6 +18,7 @@ public class LobbyPlayer : NetworkLobbyPlayer
         if (lobby != null && SceneManager.GetActiveScene().name == lobby.LobbyScene)
         {
             gameObject.transform.SetParent(GameObject.Find("Players").transform);
+            gameObject.transform.localScale = Vector3.one;
         }
     }
 
