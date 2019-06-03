@@ -21,8 +21,6 @@ public abstract class Soldier : NetworkBehaviour
     protected Renderer m_renderer;
     protected float m_deathTime;
 
-    public float TimerForSpotLight = 0;
-
     public override void OnStartClient()
     {
         m_renderer = GetComponent<Renderer>();
@@ -44,15 +42,6 @@ public abstract class Soldier : NetworkBehaviour
             {
                 Vector2 spawnPoint = BoardManager.GetRandomFloorTile();
                 RpcRespawn(spawnPoint);
-            }
-        }
-
-        if (TimerForSpotLight > 0)
-        {
-            TimerForSpotLight -= Time.deltaTime;
-            if(TimerForSpotLight <= 0 && !isLocalPlayer)
-            {
-                transform.GetChild(2).gameObject.SetActive(false); // Stop showing the spotlight of the soldier.
             }
         }
     }
@@ -164,8 +153,6 @@ public abstract class Soldier : NetworkBehaviour
     [ClientRpc]
     protected void RpcTakeDamage(int damage)
     {
-        transform.GetChild(2).gameObject.SetActive(true); // Show the spotlight of the soldier when he is hit by a bullet.
-        TimerForSpotLight = 0.5f;
         m_healthStat.Subtract(damage);
     }
 
@@ -175,6 +162,14 @@ public abstract class Soldier : NetworkBehaviour
         Soldier otherSoldier = GameObject.Find(playerId).GetComponent<Soldier>();
         otherSoldier.PlayerScore.Kills++;
         otherSoldier.Team.AddKill();
+    }
+
+    [ClientRpc]
+    private void RpcShowSpotLight()
+    {
+        GameObject spotLight = transform.GetChild(3).gameObject;
+        spotLight.SetActive(true); // Show the spotlight of the soldier that uses the sonar.
+        spotLight.GetComponent<SpotLightScript>().SetLifeTime(ExplosionLight.LIFE_TIME * 2);
     }
 
     protected void OnTriggerEnter(Collider collider)
@@ -188,9 +183,13 @@ public abstract class Soldier : NetworkBehaviour
         {
             Bullet bullet = collider.gameObject.GetComponent<Bullet>();
             Soldier shooter = GameObject.Find(bullet.ShooterId).GetComponent<Soldier>();
-            if (bullet.ShooterId != transform.name && shooter.Team != this.Team)
+            if (bullet.ShooterId != transform.name) // Don't light up when you're hit by your own bullet.
             {
-                TakeDamage(bullet.Damage, bullet.ShooterId);
+                RpcShowSpotLight();
+                if (shooter.Team != this.Team) // Don't take damage from friendly fire.
+                {
+                    TakeDamage(bullet.Damage, bullet.ShooterId);
+                }
             }
         }
     }

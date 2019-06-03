@@ -4,10 +4,11 @@ public class ExplosionLight : MonoBehaviour
 {
     [SerializeField] private float m_rangeMultiplier;
     [SerializeField] private float m_intensityMultiplier;
-    [SerializeField] private float m_lifetime;
     [SerializeField] private float m_maxRangeForSoldierLight;
     [SerializeField] private Light m_lightForMap;
     [SerializeField] private Light m_lightForSoldiers;
+
+    public const float LIFE_TIME = 0.25f;
 
     private bool m_growing = true;
     private float m_timeCount = 0.0f;
@@ -15,13 +16,13 @@ public class ExplosionLight : MonoBehaviour
     void Start()
     {
         //Destroys explosion after certain time
-        Destroy(gameObject, m_lifetime * 2);
+        Destroy(gameObject, LIFE_TIME * 2);
     }
 
     void Update()
     {
         m_timeCount += Time.deltaTime;
-        if (m_timeCount > m_lifetime && m_growing)
+        if (m_timeCount > LIFE_TIME && m_growing)
         {
             m_growing = false;
         }

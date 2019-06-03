@@ -11,8 +11,8 @@ public class BotController : MonoBehaviour
         m_attackBehaviour = GetComponent<AttackBehaviour>();
 
         GameManager.Singleton.GameMode.OnGameFinished += DisableBots;
-        m_searchBehaviour.Activate();
-        m_attackBehaviour.Activate();
+        //m_searchBehaviour.Activate();
+        //m_attackBehaviour.Activate();
     }
 
     private void DisableBots()
