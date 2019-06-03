@@ -15,12 +15,14 @@ public abstract class Soldier : NetworkBehaviour
 
     [SerializeField] protected Stat m_healthStat;
     [SerializeField] protected Stat m_energyStat;
+    [SerializeField] protected HeadController m_headController;
     protected Renderer m_renderer;
     protected float m_deathTime;
 
     public override void OnStartClient()
     {
         m_renderer = GetComponent<Renderer>();
+        m_headController = GetComponentInChildren<HeadController>();
     }
 
     protected void Update()
@@ -29,7 +31,9 @@ public abstract class Soldier : NetworkBehaviour
         if (IsDead)
         {
             float newAlpha = Mathf.Max(0, (RespawnTime - (Time.time - m_deathTime)) / RespawnTime);
-            m_renderer.material.color = new Color(Color.r, Color.g, Color.b, newAlpha);
+            Color newColor = new Color(Color.r, Color.g, Color.b, newAlpha);
+            m_renderer.material.color = newColor;
+            m_headController?.SetColor(newColor);
         }
     }
 
@@ -78,6 +82,7 @@ public abstract class Soldier : NetworkBehaviour
         transform.position = new Vector3(spawnPoint.x, 0, spawnPoint.y);
         gameObject.layer = 8; // Players layer
         m_renderer.material.color = Color;
+        m_headController?.SetColor(Color);
         m_healthStat.Reset();
         m_energyStat.Reset();
         IsDead = false;
@@ -116,8 +121,7 @@ public abstract class Soldier : NetworkBehaviour
         DeathExplosion deathExplosion = obj.GetComponentInChildren<DeathExplosion>();
         deathExplosion?.SetColor(color);
 
-        HeadController headController = obj.GetComponentInChildren<HeadController>();
-        headController?.SetColor(color);
+        m_headController?.SetColor(color);
     }
 
     [Command]
