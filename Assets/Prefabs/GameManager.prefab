@@ -52,6 +52,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncInterval: 0.1
   GameMode: {fileID: 0}
+  GameFinished: 0
+  WaitingTimeAfterGameEnded: 0
   m_seed: 
   m_mapWidth: 50
   m_mapHeight: 50
@@ -62,8 +64,8 @@ MonoBehaviour:
   m_minTunnelLength: 1
   m_maxTunnelLength: 12
   m_tunnelWidth: 2
-  m_breakableTunnelChance: 20
-  m_shortcutMinSkipDistance: 20
+  m_breakableTunnelChance: 100
+  m_shortcutMinSkipDistance: 2
   m_outerWallWidth: 14
   m_fireWorks: {fileID: 3599376716146521321, guid: 27f5446eba1e75c408fdc65871eed296,
     type: 3}
@@ -96,7 +98,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1eee6896bd4bd1449b71fa2177df0c10, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DirectionalLight: {fileID: 0}
+  m_directionalLight: {fileID: 0}
+  m_text: {fileID: 0}
 --- !u!114 &4331448404734817720
 MonoBehaviour:
   m_ObjectHideFlags: 0
