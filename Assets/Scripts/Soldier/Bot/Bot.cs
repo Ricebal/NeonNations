@@ -6,8 +6,6 @@ public class Bot : Soldier
 
     protected new void Start()
     {
-        base.Start();
-
         if (!isServer)
         {
             return;

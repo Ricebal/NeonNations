@@ -3,7 +3,6 @@ using UnityEngine;
 
 public abstract class Soldier : NetworkBehaviour
 {
-    [SyncVar] public int Index;
     [SyncVar] public Team Team;
     [SyncVar] public Color Color;
     [SyncVar] public Score PlayerScore = new Score();

@@ -4,22 +4,6 @@ using UnityEngine.Rendering;
 
 public class NetworkLobbyManagerCustom : NetworkLobbyManager
 {
-    /// <summary>
-    /// Called just after GamePlayer object is instantiated and just before it replaces LobbyPlayer object.
-    /// This is the ideal point to pass any data like player name, credentials, tokens, colors, etc.
-    /// into the GamePlayer object as it is about to enter the Online scene.
-    /// </summary>
-    /// <param name="lobbyPlayer"></param>
-    /// <param name="gamePlayer"></param>
-    /// <returns>true unless some code in here decides it needs to abort the replacement</returns>
-    public override bool OnLobbyServerSceneLoadedForPlayer(GameObject lobbyPlayer, GameObject gamePlayer)
-    {
-        Soldier player = gamePlayer.GetComponent<Soldier>();
-        player.Index = lobbyPlayer.GetComponent<NetworkLobbyPlayer>().Index;
-        player.Color = Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f);
-        return true;
-    }
-
     /*
         This code below is to demonstrate how to do a Start button that only appears for the Host player
         showStartButton is a local bool that's needed because OnLobbyServerPlayersReady is only fired when
@@ -29,7 +13,7 @@ public class NetworkLobbyManagerCustom : NetworkLobbyManager
         is set as DontDestroyOnLoad = true.
     */
 
-    bool showStartButton;
+    private bool m_showStartButton;
 
     public override void OnLobbyServerPlayersReady()
     {
@@ -40,7 +24,7 @@ public class NetworkLobbyManagerCustom : NetworkLobbyManager
         }
         else
         {
-            showStartButton = true;
+            m_showStartButton = true;
         }
     }
 
@@ -48,10 +32,10 @@ public class NetworkLobbyManagerCustom : NetworkLobbyManager
     {
         base.OnGUI();
 
-        if (allPlayersReady && showStartButton && GUI.Button(new Rect(150, 300, 120, 20), "START GAME"))
+        if (allPlayersReady && m_showStartButton && GUI.Button(new Rect(150, 300, 120, 20), "START GAME"))
         {
             // set to false to hide it in the game scene
-            showStartButton = false;
+            m_showStartButton = false;
 
             ServerChangeScene(GameplayScene);
         }
