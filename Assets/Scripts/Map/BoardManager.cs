@@ -432,6 +432,5 @@ public class BoardManager : NetworkBehaviour
                 }
             }
         }
-        //return list;
     }
 }
