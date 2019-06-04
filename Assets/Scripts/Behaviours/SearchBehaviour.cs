@@ -15,7 +15,7 @@ public class SearchBehaviour : BotBehaviour
 
     private void Start()
     {
-        m_environment = GameEnvironment.CreateInstance(BoardManager.GetTileMap(), new List<Tile>() { Tile.Wall, Tile.BreakableWall });
+        m_environment = GameEnvironment.CreateInstance(BoardManager.GetMap(), new List<Tile>() { Tile.Wall, Tile.BreakableWall, Tile.Reflector });
         m_dStarLite = new DStarLite(m_environment, false);
         Vector2Int startCoordinates = m_environment.ConvertGameObjectToCoordinates(gameObject.transform);
         GenerateNewDestination(startCoordinates);
@@ -65,7 +65,7 @@ public class SearchBehaviour : BotBehaviour
     /// <param name="currentPos">The current position of the entity</param>
     private void GenerateNewDestination(Vector2Int currentPos)
     {
-        m_goalCoordinates = BoardManager.GetRandomFloorTile();
+        m_goalCoordinates = BoardManager.GetMap().GetRandomFloorTile();
         m_dStarLite.RunDStarLite(currentPos, m_goalCoordinates);
     }
 

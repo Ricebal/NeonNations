@@ -37,32 +37,19 @@ public class AttackBehaviour : BotBehaviour
     {
         // Get all players that aren't on the bot's team
         List<Soldier> enemies = TeamManager.GetAliveEnemiesByTeam(m_bot.Team.Id);
-        Vector3 aimTarget;
         Vector3 targetPosition = FindClosestEnemyPosition(enemies);
         // Worldspace -> localspace
         Vector3 rayCastTarget = targetPosition - transform.position;
         // Raycast to the target
-        RaycastHit[] hits = Physics.RaycastAll(transform.position, rayCastTarget, VISION_RANGE);
-        RaycastHit closestHit = new RaycastHit();
-        float minDist = Mathf.Infinity;
-        foreach (RaycastHit hit in hits)
-        {
-            float dist = Vector3.Distance(transform.position, hit.point);
-            if (dist < minDist)
-            {
-                closestHit = hit;
-                minDist = dist;
-            }
-        }
-
-        // If the closest raycast object is not a player return
-        if (closestHit.collider == null || closestHit.collider.tag != "Player")
+        Physics.Raycast(transform.position, rayCastTarget, out RaycastHit closestHit, VISION_RANGE);
+        // If the closest raycast object is not a player or is the same team as the bot, return
+        if (closestHit.collider == null || closestHit.collider.tag != "Player" || closestHit.collider.GetComponent<Soldier>().Team == m_bot.Team)
         {
             return;
         }
 
         // Make bot less accurate to make it more fair for players
-        aimTarget = JitterAim(targetPosition);
+        Vector3 aimTarget = JitterAim(targetPosition);
         FireAtPosition(aimTarget);
         m_lastShotPosition = targetPosition;
     }
