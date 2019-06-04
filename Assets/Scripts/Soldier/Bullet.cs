@@ -63,6 +63,7 @@ public class Bullet : MonoBehaviour
         {
             // Raycast from start or last bounce to collision
             RaycastHit contact = GetRaycastHit(collider.GetInstanceID());
+            // If the bullet hits a mirror corner, destroy bullet to prevent bugs
             if (Vector3.Distance(m_lastBouncePosition, transform.position) < 0.1)
             {
                 DestroyBullet();

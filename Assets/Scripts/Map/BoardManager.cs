@@ -170,15 +170,15 @@ public class BoardManager : NetworkBehaviour
                 else if (m_map.TileMap[i][j] == Tile.Reflector)
                 {
                     GameObject instance;
-                    for (int k = 0; k < Map.DIRECTIONS.Length; k++)
+                    for (int k = 0; k < Map.Directions.Length; k++)
                     {
                         // if reflector hasn't been handled before in this direction
-                        if (!reflectorList.Contains(new KeyValuePair<Vector2Int, Vector2Int>(new Vector2Int(i, j), Map.DIRECTIONS[k])))
+                        if (!reflectorList.Contains(new KeyValuePair<Vector2Int, Vector2Int>(new Vector2Int(i, j), Map.Directions[k])))
                         {
                             // create new list to save all connected reflectors
                             List<KeyValuePair<Vector2Int, Vector2Int>> currentList = new List<KeyValuePair<Vector2Int, Vector2Int>>();
                             // call a recursive function to add all connected reflectors to currentList
-                            GetAdjacentReflectors(currentList, new Vector2Int(i, j), Map.DIRECTIONS[k]);
+                            GetAdjacentReflectors(currentList, new Vector2Int(i, j), Map.Directions[k]);
                             // count is 0 if the reflector tile isn't a reflector in the direction given
                             if (currentList.Count > 0)
                             {
@@ -186,9 +186,9 @@ public class BoardManager : NetworkBehaviour
                                 instance = Instantiate(m_reflectorPrefab, new Vector3(i, 0f, j), Quaternion.identity);
                                 instance.name = REFLECTOR;
                                 // adjust position based on the amount of reflectors next to each other
-                                instance.transform.Translate(new Vector3(Math.Abs(Map.DIRECTIONS[k].y) * ((float)(0.5 * currentList.Count) - 0.5f) + Map.DIRECTIONS[k].x*0.5f, 0f, Math.Abs(Map.DIRECTIONS[k].x) * ((float)(0.5 * currentList.Count) - 0.5f) + Map.DIRECTIONS[k].y * 0.5f));
+                                instance.transform.Translate(new Vector3(Math.Abs(Map.Directions[k].y) * ((float)(0.5 * currentList.Count) - 0.5f) + Map.Directions[k].x*0.5f, 0f, Math.Abs(Map.Directions[k].x) * ((float)(0.5 * currentList.Count) - 0.5f) + Map.Directions[k].y * 0.5f));
                                 // rotate reflector based on direction facing
-                                instance.transform.rotation = Quaternion.AngleAxis((Math.Abs(Map.DIRECTIONS[k].y) * ((Map.DIRECTIONS[k].y + 1) * 90)) + (Math.Abs(Map.DIRECTIONS[k].x) * (90 + (Map.DIRECTIONS[k].x + 1) * 90)), Vector3.up);
+                                instance.transform.rotation = Quaternion.AngleAxis((Math.Abs(Map.Directions[k].y) * ((Map.Directions[k].y + 1) * 90)) + (Math.Abs(Map.Directions[k].x) * (90 + (Map.Directions[k].x + 1) * 90)), Vector3.up);
                                 // increase size based on the amount of reflectors next to each other
                                 instance.transform.localScale = new Vector3(currentList.Count, 1, 1);
                                 // add to other reflectors in the map
@@ -432,6 +432,5 @@ public class BoardManager : NetworkBehaviour
                 }
             }
         }
-        //return list;
     }
 }

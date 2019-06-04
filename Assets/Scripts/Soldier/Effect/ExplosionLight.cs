@@ -2,42 +2,52 @@
 
 public class ExplosionLight : MonoBehaviour
 {
-    public float RangeMultiplier;
-    public float IntensityMultiplier;
-    public float Lifetime;
-    public Light Light;
+    [SerializeField] private float m_rangeMultiplier;
+    [SerializeField] private float m_intensityMultiplier;
+    [SerializeField] private float m_maxRangeForSoldierLight;
+    [SerializeField] private Light m_lightForMap;
+    [SerializeField] private Light m_lightForSoldiers;
+
+    public const float LIFETIME = 0.5f;
 
     private bool m_growing = true;
-    private float m_timeCount = 0.0f;
+    private float m_timeAlive = 0.0f;
 
     private void Start()
     {
-        //Destroys explosion after certain time
-        Destroy(gameObject, Lifetime * 2);
+        // Destroys explosion after certain time.
+        Destroy(gameObject, LIFETIME);
     }
 
     private void Update()
     {
-        m_timeCount += Time.deltaTime;
-        if (m_timeCount > Lifetime && m_growing)
-        {
-            m_growing = false;
-        }
+        m_timeAlive += Time.deltaTime;
         if (m_growing)
         {
-            Light.range += RangeMultiplier * Time.deltaTime;
-            Light.intensity += IntensityMultiplier * Time.deltaTime;
+            if (m_timeAlive > LIFETIME / 2)
+            {
+                m_growing = false;
+            }
+            m_lightForMap.range += m_rangeMultiplier * Time.deltaTime;
+            m_lightForMap.intensity += m_intensityMultiplier * Time.deltaTime;
+            m_lightForSoldiers.range += m_rangeMultiplier * Time.deltaTime;
+            m_lightForSoldiers.intensity += m_intensityMultiplier * Time.deltaTime;
+            if (m_lightForSoldiers.range > m_maxRangeForSoldierLight)
+            {
+                m_lightForSoldiers.range = m_maxRangeForSoldierLight;
+            }
         }
         else
         {
-            Light.range -= RangeMultiplier * Time.deltaTime;
-            Light.intensity -= IntensityMultiplier * Time.deltaTime;
+            m_lightForMap.range -= m_rangeMultiplier * Time.deltaTime;
+            m_lightForMap.intensity -= m_intensityMultiplier * Time.deltaTime;
+            m_lightForSoldiers.intensity -= m_intensityMultiplier * Time.deltaTime;
         }
     }
 
     public void SetColor(Color color)
     {
-        Light.color = color;
+        m_lightForMap.color = color;
         GetComponentsInChildren<ParticleSystemRenderer>()[0].trailMaterial.SetColor("_EmissionColor", color * 3); ParticleSystemRenderer[] particleSystemRenderers = GetComponentsInChildren<ParticleSystemRenderer>();
 
         // Make new material.
