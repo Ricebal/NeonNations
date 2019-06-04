@@ -5232,7 +5232,7 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 84
+  m_Constraints: 116
   m_CollisionDetection: 3
 --- !u!23 &8638977763130829897
 MeshRenderer:
@@ -5312,6 +5312,7 @@ MonoBehaviour:
   syncInterval: 0.1
   m_crosshairImage: {fileID: 2800000, guid: 81421fa7195fa9d468d0444fb2249587, type: 3}
   m_gunPosition: {fileID: 233212744675135805}
+  CanAim: 1
 --- !u!114 &4592339017705222691
 MonoBehaviour:
   m_ObjectHideFlags: 0
