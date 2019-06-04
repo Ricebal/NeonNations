@@ -19,6 +19,8 @@ public class LobbyManager : NetworkLobbyManager
 
         m_isConnecting = false;
         m_connectionText = "";
+
+        Discovery.ListenForBroadcast();
     }
 
     // Display the lobby panel when a player starts or joins a server
@@ -28,6 +30,13 @@ public class LobbyManager : NetworkLobbyManager
 
         m_multiplayerMenu.gameObject.SetActive(false);
         m_lobbyMenu.gameObject.SetActive(true);
+    }
+
+    public override void OnStartServer()
+    {
+        base.OnStartServer();
+
+        Discovery.StartBroadcasting();
     }
 
     // Start a game as a host
