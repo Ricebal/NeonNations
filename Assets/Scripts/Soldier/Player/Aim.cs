@@ -5,10 +5,11 @@ public class Aim : NetworkBehaviour
 {
     [SerializeField] private Texture2D m_crosshairImage;
     [SerializeField] private Transform m_gunPosition;
+    public bool CanAim = true;
 
     private void Update()
     {
-        if (!isLocalPlayer)
+        if (!isLocalPlayer || !CanAim)
         {
             return;
         }
