@@ -5,12 +5,11 @@ using UnityEngine;
 
 public class GameEnvironment : ScriptableObject
 {
+    private Map m_map;
+    private List<Tile> m_listOfObstacles = new List<Tile>();
     private const int SONAR_RANGE = 5;
     private const int BULLET_RANGE = 1;
     private const int IMPACT_RANGE = 2;
-
-    private Tile[][] m_map;
-    private List<Tile> m_listOfObstacles = new List<Tile>();
 
     /// <summary>
     /// Acts as a constructor for GameEnvironment, since it's real constructor can't be used because it's a ScriptableObject
@@ -19,7 +18,7 @@ public class GameEnvironment : ScriptableObject
     /// <param name="map">Map to set</param>
     /// <param name="list">List to set</param>
     /// <returns>A new GameEnvironment with the set values</returns>
-    public static GameEnvironment CreateInstance(Tile[][] map, List<Tile> list)
+    public static GameEnvironment CreateInstance(Map map, List<Tile> list)
     {
         var data = CreateInstance<GameEnvironment>();
         data.Init(map, list);
@@ -31,7 +30,7 @@ public class GameEnvironment : ScriptableObject
     /// </summary>
     /// <param name="map">Map to set</param>
     /// <param name="list">List to set</param>
-    private void Init(Tile[][] map, List<Tile> list)
+    private void Init(Map map, List<Tile> list)
     {
         m_map = map;
         m_listOfObstacles = list;
@@ -40,8 +39,8 @@ public class GameEnvironment : ScriptableObject
     /// <summary>
     /// Gives the current map
     /// </summary>
-    /// <returns>Tile[][] Map</returns>
-    public Tile[][] GetMap()
+    /// <returns>Map Map</returns>
+    public Map GetMap()
     {
         return m_map;
     }
@@ -62,7 +61,7 @@ public class GameEnvironment : ScriptableObject
     /// <returns>Tile enum containing the type of tile</returns>
     public Tile GetNode(Vector2Int pos)
     {
-        return m_map[pos.x][pos.y];
+        return m_map.TileMap[pos.x][pos.y];
     }
 
     /// <summary>
@@ -75,13 +74,13 @@ public class GameEnvironment : ScriptableObject
         foreach (Vector2Int coordinate in coordinates)
         {
             // If the coordinates are outside the map they shouldn't be checked (to prevent out of index exception)
-            if (coordinate.x < 0 || coordinate.y < 0 || coordinate.x >= m_map.Length || coordinate.y >= m_map[0].Length)
+            if (coordinate.x < 0 || coordinate.y < 0 || coordinate.x >= m_map.TileMap.Length || coordinate.y >= m_map.TileMap[0].Length)
             {
                 coordinatesToDelete.AddLast(coordinate);
                 continue;
             }
             // If the coordinates are inside the map, check if the coordinate contains an obstacle
-            if (!m_listOfObstacles.Contains(m_map[coordinate.x][coordinate.y]))
+            if (!m_listOfObstacles.Contains(m_map.TileMap[coordinate.x][coordinate.y]))
             {
                 coordinatesToDelete.AddLast(coordinate);
             }
@@ -129,7 +128,7 @@ public class GameEnvironment : ScriptableObject
                 int y = objectCoordinates.y + j;
 
                 // Check if coordinate is inside the map
-                if (x < 0 || x >= m_map.Length || y < 0 || y >= m_map[0].Length)
+                if (x < 0 || x >= m_map.TileMap.Length || y < 0 || y >= m_map.TileMap[0].Length)
                 {
                     continue;
                 }

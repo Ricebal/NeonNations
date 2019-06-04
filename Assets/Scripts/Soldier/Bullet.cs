@@ -22,8 +22,9 @@ public class Bullet : MonoBehaviour
     private Vector3 m_lastBouncePosition;
     // Has left player model
     private bool m_hasLeftPlayerCollider = false;
-    // Last hit mirror
-    private int m_lastMirror;
+    // Last hit reflector
+    private int m_lastReflector;
+    private float m_startingTime;
 
     public void Start()
     {
@@ -34,8 +35,16 @@ public class Bullet : MonoBehaviour
         // Move the bullet straight ahead with constant speed
         m_rigidbody.velocity = transform.forward * Speed;
 
-        // Destroy the bullet when the LivingTime is elapsed
-        Destroy(gameObject, LivingTime);
+        m_startingTime = Time.time;
+    }
+
+    private void FixedUpdate()
+    {
+        // Destroy the bullet if the living time has been reached
+        if (Time.time - m_startingTime > LivingTime)
+        {
+            DestroyBullet();
+        }
     }
 
     private void OnTriggerExit(Collider collider)
@@ -49,13 +58,23 @@ public class Bullet : MonoBehaviour
 
     private void OnTriggerEnter(Collider collider)
     {
-        // If the bullet hits a mirror and it's not the same as the last mirror bounce
-        if (collider.tag == "Mirror" && collider.GetInstanceID() != m_lastMirror)
+        // If the bullet hits a reflector and it's not the same as the last reflector bounce
+        if (collider.tag == "Reflector" && collider.GetInstanceID() != m_lastReflector)
         {
-            // Get the current heading
-            Vector3 currentDirection = transform.forward;
             // Raycast from start or last bounce to collision
             RaycastHit contact = GetRaycastHit(collider.GetInstanceID());
+            // If the bullet hits a mirror corner, destroy bullet to prevent bugs
+            if (Vector3.Distance(m_lastBouncePosition, transform.position) < 0.1)
+            {
+                DestroyBullet();
+            }
+            // Get the current heading
+            Vector3 currentDirection = transform.forward;
+            // Set position to raycast position (if it's not default) to prevent bugs
+            if (contact.point != Vector3.zero)
+            {
+                transform.position = contact.point;
+            }
             // Calculate the angle of reflection
             Vector3 newDirection = Vector3.Reflect(currentDirection, contact.normal);
             newDirection.Normalize();
@@ -66,37 +85,34 @@ public class Bullet : MonoBehaviour
             transform.rotation = Quaternion.LookRotation(newVelocity);
             // Set the last bounce position to current position for future raycasting
             m_lastBouncePosition = transform.position;
-            // Set last hit mirror to the hit mirror
-            m_lastMirror = collider.GetInstanceID();
+            // Set last hit reflector to the hit reflector
+            m_lastReflector = collider.GetInstanceID();
         }
 
-        // If the collider is not a mirror and has left the player hitbox
-        if (collider.tag != "Mirror" && (m_hasLeftPlayerCollider || collider.transform.name != ShooterId))
+        // If the collider is not a reflector and has left the player hitbox
+        if (collider.tag != "Reflector" && (m_hasLeftPlayerCollider || collider.transform.name != ShooterId))
         {
-            if (HitPrefab != null)
-            {
-                Vector3 impactPos = GetRaycastHit(collider.GetInstanceID()).point;
-                // If an impact point has been found
-                if (!impactPos.Equals(default))
-                {
-                    // Create explosion on impact
-                    CreateExplosion(impactPos);
-                }
-            }
-
-            // Decouple particle system from bullet to prevent the trail from disappearing
-            Transform trail = transform.Find("Particle System");
-            if (trail != null)
-            {
-                trail.parent = null;
-
-                // Destroy the particles after 0.5 seconds, the max lifetime of a particle
-                Destroy(trail.gameObject, 0.5f);
-            }
-
-            // The bullet is destroyed on collision
-            Destroy(gameObject);
+            DestroyBullet();
         }
+    }
+
+    private void DestroyBullet()
+    {
+        // Create explosion a bit behind to prevent explosions within walls
+        CreateExplosion(transform.position - m_rigidbody.velocity*Time.fixedDeltaTime);
+
+        // Decouple particle system from bullet to prevent the trail from disappearing
+        Transform trail = transform.Find("Particle System");
+        if (trail != null)
+        {
+            trail.parent = null;
+
+            // Destroy the particles after 0.5 seconds, the max lifetime of a particle
+            Destroy(trail.gameObject, 0.5f);
+        }
+
+        // The bullet is destroyed on collision
+        Destroy(gameObject);
     }
 
     private RaycastHit GetRaycastHit(int id)
