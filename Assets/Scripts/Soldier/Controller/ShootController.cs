@@ -48,6 +48,10 @@ public class ShootController : NetworkBehaviour
         bullet.ShooterId = shooterId;
         bullet.SetBulletColor();
         bullet.GetComponent<Identity>().SetIdentity();
-        m_audioSource.PlayOneShot(m_shootSound, m_soundVolume);
+        m_audioSource.clip = m_shootSound;
+        m_audioSource.pitch = Random.Range(0.9f, 1f);
+        m_audioSource.volume = m_soundVolume;
+        m_audioSource.Play();
+        //m_audioSource.PlayOneShot(m_shootSound, m_soundVolume);
     }
 }

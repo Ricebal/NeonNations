@@ -18,6 +18,8 @@ public abstract class Soldier : NetworkBehaviour
     [SerializeField] protected Stat m_energyStat;
     [SerializeField] protected AudioClip m_hitSound;
     [SerializeField] protected float m_hitSoundVolume;
+    [SerializeField] protected AudioClip m_deathSound;
+    [SerializeField] protected float m_deathSoundVolume;
     protected AudioSource m_audioSource;
     protected Renderer m_renderer;
     protected float m_deathTime;
@@ -57,6 +59,9 @@ public abstract class Soldier : NetworkBehaviour
         {
             deathExplosion.Fire();
         }
+        m_audioSource.clip = m_deathSound;
+        m_audioSource.volume = m_deathSoundVolume;
+        m_audioSource.Play();
     }
     public virtual void DisableMovement()
     {
@@ -155,7 +160,10 @@ public abstract class Soldier : NetworkBehaviour
     protected void RpcTakeDamage(int damage)
     {
         m_healthStat.Subtract(damage);
-        m_audioSource.PlayOneShot(m_hitSound, m_hitSoundVolume);
+        m_audioSource.clip = m_hitSound;
+        m_audioSource.pitch = Random.Range(0.75f, 1.25f);
+        m_audioSource.volume = m_hitSoundVolume;
+        m_audioSource.Play();
     }
 
     [ClientRpc]

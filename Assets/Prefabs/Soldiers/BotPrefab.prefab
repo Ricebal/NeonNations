@@ -5028,8 +5028,10 @@ MonoBehaviour:
   IsDead: 0
   m_healthStat: {fileID: 996390647512303307}
   m_energyStat: {fileID: 8274355627883046309}
-  m_hitSound: {fileID: 8300000, guid: 271d717f5160150419fdf58ed4606d2f, type: 3}
+  m_hitSound: {fileID: 8300000, guid: 6f1edd4a9dd2d16488633ecb783ffb1b, type: 3}
   m_hitSoundVolume: 0.05
+  m_deathSound: {fileID: 8300000, guid: 5e1382c7161098f4596fac9bd690d2c2, type: 3}
+  m_deathSoundVolume: 0.4
 --- !u!114 &3362813290604796342
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5175,7 +5177,7 @@ MonoBehaviour:
   Multiplier: 7.5
   m_soundVolume: 0.1
   m_dashSound: {fileID: 8300000, guid: 1734a82c31491f74b9c0c9a28aadae13, type: 3}
-  m_duration: 0.1
+  m_duration: 0.5
   m_cooldown: 1
 --- !u!114 &3756314019618765446
 MonoBehaviour:
