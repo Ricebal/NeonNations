@@ -1,7 +1,10 @@
 using Mirror;
+using UnityEngine;
 
 public class LightController : NetworkBehaviour
 {
+    [SerializeField] private GameObject m_pointLight;
+    [SerializeField] private GameObject m_spotLight;
 
     private void Start()
     {
@@ -10,8 +13,8 @@ public class LightController : NetworkBehaviour
             return;
         }
 
-        transform.GetChild(0).gameObject.SetActive(true);
-        transform.GetChild(1).gameObject.SetActive(true);
+        m_pointLight.SetActive(true);
+        m_spotLight.SetActive(true);
     }
 
 }

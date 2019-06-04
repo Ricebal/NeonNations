@@ -5254,6 +5254,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   syncInterval: 0.1
+  m_pointLight: {fileID: 6716781768823966986}
+  m_spotLight: {fileID: 8748101757251267009}
 --- !u!114 &878025824821367766
 MonoBehaviour:
   m_ObjectHideFlags: 0
