@@ -7,12 +7,12 @@ public class Sonar : MonoBehaviour
     [SerializeField] private float m_maxIntensity;
     [SerializeField] private float m_maxRange;
     [SerializeField] private float m_maxRangeForSoldierLight;
-    public float LifeSpan;
+    public const float LIFETIME = 0.85f;
     private bool m_growing;
 
     private void Start()
     {
-        Destroy(gameObject, LifeSpan);
+        Destroy(gameObject, LIFETIME);
         m_growing = true;
     }
 
@@ -29,8 +29,8 @@ public class Sonar : MonoBehaviour
     private void Update()
     {
         // Times two for half the lifespan
-        float intensityAmount = Time.deltaTime / LifeSpan * m_maxIntensity * 2f;
-        float rangeAmount = Time.deltaTime / LifeSpan * m_maxRange * 2f;
+        float intensityAmount = Time.deltaTime / LIFETIME * m_maxIntensity * 2f;
+        float rangeAmount = Time.deltaTime / LIFETIME * m_maxRange * 2f;
 
         if (m_lightForMap.intensity > m_maxIntensity && m_lightForMap.range > m_maxRange)
         {

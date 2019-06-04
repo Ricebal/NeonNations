@@ -5021,14 +5021,14 @@ MonoBehaviour:
     Id: 0
     Color: {r: 0, g: 0, b: 0, a: 0}
     PlayerCount: 0
-  InitialColor: {r: 0, g: 0, b: 0, a: 0}
+  Color: {r: 0, g: 0, b: 0, a: 0}
   Speed: 8
   Username: Bot
   RespawnTime: 5
   IsDead: 0
   m_healthStat: {fileID: 996390647512303307}
   m_energyStat: {fileID: 8274355627883046309}
-  TimerForSpotLight: 0
+  m_spotLight: {fileID: 9078111855217853513}
 --- !u!114 &3362813290604796342
 MonoBehaviour:
   m_ObjectHideFlags: 0

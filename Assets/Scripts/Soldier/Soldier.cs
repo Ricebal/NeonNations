@@ -15,6 +15,7 @@ public abstract class Soldier : NetworkBehaviour
 
     [SerializeField] protected Stat m_healthStat;
     [SerializeField] protected Stat m_energyStat;
+    [SerializeField] protected GameObject m_spotLight;
     protected Renderer m_renderer;
     protected float m_deathTime;
 
@@ -163,9 +164,8 @@ public abstract class Soldier : NetworkBehaviour
     [ClientRpc]
     private void RpcShowSpotLight()
     {
-        GameObject spotLight = transform.GetChild(3).gameObject;
-        spotLight.SetActive(true); // Show the spotlight of the soldier that uses the sonar.
-        spotLight.GetComponent<SpotLightScript>().SetLifeTime(ExplosionLight.LIFE_TIME * 2);
+        m_spotLight.SetActive(true); // Show the spotlight of the soldier that was hit by a bullet.
+        m_spotLight.GetComponent<SpotLightScript>().SetLifeTime(ExplosionLight.LIFETIME, false);
     }
 
     protected void OnTriggerEnter(Collider collider)

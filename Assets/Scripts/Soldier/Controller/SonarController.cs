@@ -33,13 +33,12 @@ public class SonarController : NetworkBehaviour
     private void RpcSonar()
     {
         GameObject sonarPrefab = Instantiate(m_prefab, transform.position, Quaternion.identity);
-        Sonar sonarScript = sonarPrefab.GetComponent<Sonar>();
-        
-        GameObject spotLight = transform.GetChild(3).gameObject;
+
+        GameObject spotLight = transform.Find("Spot_Light_For_Other_Players").gameObject;
         spotLight.SetActive(true); // Show the spotlight of the soldier that uses the sonar.
-        spotLight.GetComponent<SpotLightScript>().SetLifeTime(sonarScript.LifeSpan);
+        spotLight.GetComponent<SpotLightScript>().SetLifeTime(Sonar.LIFETIME, true);
 
-
+        Sonar sonarScript = sonarPrefab.GetComponent<Sonar>();
         Soldier soldier = GetComponent<Soldier>();
         sonarScript.SetColor(soldier.Color);
     }

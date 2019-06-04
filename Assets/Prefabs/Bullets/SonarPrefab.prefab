@@ -191,7 +191,7 @@ MonoBehaviour:
   m_maxIntensity: 2
   m_maxRange: 32
   m_maxRangeForSoldierLight: 8
-  LifeSpan: 0.85
+  Lifespan: 0.85
 --- !u!114 &7673788601802070293
 MonoBehaviour:
   m_ObjectHideFlags: 0
