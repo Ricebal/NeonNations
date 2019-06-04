@@ -20,7 +20,7 @@ public class ShootController : NetworkBehaviour
 
     private void Start()
     {
-        m_audioSource = GetComponent<AudioSource>();
+        m_audioSource = gameObject.AddComponent<AudioSource>();
     }
 
     public bool CanShoot(int energy)
@@ -52,6 +52,5 @@ public class ShootController : NetworkBehaviour
         m_audioSource.pitch = Random.Range(0.9f, 1f);
         m_audioSource.volume = m_soundVolume;
         m_audioSource.Play();
-        //m_audioSource.PlayOneShot(m_shootSound, m_soundVolume);
     }
 }
