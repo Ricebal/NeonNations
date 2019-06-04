@@ -66,6 +66,7 @@ MonoBehaviour:
   m_tunnelWidth: 2
   m_breakableTunnelChance: 20
   m_shortcutMinSkipDistance: 20
+  m_reflectorAreaSize: 200
   m_outerWallWidth: 14
   m_fireWorks: {fileID: 3599376716146521321, guid: 27f5446eba1e75c408fdc65871eed296,
     type: 3}
@@ -85,6 +86,8 @@ MonoBehaviour:
   m_mapPrefab: {fileID: 6182289135420230192, guid: 1e44135debb4a9a41a46d373ce5d9c91,
     type: 3}
   m_breakableWallPrefab: {fileID: 7737746882760392655, guid: d780423ce27d7d948bfe4bab56b66701,
+    type: 3}
+  m_reflectorPrefab: {fileID: 7451038652050229078, guid: aae966a7cdf451e49af8bc7c3f5cf80c,
     type: 3}
 --- !u!114 &4331448404734817723
 MonoBehaviour:
