@@ -12,9 +12,12 @@ public class Map
     public Tile[][] TileMap;
     public Vector2Int Pos;
 
-    public Map(Tile[][] tileMap)
+    private int m_spawnAreaMinSize;
+
+    public Map(Tile[][] tileMap, int spawnAreaMinSize)
     {
         TileMap = tileMap;
+        m_spawnAreaMinSize = spawnAreaMinSize;
     }
 
     /// <summary>
@@ -22,9 +25,9 @@ public class Map
     /// </summary>
     /// <param name="content">The tile to fill the map with</param>
     /// <returns>A jagged array of Tiles representing the tilemap</returns>
-    static public Map GenerateEmptyMap(Tile content, int width, int height)
+    static public Map GenerateEmptyMap(Tile content, int width, int height, int spawnAreaMinSize)
     {
-        Map result = new Map(new Tile[width][]);
+        Map result = new Map(new Tile[width][], spawnAreaMinSize);
         for (int x = 0; x < width; x++)
         {
             result.TileMap[x] = new Tile[height];
@@ -88,6 +91,50 @@ public class Map
         return randomTile;
     }
 
+    public Vector2Int GetSpawnPoint()
+    {
+        Vector2Int pos;
+        do
+        {
+            pos = GetRandomFloorTile();
+        } while (!ValidSpawnPoint(pos));
+        
+        return pos;
+    }
+
+    private bool ValidSpawnPoint(Vector2Int pos)
+    {
+        // setup
+        Queue<Vector2Int> positionsToCheck = new Queue<Vector2Int>();
+        positionsToCheck.Enqueue(pos);
+        List<Vector2Int> positionsChecked = new List<Vector2Int>();
+
+        // floodfill algorithm
+        while (positionsToCheck.Count != 0)
+        {
+            if (positionsChecked.Count > m_spawnAreaMinSize)
+            {
+                return true;
+            }
+            Vector2Int current = positionsToCheck.Dequeue();
+            for (int i = 0; i < DIRECTIONS.Length; i++)
+            {
+                Vector2Int nextToCurrent = current + DIRECTIONS[i];
+
+                // if the tile hasn't been checked and is not in the list to be checked, and it's a floor, add to check list
+                if (!positionsChecked.Contains(nextToCurrent) && !positionsToCheck.Contains(nextToCurrent)
+                    && (TileMap[nextToCurrent.x][nextToCurrent.y] == Tile.Floor))
+                {
+                    positionsToCheck.Enqueue(nextToCurrent);
+                }
+            }
+
+            positionsChecked.Add(current);
+        }
+
+        return false;
+    }
+
 
     /// <summary>
     /// Adds a tunnel to a given room
@@ -99,13 +146,13 @@ public class Map
     /// <returns>The new map with the tunnel added to it</returns>
     public Map AddTunnelToMap(int tunnelLength, Vector2Int entrance, Vector2Int direction, int tunnelWidth)
     {
-        Map newMap = GenerateEmptyMap(Tile.Wall, TileMap.Length + Math.Abs(direction.x) * tunnelLength, TileMap[0].Length + Math.Abs(direction.y) * tunnelLength);
+        Map newMap = GenerateEmptyMap(Tile.Wall, TileMap.Length + Math.Abs(direction.x) * tunnelLength, TileMap[0].Length + Math.Abs(direction.y) * tunnelLength, m_spawnAreaMinSize);
 
         // copy roommap into new map
         newMap.PasteTileMap(new Vector2Int(Math.Abs(Math.Max(0, direction.x)) * tunnelLength, Math.Abs(Math.Max(0, direction.y)) * tunnelLength), TileMap);
 
         // generate tunnel
-        Map tunnel = new Map(new Tile[(tunnelWidth * Math.Abs(direction.y) + tunnelLength * Math.Abs(direction.x))][]);
+        Map tunnel = new Map(new Tile[(tunnelWidth * Math.Abs(direction.y) + tunnelLength * Math.Abs(direction.x))][], m_spawnAreaMinSize);
 
         for (int x = 0; x < tunnel.TileMap.Length; x++)
         {

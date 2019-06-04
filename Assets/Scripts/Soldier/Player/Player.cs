@@ -73,7 +73,7 @@ public class Player : Soldier
         }
     }
 
-    protected override void Respawn(Vector2 respawnPoint)
+    protected override void Respawn(Vector2Int respawnPoint)
     {
         if (isLocalPlayer)
         {

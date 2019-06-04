@@ -248,8 +248,8 @@ public class GameManager : NetworkBehaviour
 
     private void SpawnFireWorks(Soldier soldier)
     {
-        int amountOfFirworks = UnityEngine.Random.Range(5, 7);
-        for (int i = 0; i < amountOfFirworks; i++)
+        int amountOfFireworks = UnityEngine.Random.Range(5, 7);
+        for (int i = 0; i < amountOfFireworks; i++)
         {
             float xPos = soldier.gameObject.transform.position.x;
             float zPos = soldier.gameObject.transform.position.z;

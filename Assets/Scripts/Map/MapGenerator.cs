@@ -54,7 +54,7 @@ public class MapGenerator
     /// <returns>A Map object containing a test map</returns>
     public Map GenerateTestMap()
     {
-        m_map = Map.GenerateEmptyMap(Tile.Wall, m_mapWidth, m_mapHeight);
+        m_map = Map.GenerateEmptyMap(Tile.Wall, m_mapWidth, m_mapHeight, m_tunnelWidth * m_maxTunnelLength);
 
         for (int x = 0; x < m_mapWidth; x++)
         {
@@ -101,7 +101,7 @@ public class MapGenerator
         CheckSettings();
 
         // Create level with only walls
-        m_map = Map.GenerateEmptyMap(Tile.Wall, m_mapWidth, m_mapHeight);
+        m_map = Map.GenerateEmptyMap(Tile.Wall, m_mapWidth, m_mapHeight, m_tunnelWidth * m_maxTunnelLength);
 
         // Change seed of randomizer
         UnityEngine.Random.InitState(seed.GetHashCode());
@@ -151,7 +151,7 @@ public class MapGenerator
         int width = UnityEngine.Random.Range(m_minRoomLength, Math.Min(m_maxRoomLength, m_mapWidth));
         int height = UnityEngine.Random.Range(m_minRoomLength, Math.Min(m_maxRoomLength, m_mapHeight));
 
-        return Map.GenerateEmptyMap(Tile.Floor, width, height);
+        return Map.GenerateEmptyMap(Tile.Floor, width, height, m_tunnelWidth * m_maxTunnelLength);
     }
 
     /// <summary>
@@ -334,7 +334,7 @@ public class MapGenerator
                         && m_map.CheckWallTile(otherWallTile, new Vector2Int(direction.x * -1, direction.y * -1), m_tunnelWidth))
                     {
                         // generate tunnel
-                        Map tunnel = new Map(new Tile[(m_tunnelWidth * Math.Abs(direction.y) + j * Math.Abs(direction.x))][]);
+                        Map tunnel = new Map(new Tile[(m_tunnelWidth * Math.Abs(direction.y) + j * Math.Abs(direction.x))][], m_tunnelWidth * m_maxTunnelLength);
 
                         for (int k = 0; k < tunnel.TileMap.Length; k++)
                         {

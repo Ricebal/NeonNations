@@ -65,17 +65,17 @@ public abstract class Soldier : NetworkBehaviour
     [Command]
     protected void CmdRespawn()
     {
-        Vector2 spawnPoint = BoardManager.GetMap().GetRandomFloorTile();
+        Vector2Int spawnPoint = BoardManager.GetMap().GetSpawnPoint();
         RpcRespawn(spawnPoint);
     }
 
     [ClientRpc]
-    private void RpcRespawn(Vector2 spawnPoint)
+    private void RpcRespawn(Vector2Int spawnPoint)
     {
         Respawn(spawnPoint);
     }
 
-    protected virtual void Respawn(Vector2 spawnPoint)
+    protected virtual void Respawn(Vector2Int spawnPoint)
     {
         transform.position = new Vector3(spawnPoint.x, 0, spawnPoint.y);
         gameObject.layer = 8; // Players layer
