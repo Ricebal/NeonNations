@@ -5,7 +5,7 @@ public class BotManager : NetworkBehaviour
 {
     public static BotManager Singleton;
 
-    private const int AMOUNT_OF_BOTS = 7;
+    private const int AMOUNT_OF_BOTS = 2;
     // Prefab representing the bot
     public GameObject Bot;
 
