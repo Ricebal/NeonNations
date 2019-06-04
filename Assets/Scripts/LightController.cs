@@ -10,8 +10,8 @@ public class LightController : NetworkBehaviour
             return;
         }
 
+        transform.GetChild(0).gameObject.SetActive(true);
         transform.GetChild(1).gameObject.SetActive(true);
-        transform.GetChild(2).gameObject.SetActive(true);
     }
 
 }
