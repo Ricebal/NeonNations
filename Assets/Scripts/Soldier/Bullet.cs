@@ -75,6 +75,10 @@ public class Bullet : MonoBehaviour
             {
                 transform.position = contact.point;
             }
+            else
+            {
+                DestroyBullet();
+            }
             // Calculate the angle of reflection
             Vector3 newDirection = Vector3.Reflect(currentDirection, contact.normal);
             newDirection.Normalize();
@@ -99,7 +103,7 @@ public class Bullet : MonoBehaviour
     private void DestroyBullet()
     {
         // Create explosion a bit behind to prevent explosions within walls
-        CreateExplosion(transform.position - m_rigidbody.velocity*Time.fixedDeltaTime);
+        CreateExplosion(transform.position - m_rigidbody.velocity * Time.fixedDeltaTime);
 
         // Decouple particle system from bullet to prevent the trail from disappearing
         Transform trail = transform.Find("Particle System");
