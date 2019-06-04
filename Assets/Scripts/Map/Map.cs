@@ -8,7 +8,7 @@ public enum Tile { Unknown = -1, Floor, Wall, BreakableWall, Reflector }
 
 public class Map
 {
-    public static Vector2Int[] DIRECTIONS = new Vector2Int[] { Vector2Int.up, Vector2Int.right, Vector2Int.down, Vector2Int.left };
+    public static Vector2Int[] Directions = new Vector2Int[] { Vector2Int.up, Vector2Int.right, Vector2Int.down, Vector2Int.left };
     public Tile[][] TileMap;
     public Vector2Int Pos;
 
@@ -168,9 +168,9 @@ public class Map
     {
         List<KeyValuePair<Vector2Int, Vector2Int>> result = new List<KeyValuePair<Vector2Int, Vector2Int>>();
 
-        for (int i = 0; i < DIRECTIONS.Length; i++)
+        for (int i = 0; i < Directions.Length; i++)
         {
-            Vector2Int direction = DIRECTIONS[i];
+            Vector2Int direction = Directions[i];
             List<Vector2Int> list = GetAllWallTilesInDirection(direction, outerWidth, tunnelWidth).ToList();
             for (int j = 0; j < list.Count; j++)
             {

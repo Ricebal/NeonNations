@@ -191,7 +191,7 @@ public class MapGenerator
     private Map TryPlacement(Map room)
     {
         // get random direction to attach the room to the map
-        Vector2Int direction = Map.DIRECTIONS[UnityEngine.Random.Range(0, 4)]; // max is exclusive, so this will generate number between 0 and 3
+        Vector2Int direction = Map.Directions[UnityEngine.Random.Range(0, 4)]; // max is exclusive, so this will generate number between 0 and 3
 
         // get random walltile for that direction
         Vector2Int wallTile = m_map.GetRandomWallTile(direction, m_tunnelWidth);
@@ -454,9 +454,9 @@ public class MapGenerator
         while (positionsToCheck.Count != 0 && positionsChecked.Count < m_reflectorAreaSize)
         {
             Vector2Int current = positionsToCheck.Dequeue();
-            for (int i = 0; i < Map.DIRECTIONS.Length; i++)
+            for (int i = 0; i < Map.Directions.Length; i++)
             {
-                Vector2Int nextToCurrent = current + Map.DIRECTIONS[i];
+                Vector2Int nextToCurrent = current + Map.Directions[i];
                 // if the tile is a wall, convert to reflector
                 if (m_map.TileMap[nextToCurrent.x][nextToCurrent.y] == Tile.Wall)
                 {
