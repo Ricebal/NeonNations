@@ -21,14 +21,12 @@ public abstract class Soldier : NetworkBehaviour
     [SerializeField] protected GameObject m_spotLight;
     protected Renderer m_renderer;
     protected float m_deathTime;
-    protected Aim m_aim;
 
     public override void OnStartClient()
     {
         m_renderer = GetComponent<Renderer>();
         m_headController = GetComponentInChildren<HeadController>();
         m_gun = GetComponentInChildren<Gun>();
-        m_aim = GetComponent<Aim>();
     }
 
     protected void Update()
@@ -60,7 +58,6 @@ public abstract class Soldier : NetworkBehaviour
 
         DeathExplosion deathExplosion = GetComponentInChildren<DeathExplosion>();
         deathExplosion?.Fire();
-        m_aim.CanAim = false;
     }
     public virtual void DisableMovement() { }
 
@@ -92,7 +89,6 @@ public abstract class Soldier : NetworkBehaviour
         m_healthStat.Reset();
         m_energyStat.Reset();
         IsDead = false;
-        m_aim.CanAim = true;
     }
 
     public void SyncScore()
