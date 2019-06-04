@@ -8,7 +8,16 @@ public class LobbyPlayer : NetworkLobbyPlayer
 {
     [SyncVar(hook = nameof(OnUsernameSet))] private string m_username;
     [SerializeField] private TextMeshProUGUI m_textUsername;
-    [SerializeField] private Button m_buttonReady;
+    [SerializeField] private Image m_imageReady;
+    private Button m_buttonReady;
+    private TextMeshProUGUI m_textReady;
+
+    private new void Start()
+    {
+        m_buttonReady = GameObject.Find("ButtonReady").GetComponent<Button>();
+        m_textReady = m_buttonReady.GetComponentInChildren<TextMeshProUGUI>();
+        m_buttonReady.onClick.AddListener(ChangeReadyState);
+    }
 
     public override void OnStartClient()
     {
@@ -27,10 +36,6 @@ public class LobbyPlayer : NetworkLobbyPlayer
         if (isLocalPlayer)
         {
             CmdUsername(ProfileMenu.GetUsername());
-        }
-        else
-        {
-            m_buttonReady.interactable = false;
         }
     }
 
@@ -53,10 +58,12 @@ public class LobbyPlayer : NetworkLobbyPlayer
             if (ReadyToBegin)
             {
                 CmdChangeReadyState(false);
+                m_textReady.text = "Ready";
             }
             else
             {
                 CmdChangeReadyState(true);
+                m_textReady.text = "Not Ready";
             }
         }
     }
@@ -64,14 +71,13 @@ public class LobbyPlayer : NetworkLobbyPlayer
     public override void OnClientReady(bool readyState)
     {
         // Change the color of the checkmark button depending on the state of the player
-        Image image = m_buttonReady.GetComponent<Image>();
         if (readyState)
         {
-            image.color = new Color32(83, 255, 40, 255);
+            m_imageReady.color = new Color32(83, 255, 40, 255);
         }
         else
         {
-            image.color = new Color32(255, 255, 255, 255);
+            m_imageReady.color = new Color32(255, 255, 255, 255);
         }
     }
 
