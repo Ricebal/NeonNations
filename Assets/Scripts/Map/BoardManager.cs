@@ -191,6 +191,8 @@ public class BoardManager : NetworkBehaviour
                                 instance.transform.rotation = Quaternion.AngleAxis((Math.Abs(Map.Directions[k].y) * ((Map.Directions[k].y + 1) * 90)) + (Math.Abs(Map.Directions[k].x) * (90 + (Map.Directions[k].x + 1) * 90)), Vector3.up);
                                 // increase size based on the amount of reflectors next to each other
                                 instance.transform.localScale = new Vector3(currentList.Count, 1, 1);
+                                // adjust material to fit the new scale
+                                instance.GetComponent<Renderer>().material.mainTextureScale = new Vector2(currentList.Count, 1);
                                 // add to other reflectors in the map
                                 instance.transform.SetParent(m_reflectors.transform);
 
