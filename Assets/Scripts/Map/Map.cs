@@ -117,9 +117,9 @@ public class Map
                 return true;
             }
             Vector2Int current = positionsToCheck.Dequeue();
-            for (int i = 0; i < DIRECTIONS.Length; i++)
+            for (int i = 0; i < Directions.Length; i++)
             {
-                Vector2Int nextToCurrent = current + DIRECTIONS[i];
+                Vector2Int nextToCurrent = current + Directions[i];
 
                 // if the tile hasn't been checked and is not in the list to be checked, and it's a floor, add to check list
                 if (!positionsChecked.Contains(nextToCurrent) && !positionsToCheck.Contains(nextToCurrent)
