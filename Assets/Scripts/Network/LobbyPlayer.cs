@@ -16,7 +16,7 @@ public class LobbyPlayer : NetworkLobbyPlayer
     {
         m_buttonReady = GameObject.Find("ButtonReady").GetComponent<Button>();
         m_textReady = m_buttonReady.GetComponentInChildren<TextMeshProUGUI>();
-        m_buttonReady.onClick.AddListener(ChangeReadyState);
+        m_buttonReady.onClick.AddListener(ToggleReadyState);
     }
 
     public override void OnStartClient()
@@ -50,8 +50,8 @@ public class LobbyPlayer : NetworkLobbyPlayer
         m_textUsername.text = username;
     }
 
-    // Change the state of the player (ready or not) when clicking on the checkmark button
-    public void ChangeReadyState()
+    // Toggle the state of the player (ready or not) when clicking on the checkmark button
+    public void ToggleReadyState()
     {
         if (NetworkClient.active && isLocalPlayer)
         {
