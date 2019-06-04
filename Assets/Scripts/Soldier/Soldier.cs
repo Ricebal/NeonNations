@@ -18,6 +18,7 @@ public abstract class Soldier : NetworkBehaviour
 
     protected HeadController m_headController;
     protected Gun m_gun;
+    [SerializeField] protected GameObject m_spotLight;
     protected Renderer m_renderer;
     protected float m_deathTime;
 
@@ -68,7 +69,7 @@ public abstract class Soldier : NetworkBehaviour
     [Command]
     protected void CmdRespawn()
     {
-        Vector2 spawnPoint = BoardManager.GetRandomFloorTile();
+        Vector2 spawnPoint = BoardManager.GetMap().GetRandomFloorTile();
         RpcRespawn(spawnPoint);
     }
 
@@ -165,6 +166,13 @@ public abstract class Soldier : NetworkBehaviour
         otherSoldier.Team.AddKill();
     }
 
+    [ClientRpc]
+    private void RpcShowSpotLight()
+    {
+        m_spotLight.SetActive(true); // Show the spotlight of the soldier that was hit by a bullet.
+        m_spotLight.GetComponent<SpotLightScript>().SetLifeTime(ExplosionLight.LIFETIME, false);
+    }
+
     protected void OnTriggerEnter(Collider collider)
     {
         if (!isServer)
@@ -176,9 +184,13 @@ public abstract class Soldier : NetworkBehaviour
         {
             Bullet bullet = collider.gameObject.GetComponent<Bullet>();
             Soldier shooter = GameObject.Find(bullet.ShooterId).GetComponent<Soldier>();
-            if (bullet.ShooterId != transform.name && shooter.Team != this.Team)
+            if (bullet.ShooterId != transform.name) // Don't light up when you're hit by your own bullet.
             {
-                TakeDamage(bullet.Damage, bullet.ShooterId);
+                RpcShowSpotLight();
+                if (shooter.Team != this.Team) // Don't take damage from friendly fire.
+                {
+                    TakeDamage(bullet.Damage, bullet.ShooterId);
+                }
             }
         }
     }
