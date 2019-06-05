@@ -4,6 +4,7 @@ public class Player : Soldier
 {
     private PlayerController m_playerController;
     private PlayerHUD m_hud;
+    private Aim m_aim;
 
     protected new void Start()
     {
@@ -15,6 +16,7 @@ public class Player : Soldier
         }
 
         m_hud = GetComponent<PlayerHUD>();
+        m_aim = GetComponent<Aim>();
         m_playerController = GetComponent<PlayerController>();
         CameraController.SetTarget(this.transform);
         EscapeMenu.Singleton.OnPauseToggled += PauseToggled;
@@ -46,8 +48,8 @@ public class Player : Soldier
 
     private void PauseToggled()
     {
-        // Activate player controller if the player is alive and the escape menu is not activated
-        if (!IsDead)
+        // Activate player controller if the player is alive and the escape menu is not activated and the game has not yet finished.
+        if (!IsDead && !GameManager.Singleton.GameFinished)
         {
             m_playerController.enabled = !EscapeMenu.IsActive();
         }
@@ -62,12 +64,12 @@ public class Player : Soldier
                 GameOverMenu.Activate(RespawnTime);
             }
             m_playerController.enabled = false;
+            m_aim.CanAim = false;
         }
-
         base.Die();
     }
 
-    public override void DisableMovement()
+    public override void StopMovement()
     {
         if (isLocalPlayer)
         {
@@ -75,7 +77,7 @@ public class Player : Soldier
         }
     }
 
-    protected override void Respawn(Vector2 respawnPoint)
+    protected override void Respawn(Vector2Int respawnPoint)
     {
         if (isLocalPlayer)
         {
@@ -85,8 +87,8 @@ public class Player : Soldier
             {
                 m_playerController.enabled = true;
             }
+            m_aim.CanAim = true;
         }
-
         base.Respawn(respawnPoint);
     }
 

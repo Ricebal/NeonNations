@@ -26,15 +26,17 @@ public class Action : NetworkBehaviour
         }
     }
 
-    public void Shoot()
+    public bool Shoot()
     {
         // If the cooldown is elapsed and the player has enough energy
         if (m_shootController.CanShoot(m_energyStat.GetValue()))
         {
             m_energyStat.Subtract(m_shootController.Cost);
             m_shootController.Fire();
+            return true;
         }
 
+        return false;
     }
 
     public void Dash()

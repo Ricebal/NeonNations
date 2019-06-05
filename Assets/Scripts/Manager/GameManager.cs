@@ -198,7 +198,7 @@ public class GameManager : NetworkBehaviour
             Soldier soldier = go.GetComponent<Soldier>();
             if (soldier != null)
             {
-                soldier.DisableMovement();
+                soldier.StopMovement();
                 Player player = soldier.GetComponent<Player>();
                 if (player != null && player.isLocalPlayer) // Set the local player.
                 {
@@ -265,8 +265,8 @@ public class GameManager : NetworkBehaviour
 
     private void SpawnFireworks(Soldier soldier)
     {
-        int amountOfFirworks = UnityEngine.Random.Range(5, 7);
-        for (int i = 0; i < amountOfFirworks; i++)
+        int amountOfFireworks = UnityEngine.Random.Range(5, 7);
+        for (int i = 0; i < amountOfFireworks; i++)
         {
             float xPos = soldier.gameObject.transform.position.x;
             float zPos = soldier.gameObject.transform.position.z;

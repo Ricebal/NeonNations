@@ -53,7 +53,7 @@ MonoBehaviour:
   syncInterval: 0.1
   GameMode: {fileID: 0}
   GameFinished: 0
-  WaitingTimeAfterGameEnded: 0
+  WaitingTimeAfterGameEnded: 6
   m_seed: 
   m_mapWidth: 50
   m_mapHeight: 50
@@ -84,6 +84,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncInterval: 0.1
   m_mapPrefab: {fileID: 6182289135420230192, guid: 1e44135debb4a9a41a46d373ce5d9c91,
+    type: 3}
+  m_wallPrefab: {fileID: 7516115266436098111, guid: 8953e550d9cf3d949880d948fe65ea67,
+    type: 3}
+  m_floorPrefab: {fileID: 296384389690848718, guid: 58ced143aef73f64b8d8419846880d84,
     type: 3}
   m_breakableWallPrefab: {fileID: 7737746882760392655, guid: d780423ce27d7d948bfe4bab56b66701,
     type: 3}
