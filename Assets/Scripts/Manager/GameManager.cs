@@ -33,11 +33,17 @@ public class GameManager : NetworkBehaviour
     private GameObject m_endGameTextObject;
     private int m_localPlayersTeamId;
 
+    private void OnEnable()
+    {
+        m_mapWidth = MapConfiguration.Singleton.MapWidth;
+    }
+
     private void Awake()
     {
         InitializeSingleton();
         GameMode = gameObject.AddComponent<TeamDeathMatch>(); // Temporary untill we can pick game modes.
         SetTeams();
+        MapConfiguration.DestroyMapConfig();
     }
 
     private void InitializeSingleton()

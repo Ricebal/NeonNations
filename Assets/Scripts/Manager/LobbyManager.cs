@@ -11,6 +11,7 @@ public class LobbyManager : NetworkLobbyManager
     private string m_connectionText;
     [SerializeField] private Canvas m_multiplayerMenu;
     [SerializeField] private Canvas m_lobbyMenu;
+    [SerializeField] private Canvas m_mapConfiguration;
     [SerializeField] private Button m_buttonStart;
 
     public override void Start()
@@ -28,6 +29,7 @@ public class LobbyManager : NetworkLobbyManager
 
         m_multiplayerMenu.gameObject.SetActive(false);
         m_lobbyMenu.gameObject.SetActive(true);
+        m_mapConfiguration.gameObject.SetActive(true);
     }
 
     // Start a game as a host
