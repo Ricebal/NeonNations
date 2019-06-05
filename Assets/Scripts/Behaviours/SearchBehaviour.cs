@@ -46,6 +46,7 @@ public class SearchBehaviour : BotBehaviour
     /// </summary>
     private void NextMove(Vector2Int currentCoordinates)
     {
+        // if the calculated distance between start and goal is infinite the goal is unreachable, generate new goal and return
         if (float.IsInfinity((float)m_dStarLite.Map.GetNode(m_dStarLite.Start.x, m_dStarLite.Start.y).CostFromStartingPoint))
         {
             GenerateNewDestination(currentCoordinates);
