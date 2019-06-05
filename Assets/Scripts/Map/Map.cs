@@ -290,6 +290,11 @@ public class Map
         }
     }
 
+    public void UpdateMap(Vector2Int coordinates)
+    {
+        TileMap[coordinates.x][coordinates.y] = Tile.Floor;
+    }
+
 #if (UNITY_EDITOR)
     // --------------------------------------------------------------------------------------------
     // Debug functions
