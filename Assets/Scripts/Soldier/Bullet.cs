@@ -150,7 +150,16 @@ public class Bullet : MonoBehaviour
     private void CreateReflectorImpact(Vector3 pos, Vector3 normal)
     {
         //instantiate reflector impact
-        GameObject impact = Instantiate(ReflectorImpactPrefab, pos, Quaternion.LookRotation(normal));
+        Quaternion rotation;
+        if(normal == Vector3.zero)
+        {
+            rotation = new Quaternion(0, 0, 0, 0);
+        }
+        else
+        {
+            rotation = Quaternion.LookRotation(normal);
+        }
+        GameObject impact = Instantiate(ReflectorImpactPrefab, pos, rotation);
         Destroy(impact, 1);
 
         // Set impact color to the player's color
