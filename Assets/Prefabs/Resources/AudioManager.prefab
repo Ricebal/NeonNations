@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3301779545399428076}
   - component: {fileID: 219608830886857831}
   m_Layer: 0
-  m_Name: MusicManager
+  m_Name: AudioManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -52,7 +52,7 @@ MonoBehaviour:
   m_gameMusic: {fileID: 8300000, guid: 9d0ed07ad5124a6458231f3cc8e4c9f4, type: 3}
   m_menuScenes:
   - MainMenu
-  - NetworkMenu
+  - Lobby
   m_gameScenes:
   - Game
 --- !u!82 &219608830886857831
