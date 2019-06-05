@@ -4,7 +4,7 @@ using UnityEngine;
 public class BreakableWall : NetworkBehaviour
 {
     public delegate void OnWallDestroyedDelegate(Vector2Int coordinates);
-    public event OnWallDestroyedDelegate OnWallDestroyed;
+    public event OnWallDestroyedDelegate WallDestroyedHandler;
 
     [SerializeField] protected Stat m_healthStat;
 
@@ -34,8 +34,11 @@ public class BreakableWall : NetworkBehaviour
     private void RpcDestroyWall()
     {
         Destroy(gameObject);
-        Vector3 position = gameObject.transform.position;
-        Vector2Int coordinates = new Vector2Int((int)position.x, (int)position.z);
-        OnWallDestroyed?.Invoke(coordinates);
+        if(WallDestroyedHandler != null)
+        {
+            Vector3 position = gameObject.transform.position;
+            Vector2Int coordinates = new Vector2Int((int)position.x, (int)position.z);
+            WallDestroyedHandler(coordinates);
+        }
     }
 }

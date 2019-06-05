@@ -40,7 +40,7 @@ public class GameEnvironment : ScriptableObject
             for (int i = 0; i < wallParent.transform.childCount; i++)
             {
                 GameObject wall = wallParent.transform.GetChild(i).gameObject;
-                wall.GetComponent<BreakableWall>().OnWallDestroyed += UpdateMap;
+                wall.GetComponent<BreakableWall>().WallDestroyedHandler += UpdateMap;
             }
         }
 
