@@ -6,8 +6,10 @@ public class Player : Soldier
     private PlayerHUD m_hud;
     private Aim m_aim;
 
-    private void Start()
+    protected new void Start()
     {
+        base.Start();
+
         if (!isLocalPlayer)
         {
             return;
@@ -90,8 +92,10 @@ public class Player : Soldier
         base.Respawn(respawnPoint);
     }
 
-    private void OnDestroy()
+    protected new void OnDestroy()
     {
+        base.OnDestroy();
+
         if (!isLocalPlayer)
         {
             return;

@@ -25,7 +25,7 @@ public class AttackBehaviour : BotBehaviour
 
     private void FixedUpdate()
     {
-        if (!m_active || m_bot.IsDead)
+        if (!isServer || !m_active || m_bot.IsDead)
         {
             return;
         }

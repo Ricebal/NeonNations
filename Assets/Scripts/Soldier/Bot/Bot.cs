@@ -4,7 +4,7 @@ public class Bot : Soldier
 {
     private Rigidbody m_rigidbody;
 
-    private void Start()
+    protected new void Start()
     {
         if (!isServer)
         {
