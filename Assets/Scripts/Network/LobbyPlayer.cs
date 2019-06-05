@@ -70,15 +70,8 @@ public class LobbyPlayer : NetworkLobbyPlayer
 
     public override void OnClientReady(bool readyState)
     {
-        // Change the color of the checkmark button depending on the state of the player
-        if (readyState)
-        {
-            m_imageReady.color = new Color32(83, 255, 40, 255);
-        }
-        else
-        {
-            m_imageReady.color = new Color32(255, 255, 255, 255);
-        }
+        // Enable the checkmark depending on the state of the player
+        m_imageReady.gameObject.SetActive(readyState);
     }
 
 }
