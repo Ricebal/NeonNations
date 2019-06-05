@@ -12,6 +12,8 @@ public class DisplayMenu : MonoBehaviour
     // Text displayed when the settings are saved
     [SerializeField] private TextMeshProUGUI m_savingText;
 
+    private readonly int[] RESOLUTIONS_TO_SHOW = new int[] { 6, 7, 8, 10, 11, 13, 15, 16, 17, 18 };
+
     // List of resolutions
     private Resolution[] m_resolutions;
 
@@ -30,13 +32,13 @@ public class DisplayMenu : MonoBehaviour
         m_resolutionDropdown.ClearOptions();
 
         // Convert resolutions into strings and add them to the options list
-        for (int i = 0; i < m_resolutions.Length; i++)
+        for (int i = 0; i < RESOLUTIONS_TO_SHOW.Length; i++)
         {
-            options.Add(m_resolutions[i].width + " x " + m_resolutions[i].height);
+            options.Add(m_resolutions[RESOLUTIONS_TO_SHOW[i]].width + " x " + m_resolutions[RESOLUTIONS_TO_SHOW[i]].height);
 
-            if (m_resolutions[i].width == Screen.width && m_resolutions[i].height == Screen.height)
+            if (m_resolutions[RESOLUTIONS_TO_SHOW[i]].width == Screen.width && m_resolutions[RESOLUTIONS_TO_SHOW[i]].height == Screen.height)
             {
-                currentResolutionIndex = i;
+                currentResolutionIndex = RESOLUTIONS_TO_SHOW[i];
             }
         }
 
@@ -51,7 +53,7 @@ public class DisplayMenu : MonoBehaviour
 
     private void SetResolution(int resolutionIndex)
     {
-        Resolution resolution = m_resolutions[resolutionIndex];
+        Resolution resolution = m_resolutions[RESOLUTIONS_TO_SHOW[resolutionIndex]];
         Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
     }
 
