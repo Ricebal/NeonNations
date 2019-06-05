@@ -168,8 +168,8 @@ MonoBehaviour:
     type: 3}
   ReflectorImpactPrefab: {fileID: 2302226259571672645, guid: 7afc29f7bc6b19e498a2b3801cb29392,
     type: 3}
-  m_reflectorSound: {fileID: 8300000, guid: 00b69f05710a0d54e9fa3f42602ddf46, type: 3}
-  m_reflectorSoundVolume: 1
+  m_reflectorSound: {fileID: 8300000, guid: f1142c99b1f960f42b1b1ea6961f13bd, type: 3}
+  m_reflectorSoundVolume: 0.2
 --- !u!114 &5701685767363402800
 MonoBehaviour:
   m_ObjectHideFlags: 0
