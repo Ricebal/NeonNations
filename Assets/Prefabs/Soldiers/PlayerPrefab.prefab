@@ -5471,7 +5471,7 @@ MonoBehaviour:
   m_healthStat: {fileID: 18416186091895302}
   m_energyStat: {fileID: 7324937023197695252}
   m_hitSound: {fileID: 8300000, guid: 6f1edd4a9dd2d16488633ecb783ffb1b, type: 3}
-  m_hitSoundVolume: 0.05
+  m_hitSoundVolume: 0.1
   m_deathSound: {fileID: 8300000, guid: 5e1382c7161098f4596fac9bd690d2c2, type: 3}
   m_deathSoundVolume: 0.4
   m_defaultAudioSource: {fileID: 3502779857404287779}
