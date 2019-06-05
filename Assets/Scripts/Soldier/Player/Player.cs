@@ -62,10 +62,9 @@ public class Player : Soldier
                 GameOverMenu.Activate(RespawnTime);
             }
             m_playerController.enabled = false;
+            m_aim.CanAim = false;
         }
-
         base.Die();
-        m_aim.CanAim = false;
     }
 
     public override void StopMovement()
@@ -86,9 +85,8 @@ public class Player : Soldier
             {
                 m_playerController.enabled = true;
             }
+            m_aim.CanAim = true;
         }
-
-        m_aim.CanAim = true;
         base.Respawn(respawnPoint);
     }
 
