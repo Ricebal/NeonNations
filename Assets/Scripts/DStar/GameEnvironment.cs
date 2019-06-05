@@ -123,6 +123,21 @@ public class GameEnvironment : ScriptableObject
         return soldier;
     }
 
+    public List<Soldier> GetIlluminatedEnemies(Bot bot, List<Soldier> enemies)
+    {
+        LinkedList<Vector2Int> list = GetIlluminatedCoordinates(ConvertGameObjectToCoordinates(bot.transform));
+        List<Soldier> result = new List<Soldier>();
+        enemies.ForEach(enemy =>
+        {
+            if (list.Contains(ConvertGameObjectToCoordinates(enemy.transform)))
+            {
+                result.Add(enemy);
+            }
+        });
+
+        return result;
+    }
+
     /// <summary>
     /// Get the Coordinates that are illuminated by the spotlight on the bot
     /// </summary>
@@ -219,8 +234,8 @@ public class GameEnvironment : ScriptableObject
     /// <param name="position">The position you want to check</param>
     private bool CheckIfPositionIsInsideView(Vector3 position, Vector2Int botCoordinates)
     {
-        int screenWidth = 11;
-        int screenHeight = 5;
+        int screenWidth = 12;
+        int screenHeight = 7;
         float viewLeft = botCoordinates.x - screenWidth;
         float viewUp = botCoordinates.y + screenHeight;
         float viewRight = viewLeft + screenWidth * 2;
