@@ -123,7 +123,7 @@ public class Map
 
                 // if the tile hasn't been checked and is not in the list to be checked, and it's a floor, add to check list
                 if (!positionsChecked.Contains(nextToCurrent) && !positionsToCheck.Contains(nextToCurrent)
-                    && (TileMap[nextToCurrent.x][nextToCurrent.y] == Tile.Floor))
+                    && TileMap[nextToCurrent.x][nextToCurrent.y] == Tile.Floor)
                 {
                     positionsToCheck.Enqueue(nextToCurrent);
                 }
