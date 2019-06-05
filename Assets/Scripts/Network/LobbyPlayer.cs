@@ -10,14 +10,7 @@ public class LobbyPlayer : NetworkLobbyPlayer
     [SerializeField] private TextMeshProUGUI m_textUsername;
     [SerializeField] private Image m_imageReady;
     private Button m_buttonReady;
-    private TextMeshProUGUI m_textReady;
-
-    private new void Start()
-    {
-        m_buttonReady = GameObject.Find("ButtonReady").GetComponent<Button>();
-        m_textReady = m_buttonReady.GetComponentInChildren<TextMeshProUGUI>();
-        m_buttonReady.onClick.AddListener(ToggleReadyState);
-    }
+    private TextMeshProUGUI m_buttonReadyText;
 
     public override void OnStartClient()
     {
@@ -28,6 +21,10 @@ public class LobbyPlayer : NetworkLobbyPlayer
         {
             gameObject.transform.SetParent(GameObject.Find("Players").transform);
             gameObject.transform.localScale = Vector3.one;
+
+            m_buttonReady = GameObject.Find("ButtonReady").GetComponent<Button>();
+            m_buttonReadyText = m_buttonReady.GetComponentInChildren<TextMeshProUGUI>();
+            m_buttonReady.onClick.AddListener(ToggleReadyState);
         }
     }
 
@@ -68,11 +65,11 @@ public class LobbyPlayer : NetworkLobbyPlayer
         {
             if (readyState)
             {
-                m_textReady.text = "Not Ready";
+                m_buttonReadyText.text = "Not Ready";
             }
             else
             {
-                m_textReady.text = "Ready";
+                m_buttonReadyText.text = "Ready";
             }
         }
     }
