@@ -33,7 +33,7 @@ public class SearchBehaviour : BotBehaviour
         // If the goal hasn't been reached
         if (currentCoordinates.x != m_goalCoordinates.x || currentCoordinates.y != m_goalCoordinates.y)
         {
-            NextMove();
+            NextMove(currentCoordinates);
         }
         else
         {
@@ -44,19 +44,24 @@ public class SearchBehaviour : BotBehaviour
     /// <summary>
     /// Makes the DStarLite calculate where the bot should move next and than moves the bot in that direction.
     /// </summary>
-    private void NextMove()
+    private void NextMove(Vector2Int currentCoordinates)
     {
-        Vector2Int botCoordinate = m_environment.ConvertGameObjectToCoordinates(gameObject.transform);
+        // if the calculated distance between start and goal is infinite the goal is unreachable, generate new goal and return
+        if (float.IsInfinity((float)m_dStarLite.Map.GetNode(m_dStarLite.Start.x, m_dStarLite.Start.y).CostFromStartingPoint))
+        {
+            GenerateNewDestination(currentCoordinates);
+            return;
+        }
         List<Vector2Int> coordinatesToTraverse = m_dStarLite.CoordinatesToTraverse();
 
         Vector2Int farthestReachableNode = m_previousFarthestNode;
-        if (m_dStarLite.CoordinatesToTraverseChanged || botCoordinate.Equals(m_previousFarthestNode)) // Perform pathsmoothing if either the path has changed, or if the bot is on the same position as the old farthest node.
+        if (m_dStarLite.CoordinatesToTraverseChanged || currentCoordinates.Equals(m_previousFarthestNode)) // Perform pathsmoothing if either the path has changed, or if the bot is on the same position as the old farthest node.
         {
-            farthestReachableNode = PathSmoothing.FarthestCoordinateToReach(new PointF(gameObject.transform.position.x, gameObject.transform.position.z), coordinatesToTraverse, m_dStarLite.Map, OFFSET_FOR_LINE_CALCULATION);
+            farthestReachableNode = PathSmoothing.FarthestCoordinateToReach(new Vector2(gameObject.transform.position.x, gameObject.transform.position.z), coordinatesToTraverse, m_dStarLite.Map, OFFSET_FOR_LINE_CALCULATION);
         }
         m_previousFarthestNode = farthestReachableNode;
         MoveTo(farthestReachableNode);
-        m_dStarLite.SyncBotPosition(botCoordinate);
+        m_dStarLite.SyncBotPosition(currentCoordinates);
     }
 
     /// <summary>

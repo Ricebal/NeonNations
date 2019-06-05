@@ -44,6 +44,7 @@ public class AttackBehaviour : BotBehaviour
         // If the closest raycast object is not a player or is the same team as the bot, return
         if (closestHit.collider == null || closestHit.collider.tag != "Player" || closestHit.collider.GetComponent<Soldier>().Team == m_bot.Team)
         {
+            m_bot.AimAtMoveDirection();
             return;
         }
 
