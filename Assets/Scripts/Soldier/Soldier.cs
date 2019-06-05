@@ -15,6 +15,9 @@ public abstract class Soldier : NetworkBehaviour
 
     [SerializeField] protected Stat m_healthStat;
     [SerializeField] protected Stat m_energyStat;
+
+    protected HeadController m_headController;
+    protected Gun m_gun;
     [SerializeField] protected GameObject m_spotLight;
     protected Renderer m_renderer;
     protected float m_deathTime;
@@ -22,6 +25,8 @@ public abstract class Soldier : NetworkBehaviour
     public override void OnStartClient()
     {
         m_renderer = GetComponent<Renderer>();
+        m_headController = GetComponentInChildren<HeadController>();
+        m_gun = GetComponentInChildren<Gun>();
     }
 
     protected void Update()
@@ -30,7 +35,10 @@ public abstract class Soldier : NetworkBehaviour
         if (IsDead)
         {
             float newAlpha = Mathf.Max(0, (RespawnTime - (Time.time - m_deathTime)) / RespawnTime);
-            m_renderer.material.color = new Color(Color.r, Color.g, Color.b, newAlpha);
+            Color newColor = new Color(Color.r, Color.g, Color.b, newAlpha);
+            m_renderer.material.color = newColor;
+            m_headController?.SetColor(newColor);
+            m_gun?.SetColor(newColor);
         }
     }
 
@@ -49,14 +57,9 @@ public abstract class Soldier : NetworkBehaviour
         Team.AddDeath();
 
         DeathExplosion deathExplosion = GetComponentInChildren<DeathExplosion>();
-        if (deathExplosion != null)
-        {
-            deathExplosion.Fire();
-        }
+        deathExplosion?.Fire();
     }
-    public virtual void StopMovement()
-    {
-    }
+    public virtual void StopMovement() { }
 
     protected virtual void Respawn()
     {
@@ -81,6 +84,8 @@ public abstract class Soldier : NetworkBehaviour
         transform.position = new Vector3(spawnPoint.x, 0, spawnPoint.y);
         gameObject.layer = 8; // Players layer
         m_renderer.material.color = Color;
+        m_headController?.SetColor(Color);
+        m_gun?.SetColor(Color);
         m_healthStat.Reset();
         m_energyStat.Reset();
         IsDead = false;
@@ -117,10 +122,10 @@ public abstract class Soldier : NetworkBehaviour
     {
         obj.GetComponent<Renderer>().material.color = color;
         DeathExplosion deathExplosion = obj.GetComponentInChildren<DeathExplosion>();
-        if (deathExplosion != null)
-        {
-            deathExplosion.SetColor(color);
-        }
+        deathExplosion?.SetColor(color);
+
+        m_headController?.SetColor(color);
+        m_gun?.SetColor(color);
     }
 
     [Command]
