@@ -12,10 +12,8 @@ public class DisplayMenu : MonoBehaviour
     // Text displayed when the settings are saved
     [SerializeField] private TextMeshProUGUI m_savingText;
 
-    private readonly int[] RESOLUTIONS_TO_SHOW = new int[] { 6, 7, 8, 10, 11, 13, 15, 16, 17, 18 };
-
     // List of resolutions
-    private Resolution[] m_resolutions;
+    private List<Resolution> m_resolutions = new List<Resolution>();
 
     private int m_isFullScreen;
 
@@ -27,18 +25,25 @@ public class DisplayMenu : MonoBehaviour
         int currentResolutionIndex = 0;
 
         // Resolutions available for the screen
-        m_resolutions = Screen.resolutions;
+        Resolution[] unityResolutions = Screen.resolutions;
+        for (int i = 0; i < unityResolutions.Length; i++)
+        {
+            if (unityResolutions[i].width >= 800 && unityResolutions[i].height >= 600)
+            {
+                m_resolutions.Add(unityResolutions[i]);
+            }
+        }
 
         m_resolutionDropdown.ClearOptions();
 
         // Convert resolutions into strings and add them to the options list
-        for (int i = 0; i < RESOLUTIONS_TO_SHOW.Length; i++)
+        for (int i = 0; i < m_resolutions.Count; i++)
         {
-            options.Add(m_resolutions[RESOLUTIONS_TO_SHOW[i]].width + " x " + m_resolutions[RESOLUTIONS_TO_SHOW[i]].height);
+            options.Add(m_resolutions[i].width + " x " + m_resolutions[i].height);
 
-            if (m_resolutions[RESOLUTIONS_TO_SHOW[i]].width == Screen.width && m_resolutions[RESOLUTIONS_TO_SHOW[i]].height == Screen.height)
+            if (m_resolutions[i].width == Screen.width && m_resolutions[i].height == Screen.height)
             {
-                currentResolutionIndex = RESOLUTIONS_TO_SHOW[i];
+                currentResolutionIndex = i;
             }
         }
 
@@ -53,7 +58,7 @@ public class DisplayMenu : MonoBehaviour
 
     private void SetResolution(int resolutionIndex)
     {
-        Resolution resolution = m_resolutions[RESOLUTIONS_TO_SHOW[resolutionIndex]];
+        Resolution resolution = m_resolutions[resolutionIndex];
         Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
     }
 
