@@ -12,15 +12,10 @@ public class BreakableWall : NetworkBehaviour
     [SerializeField] private AudioClip m_destroySound;
     [SerializeField] private float m_destroySoundVolume;
     private AudioSource m_audioSource;
-    // Game object used to play destroy sound after the breakable wall has been destroyed
-    private GameObject m_audioObject;
 
     private void Start()
     {
         m_audioSource = GetComponent<AudioSource>();
-        m_audioObject = new GameObject();
-        m_audioObject.transform.position = transform.position;
-        m_audioObject.transform.parent = transform;
     }
 
     // If the BreakableWall gets hit by a bullet, it will take damage. Will return true if the collider was a Bullet and the BreakableWall took damage.
@@ -53,11 +48,16 @@ public class BreakableWall : NetworkBehaviour
     [ClientRpc]
     private void RpcDestroyWall()
     {
-        // Play destroy-sound.
-        m_audioSource.PlayOneShot(m_destroySound, m_destroySoundVolume);
-        m_audioObject.transform.parent = null;
-        Destroy(m_audioObject, 1); // Destroy audio after 1 second.
-        Destroy(gameObject); // Destroy wall instantly.
+        GameObject soundObject = Instantiate(new GameObject(), transform.position, Quaternion.identity);
+        AudioSource audioSource = soundObject.AddComponent<AudioSource>();
+        audioSource.maxDistance = m_audioSource.maxDistance;
+        audioSource.minDistance = m_audioSource.minDistance;
+        audioSource.spatialBlend = m_audioSource.spatialBlend;
+        audioSource.rolloffMode = m_audioSource.rolloffMode;
+        audioSource.clip = m_destroySound;
+        audioSource.volume = m_destroySoundVolume;
+        audioSource.Play();
+        Destroy(audioSource, audioSource.clip.length);
 
         if (WallDestroyedHandler != null)
         {
@@ -65,5 +65,8 @@ public class BreakableWall : NetworkBehaviour
             Vector2Int coordinates = new Vector2Int((int)position.x, (int)position.z);
             WallDestroyedHandler(coordinates);
         }
+
+        // Destroy wall instantly.
+        Destroy(gameObject);
     }
 }
