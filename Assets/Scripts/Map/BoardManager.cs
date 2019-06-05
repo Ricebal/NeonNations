@@ -20,6 +20,8 @@ public class BoardManager : NetworkBehaviour
         Left = 8 // 001000
     }
     [SerializeField] private GameObject m_mapPrefab;
+    [SerializeField] private GameObject m_wallPrefab;
+    [SerializeField] private GameObject m_floorPrefab;
     [SerializeField] private GameObject m_breakableWallPrefab;
     [SerializeField] private GameObject m_reflectorPrefab;
 
@@ -28,6 +30,7 @@ public class BoardManager : NetworkBehaviour
     private const int VERTEX_LIMIT = 30000;
     private const string MAP = "Map";
     private const string MAP_PART = "Map Part";
+    private const string FLOOR = "Floor";
     private const string BREAKABLE_WALLS = "Breakable Walls";
     private const string BREAKABLE_WALL = "Breakable Wall";
     private const string REFLECTORS = "Reflectors";
@@ -101,10 +104,12 @@ public class BoardManager : NetworkBehaviour
     /// </summary>
     private void LoadFloor()
     {
-        GameObject floor = GameObject.CreatePrimitive(PrimitiveType.Plane);
+        GameObject floor = Instantiate(m_floorPrefab, new Vector3((float)m_map.TileMap.Length / 2 + MAP_OFFSET, MAP_OFFSET, (float)m_map.TileMap[0].Length / 2 + MAP_OFFSET), Quaternion.identity);
 
-        floor.transform.position = new Vector3((float)m_map.TileMap.Length / 2 + MAP_OFFSET, MAP_OFFSET, (float)m_map.TileMap[0].Length / 2 + MAP_OFFSET);
+        floor.name = FLOOR;
         floor.transform.localScale = new Vector3((float)(m_map.TileMap.Length) / 10, 1, (float)(m_map.TileMap[0].Length) / 10);
+        floor.GetComponent<Renderer>().material.mainTextureScale = new Vector2(m_map.TileMap.Length/16, m_map.TileMap[0].Length/16);
+        //floor.GetComponent<Renderer>().material.mainTextureOffset = new Vector2(-MAP_OFFSET, -MAP_OFFSET);
         floor.transform.SetParent(m_mapObject.transform);
     }
 
@@ -130,7 +135,7 @@ public class BoardManager : NetworkBehaviour
                 if (m_map.TileMap[i][j] == Tile.Wall)
                 {
                     // create wall
-                    GameObject instance = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                    GameObject instance = Instantiate(m_wallPrefab, new Vector3(i + MAP_OFFSET, 0f, j + MAP_OFFSET), Quaternion.identity);
 
                     // calculate which walls to show and updates the mesh
                     Walls walls = Walls.None;
@@ -151,9 +156,7 @@ public class BoardManager : NetworkBehaviour
                         walls = walls | Walls.Left;
                     }
                     instance.transform.GetComponent<MeshFilter>().sharedMesh = GenerateNewMesh(walls);
-
-                    // positions the wall
-                    instance.transform.position = new Vector3(i + MAP_OFFSET, 0f, j + MAP_OFFSET);
+                    
                     // adds the wall to the map
                     instance.transform.SetParent(m_mapObject.transform);
                 }
@@ -191,6 +194,8 @@ public class BoardManager : NetworkBehaviour
                                 instance.transform.rotation = Quaternion.AngleAxis((Math.Abs(Map.Directions[k].y) * ((Map.Directions[k].y + 1) * 90)) + (Math.Abs(Map.Directions[k].x) * (90 + (Map.Directions[k].x + 1) * 90)), Vector3.up);
                                 // increase size based on the amount of reflectors next to each other
                                 instance.transform.localScale = new Vector3(currentList.Count, 1, 1);
+                                // adjust material to fit the new scale
+                                instance.GetComponent<Renderer>().material.mainTextureScale = new Vector2(currentList.Count, 1);
                                 // add to other reflectors in the map
                                 instance.transform.SetParent(m_reflectors.transform);
 
@@ -201,13 +206,11 @@ public class BoardManager : NetworkBehaviour
                         }
                     }
 
-                    instance = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                    instance = Instantiate(m_wallPrefab, new Vector3(i + MAP_OFFSET, 0f, j + MAP_OFFSET), Quaternion.identity);
 
                     // add top wall
                     Walls walls = Walls.None;
                     instance.transform.GetComponent<MeshFilter>().sharedMesh = GenerateNewMesh(walls);
-
-                    instance.transform.position = new Vector3(i + MAP_OFFSET, 0f, j + MAP_OFFSET);
                     instance.transform.SetParent(m_mapObject.transform);
                 }
             }
@@ -318,7 +321,7 @@ public class BoardManager : NetworkBehaviour
         List<MeshFilter> meshFilters = new List<MeshFilter>();
         foreach (Transform child in m_mapObject.transform)
         {
-            if (child.gameObject.name != BREAKABLE_WALLS && child.gameObject.name != REFLECTORS)
+            if (child.gameObject.name != BREAKABLE_WALLS && child.gameObject.name != REFLECTORS && child.gameObject.name != FLOOR)
             {
                 meshFilters.Add(child.GetComponent<MeshFilter>());
             }
@@ -353,7 +356,7 @@ public class BoardManager : NetworkBehaviour
         // destroy all the objects the map was made up of
         foreach (Transform child in m_mapObject.transform)
         {
-            if (child.gameObject.name != BREAKABLE_WALLS && child.gameObject.name != REFLECTORS)
+            if (child.gameObject.name != BREAKABLE_WALLS && child.gameObject.name != REFLECTORS && child.gameObject.name != FLOOR)
             {
                 Destroy(child.gameObject);
             }
