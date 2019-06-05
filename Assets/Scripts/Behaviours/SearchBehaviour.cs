@@ -16,7 +16,7 @@ public class SearchBehaviour : BotBehaviour
     private void Start()
     {
         m_environment = GameEnvironment.CreateInstance(BoardManager.GetMap(), new List<Tile>() { Tile.Wall, Tile.BreakableWall, Tile.Reflector });
-        m_dStarLite = new DStarLite(m_environment, false);
+        m_dStarLite = new DStarLite(m_environment, true);
         Vector2Int startCoordinates = m_environment.ConvertGameObjectToCoordinates(gameObject.transform);
         GenerateNewDestination(startCoordinates);
         m_bot = GetComponent<Bot>();
@@ -60,6 +60,7 @@ public class SearchBehaviour : BotBehaviour
             farthestReachableNode = PathSmoothing.FarthestCoordinateToReach(new Vector2(gameObject.transform.position.x, gameObject.transform.position.z), coordinatesToTraverse, m_dStarLite.Map, OFFSET_FOR_LINE_CALCULATION);
         }
         m_previousFarthestNode = farthestReachableNode;
+        DebugMap(m_dStarLite.Map, farthestReachableNode, coordinatesToTraverse);
         MoveTo(farthestReachableNode);
         m_dStarLite.SyncBotPosition(currentCoordinates);
     }
