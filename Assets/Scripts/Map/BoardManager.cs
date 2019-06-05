@@ -108,7 +108,7 @@ public class BoardManager : NetworkBehaviour
 
         floor.name = FLOOR;
         floor.transform.localScale = new Vector3((float)(m_map.TileMap.Length) / 10, 1, (float)(m_map.TileMap[0].Length) / 10);
-        floor.GetComponent<Renderer>().material.mainTextureScale = new Vector2(m_map.TileMap.Length/16, m_map.TileMap[0].Length/16);
+        floor.GetComponent<Renderer>().material.mainTextureScale = new Vector2(m_map.TileMap.Length / 16, m_map.TileMap[0].Length / 16);
         //floor.GetComponent<Renderer>().material.mainTextureOffset = new Vector2(-MAP_OFFSET, -MAP_OFFSET);
         floor.transform.SetParent(m_mapObject.transform);
     }
@@ -125,7 +125,7 @@ public class BoardManager : NetworkBehaviour
         m_reflectors = new GameObject();
         m_reflectors.name = REFLECTORS;
         m_reflectors.transform.SetParent(m_mapObject.transform);
-        List<KeyValuePair<Vector2Int,Vector2Int>> reflectorList = new List<KeyValuePair<Vector2Int, Vector2Int>>();
+        List<KeyValuePair<Vector2Int, Vector2Int>> reflectorList = new List<KeyValuePair<Vector2Int, Vector2Int>>();
 
         // go through every tile to see what to generate
         for (int i = 0; i < m_map.TileMap.Length; i++)
@@ -156,7 +156,7 @@ public class BoardManager : NetworkBehaviour
                         walls = walls | Walls.Left;
                     }
                     instance.transform.GetComponent<MeshFilter>().sharedMesh = GenerateNewMesh(walls);
-                    
+
                     // adds the wall to the map
                     instance.transform.SetParent(m_mapObject.transform);
                 }
@@ -189,7 +189,7 @@ public class BoardManager : NetworkBehaviour
                                 instance = Instantiate(m_reflectorPrefab, new Vector3(i, 0f, j), Quaternion.identity);
                                 instance.name = REFLECTOR;
                                 // adjust position based on the amount of reflectors next to each other
-                                instance.transform.Translate(new Vector3(Math.Abs(Map.Directions[k].y) * ((float)(0.5 * currentList.Count) - 0.5f) + Map.Directions[k].x*0.5f, 0f, Math.Abs(Map.Directions[k].x) * ((float)(0.5 * currentList.Count) - 0.5f) + Map.Directions[k].y * 0.5f));
+                                instance.transform.Translate(new Vector3(Math.Abs(Map.Directions[k].y) * ((float)(0.5 * currentList.Count) - 0.5f) + Map.Directions[k].x * 0.5f, 0f, Math.Abs(Map.Directions[k].x) * ((float)(0.5 * currentList.Count) - 0.5f) + Map.Directions[k].y * 0.5f));
                                 // rotate reflector based on direction facing
                                 instance.transform.rotation = Quaternion.AngleAxis((Math.Abs(Map.Directions[k].y) * ((Map.Directions[k].y + 1) * 90)) + (Math.Abs(Map.Directions[k].x) * (90 + (Map.Directions[k].x + 1) * 90)), Vector3.up);
                                 // increase size based on the amount of reflectors next to each other

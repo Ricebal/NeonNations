@@ -40,10 +40,10 @@ public class LobbyManager : NetworkLobbyManager
     public override void OnStartServer()
     {
         base.OnStartServer();
-        if(!Discovery.StartBroadcasting())
+        if (!Discovery.StartBroadcasting())
         {
             m_connectionText = "An error occurred while starting broadcasting.";
-;        }
+        }
     }
 
     public override void OnStopClient()

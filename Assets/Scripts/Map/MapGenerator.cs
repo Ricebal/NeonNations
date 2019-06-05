@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
 
 public class MapGenerator
@@ -27,7 +25,7 @@ public class MapGenerator
     private const int MINIMUM_ROOM_LENGTH = 1;
     private const int MINIMUM_MAP_SIDE = 20;
     private const int MAXIMUM_MAP_SIDE = 400;
-    
+
     private Map m_map;
 
     // --------------------------------------------------------------------------------------------
