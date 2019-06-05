@@ -10,9 +10,11 @@ public class AttackBehaviour : BotBehaviour
 
     // How far the bot can see
     private const float VISION_RANGE = 7.5f;
-    // Accuracy handicap in degrees
+    // Accuracy handicap
     private const float ACCURACY_MODIFIER = 1.3f;
+    // Accuracy between 0 and 1 where 1 is most accurate
     private const float ACCURACY = 0.75f;
+    // How far the player has to move before readjusting bot aim
     private const float AIM_THRESHOLD = 3f;
 
     private void Start()
