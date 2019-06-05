@@ -1,13 +1,16 @@
-﻿using TMPro;
+﻿using System.Collections.Generic;
+using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
-using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class Discovery : NetworkDiscovery
 {
     public static Discovery Singleton;
 
-    [SerializeField] private GameObject m_serverObj;
+    private LobbyManager m_lobbyManager;
+    private GameObject m_serverObj;
     private GameObject m_serversObj;
     private Dictionary<string, Server> m_servers = new Dictionary<string, Server>();
 
@@ -29,7 +32,7 @@ public class Discovery : NetworkDiscovery
 
     private void Awake()
     {
-        // TODO: For an unknown reason, this variable does not appear in Unity editor
+        m_lobbyManager = GameObject.Find("LobbyManager").GetComponent<LobbyManager>();
         m_serverObj = Resources.Load("Server") as GameObject;
         m_serversObj = GameObject.Find("Servers");
         InitializeSingleton();
@@ -46,14 +49,17 @@ public class Discovery : NetworkDiscovery
             Singleton = this;
         }
     }
-    
+
+    // Servers emit a data at a broadcastInterval when they are online and stop emitting when they are offline
+    // Servers that did not send data for more than broadcastInterval milliseconds are offlines and need to be removed from the dictionary
     public void FixedUpdate()
     {
-        foreach(Server server in m_servers.Values)
+        // ToList() is used to avoid concurrent modification error (removing element while iterating)
+        foreach (Server server in m_servers.Values.ToList())
         {
-            if(Time.time - server.LastPing > broadcastInterval)
+            // The broadcastInterval is multiplied by 1.5 to add a little margin, avoiding false timeout detection
+            if ((Time.time - server.LastPing) * 1000 > broadcastInterval * 1.5f)
             {
-                print("removing:" + server.Ip);
                 Destroy(server.Prefab);
                 m_servers.Remove(server.Ip);
             }
@@ -71,6 +77,7 @@ public class Discovery : NetworkDiscovery
 
     public static void StartBroadcasting()
     {
+        Singleton.broadcastData = ProfileMenu.GetUsername();
         StopBroadcasting();
         Singleton.Initialize();
         Singleton.StartAsServer();
@@ -86,20 +93,24 @@ public class Discovery : NetworkDiscovery
 
     public override void OnReceivedBroadcast(string serverIp, string data)
     {
-        print("broadcast");
         if (m_servers.ContainsKey(serverIp))
         {
             m_servers[serverIp].LastPing = Time.time;
-            print("updating:" + serverIp);
         }
         else
         {
             GameObject serverPrefab = Instantiate(m_serverObj, m_serversObj.transform);
-            serverPrefab.GetComponentInChildren<TextMeshProUGUI>().text = data + " (IP: " + serverIp + ")";
+            serverPrefab.GetComponentInChildren<Button>().onClick.AddListener(() => OnClick(serverIp));
+            serverPrefab.GetComponentInChildren<TextMeshProUGUI>().text = "[" + serverIp + "] " + data;
 
             m_servers.Add(serverIp, new Server(serverPrefab, serverIp, data, Time.time));
-            print("adding:" + serverIp);
         }
+    }
+
+    private void OnClick(string serverIp)
+    {
+        m_lobbyManager.SetIPAddress(serverIp);
+        m_lobbyManager.JoinGame();
     }
 
 }

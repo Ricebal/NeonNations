@@ -300,12 +300,10 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_text: 'Data (IP: 255.255.255.255)
-
-'
+  m_text: '[255.255.255.255)] Data'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 84be02eb89046e74db1a532e92a152f1, type: 2}
-  m_sharedMaterial: {fileID: 2100000, guid: c6a2615b392b670478d1d0bea134675c, type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: aa62e0596c2296d498dc44c56e3c4d4e, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -330,7 +328,7 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 45.3
+  m_fontSize: 49.5
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -371,10 +369,10 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 4157680923245684994}
-    characterCount: 27
+    characterCount: 23
     spriteCount: 0
-    spaceCount: 3
-    wordCount: 6
+    spaceCount: 1
+    wordCount: 5
     linkCount: 0
     lineCount: 1
     pageCount: 1
