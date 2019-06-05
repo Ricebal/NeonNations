@@ -72,7 +72,6 @@ public class Discovery : NetworkDiscovery
         Singleton.Initialize();
         // An error can be shown if the broadcasting port is already used,
         // probably due to multiple instances of the game running simultaneously
-        Debug.Log("Listen for broadcast");
         return Singleton.StartAsClient();
     }
 
@@ -81,7 +80,6 @@ public class Discovery : NetworkDiscovery
         Singleton.broadcastData = ProfileMenu.GetUsername();
         StopBroadcasting();
         Singleton.Initialize();
-        Debug.Log("Start boradcasting");
         return Singleton.StartAsServer();
     }
 
@@ -89,14 +87,12 @@ public class Discovery : NetworkDiscovery
     {
         if (Singleton.running)
         {
-            Debug.Log("Stop broadcasting");
             Singleton.StopBroadcast();
         }
     }
 
     public override void OnReceivedBroadcast(string serverIp, string data)
     {
-        Debug.Log("On received broadcast");
         if (m_servers.ContainsKey(serverIp))
         {
             m_servers[serverIp].LastPing = Time.time;
