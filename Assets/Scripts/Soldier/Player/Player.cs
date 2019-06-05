@@ -46,8 +46,8 @@ public class Player : Soldier
 
     private void PauseToggled()
     {
-        // Activate player controller if the player is alive and the escape menu is not activated
-        if (!IsDead)
+        // Activate player controller if the player is alive and the escape menu is not activated and the game has not yet finished.
+        if (!IsDead && !GameManager.Singleton.GameFinished)
         {
             m_playerController.enabled = !EscapeMenu.IsActive();
         }
@@ -67,7 +67,7 @@ public class Player : Soldier
         base.Die();
     }
 
-    public override void DisableMovement()
+    public override void StopMovement()
     {
         if (isLocalPlayer)
         {
