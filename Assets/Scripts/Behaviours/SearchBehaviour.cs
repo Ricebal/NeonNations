@@ -28,8 +28,22 @@ public class SearchBehaviour : BotBehaviour
         {
             return;
         }
-
+        Soldier closestEnemy = m_environment.GetClosestIlluminatedEnemy(m_bot, TeamManager.GetAliveEnemiesByTeam(m_bot.Team.Id));
         Vector2Int currentCoordinates = m_environment.ConvertGameObjectToCoordinates(gameObject.transform);
+
+        // check if bot can see closestPos
+        if (closestEnemy != null)
+        {
+            Vector3 closestPos = closestEnemy.transform.position;
+            Vector2Int lastGoalCoordinates = m_goalCoordinates;
+            m_goalCoordinates = new Vector2Int((int)closestPos.x, (int)closestPos.z);
+
+            if (lastGoalCoordinates != m_goalCoordinates)
+            {
+                m_dStarLite.RunDStarLite(currentCoordinates, m_goalCoordinates);
+            }
+        }
+
         // If the goal hasn't been reached
         if (currentCoordinates.x != m_goalCoordinates.x || currentCoordinates.y != m_goalCoordinates.y)
         {

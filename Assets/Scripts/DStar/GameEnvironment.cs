@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using UnityEngine;
 
 public class GameEnvironment : ScriptableObject
@@ -99,7 +100,27 @@ public class GameEnvironment : ScriptableObject
     {
         LinkedList<Vector2Int> illuminatedCoordinates = GetCoordinatesAroundBot(botCoordinates); // Because of the spotlight around the bot
         GetCoordinatesAroundLights(ref illuminatedCoordinates, botCoordinates); // All other lights visible on screen
+        //DebugIllumination(illuminatedCoordinates);
         return illuminatedCoordinates;
+    }
+
+    public Soldier GetClosestIlluminatedEnemy(Bot bot, List<Soldier> enemies)
+    {
+        LinkedList<Vector2Int> list = GetIlluminatedCoordinates(ConvertGameObjectToCoordinates(bot.transform));
+
+        float minDist = Mathf.Infinity;
+        Soldier soldier = null;
+        enemies.ForEach(enemy =>
+        {
+            float dist = Vector3.Distance(bot.transform.position, enemy.transform.position);
+            if (list.Contains(ConvertGameObjectToCoordinates(enemy.transform)) && dist < minDist)
+            {
+                soldier = enemy;
+                minDist = dist;
+            }
+        });
+
+        return soldier;
     }
 
     /// <summary>
