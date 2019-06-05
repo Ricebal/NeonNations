@@ -5214,8 +5214,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncInterval: 0.1
   Cost: 50
-  m_soundVolume: 0.5
-  m_sonarSound: {fileID: 8300000, guid: 316494494133d6342a4298e732327dd9, type: 3}
+  m_soundVolume: 1
+  m_sonarSound: {fileID: 8300000, guid: 93da9303193bd1448bae1507c1626abb, type: 3}
   m_prefab: {fileID: 4647958490886930736, guid: be7e8cfbb92a8f44b857f951d2f36f60,
     type: 3}
   m_cooldown: 1
