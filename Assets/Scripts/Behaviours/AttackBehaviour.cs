@@ -13,7 +13,7 @@ public class AttackBehaviour : BotBehaviour
     // Accuracy handicap in degrees
     private const float ACCURACY_MODIFIER = 1.3f;
     private const float ACCURACY = 0.75f;
-    private const float MOVE_THRESHOLD = 0.02f;
+    private const float MOVE_THRESHOLD = 1f;
     private const float AIM_THRESHOLD = 3f;
 
     private void Start()
@@ -81,8 +81,16 @@ public class AttackBehaviour : BotBehaviour
 
     private Vector3 PredictMovement(Vector3 position, Soldier target)
     {
-        Vector3 targetVelocity = target.GetComponent<Rigidbody>().velocity;
-        return position + targetVelocity / target.Speed;
+        if (target.GetComponent<Rigidbody>().velocity.magnitude < MOVE_THRESHOLD)
+        {
+            return position;
+        }
+        Vector3 prediction = position - m_lastShotPosition;
+        Debug.Log($"Position: {position}");
+        Debug.Log($"Last position: {m_lastShotPosition}");
+        Debug.Log($"Prediction: {prediction}");
+        Debug.Log($"Position + prediction: {position + prediction}");
+        return position + prediction;
     }
 
     private bool FireAtPosition(Vector3 position)
