@@ -113,6 +113,7 @@ Transform:
   m_Children:
   - {fileID: 211955809961756075}
   - {fileID: 7236026709018545051}
+  - {fileID: 1774810583709409797}
   - {fileID: 1142514984333960867}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -159,13 +160,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cdbdf148558ac9947b63b9afecdb4fbd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Speed: 20
-  LivingTime: 3
   Damage: 15
+  ShooterId: 
+  Speed: 20
+  LivingTime: 20
   HitPrefab: {fileID: 2302226259571672645, guid: 5a5341eef4aad1241958b2c797b6b2e7,
     type: 3}
-  WallOffset: 0
-  ShooterId: 
+  ReflectorImpactPrefab: {fileID: 2302226259571672645, guid: 7afc29f7bc6b19e498a2b3801cb29392,
+    type: 3}
+  m_reflectorSound: {fileID: 8300000, guid: 00b69f05710a0d54e9fa3f42602ddf46, type: 3}
+  m_reflectorSoundVolume: 1
 --- !u!114 &5701685767363402800
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -313,6 +317,75 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncInterval: 0.1
   compressRotation: 1
+--- !u!1 &5836076114466142986
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1774810583709409797}
+  - component: {fileID: 3358093092307092498}
+  m_Layer: 0
+  m_Name: Point_Light_For_Soldiers
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1774810583709409797
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5836076114466142986}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 2485670567771087245}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!108 &3358093092307092498
+Light:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5836076114466142986}
+  m_Enabled: 1
+  serializedVersion: 8
+  m_Type: 2
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Intensity: 2
+  m_Range: 1.6
+  m_SpotAngle: 30
+  m_CookieSize: 10
+  m_Shadows:
+    m_Type: 1
+    m_Resolution: -1
+    m_CustomResolution: -1
+    m_Strength: 1
+    m_Bias: 0.05
+    m_NormalBias: 0.4
+    m_NearPlane: 0.2
+  m_Cookie: {fileID: 0}
+  m_DrawHalo: 0
+  m_Flare: {fileID: 0}
+  m_RenderMode: 1
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 256
+  m_Lightmapping: 4
+  m_LightShadowCasterMode: 0
+  m_AreaSize: {x: 1, y: 1}
+  m_BounceIntensity: 1
+  m_ColorTemperature: 6570
+  m_UseColorTemperature: 0
+  m_ShadowRadius: 0
+  m_ShadowAngle: 0
 --- !u!1 &7167055040628441238
 GameObject:
   m_ObjectHideFlags: 0
@@ -343,7 +416,7 @@ Transform:
   m_LocalScale: {x: 0.33, y: 0.33, z: 0.33}
   m_Children: []
   m_Father: {fileID: 2485670567771087245}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!198 &9194994751711678487
 ParticleSystem:
@@ -5022,7 +5095,7 @@ GameObject:
   - component: {fileID: 7236026709018545051}
   - component: {fileID: 1913503297473824945}
   m_Layer: 0
-  m_Name: Point Light
+  m_Name: Point_Light_For_Map
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5071,7 +5144,7 @@ Light:
   m_RenderMode: 1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 567
   m_Lightmapping: 4
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}

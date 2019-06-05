@@ -7,7 +7,6 @@ public abstract class Soldier : NetworkBehaviour
     [SyncVar] public Team Team;
     [SyncVar] public Color Color;
     [SyncVar] public Score PlayerScore = new Score();
-    // The speed of the entity
     public float Speed;
     public string Username;
     // The respawn time of the soldier
@@ -22,18 +21,40 @@ public abstract class Soldier : NetworkBehaviour
     [SerializeField] protected float m_deathSoundVolume;
     protected AudioSource m_audioSource;
     protected AudioSource m_hitAudioSource;
+
+    protected HeadController m_headController;
+    protected Gun m_gun;
+    [SerializeField] protected GameObject m_spotLight;
     protected Renderer m_renderer;
     protected float m_deathTime;
+
+    protected void Start()
+    {
+        if (isServer)
+        {
+            GameManager.AddPlayer(this);
+        }
+    }
+
+    protected void OnDestroy()
+    {
+        if (isServer)
+        {
+            GameManager.RemovePlayer(this);
+        }
+    }
 
     public override void OnStartClient()
     {
         m_audioSource = GetComponent<AudioSource>();
         m_hitAudioSource = gameObject.AddComponent<AudioSource>();
-        m_audioSource.maxDistance = 15;
+        m_audioSource.maxDistance = 30;
         m_audioSource.minDistance = 1;
         m_audioSource.spatialBlend = 1;
         m_audioSource.rolloffMode = AudioRolloffMode.Linear;
         m_renderer = GetComponent<Renderer>();
+        m_headController = GetComponentInChildren<HeadController>();
+        m_gun = GetComponentInChildren<Gun>();
     }
 
     protected void Update()
@@ -42,7 +63,10 @@ public abstract class Soldier : NetworkBehaviour
         if (IsDead)
         {
             float newAlpha = Mathf.Max(0, (RespawnTime - (Time.time - m_deathTime)) / RespawnTime);
-            m_renderer.material.color = new Color(Color.r, Color.g, Color.b, newAlpha);
+            Color newColor = new Color(Color.r, Color.g, Color.b, newAlpha);
+            m_renderer.material.color = newColor;
+            m_headController?.SetColor(newColor);
+            m_gun?.SetColor(newColor);
         }
     }
 
@@ -61,15 +85,11 @@ public abstract class Soldier : NetworkBehaviour
         Team.AddDeath();
 
         DeathExplosion deathExplosion = GetComponentInChildren<DeathExplosion>();
-        if (deathExplosion != null)
-        {
-            deathExplosion.Fire();
-        }
+        deathExplosion?.Fire();
         m_audioSource.PlayOneShot(m_deathSound, m_deathSoundVolume);
     }
-    public virtual void DisableMovement()
-    {
-    }
+
+    public virtual void StopMovement() { }
 
     protected virtual void Respawn()
     {
@@ -79,21 +99,23 @@ public abstract class Soldier : NetworkBehaviour
     [Command]
     protected void CmdRespawn()
     {
-        Vector2 spawnPoint = BoardManager.GetRandomFloorTile();
+        Vector2Int spawnPoint = BoardManager.GetMap().GetSpawnPoint();
         RpcRespawn(spawnPoint);
     }
 
     [ClientRpc]
-    private void RpcRespawn(Vector2 spawnPoint)
+    private void RpcRespawn(Vector2Int spawnPoint)
     {
         Respawn(spawnPoint);
     }
 
-    protected virtual void Respawn(Vector2 spawnPoint)
+    protected virtual void Respawn(Vector2Int spawnPoint)
     {
         transform.position = new Vector3(spawnPoint.x, 0, spawnPoint.y);
         gameObject.layer = 8; // Players layer
         m_renderer.material.color = Color;
+        m_headController?.SetColor(Color);
+        m_gun?.SetColor(Color);
         m_healthStat.Reset();
         m_energyStat.Reset();
         IsDead = false;
@@ -130,10 +152,10 @@ public abstract class Soldier : NetworkBehaviour
     {
         obj.GetComponent<Renderer>().material.color = color;
         DeathExplosion deathExplosion = obj.GetComponentInChildren<DeathExplosion>();
-        if (deathExplosion != null)
-        {
-            deathExplosion.SetColor(color);
-        }
+        deathExplosion?.SetColor(color);
+
+        m_headController?.SetColor(color);
+        m_gun?.SetColor(color);
     }
 
     [Command]
@@ -164,8 +186,6 @@ public abstract class Soldier : NetworkBehaviour
     protected void RpcTakeDamage(int damage)
     {
         m_healthStat.Subtract(damage);
-        m_hitAudioSource.pitch = Random.Range(0.75f, 1.25f);
-        m_hitAudioSource.PlayOneShot(m_hitSound, m_hitSoundVolume);
     }
 
     [ClientRpc]
@@ -174,6 +194,15 @@ public abstract class Soldier : NetworkBehaviour
         Soldier otherSoldier = GameObject.Find(playerId).GetComponent<Soldier>();
         otherSoldier.PlayerScore.Kills++;
         otherSoldier.Team.AddKill();
+    }
+
+    [ClientRpc]
+    private void RpcHitByBullet()
+    {
+        m_spotLight.SetActive(true); // Show the spotlight of the soldier that was hit by a bullet.
+        m_spotLight.GetComponent<SpotLightScript>().SetLifeTime(ExplosionLight.LIFETIME, false);
+        m_hitAudioSource.pitch = Random.Range(0.75f, 1.25f);
+        m_hitAudioSource.PlayOneShot(m_hitSound, m_hitSoundVolume);
     }
 
     protected void OnTriggerEnter(Collider collider)
@@ -187,9 +216,13 @@ public abstract class Soldier : NetworkBehaviour
         {
             Bullet bullet = collider.gameObject.GetComponent<Bullet>();
             Soldier shooter = GameObject.Find(bullet.ShooterId).GetComponent<Soldier>();
-            if (bullet.ShooterId != transform.name && shooter.Team != this.Team)
+            if (bullet.ShooterId != transform.name) // Don't light up when you're hit by your own bullet.
             {
-                TakeDamage(bullet.Damage, bullet.ShooterId);
+                RpcHitByBullet();
+                if (shooter.Team != this.Team) // Don't take damage from friendly fire.
+                {
+                    TakeDamage(bullet.Damage, bullet.ShooterId);
+                }
             }
         }
     }

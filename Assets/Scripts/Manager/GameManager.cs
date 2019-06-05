@@ -1,7 +1,7 @@
-﻿using Mirror;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Mirror;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -14,20 +14,21 @@ public class GameManager : NetworkBehaviour
     public bool GameFinished;
     public float WaitingTimeAfterGameEnded; // The time after the game is finished, before it will return to the lobby.
 
-    [SyncVar] [SerializeField] private string m_seed = "";
-    [SyncVar] [SerializeField] private int m_mapWidth = 50;
-    [SyncVar] [SerializeField] private int m_mapHeight = 50;
-    [SyncVar] [SerializeField] private int m_maxRoomAmount = 100;
-    [SyncVar] [SerializeField] private int m_maxShortcutAmount = 10;
-    [SyncVar] [SerializeField] private int m_minRoomLength = 6;
-    [SyncVar] [SerializeField] private int m_maxRoomLength = 9;
-    [SyncVar] [SerializeField] private int m_minTunnelLength = 1;
-    [SyncVar] [SerializeField] private int m_maxTunnelLength = 7;
-    [SyncVar] [SerializeField] private int m_tunnelWidth = 2;
-    [SyncVar] [SerializeField] private int m_breakableTunnelChance = 20;
-    [SyncVar] [SerializeField] private int m_shortcutMinSkipDistance = 20;
-    [SyncVar] [SerializeField] private int m_outerWallWidth = 14;
-    [SerializeField] private ParticleSystem m_fireWorks;
+    [SyncVar][SerializeField] private string m_seed = "";
+    [SyncVar][SerializeField] private int m_mapWidth = 50;
+    [SyncVar][SerializeField] private int m_mapHeight = 50;
+    [SyncVar][SerializeField] private int m_maxRoomAmount = 100;
+    [SyncVar][SerializeField] private int m_maxShortcutAmount = 10;
+    [SyncVar][SerializeField] private int m_minRoomLength = 6;
+    [SyncVar][SerializeField] private int m_maxRoomLength = 9;
+    [SyncVar][SerializeField] private int m_minTunnelLength = 1;
+    [SyncVar][SerializeField] private int m_maxTunnelLength = 7;
+    [SyncVar][SerializeField] private int m_tunnelWidth = 2;
+    [SyncVar][SerializeField] private int m_breakableTunnelChance = 20;
+    [SyncVar][SerializeField] private int m_shortcutMinSkipDistance = 20;
+    [SyncVar][SerializeField] private int m_reflectorAreaSize = 200;
+    [SyncVar][SerializeField] private int m_outerWallWidth = 14;
+    [SerializeField] private ParticleSystem m_fireworks;
 
     private GameObject m_endGameTextObject;
     private int m_localPlayersTeamId;
@@ -92,7 +93,7 @@ public class GameManager : NetworkBehaviour
             {
                 NetworkManager.singleton.StopClient();
             }
-            SceneManager.LoadScene("NetworkMenu", LoadSceneMode.Single);
+            SceneManager.LoadScene("Lobby", LoadSceneMode.Single);
         }
     }
 
@@ -123,7 +124,7 @@ public class GameManager : NetworkBehaviour
         DebugMode.SetSeed(m_seed);
 
         MapGenerator mapGenerator = new MapGenerator(m_mapWidth, m_mapHeight, m_maxRoomAmount, m_maxShortcutAmount, m_minRoomLength,
-            m_maxRoomLength, m_minTunnelLength, m_maxTunnelLength, m_tunnelWidth, m_breakableTunnelChance, m_shortcutMinSkipDistance);
+            m_maxRoomLength, m_minTunnelLength, m_maxTunnelLength, m_tunnelWidth, m_breakableTunnelChance, m_shortcutMinSkipDistance, m_reflectorAreaSize);
         BoardManager.SetupScene(mapGenerator.GenerateRandomMap(m_seed), m_outerWallWidth);
         BotManager.SetupBots();
     }
@@ -180,7 +181,7 @@ public class GameManager : NetworkBehaviour
             Soldier soldier = go.GetComponent<Soldier>();
             if (soldier != null)
             {
-                soldier.DisableMovement();
+                soldier.StopMovement();
                 Player player = soldier.GetComponent<Player>();
                 if (player != null && player.isLocalPlayer) // Set the local player.
                 {
@@ -209,7 +210,7 @@ public class GameManager : NetworkBehaviour
                 // Go to win screen.
                 endGameText.text = GameMode.WIN;
                 SetFireWorkColor(teamColor);
-                SpawnFireWorks(localPlayer);
+                SpawnFireworks(localPlayer);
             }
         }
         else
@@ -230,10 +231,10 @@ public class GameManager : NetworkBehaviour
 
     private void SetFireWorkColor(Color color)
     {
-        var main = m_fireWorks.main;
+        var main = m_fireworks.main;
         main.startColor = color;
 
-        ParticleSystemRenderer[] particleSystemRenderers = m_fireWorks.GetComponentsInChildren<ParticleSystemRenderer>();
+        ParticleSystemRenderer[] particleSystemRenderers = m_fireworks.GetComponentsInChildren<ParticleSystemRenderer>();
         for (int i = 0; i < particleSystemRenderers.Length; i++)
         {
             if (particleSystemRenderers[i].trailMaterial != null)
@@ -245,15 +246,15 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-    private void SpawnFireWorks(Soldier soldier)
+    private void SpawnFireworks(Soldier soldier)
     {
-        int amountOfFirworks = UnityEngine.Random.Range(5, 7);
-        for (int i = 0; i < amountOfFirworks; i++)
+        int amountOfFireworks = UnityEngine.Random.Range(5, 7);
+        for (int i = 0; i < amountOfFireworks; i++)
         {
             float xPos = soldier.gameObject.transform.position.x;
             float zPos = soldier.gameObject.transform.position.z;
             Vector3 spawnPosition = new Vector3(UnityEngine.Random.Range(xPos - 7, xPos + 7), 1, UnityEngine.Random.Range(zPos - 5, zPos + 5));
-            ParticleSystem ps = Instantiate(m_fireWorks, spawnPosition, Quaternion.identity);
+            ParticleSystem ps = Instantiate(m_fireworks, spawnPosition, Quaternion.identity);
             ps.Simulate(1);
             ps.Play();
         }
@@ -268,7 +269,7 @@ public class GameManager : NetworkBehaviour
         foreach (Team team in TeamManager.Singleton.Teams)
         {
             int score = GameMode.CalculateScore(team.Score);
-            if (score > maxScore)   // New highest score is found.
+            if (score > maxScore) // New highest score is found.
             {
                 winningTeamIds.Clear();
                 winningTeamIds.Add(team.Id);

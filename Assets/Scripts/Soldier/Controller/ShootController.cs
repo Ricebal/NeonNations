@@ -21,7 +21,7 @@ public class ShootController : NetworkBehaviour
     private void Start()
     {
         m_audioSource = gameObject.AddComponent<AudioSource>();
-        m_audioSource.maxDistance = 15;
+        m_audioSource.maxDistance = 30;
         m_audioSource.minDistance = 1;
         m_audioSource.spatialBlend = 1;
         m_audioSource.rolloffMode = AudioRolloffMode.Linear;

@@ -61,7 +61,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 75bbad81a73ca61488a9969bb036f166, type: 2}
+  - {fileID: 2100000, guid: 9f88b6e0e7035034497c9d39cccb5dde, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -108,6 +108,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_minValue: 0
   m_maxValue: 50
+  m_currentValue: 0
 --- !u!114 &8597429118052604184
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -121,6 +122,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_healthStat: {fileID: 2773178780142120316}
+  m_hitSound: {fileID: 8300000, guid: d0fa97553ed7fd246954305558d544e3, type: 3}
+  m_hitSoundVolume: 0.7
+  m_destroySound: {fileID: 8300000, guid: 36176e5bf96faa843b8bd7ed27498d7d, type: 3}
+  m_destroySoundVolume: 1
 --- !u!114 &2261283144201084859
 MonoBehaviour:
   m_ObjectHideFlags: 0
