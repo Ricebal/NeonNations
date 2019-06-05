@@ -5220,7 +5220,7 @@ MonoBehaviour:
   syncInterval: 0.1
   Cost: 50
   m_soundVolume: 1
-  m_sonarSound: {fileID: 8300000, guid: ce0224dd20da4c341a0768e621bb305a, type: 3}
+  m_sonarSound: {fileID: 8300000, guid: 93da9303193bd1448bae1507c1626abb, type: 3}
   m_prefab: {fileID: 4647958490886930736, guid: be7e8cfbb92a8f44b857f951d2f36f60,
     type: 3}
   m_cooldown: 1
@@ -5280,7 +5280,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 30
+  MaxDistance: 15
   Pan2D: 0
   rolloffMode: 1
   BypassEffects: 0
