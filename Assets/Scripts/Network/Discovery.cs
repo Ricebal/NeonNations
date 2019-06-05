@@ -68,20 +68,20 @@ public class Discovery : NetworkDiscovery
 
     public static bool ListenForBroadcast()
     {
-        Debug.Log("Listen for broadcast");
         StopBroadcasting();
         Singleton.Initialize();
         // An error can be shown if the broadcasting port is already used,
         // probably due to multiple instances of the game running simultaneously
+        Debug.Log("Listen for broadcast");
         return Singleton.StartAsClient();
     }
 
     public static bool StartBroadcasting()
     {
-        Debug.Log("Start boradcasting");
         Singleton.broadcastData = ProfileMenu.GetUsername();
         StopBroadcasting();
         Singleton.Initialize();
+        Debug.Log("Start boradcasting");
         return Singleton.StartAsServer();
     }
 
@@ -89,7 +89,7 @@ public class Discovery : NetworkDiscovery
     {
         if (Singleton.running)
         {
-            Debug.Logv("Stop broadcasting");
+            Debug.Log("Stop broadcasting");
             Singleton.StopBroadcast();
         }
     }
