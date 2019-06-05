@@ -55,16 +55,7 @@ public class LobbyPlayer : NetworkLobbyPlayer
     {
         if (NetworkClient.active && isLocalPlayer)
         {
-            if (ReadyToBegin)
-            {
-                CmdChangeReadyState(false);
-                m_textReady.text = "Ready";
-            }
-            else
-            {
-                CmdChangeReadyState(true);
-                m_textReady.text = "Not Ready";
-            }
+            CmdChangeReadyState(!ReadyToBegin);
         }
     }
 
@@ -72,6 +63,18 @@ public class LobbyPlayer : NetworkLobbyPlayer
     {
         // Enable the checkmark depending on the state of the player
         m_imageReady.gameObject.SetActive(readyState);
+
+        if (isLocalPlayer)
+        {
+            if (readyState)
+            {
+                m_textReady.text = "Not Ready";
+            }
+            else
+            {
+                m_textReady.text = "Ready";
+            }
+        }
     }
 
 }
