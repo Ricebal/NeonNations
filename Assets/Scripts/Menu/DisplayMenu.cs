@@ -13,7 +13,7 @@ public class DisplayMenu : MonoBehaviour
     [SerializeField] private TextMeshProUGUI m_savingText;
 
     // List of resolutions
-    private Resolution[] m_resolutions;
+    private List<Resolution> m_resolutions = new List<Resolution>();
 
     private int m_isFullScreen;
 
@@ -25,12 +25,19 @@ public class DisplayMenu : MonoBehaviour
         int currentResolutionIndex = 0;
 
         // Resolutions available for the screen
-        m_resolutions = Screen.resolutions;
+        Resolution[] unityResolutions = Screen.resolutions;
+        for (int i = 0; i < unityResolutions.Length; i++)
+        {
+            if (unityResolutions[i].width >= 800 && unityResolutions[i].height >= 600)
+            {
+                m_resolutions.Add(unityResolutions[i]);
+            }
+        }
 
         m_resolutionDropdown.ClearOptions();
 
         // Convert resolutions into strings and add them to the options list
-        for (int i = 0; i < m_resolutions.Length; i++)
+        for (int i = 0; i < m_resolutions.Count; i++)
         {
             options.Add(m_resolutions[i].width + " x " + m_resolutions[i].height);
 

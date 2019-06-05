@@ -7,6 +7,7 @@ using UnityEngine;
 public class BoardManager : NetworkBehaviour
 {
     public static BoardManager Singleton;
+    public GameObject BreakableWalls;
 
     // Walls is used for loading the map
     [Flags]
@@ -39,7 +40,6 @@ public class BoardManager : NetworkBehaviour
     private Map m_map;
     private int m_outerWallWidth;
     private GameObject m_mapObject;
-    private GameObject m_breakableWalls;
     private GameObject m_reflectors;
     private List<GameObject> m_mapParts = new List<GameObject>();
 
@@ -119,9 +119,9 @@ public class BoardManager : NetworkBehaviour
     private void LoadMap()
     {
         // init
-        m_breakableWalls = new GameObject();
-        m_breakableWalls.name = BREAKABLE_WALLS;
-        m_breakableWalls.transform.SetParent(m_mapObject.transform);
+        BreakableWalls = new GameObject();
+        BreakableWalls.name = BREAKABLE_WALLS;
+        BreakableWalls.transform.SetParent(m_mapObject.transform);
         m_reflectors = new GameObject();
         m_reflectors.name = REFLECTORS;
         m_reflectors.transform.SetParent(m_mapObject.transform);
@@ -166,7 +166,7 @@ public class BoardManager : NetworkBehaviour
                     GameObject instance = Instantiate(m_breakableWallPrefab, new Vector3(i, 0f, j), Quaternion.identity);
                     instance.name = BREAKABLE_WALL;
                     // adds them to the breakable walls section of the map
-                    instance.transform.SetParent(m_breakableWalls.transform);
+                    instance.transform.SetParent(BreakableWalls.transform);
                     // spawn the breakable wall for every client
                     NetworkServer.Spawn(instance);
                 }

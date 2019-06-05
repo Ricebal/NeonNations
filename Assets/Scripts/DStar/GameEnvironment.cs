@@ -33,7 +33,23 @@ public class GameEnvironment : ScriptableObject
     private void Init(Map map, List<Tile> list)
     {
         m_map = map;
+
+        if (BoardManager.Singleton.BreakableWalls != null)
+        {
+            GameObject wallParent = BoardManager.Singleton.BreakableWalls; // Get all breakable walls.
+            for (int i = 0; i < wallParent.transform.childCount; i++)
+            {
+                GameObject wall = wallParent.transform.GetChild(i).gameObject;
+                wall.GetComponent<BreakableWall>().WallDestroyedHandler += UpdateMap;
+            }
+        }
+
         m_listOfObstacles = list;
+    }
+
+    public void UpdateMap(Vector2Int coordinates)
+    {
+        m_map.UpdateMap(coordinates);
     }
 
     /// <summary>
