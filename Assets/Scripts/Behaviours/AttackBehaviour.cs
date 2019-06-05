@@ -86,10 +86,7 @@ public class AttackBehaviour : BotBehaviour
             return position;
         }
         Vector3 prediction = position - m_lastShotPosition;
-        Debug.Log($"Position: {position}");
-        Debug.Log($"Last position: {m_lastShotPosition}");
-        Debug.Log($"Prediction: {prediction}");
-        Debug.Log($"Position + prediction: {position + prediction}");
+
         return position + prediction;
     }
 
