@@ -68,6 +68,7 @@ public class Discovery : NetworkDiscovery
 
     public static bool ListenForBroadcast()
     {
+        Debug.Log("Listen for broadcast");
         StopBroadcasting();
         Singleton.Initialize();
         // An error can be shown if the broadcasting port is already used,
@@ -77,6 +78,7 @@ public class Discovery : NetworkDiscovery
 
     public static bool StartBroadcasting()
     {
+        Debug.Log("Start boradcasting");
         Singleton.broadcastData = ProfileMenu.GetUsername();
         StopBroadcasting();
         Singleton.Initialize();
@@ -87,14 +89,14 @@ public class Discovery : NetworkDiscovery
     {
         if (Singleton.running)
         {
+            Debug.Logv("Stop broadcasting");
             Singleton.StopBroadcast();
         }
     }
 
     public override void OnReceivedBroadcast(string serverIp, string data)
     {
-        base.OnReceivedBroadcast(serverIp, data);
-
+        Debug.Log("On received broadcast");
         if (m_servers.ContainsKey(serverIp))
         {
             m_servers[serverIp].LastPing = Time.time;
