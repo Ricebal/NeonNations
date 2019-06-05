@@ -7,16 +7,14 @@ public class AttackBehaviour : BotBehaviour
     private Action m_action;
     private Bot m_bot;
     private Vector3 m_lastShotPosition;
-    private float m_accuracy = 1f;
 
     // How far the bot can see
     private const float VISION_RANGE = 7.5f;
-    // Accuracy to reset to
-    private const float INITIAL_ACCURACY = 2f;
-    // Amount of accuracy gained per update
-    private const float ACCURACY_MODIFIER = 0.01f;
-    // Threshold if the target moved
+    // Accuracy handicap in degrees
+    private const float ACCURACY_MODIFIER = 1.3f;
+    private const float ACCURACY = 0.75f;
     private const float MOVE_THRESHOLD = 0.02f;
+    private const float AIM_THRESHOLD = 3f;
 
     private void Start()
     {
@@ -37,7 +35,8 @@ public class AttackBehaviour : BotBehaviour
     {
         // Get all players that aren't on the bot's team
         List<Soldier> enemies = TeamManager.GetAliveEnemiesByTeam(m_bot.Team.Id);
-        Vector3 targetPosition = FindClosestEnemyPosition(enemies);
+        Soldier closestEnemy = FindClosestEnemy(enemies);
+        Vector3 targetPosition = closestEnemy.transform.position;
         // Worldspace -> localspace
         Vector3 rayCastTarget = targetPosition - transform.position;
         // Raycast to the target
@@ -50,50 +49,62 @@ public class AttackBehaviour : BotBehaviour
 
         // Make bot less accurate to make it more fair for players
         Vector3 aimTarget = JitterAim(targetPosition);
-        FireAtPosition(aimTarget);
-        m_lastShotPosition = targetPosition;
+
+        // Make bot predict movement
+        aimTarget = PredictMovement(aimTarget, closestEnemy);
+        if (FireAtPosition(aimTarget))
+        {
+            m_lastShotPosition = aimTarget;
+        }
     }
 
     private Vector3 JitterAim(Vector3 position)
     {
-        if (m_lastShotPosition != null)
+        Vector3 result;
+        if (m_lastShotPosition == null || (Vector3.Distance(m_lastShotPosition, position) > AIM_THRESHOLD && Vector3.Distance(m_lastShotPosition - transform.position, position - transform.position) > AIM_THRESHOLD))
         {
-            // Set the accuracy based on last aimed at position
-            float movedDistance = Vector3.Distance(m_lastShotPosition, position);
-            if (movedDistance > MOVE_THRESHOLD || movedDistance < -MOVE_THRESHOLD)
-            {
-                m_accuracy = INITIAL_ACCURACY;
-            }
-            else
-            {
-                m_accuracy = Mathf.Max(0, m_accuracy - ACCURACY_MODIFIER);
-            }
+            float distance = Vector3.Distance(position, transform.position);
+            result = Quaternion.Euler(0, Random.Range(-distance * ACCURACY_MODIFIER, distance * ACCURACY_MODIFIER), 0) * position;
         }
-        return new Vector3(position.x + Random.Range(-m_accuracy, m_accuracy), position.y, position.z + Random.Range(-m_accuracy, m_accuracy));
+        else
+        {
+            Vector3 direction = position - transform.position;
+            Quaternion aimRotation = Quaternion.Euler(0, Mathf.Atan2(direction.x, direction.z), 0);
+            Vector3 lastDirection = m_lastShotPosition - transform.position;
+            Quaternion lastAimRotation = Quaternion.Euler(0, Mathf.Atan2(lastDirection.x, lastDirection.z), 0);
+            result = Vector3.Lerp(m_lastShotPosition, position, ACCURACY);
+        }
+
+        return result;
     }
 
-    private void FireAtPosition(Vector3 position)
+    private Vector3 PredictMovement(Vector3 position, Soldier target)
+    {
+        Vector3 targetVelocity = target.GetComponent<Rigidbody>().velocity;
+        return position + targetVelocity / target.Speed;
+    }
+
+    private bool FireAtPosition(Vector3 position)
     {
         m_bot.WorldAim(new Vector2(position.x, position.z));
-        m_action.Shoot();
+        return m_action.Shoot();
     }
 
-    private Vector3 FindClosestEnemyPosition(List<Soldier> enemies)
+    private Soldier FindClosestEnemy(List<Soldier> enemies)
     {
         Vector3 currentPosition = transform.position;
         float minDist = Mathf.Infinity;
-        Vector3 closestEnemyPosition = Vector3.zero;
+        Soldier closestEnemy = null;
         enemies.ForEach(enemy =>
         {
             float dist = Vector3.Distance(currentPosition, enemy.transform.position);
             if (dist < minDist)
             {
-                closestEnemyPosition = enemy.transform.position;
+                closestEnemy = enemy;
                 minDist = dist;
-
             }
         });
 
-        return closestEnemyPosition;
+        return closestEnemy;
     }
 }
