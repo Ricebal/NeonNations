@@ -89,6 +89,10 @@ public class LobbyManager : NetworkLobbyManager
         StopHost();
         m_connectionText = "";
         m_isConnecting = false;
+        if (MapConfiguration.Singleton != null)
+        {
+            MapConfiguration.DestroyMapConfig();
+        }
     }
 
     public override void OnClientConnect(NetworkConnection conn)
