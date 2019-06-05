@@ -15,7 +15,10 @@ public class LobbyManager : NetworkLobbyManager
 
     private void OnEnable()
     {
-        Discovery.ListenForBroadcast();
+        if (!Discovery.ListenForBroadcast())
+        {
+            m_connectionText = "An error occurred while checking online servers.";
+        }
     }
 
     public override void Start()
@@ -23,7 +26,6 @@ public class LobbyManager : NetworkLobbyManager
         base.Start();
 
         m_isConnecting = false;
-        m_connectionText = "";
     }
 
     // Display the lobby panel when a player starts or joins a server
@@ -38,13 +40,17 @@ public class LobbyManager : NetworkLobbyManager
     public override void OnStartServer()
     {
         base.OnStartServer();
-        Discovery.StartBroadcasting();
+        if(!Discovery.StartBroadcasting())
+        {
+            m_connectionText = "An error occurred while starting broadcasting.";
+;        }
     }
 
     public override void OnStopClient()
     {
         base.OnStopClient();
         Discovery.StopBroadcasting();
+        DestroyImmediate(Discovery.Singleton.gameObject, true);
     }
 
     // Start a game as a host
