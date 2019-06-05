@@ -12,7 +12,7 @@ public class NetworkMenu : MonoBehaviour
     private void Update()
     {
         m_connectionText.text = m_lobbyManager.GetConnectionText();
-        // The buttons is disabled when a client is trying to connect and vice versa
+        // The button is disabled when a client is trying to connect and vice versa
         m_buttonStartHost.interactable = !m_lobbyManager.IsConnecting();
     }
 
