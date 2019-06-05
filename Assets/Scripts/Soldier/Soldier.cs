@@ -29,6 +29,10 @@ public abstract class Soldier : NetworkBehaviour
     {
         m_audioSource = GetComponent<AudioSource>();
         m_hitAudioSource = gameObject.AddComponent<AudioSource>();
+        m_audioSource.maxDistance = 15;
+        m_audioSource.minDistance = 1;
+        m_audioSource.spatialBlend = 1;
+        m_audioSource.rolloffMode = AudioRolloffMode.Linear;
         m_renderer = GetComponent<Renderer>();
     }
 
@@ -160,10 +164,8 @@ public abstract class Soldier : NetworkBehaviour
     protected void RpcTakeDamage(int damage)
     {
         m_healthStat.Subtract(damage);
-        m_hitAudioSource.clip = m_hitSound;
         m_hitAudioSource.pitch = Random.Range(0.75f, 1.25f);
-        m_hitAudioSource.volume = m_hitSoundVolume;
-        m_hitAudioSource.Play();
+        m_hitAudioSource.PlayOneShot(m_hitSound, m_hitSoundVolume);
     }
 
     [ClientRpc]

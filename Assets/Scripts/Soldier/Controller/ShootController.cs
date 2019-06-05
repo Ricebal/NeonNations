@@ -21,6 +21,10 @@ public class ShootController : NetworkBehaviour
     private void Start()
     {
         m_audioSource = gameObject.AddComponent<AudioSource>();
+        m_audioSource.maxDistance = 15;
+        m_audioSource.minDistance = 1;
+        m_audioSource.spatialBlend = 1;
+        m_audioSource.rolloffMode = AudioRolloffMode.Linear;
     }
 
     public bool CanShoot(int energy)
@@ -48,9 +52,7 @@ public class ShootController : NetworkBehaviour
         bullet.ShooterId = shooterId;
         bullet.SetBulletColor();
         bullet.GetComponent<Identity>().SetIdentity();
-        m_audioSource.clip = m_shootSound;
         m_audioSource.pitch = Random.Range(0.9f, 1f);
-        m_audioSource.volume = m_soundVolume;
-        m_audioSource.Play();
+        m_audioSource.PlayOneShot(m_shootSound, m_soundVolume);
     }
 }
