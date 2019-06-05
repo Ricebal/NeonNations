@@ -59,7 +59,7 @@ public abstract class Soldier : NetworkBehaviour
         DeathExplosion deathExplosion = GetComponentInChildren<DeathExplosion>();
         deathExplosion?.Fire();
     }
-    public virtual void DisableMovement() { }
+    public virtual void StopMovement() { }
 
     protected virtual void Respawn()
     {

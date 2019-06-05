@@ -53,7 +53,7 @@ MonoBehaviour:
   syncInterval: 0.1
   GameMode: {fileID: 0}
   GameFinished: 0
-  WaitingTimeAfterGameEnded: 0
+  WaitingTimeAfterGameEnded: 6
   m_seed: 
   m_mapWidth: 50
   m_mapHeight: 50
