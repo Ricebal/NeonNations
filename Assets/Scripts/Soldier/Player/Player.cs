@@ -4,6 +4,7 @@ public class Player : Soldier
 {
     private PlayerController m_playerController;
     private PlayerHUD m_hud;
+    private Aim m_aim;
 
     private void Start()
     {
@@ -13,6 +14,7 @@ public class Player : Soldier
         }
 
         m_hud = GetComponent<PlayerHUD>();
+        m_aim = GetComponent<Aim>();
         m_playerController = GetComponent<PlayerController>();
         CameraController.SetTarget(this.transform);
         EscapeMenu.Singleton.OnPauseToggled += PauseToggled;
@@ -63,6 +65,7 @@ public class Player : Soldier
         }
 
         base.Die();
+        m_aim.CanAim = false;
     }
 
     public override void DisableMovement()
@@ -85,6 +88,7 @@ public class Player : Soldier
             }
         }
 
+        m_aim.CanAim = true;
         base.Respawn(respawnPoint);
     }
 

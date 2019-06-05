@@ -65,6 +65,16 @@ public class Bot : Soldier
         }
     }
 
+    public void AimAtMoveDirection()
+    {
+        if (!isServer)
+        {
+            return;
+        }
+
+        LocalAim(new Vector2(m_rigidbody.velocity.x, m_rigidbody.velocity.z));
+    }
+
     // Aims the bot at the input vector in world space
     public void WorldAim(Vector2 position)
     {
@@ -82,7 +92,7 @@ public class Bot : Soldier
     // Aims the bot at the input vector in local space
     public void LocalAim(Vector2 position)
     {
-        if (!isServer)
+        if (!isServer || position == Vector2.zero)
         {
             return;
         }
