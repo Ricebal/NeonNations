@@ -16,7 +16,7 @@ public class SearchBehaviour : BotBehaviour
     private void Start()
     {
         m_environment = GameEnvironment.CreateInstance(BoardManager.GetMap(), new List<Tile>() { Tile.Wall, Tile.BreakableWall, Tile.Reflector });
-        m_dStarLite = new DStarLite(m_environment, true);
+        m_dStarLite = new DStarLite(m_environment, false);
         Vector2Int startCoordinates = m_environment.ConvertGameObjectToCoordinates(gameObject.transform);
         GenerateNewDestination(startCoordinates);
         m_bot = GetComponent<Bot>();
