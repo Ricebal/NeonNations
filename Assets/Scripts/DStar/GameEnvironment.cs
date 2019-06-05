@@ -33,7 +33,6 @@ public class GameEnvironment : ScriptableObject
     private void Init(Map map, List<Tile> list)
     {
         m_map = map;
-        m_map = map;
 
         if (BoardManager.Singleton.BreakableWalls != null)
         {
