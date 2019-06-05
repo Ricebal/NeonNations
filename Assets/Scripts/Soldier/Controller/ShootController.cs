@@ -1,6 +1,7 @@
 using Mirror;
 using UnityEngine;
 
+[RequireComponent(typeof(AudioSource))]
 public class ShootController : NetworkBehaviour
 {
     // Amount of energy a bullet will consume
@@ -8,7 +9,7 @@ public class ShootController : NetworkBehaviour
 
     [SerializeField] private float m_soundVolume;
     [SerializeField] private AudioClip m_shootSound;
-    private AudioSource m_audioSource;
+    [SerializeField] private AudioSource m_audioSource;
     // Prefab representing the bullet
     [SerializeField] private GameObject m_prefab;
     // Transform object representing the bullets' spawn location
@@ -17,15 +18,6 @@ public class ShootController : NetworkBehaviour
     [SerializeField] private float m_cooldown;
     // The next time the entity will be able to shoot, in seconds
     private float m_next;
-
-    private void Start()
-    {
-        m_audioSource = gameObject.AddComponent<AudioSource>();
-        m_audioSource.maxDistance = 30;
-        m_audioSource.minDistance = 1;
-        m_audioSource.spatialBlend = 1;
-        m_audioSource.rolloffMode = AudioRolloffMode.Linear;
-    }
 
     public bool CanShoot(int energy)
     {

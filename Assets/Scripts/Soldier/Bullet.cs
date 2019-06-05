@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 
+[RequireComponent(typeof(CapsuleCollider), typeof(Rigidbody))]
 public class Bullet : MonoBehaviour
 {
     // Damage done to a player on hit
@@ -8,16 +9,13 @@ public class Bullet : MonoBehaviour
     public string ShooterId;
 
     // Bullet speed
-    [SerializeField] private float Speed;
+    [SerializeField] private float m_speed;
     // Time in seconds before the bullet is destroyed
-    [SerializeField] private float LivingTime;
+    [SerializeField] private float m_livingTime;
     // The explosion on impact
-    [SerializeField] private GameObject HitPrefab;
+    [SerializeField] private GameObject m_impactPrefab;
     // The impact on a reflector
-    [SerializeField] private GameObject ReflectorImpactPrefab;
-    // The sound of the reflector
-    [SerializeField] private AudioClip m_reflectorSound;
-    [SerializeField] private float m_reflectorSoundVolume;
+    [SerializeField] private GameObject m_reflectorImpactPrefab;
 
     // Bullet's radius, used for sphere cast
     private float m_radius;
@@ -29,8 +27,6 @@ public class Bullet : MonoBehaviour
     // Last hit reflector
     private int m_lastReflector;
     private float m_startingTime;
-    // Audio
-    private AudioSource m_audioSource;
 
     public void Start()
     {
@@ -39,21 +35,15 @@ public class Bullet : MonoBehaviour
         m_rigidbody = GetComponent<Rigidbody>();
 
         // Move the bullet straight ahead with constant speed
-        m_rigidbody.velocity = transform.forward * Speed;
+        m_rigidbody.velocity = transform.forward * m_speed;
 
         m_startingTime = Time.time;
-
-        m_audioSource = gameObject.AddComponent<AudioSource>();
-        m_audioSource.maxDistance = 15;
-        m_audioSource.minDistance = 1;
-        m_audioSource.spatialBlend = 1;
-        m_audioSource.rolloffMode = AudioRolloffMode.Linear;
     }
 
     private void FixedUpdate()
     {
         // Destroy the bullet if the living time has been reached
-        if (Time.time - m_startingTime > LivingTime)
+        if (Time.time - m_startingTime > m_livingTime)
         {
             DestroyBullet();
         }
@@ -98,7 +88,7 @@ public class Bullet : MonoBehaviour
             Vector3 newDirection = Vector3.Reflect(currentDirection, contact.normal);
             newDirection.Normalize();
             // Set the velocity to the speed var
-            Vector3 newVelocity = newDirection * Speed;
+            Vector3 newVelocity = newDirection * m_speed;
             m_rigidbody.velocity = newVelocity;
             // Rotate the bullet so it faces the direction it's heading
             transform.rotation = Quaternion.LookRotation(newVelocity);
@@ -106,10 +96,6 @@ public class Bullet : MonoBehaviour
             m_lastBouncePosition = transform.position;
             // Set last hit reflector to the hit reflector
             m_lastReflector = collider.GetInstanceID();
-
-            // Play reflector sound
-            m_audioSource.pitch = Random.Range(0.75f, 1.25f);
-            m_audioSource.PlayOneShot(m_reflectorSound, m_reflectorSoundVolume);
         }
 
         // If the collider is not a reflector and has left the player hitbox
@@ -154,7 +140,7 @@ public class Bullet : MonoBehaviour
     private void CreateExplosion(Vector3 pos)
     {
         // Instantiate explosion
-        GameObject explosion = Instantiate(HitPrefab, pos, transform.rotation);
+        GameObject explosion = Instantiate(m_impactPrefab, pos, transform.rotation);
 
         // Set explosion light color to the player's color
         Color color = GameObject.Find(ShooterId).GetComponent<Soldier>().Color;
@@ -174,7 +160,7 @@ public class Bullet : MonoBehaviour
         {
             rotation = Quaternion.LookRotation(normal);
         }
-        GameObject impact = Instantiate(ReflectorImpactPrefab, pos, rotation);
+        GameObject impact = Instantiate(m_reflectorImpactPrefab, pos, rotation);
         Destroy(impact, 1);
 
         // Set impact color to the player's color

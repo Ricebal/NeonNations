@@ -11,19 +11,16 @@ public class BreakableWall : NetworkBehaviour
     [SerializeField] private float m_hitSoundVolume;
     [SerializeField] private AudioClip m_destroySound;
     [SerializeField] private float m_destroySoundVolume;
-    private GameObject m_audioObject;
     private AudioSource m_audioSource;
+    // Game object used to play destroy sound after the breakable wall has been destroyed
+    private GameObject m_audioObject;
 
     private void Start()
     {
+        m_audioSource = GetComponent<AudioSource>();
         m_audioObject = new GameObject();
-        m_audioObject.transform.parent = transform;
         m_audioObject.transform.position = transform.position;
-        m_audioSource = m_audioObject.AddComponent<AudioSource>();
-        m_audioSource.maxDistance = 15;
-        m_audioSource.minDistance = 1;
-        m_audioSource.spatialBlend = 1;
-        m_audioSource.rolloffMode = AudioRolloffMode.Linear;
+        m_audioObject.transform.parent = transform;
     }
 
     // If the BreakableWall gets hit by a bullet, it will take damage. Will return true if the collider was a Bullet and the BreakableWall took damage.
@@ -61,6 +58,7 @@ public class BreakableWall : NetworkBehaviour
         m_audioObject.transform.parent = null;
         Destroy(m_audioObject, 1); // Destroy audio after 1 second.
         Destroy(gameObject); // Destroy wall instantly.
+
         if (WallDestroyedHandler != null)
         {
             Vector3 position = gameObject.transform.position;

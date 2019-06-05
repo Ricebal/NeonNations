@@ -19,8 +19,8 @@ public abstract class Soldier : NetworkBehaviour
     [SerializeField] protected float m_hitSoundVolume;
     [SerializeField] protected AudioClip m_deathSound;
     [SerializeField] protected float m_deathSoundVolume;
-    protected AudioSource m_audioSource;
-    protected AudioSource m_hitAudioSource;
+    [SerializeField] protected AudioSource m_defaultAudioSource;
+    [SerializeField] protected AudioSource m_hitAudioSource;
 
     protected HeadController m_headController;
     protected Gun m_gun;
@@ -46,12 +46,6 @@ public abstract class Soldier : NetworkBehaviour
 
     public override void OnStartClient()
     {
-        m_audioSource = GetComponent<AudioSource>();
-        m_hitAudioSource = gameObject.AddComponent<AudioSource>();
-        m_audioSource.maxDistance = 30;
-        m_audioSource.minDistance = 1;
-        m_audioSource.spatialBlend = 1;
-        m_audioSource.rolloffMode = AudioRolloffMode.Linear;
         m_renderer = GetComponent<Renderer>();
         m_headController = GetComponentInChildren<HeadController>();
         m_gun = GetComponentInChildren<Gun>();
@@ -86,7 +80,7 @@ public abstract class Soldier : NetworkBehaviour
 
         DeathExplosion deathExplosion = GetComponentInChildren<DeathExplosion>();
         deathExplosion?.Fire();
-        m_audioSource.PlayOneShot(m_deathSound, m_deathSoundVolume);
+        m_defaultAudioSource.PlayOneShot(m_deathSound, m_deathSoundVolume);
     }
 
     public virtual void StopMovement() { }
