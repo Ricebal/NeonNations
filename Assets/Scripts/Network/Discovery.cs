@@ -57,8 +57,8 @@ public class Discovery : NetworkDiscovery
         // ToList() is used to avoid concurrent modification error (removing element while iterating)
         foreach (Server server in m_servers.Values.ToList())
         {
-            // The broadcastInterval is multiplied by 1.5 to add a little margin, avoiding false timeout detection
-            if ((Time.time - server.LastPing) * 1000 > broadcastInterval * 1.5f)
+            // The broadcastInterval is multiplied by a factor to add a little margin, avoiding false timeout detection
+            if ((Time.time - server.LastPing) * 1000 > broadcastInterval * 5f)
             {
                 Destroy(server.Prefab);
                 m_servers.Remove(server.Ip);

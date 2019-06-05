@@ -696,7 +696,7 @@ PrefabInstance:
       objectReference: {fileID: 8080092582660479207}
     - target: {fileID: 442134263, guid: 8dc18a893d3dd76408cbae082c0509cc, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.000003872022
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 442134263, guid: 8dc18a893d3dd76408cbae082c0509cc, type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -1602,7 +1602,7 @@ MonoBehaviour:
   m_BroadcastKey: 2222
   m_BroadcastVersion: 1
   m_BroadcastSubVersion: 1
-  m_BroadcastInterval: 1000
+  m_BroadcastInterval: 500
   m_UseNetworkManager: 0
   m_BroadcastData: HELLO
   m_ShowGUI: 0
