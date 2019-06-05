@@ -93,6 +93,8 @@ public class Discovery : NetworkDiscovery
 
     public override void OnReceivedBroadcast(string serverIp, string data)
     {
+        base.OnReceivedBroadcast(serverIp, data);
+
         if (m_servers.ContainsKey(serverIp))
         {
             m_servers[serverIp].LastPing = Time.time;
