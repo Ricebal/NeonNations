@@ -2,18 +2,19 @@
 
 public class Bullet : MonoBehaviour
 {
-    // Bullet speed
-    public float Speed;
-    // Time in seconds before the bullet is destroyed
-    public float LivingTime;
     // Damage done to a player on hit
     public int Damage;
-    // The explosion on impact
-    public GameObject HitPrefab;
-    // Offset for spawning the lights
-    public float WallOffset;
     // The player that shot the bullet
     public string ShooterId;
+
+    // Bullet speed
+    [SerializeField] private float Speed;
+    // Time in seconds before the bullet is destroyed
+    [SerializeField] private float LivingTime;
+    // The explosion on impact
+    [SerializeField] private GameObject HitPrefab;
+    // The impact on a reflector
+    [SerializeField] private GameObject ReflectorImpactPrefab;
 
     // Bullet's radius, used for sphere cast
     private float m_radius;
@@ -63,6 +64,9 @@ public class Bullet : MonoBehaviour
         {
             // Raycast from start or last bounce to collision
             RaycastHit contact = GetRaycastHit(collider.GetInstanceID());
+
+            CreateReflectorImpact(contact.point, contact.normal);
+
             // If the bullet hits a mirror corner, destroy bullet to prevent bugs
             if (Vector3.Distance(m_lastBouncePosition, transform.position) < 0.1)
             {
@@ -136,12 +140,54 @@ public class Bullet : MonoBehaviour
     {
         // Instantiate explosion
         GameObject explosion = Instantiate(HitPrefab, pos, transform.rotation);
-        explosion.transform.Translate(0, 0, -WallOffset);
 
         // Set explosion light color to the player's color
         Color color = GameObject.Find(ShooterId).GetComponent<Soldier>().Color;
         ExplosionLight explosionLight = explosion.GetComponent<ExplosionLight>();
         explosionLight.SetColor(color);
+    }
+
+    private void CreateReflectorImpact(Vector3 pos, Vector3 normal)
+    {
+        //instantiate reflector impact
+        Quaternion rotation;
+        if(normal == Vector3.zero)
+        {
+            rotation = new Quaternion(0, 0, 0, 0);
+        }
+        else
+        {
+            rotation = Quaternion.LookRotation(normal);
+        }
+        GameObject impact = Instantiate(ReflectorImpactPrefab, pos, rotation);
+        Destroy(impact, 1);
+
+        // Set impact color to the player's color
+        Color color = GameObject.Find(ShooterId).GetComponent<Soldier>().Color;
+        Material mat;
+
+        // Check if there is a TrailRenderer
+        TrailRenderer[] trails = impact.GetComponentsInChildren<TrailRenderer>();
+        if (trails.Length > 0)
+        {
+            TrailRenderer trail = trails[0];
+            // Set the emission color of the trail to the new color times 3 for intensity
+            mat = Material.Instantiate(trail.material);
+            mat.SetColor("_EmissionColor", color * 3);
+            trail.material = mat;
+        }
+
+        // Check if there is a Particlesystem
+        ParticleSystemRenderer[] particleSystemRenderers = impact.GetComponentsInChildren<ParticleSystemRenderer>();
+        if (particleSystemRenderers.Length > 0)
+        {
+            ParticleSystemRenderer particleSystemRenderer = particleSystemRenderers[0];
+            // Set the emission color of the particle trail to the new color times 3 for intensity
+            mat = Material.Instantiate(particleSystemRenderer.material);
+            mat.SetColor("_EmissionColor", color * 3);
+            particleSystemRenderer.material = mat;
+            particleSystemRenderer.trailMaterial = mat;
+        }
     }
 
     public void SetBulletColor()

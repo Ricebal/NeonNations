@@ -93,7 +93,7 @@ public class GameManager : NetworkBehaviour
             {
                 NetworkManager.singleton.StopClient();
             }
-            SceneManager.LoadScene("NetworkMenu", LoadSceneMode.Single);
+            SceneManager.LoadScene("Lobby", LoadSceneMode.Single);
         }
     }
 
@@ -181,7 +181,7 @@ public class GameManager : NetworkBehaviour
             Soldier soldier = go.GetComponent<Soldier>();
             if (soldier != null)
             {
-                soldier.DisableMovement();
+                soldier.StopMovement();
                 Player player = soldier.GetComponent<Player>();
                 if (player != null && player.isLocalPlayer) // Set the local player.
                 {

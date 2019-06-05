@@ -4,7 +4,7 @@ public class Bot : Soldier
 {
     private Rigidbody m_rigidbody;
 
-    private void Start()
+    protected new void Start()
     {
         if (!isServer)
         {
@@ -102,4 +102,8 @@ public class Bot : Soldier
         transform.rotation = Quaternion.LookRotation(newDirection);
     }
 
+    public override void StopMovement()
+    {
+        m_rigidbody.velocity = Vector3.zero;
+    }
 }

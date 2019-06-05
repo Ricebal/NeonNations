@@ -1,6 +1,6 @@
-﻿using UnityEngine;
+﻿using Mirror;
 
-public abstract class BotBehaviour : MonoBehaviour
+public abstract class BotBehaviour : NetworkBehaviour
 {
     protected bool m_active = false;
 

@@ -6,7 +6,6 @@ public abstract class Soldier : NetworkBehaviour
     [SyncVar] public Team Team;
     [SyncVar] public Color Color;
     [SyncVar] public Score PlayerScore = new Score();
-    // The speed of the entity
     public float Speed;
     public string Username;
     // The respawn time of the soldier
@@ -21,6 +20,22 @@ public abstract class Soldier : NetworkBehaviour
     [SerializeField] protected GameObject m_spotLight;
     protected Renderer m_renderer;
     protected float m_deathTime;
+
+    protected void Start()
+    {
+        if (isServer)
+        {
+            GameManager.AddPlayer(this);
+        }
+    }
+
+    protected void OnDestroy()
+    {
+        if (isServer)
+        {
+            GameManager.RemovePlayer(this);
+        }
+    }
 
     public override void OnStartClient()
     {
@@ -59,7 +74,8 @@ public abstract class Soldier : NetworkBehaviour
         DeathExplosion deathExplosion = GetComponentInChildren<DeathExplosion>();
         deathExplosion?.Fire();
     }
-    public virtual void DisableMovement() { }
+
+    public virtual void StopMovement() { }
 
     protected virtual void Respawn()
     {

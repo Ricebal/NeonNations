@@ -6,8 +6,10 @@ public class Player : Soldier
     private PlayerHUD m_hud;
     private Aim m_aim;
 
-    private void Start()
+    protected new void Start()
     {
+        base.Start();
+
         if (!isLocalPlayer)
         {
             return;
@@ -46,8 +48,8 @@ public class Player : Soldier
 
     private void PauseToggled()
     {
-        // Activate player controller if the player is alive and the escape menu is not activated
-        if (!IsDead)
+        // Activate player controller if the player is alive and the escape menu is not activated and the game has not yet finished.
+        if (!IsDead && !GameManager.Singleton.GameFinished)
         {
             m_playerController.enabled = !EscapeMenu.IsActive();
         }
@@ -67,7 +69,7 @@ public class Player : Soldier
         base.Die();
     }
 
-    public override void DisableMovement()
+    public override void StopMovement()
     {
         if (isLocalPlayer)
         {
@@ -90,8 +92,10 @@ public class Player : Soldier
         base.Respawn(respawnPoint);
     }
 
-    private void OnDestroy()
+    protected new void OnDestroy()
     {
+        base.OnDestroy();
+
         if (!isLocalPlayer)
         {
             return;

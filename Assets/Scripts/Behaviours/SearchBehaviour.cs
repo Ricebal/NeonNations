@@ -24,7 +24,7 @@ public class SearchBehaviour : BotBehaviour
 
     private void FixedUpdate()
     {
-        if (!m_active)
+        if (!isServer || !m_active)
         {
             return;
         }
