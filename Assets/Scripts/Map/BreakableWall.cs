@@ -1,7 +1,11 @@
-﻿using UnityEngine;
+﻿using Mirror;
+using UnityEngine;
 
-public class BreakableWall : MonoBehaviour
+public class BreakableWall : NetworkBehaviour
 {
+    public delegate void OnWallDestroyedDelegate(Vector2Int coordinates);
+    public event OnWallDestroyedDelegate WallDestroyedHandler;
+
     [SerializeField] protected Stat m_healthStat;
     [SerializeField] private AudioClip m_hitSound;
     [SerializeField] private float m_hitSoundVolume;
@@ -31,11 +35,7 @@ public class BreakableWall : MonoBehaviour
 
             if (m_healthStat.GetValue() <= 0)
             {
-                // Play destroy-sound.
-                m_audioSource.PlayOneShot(m_destroySound, m_destroySoundVolume);
-                m_audioObject.transform.parent = null;
-                Destroy(m_audioObject, 1); // Destroy audio after 1 second.
-                Destroy(gameObject); // Destroy wall instantly.
+                CmdDestroyWall();
             }
             else // Play hit-sound.
             {
@@ -45,5 +45,27 @@ public class BreakableWall : MonoBehaviour
             return true;
         }
         return false;
+    }
+
+    [Command]
+    private void CmdDestroyWall()
+    {
+        RpcDestroyWall();
+    }
+
+    [ClientRpc]
+    private void RpcDestroyWall()
+    {
+        // Play destroy-sound.
+        m_audioSource.PlayOneShot(m_destroySound, m_destroySoundVolume);
+        m_audioObject.transform.parent = null;
+        Destroy(m_audioObject, 1); // Destroy audio after 1 second.
+        Destroy(gameObject); // Destroy wall instantly.
+        if (WallDestroyedHandler != null)
+        {
+            Vector3 position = gameObject.transform.position;
+            Vector2Int coordinates = new Vector2Int((int)position.x, (int)position.z);
+            WallDestroyedHandler(coordinates);
+        }
     }
 }
