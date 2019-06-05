@@ -13,7 +13,6 @@ public class AttackBehaviour : BotBehaviour
     // Accuracy handicap in degrees
     private const float ACCURACY_MODIFIER = 1.3f;
     private const float ACCURACY = 0.75f;
-    private const float MOVE_THRESHOLD = 1f;
     private const float AIM_THRESHOLD = 3f;
 
     private void Start()
