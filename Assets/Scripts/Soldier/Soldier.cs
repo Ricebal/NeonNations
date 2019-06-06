@@ -12,9 +12,9 @@ public abstract class Soldier : NetworkBehaviour
     // The respawn time of the soldier
     public float RespawnTime;
     public bool IsDead = false;
+    public Stat EnergyStat;
 
     [SerializeField] protected Stat m_healthStat;
-    [SerializeField] protected Stat m_energyStat;
     [SerializeField] protected AudioClip m_hitSound;
     [SerializeField] protected float m_hitSoundVolume;
     [SerializeField] protected AudioClip m_deathSound;
@@ -57,7 +57,7 @@ public abstract class Soldier : NetworkBehaviour
     {
         if (m_updateCount % 4 == 0)
         {
-            m_energyStat.Add(1);
+            EnergyStat.Add(1);
         }
         m_updateCount++;
     }
@@ -122,7 +122,7 @@ public abstract class Soldier : NetworkBehaviour
         m_headController?.SetColor(Color);
         m_gun?.SetColor(Color);
         m_healthStat.Reset();
-        m_energyStat.Reset();
+        EnergyStat.Reset();
         IsDead = false;
     }
 

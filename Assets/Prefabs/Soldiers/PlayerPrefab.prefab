@@ -5357,7 +5357,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   syncInterval: 0.1
-  Cost: 10
+  Cost: 15
   m_soundVolume: 0.025
   m_shootSound: {fileID: 8300000, guid: e97b13b9de7b507459693ac1e49de4ce, type: 3}
   m_audioSource: {fileID: 4181552938502541959}
@@ -5396,7 +5396,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 421888c4585966b489533fd75af27991, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Cost: 20
+  Cost: 25
   Multiplier: 7.5
   m_soundVolume: 0.3
   m_dashSound: {fileID: 8300000, guid: 1734a82c31491f74b9c0c9a28aadae13, type: 3}
@@ -5468,8 +5468,8 @@ MonoBehaviour:
   Username: Unknown
   RespawnTime: 5
   IsDead: 0
+  EnergyStat: {fileID: 7324937023197695252}
   m_healthStat: {fileID: 18416186091895302}
-  m_energyStat: {fileID: 7324937023197695252}
   m_hitSound: {fileID: 8300000, guid: 271d717f5160150419fdf58ed4606d2f, type: 3}
   m_hitSoundVolume: 0.1
   m_deathSound: {fileID: 8300000, guid: 5e1382c7161098f4596fac9bd690d2c2, type: 3}
