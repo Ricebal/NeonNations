@@ -44,11 +44,11 @@ public class Sonar : MonoBehaviour
             m_lightForMap.range += rangeAmount * 2f;
             m_lightForSoldiers.intensity += intensityAmount * 2f;
             m_lightForSoldiers.range += rangeAmount * 2f;
-            if(m_lightForSoldiers.range > m_maxRangeForSoldierLight)
+            if (m_lightForSoldiers.range > m_maxRangeForSoldierLight)
             {
                 m_lightForSoldiers.range = m_maxRangeForSoldierLight;
             }
-            
+
         }
         else
         {

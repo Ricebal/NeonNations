@@ -14,12 +14,19 @@ public class LobbyManager : NetworkLobbyManager
     [SerializeField] private Canvas m_mapConfiguration;
     [SerializeField] private Button m_buttonStart;
 
+    private void OnEnable()
+    {
+        if (!Discovery.ListenForBroadcast())
+        {
+            m_connectionText = "An error occurred while checking online servers.";
+        }
+    }
+
     public override void Start()
     {
         base.Start();
 
         m_isConnecting = false;
-        m_connectionText = "";
     }
 
     // Display the lobby panel when a player starts or joins a server
@@ -30,6 +37,27 @@ public class LobbyManager : NetworkLobbyManager
         m_multiplayerMenu.gameObject.SetActive(false);
         m_lobbyMenu.gameObject.SetActive(true);
         m_mapConfiguration.gameObject.SetActive(true);
+    }
+
+    public override void OnStartServer()
+    {
+        base.OnStartServer();
+        if (!Discovery.StartBroadcasting())
+        {
+            m_connectionText = "An error occurred while starting broadcasting.";
+        }
+    }
+
+    public override void OnStopClient()
+    {
+        base.OnStopClient();
+        Discovery.StopBroadcasting();
+
+        GameObject networkDiscovery = GameObject.Find("NetworkDiscovery");
+        if (networkDiscovery != null)
+        {
+            DestroyImmediate(networkDiscovery, true);
+        }
     }
 
     // Start a game as a host
@@ -48,23 +76,14 @@ public class LobbyManager : NetworkLobbyManager
     {
         if (!m_isConnecting)
         {
-            string ipAddress = GameObject.Find("InputFieldIPAddress")?.transform.Find("Text")?.GetComponent<Text>().text;
-            if (string.IsNullOrWhiteSpace(ipAddress))
-            {
-                m_connectionText = "IP address must not be empty";
-                return;
-            }
-
             m_isConnecting = true;
             m_connectionText = "Connecting...";
-
-            SetIPAddress(ipAddress);
             StartClient();
         }
     }
 
     // Set the IP address of the network manager for the StartClient function
-    private void SetIPAddress(string ipAddress)
+    public void SetIPAddress(string ipAddress)
     {
         NetworkManager.singleton.networkAddress = ipAddress;
     }
