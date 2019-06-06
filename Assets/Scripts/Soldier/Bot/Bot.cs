@@ -47,7 +47,7 @@ public class Bot : Soldier
             return;
         }
 
-        m_energyStat.Add(1);
+        EnergyStat.Add(1);
     }
 
     // Should be called from the script that will control the bot

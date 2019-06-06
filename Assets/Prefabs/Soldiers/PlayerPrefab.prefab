@@ -5458,8 +5458,8 @@ MonoBehaviour:
   Username: Unknown
   RespawnTime: 5
   IsDead: 0
+  EnergyStat: {fileID: 7324937023197695252}
   m_healthStat: {fileID: 18416186091895302}
-  m_energyStat: {fileID: 7324937023197695252}
   m_spotLight: {fileID: 4902440107425422421}
 --- !u!114 &5337140830429242400
 MonoBehaviour:

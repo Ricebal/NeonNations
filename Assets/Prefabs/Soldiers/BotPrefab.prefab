@@ -4903,6 +4903,7 @@ GameObject:
   - component: {fileID: 8035132587775920758}
   - component: {fileID: 4016150385033508826}
   - component: {fileID: 6834461769898358064}
+  - component: {fileID: 6355851672013431668}
   - component: {fileID: 4318195982715262185}
   - component: {fileID: 3484724584103712261}
   - component: {fileID: 2573536475702280004}
@@ -5084,8 +5085,8 @@ MonoBehaviour:
   Username: Bot
   RespawnTime: 5
   IsDead: 0
+  EnergyStat: {fileID: 8274355627883046309}
   m_healthStat: {fileID: 996390647512303307}
-  m_energyStat: {fileID: 8274355627883046309}
   m_spotLight: {fileID: 9078111855217853513}
 --- !u!114 &3362813290604796342
 MonoBehaviour:
@@ -5165,6 +5166,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ddc690c2389f574bb4047d8ad5a10db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncInterval: 0.1
+  Environment: {fileID: 0}
 --- !u!114 &6834461769898358064
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5177,6 +5180,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19384b48d653250488bc4bed0cf1b0f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncInterval: 0.1
+  Environment: {fileID: 0}
+--- !u!114 &6355851672013431668
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6654271199680664771}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81c3bae319e2be942b178907b740f61c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncInterval: 0.1
 --- !u!114 &4318195982715262185
 MonoBehaviour:
   m_ObjectHideFlags: 0

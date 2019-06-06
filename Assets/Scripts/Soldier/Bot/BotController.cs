@@ -6,12 +6,14 @@ public class BotController : MonoBehaviour
     private GameEnvironment m_environment;
     private SearchBehaviour m_searchBehaviour;
     private AttackBehaviour m_attackBehaviour;
+    private SonarBehaviour m_sonarBehaviour;
 
     private void OnEnable()
     {
         m_environment = GameEnvironment.CreateInstance(BoardManager.GetMap(), new List<Tile>() { Tile.Wall, Tile.BreakableWall, Tile.Reflector });
         m_searchBehaviour = GetComponent<SearchBehaviour>();
         m_attackBehaviour = GetComponent<AttackBehaviour>();
+        m_sonarBehaviour = GetComponent<SonarBehaviour>();
 
         m_searchBehaviour.Environment = m_environment;
         m_attackBehaviour.Environment = m_environment;
@@ -23,11 +25,13 @@ public class BotController : MonoBehaviour
         GameManager.Singleton.GameMode.OnGameFinished += DisableBots;
         m_searchBehaviour.Activate();
         m_attackBehaviour.Activate();
+        m_sonarBehaviour.Activate();
     }
 
     private void DisableBots()
     {
         m_searchBehaviour.enabled = false;
         m_attackBehaviour.enabled = false;
+        m_sonarBehaviour.enabled = false;
     }
 }

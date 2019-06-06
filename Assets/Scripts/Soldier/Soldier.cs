@@ -11,9 +11,9 @@ public abstract class Soldier : NetworkBehaviour
     // The respawn time of the soldier
     public float RespawnTime;
     public bool IsDead = false;
+    public Stat EnergyStat;
 
     [SerializeField] protected Stat m_healthStat;
-    [SerializeField] protected Stat m_energyStat;
 
     protected HeadController m_headController;
     protected Gun m_gun;
@@ -103,7 +103,7 @@ public abstract class Soldier : NetworkBehaviour
         m_headController?.SetColor(Color);
         m_gun?.SetColor(Color);
         m_healthStat.Reset();
-        m_energyStat.Reset();
+        EnergyStat.Reset();
         IsDead = false;
     }
 

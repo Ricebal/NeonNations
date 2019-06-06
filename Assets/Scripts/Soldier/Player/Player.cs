@@ -18,7 +18,7 @@ public class Player : Soldier
         m_hud = GetComponent<PlayerHUD>();
         m_aim = GetComponent<Aim>();
         m_playerController = GetComponent<PlayerController>();
-        CameraController.SetTarget(this.transform);
+        CameraController.SetTarget(transform);
         EscapeMenu.Singleton.OnPauseToggled += PauseToggled;
         GameOverMenu.Singleton.OnRespawnClick += Respawn;
 
@@ -35,7 +35,7 @@ public class Player : Soldier
 
         Cursor.visible = GameOverMenu.IsActive() || EscapeMenu.IsActive();
 
-        m_energyStat.Add(1);
+        EnergyStat.Add(1);
         m_hud.UpdateHUD();
         if (GameManager.Singleton.GameFinished)
         {

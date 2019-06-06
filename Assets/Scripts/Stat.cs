@@ -32,4 +32,9 @@ public class Stat : MonoBehaviour
     {
         return m_currentValue;
     }
+
+    public int GetMaxValue()
+    {
+        return m_maxValue;
+    }
 }
