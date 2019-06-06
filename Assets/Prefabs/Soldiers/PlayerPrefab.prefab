@@ -5357,7 +5357,7 @@ MonoBehaviour:
   syncInterval: 0.1
   Prefab: {fileID: 4647958490886930736, guid: c00706cf39d2dec45acc42ae29296223, type: 3}
   Spawn: {fileID: 233212744675135805}
-  Cost: 10
+  Cost: 15
   Cooldown: 0.25
 --- !u!114 &1183313429465019345
 MonoBehaviour:
@@ -5389,7 +5389,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Multiplier: 7.5
-  Cost: 20
+  Cost: 25
   m_duration: 0.1
   m_cooldown: 1
 --- !u!114 &18416186091895302
