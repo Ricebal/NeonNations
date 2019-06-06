@@ -11,6 +11,10 @@ public class BreakableWall : NetworkBehaviour
     // If the BreakableWall gets hit by a bullet, it will take damage. Will return true if the collider was a Bullet and the BreakableWall took damage.
     protected bool OnTriggerEnter(Collider collider)
     {
+        if (!isServer)
+        {
+            return false;
+        }
         if (collider.gameObject.tag == "Bullet")
         {
             m_healthStat.Subtract(collider.gameObject.GetComponent<Bullet>().Damage);
