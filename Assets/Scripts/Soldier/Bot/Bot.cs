@@ -104,6 +104,9 @@ public class Bot : Soldier
 
     public override void StopMovement()
     {
-        m_rigidbody.velocity = Vector3.zero;
+        if (isServer)
+        {
+            m_rigidbody.velocity = Vector3.zero;
+        }
     }
 }
