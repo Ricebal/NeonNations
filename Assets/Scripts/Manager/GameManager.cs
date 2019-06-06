@@ -35,18 +35,18 @@ public class GameManager : NetworkBehaviour
 
     private void OnEnable()
     {
-        m_mapWidth = MapConfiguration.GetOptionValue("Map width");
-        m_mapHeight = MapConfiguration.GetOptionValue("Map height");
-        m_maxRoomAmount = MapConfiguration.GetOptionValue("Max room amount");
-        m_maxShortcutAmount = MapConfiguration.GetOptionValue("Max shortcut amount");
-        m_minRoomLength = MapConfiguration.GetOptionValue("Min room length");
-        m_maxRoomLength = MapConfiguration.GetOptionValue("Max room length");
-        m_minTunnelLength = MapConfiguration.GetOptionValue("Min tunnel length");
-        m_maxTunnelLength = MapConfiguration.GetOptionValue("Max tunnel length");
-        m_tunnelWidth = MapConfiguration.GetOptionValue("Tunnel width");
-        m_breakableTunnelChance = MapConfiguration.GetOptionValue("Breakable tunnel chance");
-        m_shortcutMinSkipDistance = MapConfiguration.GetOptionValue("Shortcut min skip distance");
-        m_reflectorAreaSize = MapConfiguration.GetOptionValue("Reflector area size");
+        m_mapWidth = LobbyConfigMenu.GetOptionValue("Map width");
+        m_mapHeight = LobbyConfigMenu.GetOptionValue("Map height");
+        m_maxRoomAmount = LobbyConfigMenu.GetOptionValue("Max room amount");
+        m_maxShortcutAmount = LobbyConfigMenu.GetOptionValue("Max shortcut amount");
+        m_minRoomLength = LobbyConfigMenu.GetOptionValue("Min room length");
+        m_maxRoomLength = LobbyConfigMenu.GetOptionValue("Max room length");
+        m_minTunnelLength = LobbyConfigMenu.GetOptionValue("Min tunnel length");
+        m_maxTunnelLength = LobbyConfigMenu.GetOptionValue("Max tunnel length");
+        m_tunnelWidth = LobbyConfigMenu.GetOptionValue("Tunnel width");
+        m_breakableTunnelChance = LobbyConfigMenu.GetOptionValue("Breakable tunnel chance");
+        m_shortcutMinSkipDistance = LobbyConfigMenu.GetOptionValue("Shortcut min skip distance");
+        m_reflectorAreaSize = LobbyConfigMenu.GetOptionValue("Reflector area size");
     }
 
     private void Awake()
