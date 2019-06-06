@@ -48,7 +48,7 @@ public abstract class Soldier : NetworkBehaviour
 
     protected void FixedUpdate()
     {
-        if (m_updateCount % 3 == 0)
+        if (m_updateCount % 4 == 0)
         {
             m_energyStat.Add(1);
         }
