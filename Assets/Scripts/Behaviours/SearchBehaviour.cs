@@ -5,18 +5,18 @@ using UnityEngine;
 [RequireComponent(typeof(Bot))]
 public class SearchBehaviour : BotBehaviour
 {
+    public GameEnvironment Environment;
+
     private const float OFFSET_FOR_LINE_CALCULATION = .95f; // A little less than 1. This will prevent the bot from thinking it will collide with an obstacle directly next to it when moving parallel to ithat obstacle.
     private Vector2Int m_goalCoordinates = Vector2Int.zero;
     private Vector2Int m_previousFarthestNode = Vector2Int.zero;
-    private GameEnvironment m_environment;
     private DStarLite m_dStarLite;
     private Bot m_bot;
 
     private void Start()
     {
-        m_environment = GameEnvironment.CreateInstance(BoardManager.GetMap(), new List<Tile>() { Tile.Wall, Tile.BreakableWall, Tile.Reflector });
-        m_dStarLite = new DStarLite(m_environment, false);
-        Vector2Int startCoordinates = m_environment.ConvertGameObjectToCoordinates(gameObject.transform);
+        m_dStarLite = new DStarLite(Environment, false);
+        Vector2Int startCoordinates = Environment.ConvertGameObjectToCoordinates(gameObject.transform);
         GenerateNewDestination(startCoordinates);
         m_bot = GetComponent<Bot>();
     }
@@ -27,8 +27,22 @@ public class SearchBehaviour : BotBehaviour
         {
             return;
         }
+        Soldier closestEnemy = Environment.GetClosestIlluminatedEnemy(m_bot, TeamManager.GetAliveEnemiesByTeam(m_bot.Team.Id));
+        Vector2Int currentCoordinates = Environment.ConvertGameObjectToCoordinates(gameObject.transform);
 
-        Vector2Int currentCoordinates = m_environment.ConvertGameObjectToCoordinates(gameObject.transform);
+        // check if bot can see closestPos
+        if (closestEnemy != null)
+        {
+            Vector3 closestPos = closestEnemy.transform.position;
+            Vector2Int lastGoalCoordinates = m_goalCoordinates;
+            m_goalCoordinates = new Vector2Int((int)closestPos.x, (int)closestPos.z);
+
+            if (lastGoalCoordinates != m_goalCoordinates)
+            {
+                m_dStarLite.RunDStarLite(currentCoordinates, m_goalCoordinates);
+            }
+        }
+
         // If the goal hasn't been reached
         if (currentCoordinates.x != m_goalCoordinates.x || currentCoordinates.y != m_goalCoordinates.y)
         {
@@ -90,7 +104,7 @@ public class SearchBehaviour : BotBehaviour
 #if (UNITY_EDITOR)
     private void DebugMap(NavigationGraph map, Vector2Int nodeToReach, List<Vector2Int> coordinatesToTraverse)
     {
-        Vector2Int botCoordinates = m_environment.ConvertGameObjectToCoordinates(gameObject.transform);
+        Vector2Int botCoordinates = Environment.ConvertGameObjectToCoordinates(gameObject.transform);
         StringBuilder builder = new StringBuilder();
         builder.Append('\n');
         for (int y = map.Map[0].Length - 1; y >= 0; y--)

@@ -109,7 +109,6 @@ public class BoardManager : NetworkBehaviour
         floor.name = FLOOR;
         floor.transform.localScale = new Vector3((float)(m_map.TileMap.Length) / 10, 1, (float)(m_map.TileMap[0].Length) / 10);
         floor.GetComponent<Renderer>().material.mainTextureScale = new Vector2(m_map.TileMap.Length / 16, m_map.TileMap[0].Length / 16);
-        //floor.GetComponent<Renderer>().material.mainTextureOffset = new Vector2(-MAP_OFFSET, -MAP_OFFSET);
         floor.transform.SetParent(m_mapObject.transform);
     }
 
