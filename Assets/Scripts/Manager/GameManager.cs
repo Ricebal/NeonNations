@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Mirror;
+using System;
 using System.Collections.Generic;
 using System.Text;
-using Mirror;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;

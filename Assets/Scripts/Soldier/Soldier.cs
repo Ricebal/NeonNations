@@ -27,6 +27,7 @@ public abstract class Soldier : NetworkBehaviour
     [SerializeField] protected GameObject m_spotLight;
     protected Renderer m_renderer;
     protected float m_deathTime;
+    protected int m_updateCount;
 
     protected void Start()
     {
@@ -34,6 +35,7 @@ public abstract class Soldier : NetworkBehaviour
         {
             GameManager.AddPlayer(this);
         }
+        m_updateCount = 0;
     }
 
     protected void OnDestroy()
@@ -49,6 +51,15 @@ public abstract class Soldier : NetworkBehaviour
         m_renderer = GetComponent<Renderer>();
         m_headController = GetComponentInChildren<HeadController>();
         m_gun = GetComponentInChildren<Gun>();
+    }
+
+    protected void FixedUpdate()
+    {
+        if (m_updateCount % 4 == 0)
+        {
+            m_energyStat.Add(1);
+        }
+        m_updateCount++;
     }
 
     protected void Update()

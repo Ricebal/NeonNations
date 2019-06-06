@@ -68,7 +68,7 @@ MonoBehaviour:
   m_shortcutMinSkipDistance: 20
   m_reflectorAreaSize: 200
   m_outerWallWidth: 14
-  m_fireWorks: {fileID: 3599376716146521321, guid: 27f5446eba1e75c408fdc65871eed296,
+  m_fireworks: {fileID: 3599376716146521321, guid: 27f5446eba1e75c408fdc65871eed296,
     type: 3}
 --- !u!114 &4331448404734817727
 MonoBehaviour:
