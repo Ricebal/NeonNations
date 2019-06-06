@@ -21,17 +21,11 @@ public class BreakableWall : NetworkBehaviour
 
             if (m_healthStat.GetValue() <= 0)
             {
-                CmdDestroyWall();
+                RpcDestroyWall();
             }
             return true;
         }
         return false;
-    }
-
-    [Command]
-    private void CmdDestroyWall()
-    {
-        RpcDestroyWall();
     }
 
     [ClientRpc]
