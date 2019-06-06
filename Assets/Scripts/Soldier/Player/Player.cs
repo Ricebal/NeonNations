@@ -32,10 +32,9 @@ public class Player : Soldier
         {
             return;
         }
+        base.FixedUpdate();
 
         Cursor.visible = GameOverMenu.IsActive() || EscapeMenu.IsActive();
-
-        m_energyStat.Add(1);
         m_hud.UpdateHUD();
         if (GameManager.Singleton.GameFinished)
         {

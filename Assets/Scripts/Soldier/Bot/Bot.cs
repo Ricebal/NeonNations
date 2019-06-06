@@ -46,8 +46,7 @@ public class Bot : Soldier
         {
             return;
         }
-
-        m_energyStat.Add(1);
+        base.FixedUpdate();
     }
 
     // Should be called from the script that will control the bot
