@@ -75,7 +75,7 @@ public class Map
 
         return true;
     }
-    
+
     /// <summary>
     /// Gets a random floor tile from the tilemap
     /// </summary>
@@ -98,7 +98,7 @@ public class Map
         {
             pos = GetRandomFloorTile();
         } while (!ValidSpawnPoint(pos));
-        
+
         return pos;
     }
 

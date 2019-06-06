@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class SpotLightScript : MonoBehaviour
 {
@@ -27,7 +22,7 @@ public class SpotLightScript : MonoBehaviour
         m_timeAlive += Time.deltaTime;
         if (m_growing)
         {
-            if(m_spotLight.range < MAX_RANGE)
+            if (m_spotLight.range < MAX_RANGE)
             {
                 m_spotLight.range += m_increment;
             }
