@@ -9,9 +9,7 @@ public class AttackBehaviour : BotBehaviour
     private Action m_action;
     private Bot m_bot;
     private Vector3 m_lastShotPosition;
-
-    // How far the bot can see
-    private const float VISION_RANGE = 100f;
+    
     // Accuracy handicap
     private const float ACCURACY_MODIFIER = 1.3f;
     // Accuracy between 0 and 1 where 1 is most accurate
@@ -109,7 +107,7 @@ public class AttackBehaviour : BotBehaviour
                 // Worldspace -> localspace
                 Vector3 rayCastTarget = enemy.transform.position - transform.position;
                 // Raycast to the target
-                Physics.Raycast(transform.position, rayCastTarget, out RaycastHit closestHit, VISION_RANGE);
+                Physics.Raycast(transform.position, rayCastTarget, out RaycastHit closestHit);
                 // If the closest raycast object is a player and is not on the same team as the bot make the closest enemy the current enemy
                 if (closestHit.collider != null && closestHit.collider.tag == "Player")
                 {

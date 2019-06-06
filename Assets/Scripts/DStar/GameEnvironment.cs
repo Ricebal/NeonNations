@@ -116,7 +116,6 @@ public class GameEnvironment : ScriptableObject
     {
         LinkedList<Vector2Int> illuminatedCoordinates = GetCoordinatesAroundBot(botCoordinates); // Because of the spotlight around the bot
         GetCoordinatesAroundLights(ref illuminatedCoordinates, botCoordinates); // All other lights visible on screen
-        //DebugIllumination(illuminatedCoordinates);
         return illuminatedCoordinates;
     }
 
