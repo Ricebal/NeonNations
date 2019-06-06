@@ -4,12 +4,12 @@ using UnityEngine;
 [RequireComponent(typeof(Bot), typeof(Action))]
 public class AttackBehaviour : BotBehaviour
 {
+    public GameEnvironment Environment;
+
     private Action m_action;
     private Bot m_bot;
     private Vector3 m_lastShotPosition;
-
-    // How far the bot can see
-    private const float VISION_RANGE = 7.5f;
+    
     // Accuracy handicap
     private const float ACCURACY_MODIFIER = 1.3f;
     // Accuracy between 0 and 1 where 1 is most accurate
@@ -36,6 +36,7 @@ public class AttackBehaviour : BotBehaviour
     {
         // Get all players that aren't on the bot's team
         List<Soldier> enemies = TeamManager.GetAliveEnemiesByTeam(m_bot.Team.Id);
+        enemies = Environment.GetIlluminatedEnemies(m_bot, enemies);
 
         // If the closest enemy is in line of sight, shoot at it
         if (FindClosestEnemy(enemies, out Soldier closestEnemy))
@@ -106,9 +107,9 @@ public class AttackBehaviour : BotBehaviour
                 // Worldspace -> localspace
                 Vector3 rayCastTarget = enemy.transform.position - transform.position;
                 // Raycast to the target
-                Physics.Raycast(transform.position, rayCastTarget, out RaycastHit closestHit, VISION_RANGE);
+                Physics.Raycast(transform.position, rayCastTarget, out RaycastHit closestHit);
                 // If the closest raycast object is a player and is not on the same team as the bot make the closest enemy the current enemy
-                if (closestHit.collider != null && closestHit.collider.tag == "Player" && closestHit.collider.GetComponent<Soldier>().Team != m_bot.Team)
+                if (closestHit.collider != null && closestHit.collider.tag == "Player")
                 {
                     enemyFound = enemy;
                     minDist = dist;
