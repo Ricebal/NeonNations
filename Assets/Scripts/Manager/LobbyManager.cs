@@ -50,7 +50,12 @@ public class LobbyManager : NetworkLobbyManager
     {
         base.OnStopClient();
         Discovery.StopBroadcasting();
-        DestroyImmediate(Discovery.Singleton.gameObject, true);
+
+        GameObject networkDiscovery = GameObject.Find("NetworkDiscovery");
+        if (networkDiscovery != null)
+        {
+            DestroyImmediate(networkDiscovery, true);
+        }
     }
 
     // Start a game as a host
