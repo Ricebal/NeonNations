@@ -13,34 +13,21 @@ public class LobbyConfigMenu : NetworkBehaviour
 
     private Dictionary<string, int> m_mapOptions;
 
-    [SyncVar] private int m_mapWidth = 50;
-    [SyncVar] private int m_mapHeight = 50;
-    [SyncVar] private int m_maxRoomAmount = 100;
-    [SyncVar] private int m_maxShortcutAmount = 10;
-    [SyncVar] private int m_minRoomLength = 6;
-    [SyncVar] private int m_maxRoomLength = 9;
-    [SyncVar] private int m_minTunnelLength = 1;
-    [SyncVar] private int m_maxTunnelLength = 7;
-    [SyncVar] private int m_tunnelWidth = 2;
-    [SyncVar] private int m_breakableTunnelChance = 20;
-    [SyncVar] private int m_shortcutMinSkipDistance = 20;
-    [SyncVar] private int m_reflectorAreaSize = 200;
+    private int m_mapWidth = 50;
+    private int m_mapHeight = 50;
+    private int m_maxRoomAmount = 100;
+    private int m_maxShortcutAmount = 10;
+    private int m_minRoomLength = 6;
+    private int m_maxRoomLength = 9;
+    private int m_minTunnelLength = 1;
+    private int m_maxTunnelLength = 7;
+    private int m_tunnelWidth = 2;
+    private int m_breakableTunnelChance = 20;
+    private int m_shortcutMinSkipDistance = 20;
+    private int m_reflectorAreaSize = 200;
 
     private Vector3 m_anchoredPosition;
     private Vector3 m_localScale;
-
-    private void Awake()
-    {
-        m_anchoredPosition = GetComponent<RectTransform>().anchoredPosition;
-        m_localScale = GetComponent<RectTransform>().localScale;
-    }
-
-    public override void OnStartClient()
-    {
-        GetComponent<RectTransform>().anchoredPosition = m_anchoredPosition;
-        GetComponent<RectTransform>().localScale = m_localScale;
-        m_optionList.transform.localScale = Vector3.one;
-    }
 
     private void Start()
     {
@@ -64,19 +51,14 @@ public class LobbyConfigMenu : NetworkBehaviour
             optionValue.text = mapOption.Value.ToString();
 
             Button buttonUp = optionItem.transform.Find("ButtonUp").GetComponent<Button>();
+            buttonUp.onClick.AddListener(() => ValueUp(mapOption.Key));
             Button buttonDown = optionItem.transform.Find("ButtonDown").GetComponent<Button>();
-
+            buttonDown.onClick.AddListener(() => ValueDown(mapOption.Key));
         }  
 
-        if (isServer)
+        if(!isServer)
         {
-            GameObject.Find("Map width/ButtonUp").GetComponent<Button>().onClick.AddListener(() => { ValueUp(ref m_mapWidth, "Map width"); });
-            GameObject.Find("Map width/ButtonDown").GetComponent<Button>().onClick.AddListener(() => { ValueDown(ref m_mapWidth, "Map width"); });
-        }
-        else
-        {
-            GameObject.Find("Map width/ButtonUp").GetComponent<Button>().gameObject.SetActive(false);
-            GameObject.Find("Map width/ButtonDown").GetComponent<Button>().gameObject.SetActive(false);
+            this.gameObject.SetActive(false);
         }
     }
 
@@ -92,20 +74,20 @@ public class LobbyConfigMenu : NetworkBehaviour
         }
     }
 
-    public void ValueUp(ref int value, string name)
+    private void ValueUp(string name)
     {
-        value += 1;
-        GameObject.Find(name + "/Value").GetComponent<TextMeshProUGUI>().text = value.ToString();
+        m_mapOptions[name]++;
+        GameObject.Find(name + "/Value").GetComponent<TextMeshProUGUI>().text = m_mapOptions[name].ToString();
     }
 
-    public void ValueDown(ref int value, string name)
+    private void ValueDown(string name)
     {
-        value -= 1;
-        if (value < 0)
+        m_mapOptions[name]--;
+        if(m_mapOptions[name] < 0)
         {
-            value = 0;
+            m_mapOptions[name] = 0;
         }
-        GameObject.Find(name + "/Value").GetComponent<TextMeshProUGUI>().text = value.ToString();
+        GameObject.Find(name + "/Value").GetComponent<TextMeshProUGUI>().text = m_mapOptions[name].ToString();
     }
 
     public static int GetOptionValue(string optionName)
