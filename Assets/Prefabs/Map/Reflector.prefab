@@ -107,7 +107,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_hitSound: {fileID: 8300000, guid: f1142c99b1f960f42b1b1ea6961f13bd, type: 3}
-  m_hitSoundVolume: 0.2
+  m_hitSoundVolume: 0.1
 --- !u!82 &6422582041169291642
 AudioSource:
   m_ObjectHideFlags: 0
@@ -120,13 +120,13 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.5
   m_Pitch: 1
   Loop: 0
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
-  Priority: 128
+  Priority: 220
   DopplerLevel: 1
   MinDistance: 1
   MaxDistance: 30
