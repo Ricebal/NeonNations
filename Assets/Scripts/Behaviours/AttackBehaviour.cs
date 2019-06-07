@@ -6,8 +6,6 @@ public class AttackBehaviour : BotBehaviour
 {
     public GameEnvironment Environment;
 
-    private Action m_action;
-    private Bot m_bot;
     private Vector3 m_lastShotPosition;
     
     // Accuracy handicap
@@ -17,18 +15,8 @@ public class AttackBehaviour : BotBehaviour
     // How far the player has to move before readjusting bot aim
     private const float AIM_THRESHOLD = 3f;
 
-    private void Start()
-    {
-        m_action = GetComponent<Action>();
-        m_bot = GetComponent<Bot>();
-    }
-
     private void FixedUpdate()
     {
-        if (!isServer || !m_active || m_bot.IsDead)
-        {
-            return;
-        }
         FireAtClosestEnemy();
     }
 
