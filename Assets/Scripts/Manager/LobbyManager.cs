@@ -11,6 +11,7 @@ public class LobbyManager : NetworkLobbyManager
     private string m_connectionText;
     [SerializeField] private Canvas m_multiplayerMenu;
     [SerializeField] private Canvas m_lobbyMenu;
+    [SerializeField] private Canvas m_loadingScreen;
     [SerializeField] private Button m_buttonStart;
 
     private void OnEnable()
@@ -98,6 +99,8 @@ public class LobbyManager : NetworkLobbyManager
 
     public void StartGame()
     {
+        m_loadingScreen.gameObject.SetActive(true);
+        m_lobbyMenu.gameObject.SetActive(false);
         ServerChangeScene(GameplayScene);
     }
 
