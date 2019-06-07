@@ -99,8 +99,7 @@ public class LobbyManager : NetworkLobbyManager
 
     public void StartGame()
     {
-        m_loadingScreen.gameObject.SetActive(true);
-        m_lobbyMenu.gameObject.SetActive(false);
+        DisplayLoadingScreen();
         ServerChangeScene(GameplayScene);
     }
 
@@ -109,6 +108,22 @@ public class LobbyManager : NetworkLobbyManager
         StopHost();
         m_connectionText = "";
         m_isConnecting = false;
+    }
+
+    private void DisplayLoadingScreen()
+    {
+        m_loadingScreen.gameObject.SetActive(true);
+        m_lobbyMenu.gameObject.SetActive(false);
+    }
+
+    public override void OnClientChangeScene(string newSceneName)
+    {
+        base.OnClientChangeScene(newSceneName);
+
+        if(newSceneName == GameplayScene)
+        {
+            DisplayLoadingScreen();
+        }
     }
 
     public override void OnClientConnect(NetworkConnection conn)
