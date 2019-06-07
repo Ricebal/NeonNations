@@ -57,11 +57,10 @@ public class Bot : Soldier
             return;
         }
 
-        if (!IsDead)
-        {
-            Vector3 movement = new Vector3(horizontal, 0.0f, vertical);
-            m_rigidbody.velocity = movement * Speed;
-        }
+
+        Vector3 movement = new Vector3(horizontal, 0.0f, vertical);
+        m_rigidbody.velocity = movement * Speed;
+
     }
 
     public void AimAtMoveDirection()
