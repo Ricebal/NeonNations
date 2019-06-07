@@ -10,9 +10,9 @@ public class SonarController : NetworkBehaviour
     [SerializeField] private AudioClip m_sonarSound;
     private AudioSource m_audioSource;
     // Prefab representing the sonar
-    [SerializeField] private GameObject m_prefab;
+    [SerializeField] private GameObject m_prefab = null;
     // Sonar cooldown in seconds
-    [SerializeField] private float m_cooldown;
+    [SerializeField] private float m_cooldown = 0;
     // The next time the entity will be able to use the sonar, in seconds
     private float m_next;
 

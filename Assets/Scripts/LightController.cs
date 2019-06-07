@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class LightController : NetworkBehaviour
 {
-    [SerializeField] private GameObject m_pointLight;
-    [SerializeField] private GameObject m_spotLight;
+    [SerializeField] private GameObject m_pointLight = null;
+    [SerializeField] private GameObject m_spotLight = null;
 
     private void Start()
     {

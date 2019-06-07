@@ -4,10 +4,10 @@ using UnityEngine.UI;
 
 public class NetworkMenu : MonoBehaviour
 {
-    [SerializeField] private LobbyManager m_lobbyManager;
-    [SerializeField] private Button m_buttonStartHost;
+    [SerializeField] private LobbyManager m_lobbyManager = null;
+    [SerializeField] private Button m_buttonStartHost = null;
     // Text displayed when there is a client connection or disconnection
-    [SerializeField] private TextMeshProUGUI m_connectionText;
+    [SerializeField] private TextMeshProUGUI m_connectionText = null;
 
     private void Update()
     {

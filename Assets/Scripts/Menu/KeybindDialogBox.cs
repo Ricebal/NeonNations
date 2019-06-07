@@ -6,8 +6,9 @@ using UnityEngine.UI;
 
 public class KeybindDialogBox : MonoBehaviour
 {
-    [SerializeField] private GameObject m_keyItemPrefab;
-    [SerializeField] private GameObject m_keyList;
+    [SerializeField] private GameObject m_keyItemPrefab = null;
+    [SerializeField] private GameObject m_keyList = null;
+
 
     private string m_keyToRebind = null;
     private Dictionary<string, TextMeshProUGUI> m_keyToLabel;

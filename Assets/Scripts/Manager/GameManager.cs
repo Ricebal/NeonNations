@@ -28,7 +28,7 @@ public class GameManager : NetworkBehaviour
     [SyncVar][SerializeField] private int m_shortcutMinSkipDistance = 20;
     [SyncVar][SerializeField] private int m_reflectorAreaSize = 200;
     [SyncVar][SerializeField] private int m_outerWallWidth = 14;
-    [SerializeField] private ParticleSystem m_fireworks;
+    [SerializeField] private ParticleSystem m_fireworks = null;
 
     private GameObject m_endGameTextObject;
     private int m_localPlayersTeamId;

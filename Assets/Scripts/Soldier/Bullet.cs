@@ -9,13 +9,13 @@ public class Bullet : MonoBehaviour
     public string ShooterId;
 
     // Bullet speed
-    [SerializeField] private float m_speed;
+    [SerializeField] private float m_speed = 0;
     // Time in seconds before the bullet is destroyed
-    [SerializeField] private float m_livingTime;
+    [SerializeField] private float m_livingTime = 0;
     // The explosion on impact
-    [SerializeField] private GameObject m_impactPrefab;
+    [SerializeField] private GameObject m_impactPrefab = null;
     // The impact on a reflector
-    [SerializeField] private GameObject m_reflectorImpactPrefab;
+    [SerializeField] private GameObject m_reflectorImpactPrefab = null;
 
     // Bullet's radius, used for sphere cast
     private float m_radius;

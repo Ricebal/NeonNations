@@ -104,7 +104,7 @@ public abstract class Soldier : NetworkBehaviour
     [Command]
     protected void CmdRespawn()
     {
-        Vector2Int spawnPoint = BoardManager.GetMap().GetSpawnPoint();
+        Vector2Int spawnPoint = BoardManager.GetMap().GetSpawnPoint(Team);
         RpcRespawn(spawnPoint);
     }
 
