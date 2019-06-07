@@ -13,6 +13,7 @@ public class Map
     public Vector2Int Pos;
 
     private int m_spawnAreaMinSize;
+    private int m_preferredDistanceFromEnemies = 15;
 
     public Map(Tile[][] tileMap, int spawnAreaMinSize)
     {
@@ -82,21 +83,80 @@ public class Map
     /// <returns>Vector2Int containing the position of the floor tile</returns>
     public Vector2Int GetRandomFloorTile()
     {
-        Vector2Int randomTile;
-        do
+        List<Vector2Int> list = GetAllFloorTiles();
+        if (list.Count > 0)
         {
-            // get a random tile in the map
-            randomTile = new Vector2Int(UnityEngine.Random.Range(1, TileMap.Length - 1), UnityEngine.Random.Range(1, TileMap[0].Length - 1));
-        } while (TileMap[randomTile.x][randomTile.y] != Tile.Floor);
-        return randomTile;
+            int r = UnityEngine.Random.Range(0, list.Count);
+            return list[r];
+        }
+
+        return new Vector2Int(-1, -1);
     }
 
-    public Vector2Int GetSpawnPoint()
+    public Vector2Int GetRandomFloorTileToSpawn(Team team)
+    {
+        // get all floor tiles and shuffle them
+        List<Vector2Int> floorTiles = GetAllFloorTiles();
+        Shuffle(floorTiles);
+        // init variables to be used when no floor tile is the right distance away from enemies
+        float maxDistance = 0;
+        Vector2Int bestSpawnPosition = new Vector2Int(-1,-1);
+        
+        for (int i = 0; i < floorTiles.Count; i++)
+        {
+            bool placeable = true;
+            float currentTileMaxDistance = 0;
+
+            List<Soldier> enemies = TeamManager.GetAliveEnemiesByTeam(team.Id);
+            for (int j = 0; j < enemies.Count; j++)
+            {
+                // check if enough distance from enemy
+                float distance = Vector3.Distance(enemies[j].transform.position, new Vector3(floorTiles[i].x, 0, floorTiles[j].y));
+                if (distance < m_preferredDistanceFromEnemies)
+                {
+                    placeable = false;
+                }
+                else if (distance > currentTileMaxDistance)
+                {
+                    currentTileMaxDistance = distance;
+                }
+            }
+
+            if (placeable)
+            {
+                return floorTiles[i];
+            }
+            else if (currentTileMaxDistance > maxDistance)
+            {
+                maxDistance = currentTileMaxDistance;
+                bestSpawnPosition = floorTiles[i];
+            }
+        }
+
+        // returns -1,-1 if no floor tile was found
+        return bestSpawnPosition;
+    }
+
+    private List<Vector2Int> GetAllFloorTiles()
+    {
+        List<Vector2Int> list = new List<Vector2Int>();
+        for (int i = 0; i < TileMap.Length; i++)
+        {
+            for (int j = 0; j < TileMap[0].Length; j++)
+            {
+                if (TileMap[i][j] == Tile.Floor)
+                    list.Add(new Vector2Int(i, j));
+            }
+        }
+        return list;
+    }
+
+    public Vector2Int GetSpawnPoint(Team team)
     {
         Vector2Int pos;
         do
         {
-            pos = GetRandomFloorTile();
+            pos = GetRandomFloorTileToSpawn(team);
         } while (!ValidSpawnPoint(pos));
 
         return pos;
@@ -109,7 +169,7 @@ public class Map
         positionsToCheck.Enqueue(pos);
         List<Vector2Int> positionsChecked = new List<Vector2Int>();
 
-        // floodfill algorithm
+        // check if there is enough space using floodfill algorithm
         while (positionsToCheck.Count != 0)
         {
             if (positionsChecked.Count > m_spawnAreaMinSize)

@@ -33,10 +33,9 @@ public class BotManager : NetworkBehaviour
             return;
         }
 
-        for (int i = 0; i < BotManager.AMOUNT_OF_BOTS; i++)
+        for (int i = 0; i < AMOUNT_OF_BOTS; i++)
         {
-            Vector2Int spawnPoint = BoardManager.GetMap().GetSpawnPoint();
-            GameObject bot = Instantiate(Singleton.Bot, new Vector3(spawnPoint.x, 0, spawnPoint.y), Quaternion.identity);
+            GameObject bot = Instantiate(Singleton.Bot, Vector3.zero, Quaternion.identity);
             NetworkServer.Spawn(bot);
             GameManager.AddPlayer(bot.GetComponent<Soldier>());
         }

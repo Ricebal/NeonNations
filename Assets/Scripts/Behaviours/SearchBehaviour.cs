@@ -45,7 +45,10 @@ public class SearchBehaviour : BotBehaviour
         }
         else
         {
-            m_action.Sonar();
+            if (GetComponent<SonarBehaviour>().enabled)
+            {
+                m_action.Sonar();
+            }
             GenerateNewDestination(currentCoordinates);
         }
     }
