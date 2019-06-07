@@ -8,6 +8,7 @@ public class Bot : Soldier
     {
         if (!isServer)
         {
+            GetComponent<BotController>().DisableScripts();
             return;
         }
 
@@ -35,12 +36,13 @@ public class Bot : Soldier
             if (Time.time - m_deathTime >= RespawnTime)
             {
                 CmdRespawn();
+                GetComponent<BotController>().EnableScripts();
             }
 
         }
     }
 
-    private void FixedUpdate()
+    private new void FixedUpdate()
     {
         if (!isServer)
         {
@@ -52,35 +54,18 @@ public class Bot : Soldier
     // Should be called from the script that will control the bot
     public void Move(float horizontal, float vertical)
     {
-        if (!isServer)
-        {
-            return;
-        }
-
-
         Vector3 movement = new Vector3(horizontal, 0.0f, vertical);
         m_rigidbody.velocity = movement * Speed;
-
     }
 
     public void AimAtMoveDirection()
     {
-        if (!isServer)
-        {
-            return;
-        }
-
         LocalAim(new Vector2(m_rigidbody.velocity.x, m_rigidbody.velocity.z));
     }
 
     // Aims the bot at the input vector in world space
     public void WorldAim(Vector2 position)
     {
-        if (!isServer)
-        {
-            return;
-        }
-
         Vector3 target = new Vector3(position.x, 0, position.y);
         Vector3 direction = target - transform.position;
         float rotation = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
@@ -90,7 +75,7 @@ public class Bot : Soldier
     // Aims the bot at the input vector in local space
     public void LocalAim(Vector2 position)
     {
-        if (!isServer || position == Vector2.zero)
+        if (position == Vector2.zero)
         {
             return;
         }
