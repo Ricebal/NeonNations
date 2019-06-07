@@ -1869,6 +1869,7 @@ GameObject:
   - component: {fileID: 1755052561}
   - component: {fileID: 1755052560}
   - component: {fileID: 1755052559}
+  - component: {fileID: 1755052558}
   m_Layer: 5
   m_Name: LoadingScreen
   m_TagString: Untagged
@@ -1876,6 +1877,18 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 0
+--- !u!114 &1755052558
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1755052557}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2109ed12321c394f91e66ddb8fb5d07, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &1755052559
 MonoBehaviour:
   m_ObjectHideFlags: 0
