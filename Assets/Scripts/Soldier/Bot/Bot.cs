@@ -40,7 +40,7 @@ public class Bot : Soldier
         }
     }
 
-    private void FixedUpdate()
+    private new void FixedUpdate()
     {
         if (!isServer)
         {
