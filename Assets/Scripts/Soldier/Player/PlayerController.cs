@@ -20,7 +20,7 @@ public class PlayerController : NetworkBehaviour
         m_action = GetComponent<Action>();
         m_playerDash = GetComponent<DashController>();
 
-        Vector2Int spawnPoint = BoardManager.GetMap().GetSpawnPoint(m_player.Team);
+        Vector2Int spawnPoint = BoardManager.GetMap().GetSpawnPoint();
         transform.position = new Vector3(spawnPoint.x, 0, spawnPoint.y);
     }
 

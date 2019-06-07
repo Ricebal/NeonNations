@@ -13,9 +13,6 @@ public class Bot : Soldier
 
         m_rigidbody = GetComponent<Rigidbody>();
 
-        Vector2Int spawnPoint = BoardManager.GetMap().GetSpawnPoint(Team);
-        transform.position = new Vector3(spawnPoint.x, 0, spawnPoint.y);
-
         Username = ProfileMenu.GetRandomName() + " (Bot)";
         CmdUsername(Username);
     }
