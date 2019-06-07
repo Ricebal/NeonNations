@@ -151,7 +151,7 @@ public class Bullet : MonoBehaviour
     {
         //instantiate reflector impact
         Quaternion rotation;
-        if(normal == Vector3.zero)
+        if (normal == Vector3.zero)
         {
             rotation = new Quaternion(0, 0, 0, 0);
         }

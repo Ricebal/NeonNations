@@ -110,7 +110,7 @@ public class Discovery : NetworkDiscovery
     private void OnClick(string serverIp)
     {
         m_lobbyManager.SetIPAddress(serverIp);
-        m_lobbyManager.JoinGame();
+        m_lobbyManager.StartClient();
     }
 
 }

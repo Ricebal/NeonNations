@@ -7,8 +7,7 @@ using UnityEngine.UI;
 public class LobbyManager : NetworkLobbyManager
 {
     private bool m_showStartButton;
-    private bool m_isConnecting;
-    private string m_connectionText;
+    private string m_infoText;
     [SerializeField] private Canvas m_multiplayerMenu = null;
     [SerializeField] private Canvas m_lobbyMenu = null;
     [SerializeField] private Canvas m_loadingScreen = null;
@@ -18,24 +17,16 @@ public class LobbyManager : NetworkLobbyManager
     {
         if (!Discovery.ListenForBroadcast())
         {
-            m_connectionText = "An error occurred while checking online servers.";
+            m_infoText = "An error occurred while checking online servers.";
         }
-    }
-
-    public override void Start()
-    {
-        base.Start();
-
-        m_isConnecting = false;
     }
 
     // Display the lobby panel when a player starts or joins a server
     public override void OnStartClient()
     {
         base.OnStartClient();
-
-        m_multiplayerMenu.gameObject.SetActive(false);
         m_lobbyMenu.gameObject.SetActive(true);
+        m_multiplayerMenu.gameObject.SetActive(false);
     }
 
     public override void OnStartServer()
@@ -43,7 +34,7 @@ public class LobbyManager : NetworkLobbyManager
         base.OnStartServer();
         if (!Discovery.StartBroadcasting())
         {
-            m_connectionText = "An error occurred while starting broadcasting.";
+            m_infoText = "An error occurred while starting broadcasting.";
         }
     }
 
@@ -59,55 +50,21 @@ public class LobbyManager : NetworkLobbyManager
         }
     }
 
-    // Start a game as a host
-    public void StartUpHost()
-    {
-        // Stop the client if he was trying to connect
-        if (m_isConnecting)
-        {
-            StopClient();
-        }
-        StartHost();
-    }
-
-    // Join a game as a client
-    public void JoinGame()
-    {
-        if (!m_isConnecting)
-        {
-            m_isConnecting = true;
-            m_connectionText = "Connecting...";
-            StartClient();
-        }
-    }
-
     // Set the IP address of the network manager for the StartClient function
     public void SetIPAddress(string ipAddress)
     {
         NetworkManager.singleton.networkAddress = ipAddress;
     }
 
-    public bool IsConnecting()
+    public string GetInfoText()
     {
-        return m_isConnecting;
-    }
-
-    public string GetConnectionText()
-    {
-        return m_connectionText;
+        return m_infoText;
     }
 
     public void StartGame()
     {
         DisplayLoadingScreen();
         ServerChangeScene(GameplayScene);
-    }
-
-    public void Stop()
-    {
-        StopHost();
-        m_connectionText = "";
-        m_isConnecting = false;
     }
 
     private void DisplayLoadingScreen()
@@ -119,26 +76,16 @@ public class LobbyManager : NetworkLobbyManager
     public override void OnClientChangeScene(string newSceneName)
     {
         base.OnClientChangeScene(newSceneName);
-
-        if(newSceneName == GameplayScene)
+        if (newSceneName == GameplayScene)
         {
             DisplayLoadingScreen();
         }
     }
 
-    public override void OnClientConnect(NetworkConnection conn)
-    {
-        base.OnClientConnect(conn);
-
-        m_connectionText = "";
-        m_isConnecting = false;
-    }
-
     public override void OnClientError(NetworkConnection conn, int errorCode)
     {
         UnityEngine.Networking.NetworkError error = (UnityEngine.Networking.NetworkError)errorCode;
-        m_connectionText = "Connection failed due to error: " + error.ToString(); ;
-        m_isConnecting = false;
+        m_infoText = "Connection failed due to error: " + error.ToString(); ;
     }
 
     public override void OnLobbyServerPlayersReady()
@@ -157,7 +104,6 @@ public class LobbyManager : NetworkLobbyManager
     public override void OnGUI()
     {
         base.OnGUI();
-
         if (SceneManager.GetActiveScene().name != GameplayScene)
         {
             if (m_showStartButton && allPlayersReady)
