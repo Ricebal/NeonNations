@@ -57,7 +57,6 @@ public class GameOverMenu : MonoBehaviour
 
     public void Respawn()
     {
-        m_respawnText.text = "";
         OnRespawnClick?.Invoke();
     }
 
@@ -69,6 +68,7 @@ public class GameOverMenu : MonoBehaviour
 
     public static void Deactivate()
     {
+        Singleton.m_respawnText.text = "";
         Singleton.m_panel.SetActive(false);
     }
 
