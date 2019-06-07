@@ -22,13 +22,17 @@ public class BotController : MonoBehaviour
     private void Start()
     {
 
-        GameManager.Singleton.GameMode.OnGameFinished += DisableBots;
-        m_searchBehaviour.Activate();
-        m_attackBehaviour.Activate();
-        m_sonarBehaviour.Activate();
+        GameManager.Singleton.GameMode.OnGameFinished += DisableScripts;
     }
 
-    private void DisableBots()
+    public void EnableScripts()
+    {
+        m_searchBehaviour.enabled = true;
+        m_attackBehaviour.enabled = true;
+        m_sonarBehaviour.enabled = true;
+    }
+
+    public void DisableScripts()
     {
         m_searchBehaviour.enabled = false;
         m_attackBehaviour.enabled = false;

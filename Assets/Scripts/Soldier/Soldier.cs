@@ -184,6 +184,7 @@ public abstract class Soldier : NetworkBehaviour
         {
             RpcAddKill(playerId);
             RpcDead();
+            GetComponent<BotController>()?.DisableScripts();
         }
     }
 
@@ -224,7 +225,7 @@ public abstract class Soldier : NetworkBehaviour
             if (bullet.ShooterId != transform.name) // Don't light up when you're hit by your own bullet.
             {
                 RpcHitByBullet();
-                if (shooter.Team != this.Team) // Don't take damage from friendly fire.
+                if (shooter.Team != Team) // Don't take damage from friendly fire.
                 {
                     TakeDamage(bullet.Damage, bullet.ShooterId);
                 }
