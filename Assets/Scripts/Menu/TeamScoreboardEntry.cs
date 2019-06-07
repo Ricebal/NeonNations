@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class TeamScoreboardEntry : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI m_teamScore;
+    [SerializeField] private TextMeshProUGUI m_teamScore = null;
     private GameMode m_gameMode;
     private Score m_score;
 
