@@ -125,7 +125,7 @@ MonoBehaviour:
   syncInterval: 0.1
   m_healthStat: {fileID: 2773178780142120316}
   m_hitSound: {fileID: 8300000, guid: d0fa97553ed7fd246954305558d544e3, type: 3}
-  m_hitSoundVolume: 0.7
+  m_hitSoundVolume: 1
   m_destroySound: {fileID: 8300000, guid: 36176e5bf96faa843b8bd7ed27498d7d, type: 3}
   m_destroySoundVolume: 1
 --- !u!114 &2261283144201084859
@@ -164,8 +164,8 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 30
+  MinDistance: 0.5
+  MaxDistance: 20
   Pan2D: 0
   rolloffMode: 1
   BypassEffects: 0
