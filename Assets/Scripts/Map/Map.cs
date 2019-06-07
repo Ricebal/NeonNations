@@ -98,7 +98,7 @@ public class Map
         // get all floor tiles and shuffle them
         List<Vector2Int> floorTiles = GetAllFloorTiles();
         Shuffle(floorTiles);
-        // init avariables to be used when no floor tile is the right distance away from enemies
+        // init variables to be used when no floor tile is the right distance away from enemies
         float maxDistance = 0;
         Vector2Int bestSpawnPosition = new Vector2Int(-1,-1);
         
