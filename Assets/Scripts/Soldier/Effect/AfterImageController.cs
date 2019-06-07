@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class AfterImageController : NetworkBehaviour
 {
-    [SerializeField] private GameObject m_prefab;
+    [SerializeField] private GameObject m_prefab = null;
     [SerializeField] private float m_distance = 1f;
     [SerializeField] private float m_linger = 0.1f;
     private float m_endTime;

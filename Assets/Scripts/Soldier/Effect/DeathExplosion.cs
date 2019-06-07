@@ -3,7 +3,7 @@
 [RequireComponent(typeof(ParticleSystem))]
 public class DeathExplosion : MonoBehaviour
 {
-    [SerializeField] private Light m_light;
+    [SerializeField] private Light m_light = null;
     private const float LIFESPAN = 1.5f;
     private const float DELAY = 1f;
     private const float MAX_INTENSITY = 3;

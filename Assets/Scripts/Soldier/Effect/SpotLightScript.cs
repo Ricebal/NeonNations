@@ -2,8 +2,8 @@
 
 public class SpotLightScript : MonoBehaviour
 {
-    [SerializeField] private Light m_spotLight;
-    [SerializeField] private float m_increment;
+    [SerializeField] private Light m_spotLight = null;
+    [SerializeField] private float m_increment = 0;
     private const float MIN_RANGE = 3.5f;
     private const float MAX_RANGE = 4.5f;
     private float m_lifeTime;

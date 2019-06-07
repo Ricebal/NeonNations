@@ -6,9 +6,9 @@ using UnityEngine.UI;
 
 public class Scoreboard : NetworkBehaviour
 {
-    [SerializeField] private GameObject m_playerScorePrefab;
-    [SerializeField] private GameObject m_playerList;
-    [SerializeField] private GameObject m_scoreBoard;
+    [SerializeField] private GameObject m_playerScorePrefab = null;
+    [SerializeField] private GameObject m_playerList = null;
+    [SerializeField] private GameObject m_scoreBoard = null;
     private Dictionary<string, ScoreboardEntry> m_outdatedPlayers = new Dictionary<string, ScoreboardEntry>();
 
     private void Start()
