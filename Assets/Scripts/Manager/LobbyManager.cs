@@ -63,6 +63,7 @@ public class LobbyManager : NetworkLobbyManager
 
     public void StartGame()
     {
+        Discovery.StopBroadcasting();
         DisplayLoadingScreen();
         ServerChangeScene(GameplayScene);
     }
