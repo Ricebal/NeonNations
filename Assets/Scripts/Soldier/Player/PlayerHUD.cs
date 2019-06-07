@@ -3,8 +3,8 @@ using UnityEngine.UI;
 
 public class PlayerHUD : MonoBehaviour
 {
-    [SerializeField] private Stat m_healthStat;
-    [SerializeField] private Stat m_energyStat;
+    [SerializeField] private Stat m_healthStat = null;
+    [SerializeField] private Stat m_energyStat = null;
     private Slider m_healthSlider;
     private Slider m_energySlider;
 

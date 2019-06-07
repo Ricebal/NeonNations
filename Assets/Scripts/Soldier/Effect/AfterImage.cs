@@ -2,8 +2,8 @@
 
 public class AfterImage : MonoBehaviour
 {
-    [SerializeField] private Renderer m_renderer;
-    [SerializeField] private Light m_light;
+    [SerializeField] private Renderer m_renderer = null;
+    [SerializeField] private Light m_light = null;
     [SerializeField] private float m_lifespan = 1f;
     private float m_initialIntensity;
 

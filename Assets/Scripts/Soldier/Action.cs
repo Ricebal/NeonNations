@@ -4,7 +4,7 @@ using UnityEngine;
 [RequireComponent(typeof(ShootController), typeof(SonarController), typeof(DashController))]
 public class Action : NetworkBehaviour
 {
-    [SerializeField] private Stat m_energyStat;
+    [SerializeField] private Stat m_energyStat = null;
     private ShootController m_shootController;
     private SonarController m_sonarController;
     private DashController m_dashController;

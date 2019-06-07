@@ -2,7 +2,7 @@
 
 public class HeadController : MonoBehaviour
 {
-    [SerializeField] private Rigidbody m_pivot;
+    [SerializeField] private Rigidbody m_pivot = null;
     private Vector3 m_height = new Vector3(0f, 0.3f, 0f);
     private float m_speed;
     private const float SHIFTMULTIPLIER = 0.2f;

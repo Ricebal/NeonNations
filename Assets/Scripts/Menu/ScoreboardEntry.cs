@@ -4,11 +4,11 @@ using UnityEngine.UI;
 
 public class ScoreboardEntry : MonoBehaviour
 {
-    [SerializeField] private Image m_scoreboardEntryBackground;
-    [SerializeField] private TextMeshProUGUI m_username;
-    [SerializeField] private TextMeshProUGUI m_kills;
-    [SerializeField] private TextMeshProUGUI m_deaths;
-    [SerializeField] private Outline m_outline;
+    [SerializeField] private Image m_scoreboardEntryBackground = null;
+    [SerializeField] private TextMeshProUGUI m_username = null;
+    [SerializeField] private TextMeshProUGUI m_kills = null;
+    [SerializeField] private TextMeshProUGUI m_deaths = null;
+    [SerializeField] private Outline m_outline = null;
     public Score Score;
 
     public void SetScore(Score score)

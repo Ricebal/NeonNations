@@ -7,8 +7,8 @@ using UnityEngine.UI;
 public class LobbyPlayer : NetworkLobbyPlayer
 {
     [SyncVar(hook = nameof(OnUsernameSet))] private string m_username;
-    [SerializeField] private TextMeshProUGUI m_textUsername;
-    [SerializeField] private Image m_imageReady;
+    [SerializeField] private TextMeshProUGUI m_textUsername = null;
+    [SerializeField] private Image m_imageReady = null;
     private Button m_buttonReady;
     private TextMeshProUGUI m_buttonReadyText;
 

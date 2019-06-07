@@ -20,11 +20,11 @@ public class BoardManager : NetworkBehaviour
         Down = 4, // 000100
         Left = 8 // 001000
     }
-    [SerializeField] private GameObject m_mapPrefab;
-    [SerializeField] private GameObject m_wallPrefab;
-    [SerializeField] private GameObject m_floorPrefab;
-    [SerializeField] private GameObject m_breakableWallPrefab;
-    [SerializeField] private GameObject m_reflectorPrefab;
+    [SerializeField] private GameObject m_mapPrefab = null;
+    [SerializeField] private GameObject m_wallPrefab = null;
+    [SerializeField] private GameObject m_floorPrefab = null;
+    [SerializeField] private GameObject m_breakableWallPrefab = null;
+    [SerializeField] private GameObject m_reflectorPrefab = null;
 
     // So that a position is in the middle of a tile
     private const float MAP_OFFSET = -0.5f;
