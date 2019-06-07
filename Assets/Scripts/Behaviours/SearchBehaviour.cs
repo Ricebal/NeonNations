@@ -11,24 +11,17 @@ public class SearchBehaviour : BotBehaviour
     private Vector2Int m_goalCoordinates = Vector2Int.zero;
     private Vector2Int m_previousFarthestNode = Vector2Int.zero;
     private DStarLite m_dStarLite;
-    private Action m_action;
-    private Bot m_bot;
 
-    private void Start()
+    protected new void Start()
     {
+        base.Start();
         m_dStarLite = new DStarLite(Environment, false);
         Vector2Int startCoordinates = Environment.ConvertGameObjectToCoordinates(gameObject.transform);
         GenerateNewDestination(startCoordinates);
-        m_action = GetComponent<Action>();
-        m_bot = GetComponent<Bot>();
     }
 
     private void FixedUpdate()
     {
-        if (!isServer || !m_active || m_bot.IsDead)
-        {
-            return;
-        }
         Soldier closestEnemy = Environment.GetClosestIlluminatedEnemy(m_bot, TeamManager.GetAliveEnemiesByTeam(m_bot.Team.Id));
         Vector2Int currentCoordinates = Environment.ConvertGameObjectToCoordinates(gameObject.transform);
 
