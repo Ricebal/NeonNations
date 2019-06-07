@@ -7,9 +7,11 @@ public class GameEnvironment : ScriptableObject
 {
     private Map m_map;
     private List<Tile> m_listOfObstacles = new List<Tile>();
-    private const int SONAR_RANGE = 5;
+    private const int BOT_RANGE = 3;
+    private const int SONAR_RANGE = 7;
     private const int BULLET_RANGE = 1;
     private const int IMPACT_RANGE = 2;
+    private const int DEFAULT_RANGE = 5;
 
     /// <summary>
     /// Acts as a constructor for GameEnvironment, since it's real constructor can't be used because it's a ScriptableObject
@@ -158,7 +160,7 @@ public class GameEnvironment : ScriptableObject
     private LinkedList<Vector2Int> GetCoordinatesAroundBot(Vector2Int botCoordinates)
     {
         LinkedList<Vector2Int> currentCoordinatesInSight = new LinkedList<Vector2Int>();
-        return GetCoordinatesInRange(botCoordinates, 2, currentCoordinatesInSight);
+        return GetCoordinatesInRange(botCoordinates, BOT_RANGE, currentCoordinatesInSight);
     }
 
     /// <summary>
@@ -169,7 +171,6 @@ public class GameEnvironment : ScriptableObject
     /// <param name="coordinatesInRange">The Coordinates that have to be checked</param>
     private LinkedList<Vector2Int> GetCoordinatesInRange(Vector2Int objectCoordinates, int range, LinkedList<Vector2Int> coordinatesInRange)
     {
-        range = Mathf.Clamp(range, 0, 5);
         for (int i = -range; i < range; i++)
         {
             for (int j = -range; j < range; j++)
@@ -222,7 +223,8 @@ public class GameEnvironment : ScriptableObject
                     range = IMPACT_RANGE;
                     break;
                 default:
-                    range = (int)Math.Floor(light.range);
+                    
+                    range = Mathf.Clamp((int)Math.Floor(light.range), 0, DEFAULT_RANGE);
                     break;
             }
             GetCoordinatesInRange(ConvertGameObjectToCoordinates(light.transform), range, illuminatedCoordinates);

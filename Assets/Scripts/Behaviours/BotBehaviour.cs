@@ -2,15 +2,12 @@
 
 public abstract class BotBehaviour : NetworkBehaviour
 {
-    protected bool m_active = false;
+    protected Action m_action;
+    protected Bot m_bot;
 
-    public void Activate()
+    protected void Start()
     {
-        m_active = true;
-    }
-
-    public void Deactivate()
-    {
-        m_active = false;
+        m_action = GetComponent<Action>();
+        m_bot = GetComponent<Bot>();
     }
 }

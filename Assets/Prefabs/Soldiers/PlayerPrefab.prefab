@@ -5357,7 +5357,7 @@ MonoBehaviour:
   syncInterval: 0.1
   Prefab: {fileID: 4647958490886930736, guid: c00706cf39d2dec45acc42ae29296223, type: 3}
   Spawn: {fileID: 233212744675135805}
-  Cost: 10
+  Cost: 15
   Cooldown: 0.25
 --- !u!114 &1183313429465019345
 MonoBehaviour:
@@ -5389,7 +5389,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Multiplier: 7.5
-  Cost: 20
+  Cost: 25
   m_duration: 0.1
   m_cooldown: 1
 --- !u!114 &18416186091895302
@@ -5458,8 +5458,8 @@ MonoBehaviour:
   Username: Unknown
   RespawnTime: 5
   IsDead: 0
+  EnergyStat: {fileID: 7324937023197695252}
   m_healthStat: {fileID: 18416186091895302}
-  m_energyStat: {fileID: 7324937023197695252}
   m_spotLight: {fileID: 4902440107425422421}
 --- !u!114 &5337140830429242400
 MonoBehaviour:

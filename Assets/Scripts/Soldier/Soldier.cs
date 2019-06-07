@@ -11,9 +11,9 @@ public abstract class Soldier : NetworkBehaviour
     // The respawn time of the soldier
     public float RespawnTime;
     public bool IsDead = false;
+    public Stat EnergyStat;
 
     [SerializeField] protected Stat m_healthStat;
-    [SerializeField] protected Stat m_energyStat;
 
     protected HeadController m_headController;
     protected Gun m_gun;
@@ -50,7 +50,7 @@ public abstract class Soldier : NetworkBehaviour
     {
         if (m_updateCount % 4 == 0)
         {
-            m_energyStat.Add(1);
+            EnergyStat.Add(1);
         }
         m_updateCount++;
     }
@@ -114,7 +114,7 @@ public abstract class Soldier : NetworkBehaviour
         m_headController?.SetColor(Color);
         m_gun?.SetColor(Color);
         m_healthStat.Reset();
-        m_energyStat.Reset();
+        EnergyStat.Reset();
         IsDead = false;
     }
 
@@ -176,6 +176,7 @@ public abstract class Soldier : NetworkBehaviour
         {
             RpcAddKill(playerId);
             RpcDead();
+            GetComponent<BotController>()?.DisableScripts();
         }
     }
 
@@ -214,7 +215,7 @@ public abstract class Soldier : NetworkBehaviour
             if (bullet.ShooterId != transform.name) // Don't light up when you're hit by your own bullet.
             {
                 RpcShowSpotLight();
-                if (shooter.Team != this.Team) // Don't take damage from friendly fire.
+                if (shooter.Team != Team) // Don't take damage from friendly fire.
                 {
                     TakeDamage(bullet.Damage, bullet.ShooterId);
                 }
