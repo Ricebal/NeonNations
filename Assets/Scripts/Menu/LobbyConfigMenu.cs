@@ -1,8 +1,7 @@
 ﻿using Mirror;
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
+using UnityEngine;
 
 public class LobbyConfigMenu : NetworkBehaviour
 {
@@ -26,9 +25,6 @@ public class LobbyConfigMenu : NetworkBehaviour
     private int m_shortcutMinSkipDistance = 20;
     private int m_reflectorAreaSize = 200;
 
-    private Vector3 m_anchoredPosition;
-    private Vector3 m_localScale;
-
     private void Start()
     {
         InitializeSingleton();
@@ -39,8 +35,7 @@ public class LobbyConfigMenu : NetworkBehaviour
 
         foreach (KeyValuePair<string, int> mapOption in m_mapOptions)
         {
-            GameObject optionItem = Instantiate(m_optionItemPrefab);
-            optionItem.transform.SetParent(m_optionList.transform);
+            GameObject optionItem = Instantiate(m_optionItemPrefab, m_optionList.transform);
             optionItem.transform.localScale = Vector3.one;
             optionItem.name = mapOption.Key;
 
@@ -50,15 +45,16 @@ public class LobbyConfigMenu : NetworkBehaviour
             TextMeshProUGUI optionValue = optionItem.transform.Find("Value").GetComponent<TextMeshProUGUI>();
             optionValue.text = mapOption.Value.ToString();
 
-            Button buttonUp = optionItem.transform.Find("ButtonUp").GetComponent<Button>();
-            buttonUp.onClick.AddListener(() => ValueUp(mapOption.Key));
-            Button buttonDown = optionItem.transform.Find("ButtonDown").GetComponent<Button>();
-            buttonDown.onClick.AddListener(() => ValueDown(mapOption.Key));
-        }  
+            HoldButton buttonUp = optionItem.transform.Find("ButtonUp").GetComponent<HoldButton>();
+            buttonUp.OnValueChanged += OnValueChanged;
 
-        if(!isServer)
+            HoldButton buttonDown = optionItem.transform.Find("ButtonDown").GetComponent<HoldButton>();
+            buttonDown.OnValueChanged += OnValueChanged;
+        }
+
+        if (!isServer)
         {
-            this.gameObject.SetActive(false);
+            gameObject.SetActive(false);
         }
     }
 
@@ -74,20 +70,18 @@ public class LobbyConfigMenu : NetworkBehaviour
         }
     }
 
-    private void ValueUp(string name)
+    private void OnValueChanged(HoldButton button)
     {
-        m_mapOptions[name]++;
-        GameObject.Find(name + "/Value").GetComponent<TextMeshProUGUI>().text = m_mapOptions[name].ToString();
-    }
-
-    private void ValueDown(string name)
-    {
-        m_mapOptions[name]--;
-        if(m_mapOptions[name] < 0)
+        Transform parent = button.gameObject.transform.parent;
+        m_mapOptions[parent.name] += button.IncrementalValue;
+        if (m_mapOptions[parent.name] < 0)
         {
-            m_mapOptions[name] = 0;
+            m_mapOptions[parent.name] = 0;
         }
-        GameObject.Find(name + "/Value").GetComponent<TextMeshProUGUI>().text = m_mapOptions[name].ToString();
+        else
+        {
+            parent.Find("Value").GetComponent<TextMeshProUGUI>().text = m_mapOptions[parent.name].ToString();
+        }
     }
 
     public static int GetOptionValue(string optionName)

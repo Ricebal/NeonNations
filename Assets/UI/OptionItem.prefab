@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1532991239731103986}
   - component: {fileID: 1532991239731103987}
   - component: {fileID: 1532991239731103989}
-  - component: {fileID: 7757894003777464497}
+  - component: {fileID: 2194570336782102791}
   m_Layer: 5
   m_Name: ButtonUp
   m_TagString: Untagged
@@ -118,7 +118,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
---- !u!114 &7757894003777464497
+--- !u!114 &2194570336782102791
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -127,34 +127,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1532991239731103985}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: -1862395651, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Script: {fileID: 11500000, guid: 7a19c34103731794d8718cda6228d6f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Delegates:
-  - eventID: 3
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 0}
-          m_MethodName: 
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: 
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-      m_TypeName: UnityEngine.EventSystems.EventTrigger+TriggerEvent, UnityEngine.UI,
-        Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  - eventID: 2
-    callback:
-      m_PersistentCalls:
-        m_Calls: []
-      m_TypeName: UnityEngine.EventSystems.EventTrigger+TriggerEvent, UnityEngine.UI,
-        Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  delegates: []
+  IncrementalValue: 1
+  m_incrementalCooldown: 0.1
 --- !u!1 &1532991240403960069
 GameObject:
   m_ObjectHideFlags: 0
@@ -586,6 +563,7 @@ GameObject:
   - component: {fileID: 1532991241510233985}
   - component: {fileID: 1532991241510233998}
   - component: {fileID: 1532991241510233999}
+  - component: {fileID: 7032319364288905089}
   m_Layer: 5
   m_Name: ButtonDown
   m_TagString: Untagged
@@ -691,3 +669,17 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
+--- !u!114 &7032319364288905089
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1532991241510233996}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a19c34103731794d8718cda6228d6f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  IncrementalValue: -1
+  m_incrementalCooldown: 0.1
