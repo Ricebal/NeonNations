@@ -25,6 +25,7 @@ public class BreakableWall : NetworkBehaviour
         {
             return false;
         }
+
         if (collider.gameObject.tag == "Bullet")
         {
             m_healthStat.Subtract(collider.gameObject.GetComponent<Bullet>().Damage);
@@ -46,16 +47,7 @@ public class BreakableWall : NetworkBehaviour
     [ClientRpc]
     private void RpcDestroyWall()
     {
-        GameObject soundObject = Instantiate(new GameObject(), transform.position, Quaternion.identity);
-        AudioSource audioSource = soundObject.AddComponent<AudioSource>();
-        audioSource.maxDistance = m_audioSource.maxDistance;
-        audioSource.minDistance = m_audioSource.minDistance;
-        audioSource.spatialBlend = m_audioSource.spatialBlend;
-        audioSource.rolloffMode = m_audioSource.rolloffMode;
-        audioSource.clip = m_destroySound;
-        audioSource.volume = m_destroySoundVolume;
-        audioSource.Play();
-        Destroy(audioSource, audioSource.clip.length);
+        PlayDestroySound();
 
         if (WallDestroyedHandler != null)
         {
@@ -66,5 +58,19 @@ public class BreakableWall : NetworkBehaviour
 
         // Destroy wall instantly.
         Destroy(gameObject);
+    }
+
+    private void PlayDestroySound()
+    {
+        GameObject soundObject = Instantiate(new GameObject(), transform.position, Quaternion.identity);
+        AudioSource audioSource = soundObject.AddComponent<AudioSource>();
+        audioSource.maxDistance = m_audioSource.maxDistance;
+        audioSource.minDistance = m_audioSource.minDistance;
+        audioSource.spatialBlend = m_audioSource.spatialBlend;
+        audioSource.rolloffMode = m_audioSource.rolloffMode;
+        audioSource.clip = m_destroySound;
+        audioSource.volume = m_destroySoundVolume;
+        audioSource.Play();
+        Destroy(audioSource, audioSource.clip.length);
     }
 }
