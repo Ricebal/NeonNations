@@ -100,8 +100,8 @@ public class Map
         Shuffle(floorTiles);
         // init variables to be used when no floor tile is the right distance away from enemies
         float maxDistance = 0;
-        Vector2Int bestSpawnPosition = new Vector2Int(-1,-1);
-        
+        Vector2Int bestSpawnPosition = new Vector2Int(-1, -1);
+
         for (int i = 0; i < floorTiles.Count; i++)
         {
             bool placeable = true;
@@ -145,7 +145,9 @@ public class Map
             for (int j = 0; j < TileMap[0].Length; j++)
             {
                 if (TileMap[i][j] == Tile.Floor)
+                {
                     list.Add(new Vector2Int(i, j));
+                }
             }
         }
         return list;
