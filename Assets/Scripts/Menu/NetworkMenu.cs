@@ -9,7 +9,7 @@ public class NetworkMenu : MonoBehaviour
 
     private void FixedUpdate()
     {
-        m_infoText.text = m_lobbyManager.GetInfoText();
+        m_infoText.text = m_lobbyManager.InfoText;
     }
 
 }

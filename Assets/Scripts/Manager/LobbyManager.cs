@@ -6,20 +6,12 @@ using UnityEngine.UI;
 
 public class LobbyManager : NetworkLobbyManager
 {
+    public string InfoText;
     private bool m_showStartButton;
-    private string m_infoText;
     [SerializeField] private Canvas m_multiplayerMenu = null;
     [SerializeField] private Canvas m_lobbyMenu = null;
     [SerializeField] private Canvas m_loadingScreen = null;
     [SerializeField] private Button m_buttonStart = null;
-
-    private void OnEnable()
-    {
-        if (!Discovery.ListenForBroadcast())
-        {
-            m_infoText = "An error occurred while checking online servers.";
-        }
-    }
 
     // Display the lobby panel when a player starts or joins a server
     public override void OnStartClient()
@@ -29,25 +21,19 @@ public class LobbyManager : NetworkLobbyManager
         m_multiplayerMenu.gameObject.SetActive(false);
     }
 
+    // Called when the user create a lobby
     public override void OnStartServer()
     {
         base.OnStartServer();
-        if (!Discovery.StartBroadcasting())
-        {
-            m_infoText = "An error occurred while starting broadcasting.";
-        }
+        Discovery.StartBroadcasting();
     }
 
-    public override void OnStopClient()
+    // Called when the user leaves the lobby and gets back to main menu
+    public override void OnStopHost()
     {
-        base.OnStopClient();
-        Discovery.StopBroadcasting();
-
-        GameObject networkDiscovery = GameObject.Find("NetworkDiscovery");
-        if (networkDiscovery != null)
-        {
-            DestroyImmediate(networkDiscovery, true);
-        }
+        base.OnStopHost();
+        Discovery.Stop();
+        DestroyNetworkDiscovery();
     }
 
     // Set the IP address of the network manager for the StartClient function
@@ -56,14 +42,11 @@ public class LobbyManager : NetworkLobbyManager
         NetworkManager.singleton.networkAddress = ipAddress;
     }
 
-    public string GetInfoText()
-    {
-        return m_infoText;
-    }
-
+    // Called on the host when he starts the game
     public void StartGame()
     {
-        Discovery.StopBroadcasting();
+        Discovery.Stop();
+        DestroyNetworkDiscovery();
         DisplayLoadingScreen();
         ServerChangeScene(GameplayScene);
     }
@@ -74,6 +57,16 @@ public class LobbyManager : NetworkLobbyManager
         m_lobbyMenu.gameObject.SetActive(false);
     }
 
+    private void DestroyNetworkDiscovery()
+    {
+        GameObject networkDiscovery = GameObject.Find("NetworkDiscovery");
+        if (networkDiscovery != null)
+        {
+            Destroy(networkDiscovery);
+        }
+    }
+
+    // Called on the client when a scene is changed by the host
     public override void OnClientChangeScene(string newSceneName)
     {
         base.OnClientChangeScene(newSceneName);
@@ -86,7 +79,7 @@ public class LobbyManager : NetworkLobbyManager
     public override void OnClientError(NetworkConnection conn, int errorCode)
     {
         UnityEngine.Networking.NetworkError error = (UnityEngine.Networking.NetworkError)errorCode;
-        m_infoText = "Connection failed due to error: " + error.ToString(); ;
+        InfoText = "Connection failed due to error: " + error.ToString(); ;
     }
 
     public override void OnLobbyServerPlayersReady()
