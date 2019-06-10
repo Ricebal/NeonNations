@@ -113,15 +113,16 @@ public class Discovery : NetworkDiscovery
         else
         {
             GameObject serverPrefab = Instantiate(m_serverObj, m_serversObj.transform);
-            serverPrefab.GetComponentInChildren<Button>().onClick.AddListener(() => OnClick(serverIp));
+            serverPrefab.GetComponentInChildren<Button>().onClick.AddListener(() => Join(serverIp));
             serverPrefab.GetComponentInChildren<TextMeshProUGUI>().text = "[" + serverIp + "] " + data;
 
             m_servers.Add(serverIp, new Server(serverPrefab, serverIp, data, Time.time));
         }
     }
 
-    private void OnClick(string serverIp)
+    private void Join(string serverIp)
     {
+        Discovery.Stop();
         m_lobbyManager.SetIPAddress(serverIp);
         m_lobbyManager.StartClient();
     }
