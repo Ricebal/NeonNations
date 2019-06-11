@@ -24,6 +24,9 @@ public class Player : Soldier
 
         Username = ProfileMenu.GetUsername();
         CmdUsername(Username);
+
+        // The player has been loaded, remove loading screen
+        Destroy(LoadingScreen.Singleton.gameObject);
     }
 
     private new void FixedUpdate()
