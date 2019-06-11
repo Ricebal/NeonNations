@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 
+[RequireComponent(typeof(AudioSource))]
 public class DashController : MonoBehaviour
 {
     // Amount of energy a dash will consume

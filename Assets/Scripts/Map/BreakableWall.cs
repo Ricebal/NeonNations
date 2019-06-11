@@ -1,6 +1,7 @@
 ﻿using Mirror;
 using UnityEngine;
 
+[RequireComponent(typeof(AudioSource))]
 public class BreakableWall : NetworkBehaviour
 {
     public delegate void OnWallDestroyedDelegate(Vector2Int coordinates);

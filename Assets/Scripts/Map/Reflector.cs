@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 
+[RequireComponent(typeof(AudioSource))]
 public class Reflector : MonoBehaviour
 {
     [SerializeField] private AudioClip m_hitSound = null;

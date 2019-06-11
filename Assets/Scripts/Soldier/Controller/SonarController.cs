@@ -1,6 +1,7 @@
 using Mirror;
 using UnityEngine;
 
+[RequireComponent(typeof(AudioSource))]
 public class SonarController : NetworkBehaviour
 {
     // Amount of energy a sonar will consume
