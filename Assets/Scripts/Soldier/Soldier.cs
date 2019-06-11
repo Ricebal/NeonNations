@@ -14,10 +14,9 @@ public abstract class Soldier : NetworkBehaviour
     public Stat EnergyStat;
 
     [SerializeField] protected Stat m_healthStat;
-
+    [SerializeField] protected GameObject m_spotLight;
     protected HeadController m_headController;
     protected Gun m_gun;
-    [SerializeField] protected GameObject m_spotLight;
     protected Renderer m_renderer;
     protected float m_deathTime;
     protected int m_updateCount;
@@ -36,6 +35,15 @@ public abstract class Soldier : NetworkBehaviour
         if (isServer)
         {
             GameManager.RemovePlayer(this);
+        }
+
+        // When a soldier leaves the game, OnCollisionExit is not triggered, this variable has to be reset manually
+        foreach (Soldier soldier in TeamManager.GetAllPlayers())
+        {
+            if (soldier != null)
+            {
+                soldier.gameObject.GetComponent<Rigidbody>().isKinematic = false;
+            }
         }
     }
 
