@@ -1,13 +1,14 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class GameOverMenu : MonoBehaviour
 {
     public static GameOverMenu Singleton;
-    public GameObject Panel;
-    public Text RespawnText;
-    public Button RespawnButton;
+    [SerializeField] private GameObject m_panel = null;
+    [SerializeField] private TextMeshProUGUI m_respawnText = null;
+    [SerializeField] private Button m_respawnButton = null;
 
     public delegate void RespawnClickDelegate();
     public event RespawnClickDelegate OnRespawnClick;
@@ -38,18 +39,18 @@ public class GameOverMenu : MonoBehaviour
 
     private void Update()
     {
-        if (Panel.activeSelf)
+        if (m_panel.activeSelf)
         {
             m_remainingTime -= Time.deltaTime;
             if (m_remainingTime <= 0)
             {
-                RespawnText.text = "You can respawn!";
-                RespawnButton.interactable = true;
+                m_respawnText.text = "Respawn";
+                m_respawnButton.interactable = true;
             }
             else
             {
-                RespawnText.text = "Respawning in " + Math.Ceiling(m_remainingTime) + " seconds...";
-                RespawnButton.interactable = false;
+                m_respawnText.text = Math.Ceiling(m_remainingTime).ToString();
+                m_respawnButton.interactable = false;
             }
         }
     }
@@ -61,18 +62,19 @@ public class GameOverMenu : MonoBehaviour
 
     public static void Activate(float respawnTime)
     {
-        Singleton.Panel.SetActive(true);
+        Singleton.m_panel.SetActive(true);
         Singleton.m_remainingTime = respawnTime;
     }
 
     public static void Deactivate()
     {
-        Singleton.Panel.SetActive(false);
+        Singleton.m_respawnText.text = "";
+        Singleton.m_panel.SetActive(false);
     }
 
     public static bool IsActive()
     {
-        return Singleton.Panel.activeSelf;
+        return Singleton.m_panel.activeSelf;
     }
 
 }

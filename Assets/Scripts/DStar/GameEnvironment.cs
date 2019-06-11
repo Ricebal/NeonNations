@@ -113,16 +113,16 @@ public class GameEnvironment : ScriptableObject
     /// <summary>
     /// Get all Coordinates that are illuminated by light on the bot's screen
     /// </summary>
-    public LinkedList<Vector2Int> GetIlluminatedCoordinates(Vector2Int botCoordinates)
+    public HashSet<Vector2Int> GetIlluminatedCoordinates(Vector2Int botCoordinates)
     {
-        LinkedList<Vector2Int> illuminatedCoordinates = GetCoordinatesAroundBot(botCoordinates); // Because of the spotlight around the bot
+        HashSet<Vector2Int> illuminatedCoordinates = GetCoordinatesAroundBot(botCoordinates); // Because of the spotlight around the bot
         GetCoordinatesAroundLights(ref illuminatedCoordinates, botCoordinates); // All other lights visible on screen
         return illuminatedCoordinates;
     }
 
     public Soldier GetClosestIlluminatedEnemy(Bot bot, List<Soldier> enemies)
     {
-        LinkedList<Vector2Int> list = GetIlluminatedCoordinates(ConvertGameObjectToCoordinates(bot.transform));
+        HashSet<Vector2Int> list = GetIlluminatedCoordinates(ConvertGameObjectToCoordinates(bot.transform));
 
         float minDist = Mathf.Infinity;
         Soldier soldier = null;
@@ -141,7 +141,7 @@ public class GameEnvironment : ScriptableObject
 
     public List<Soldier> GetIlluminatedEnemies(Bot bot, List<Soldier> enemies)
     {
-        LinkedList<Vector2Int> list = GetIlluminatedCoordinates(ConvertGameObjectToCoordinates(bot.transform));
+        HashSet<Vector2Int> list = GetIlluminatedCoordinates(ConvertGameObjectToCoordinates(bot.transform));
         List<Soldier> result = new List<Soldier>();
         enemies.ForEach(enemy =>
         {
@@ -157,9 +157,9 @@ public class GameEnvironment : ScriptableObject
     /// <summary>
     /// Get the Coordinates that are illuminated by the spotlight on the bot
     /// </summary>
-    private LinkedList<Vector2Int> GetCoordinatesAroundBot(Vector2Int botCoordinates)
+    private HashSet<Vector2Int> GetCoordinatesAroundBot(Vector2Int botCoordinates)
     {
-        LinkedList<Vector2Int> currentCoordinatesInSight = new LinkedList<Vector2Int>();
+        HashSet<Vector2Int> currentCoordinatesInSight = new HashSet<Vector2Int>();
         return GetCoordinatesInRange(botCoordinates, BOT_RANGE, currentCoordinatesInSight);
     }
 
@@ -169,7 +169,7 @@ public class GameEnvironment : ScriptableObject
     /// <param name="objectCoordinates">The Coordinates of the object you want to check the light from</param>
     /// <param name="range">The range of the light that's emitted by the object</param>
     /// <param name="coordinatesInRange">The Coordinates that have to be checked</param>
-    private LinkedList<Vector2Int> GetCoordinatesInRange(Vector2Int objectCoordinates, int range, LinkedList<Vector2Int> coordinatesInRange)
+    private HashSet<Vector2Int> GetCoordinatesInRange(Vector2Int objectCoordinates, int range, HashSet<Vector2Int> coordinatesInRange)
     {
         for (int i = -range; i < range; i++)
         {
@@ -183,11 +183,7 @@ public class GameEnvironment : ScriptableObject
                 {
                     continue;
                 }
-                // Check if coordinate is already added to the list
-                if (!coordinatesInRange.Any(coordinate => coordinate.x == x && coordinate.y == y))
-                {
-                    coordinatesInRange.AddLast(new Vector2Int(x, y));
-                }
+                coordinatesInRange.Add(new Vector2Int(x, y));
             }
         }
         return coordinatesInRange;
@@ -197,7 +193,7 @@ public class GameEnvironment : ScriptableObject
     /// Get coordinates that are illuminated by lights
     /// </summary>
     /// <param name="illuminatedCoordinates">LinkedListist to which the illuminated Coordinates should be added</param>
-    private void GetCoordinatesAroundLights(ref LinkedList<Vector2Int> illuminatedCoordinates, Vector2Int botCoordinates)
+    private void GetCoordinatesAroundLights(ref HashSet<Vector2Int> illuminatedCoordinates, Vector2Int botCoordinates)
     {
         // Get all lights in sight of the bot
         List<Light> lightsInSight = GetLights(botCoordinates);
