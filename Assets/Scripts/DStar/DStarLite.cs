@@ -68,7 +68,7 @@ public class DStarLite
     private bool CheckForMapChanges()
     {
         // Check if bot sees new obstacles
-        LinkedList<Vector2Int> coordinatesInSight = m_environment.GetIlluminatedCoordinates(Start);
+        HashSet<Vector2Int> coordinatesInSight = m_environment.GetIlluminatedCoordinates(Start);
 
         bool change = false;
         foreach (Vector2Int coordinates in coordinatesInSight)
