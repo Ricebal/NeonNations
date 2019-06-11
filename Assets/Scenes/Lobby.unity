@@ -726,7 +726,7 @@ PrefabInstance:
       objectReference: {fileID: 8080092582660479207}
     - target: {fileID: 442134263, guid: 8dc18a893d3dd76408cbae082c0509cc, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.000000034980626
+      value: -2.0982868e-11
       objectReference: {fileID: 0}
     - target: {fileID: 442134263, guid: 8dc18a893d3dd76408cbae082c0509cc, type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -1453,7 +1453,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_AdditionalShaderChannelsFlag: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
