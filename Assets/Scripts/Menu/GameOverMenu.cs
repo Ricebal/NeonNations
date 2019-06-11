@@ -6,9 +6,9 @@ using TMPro;
 public class GameOverMenu : MonoBehaviour
 {
     public static GameOverMenu Singleton;
-    [SerializeField] private GameObject m_panel;
-    [SerializeField] private TextMeshProUGUI m_respawnText;
-    [SerializeField] private Button m_respawnButton;
+    [SerializeField] private GameObject m_panel = null;
+    [SerializeField] private TextMeshProUGUI m_respawnText = null;
+    [SerializeField] private Button m_respawnButton = null;
 
     public delegate void RespawnClickDelegate();
     public event RespawnClickDelegate OnRespawnClick;
