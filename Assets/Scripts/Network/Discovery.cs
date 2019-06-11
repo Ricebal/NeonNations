@@ -33,9 +33,6 @@ public class Discovery : NetworkDiscovery
     private void Awake()
     {
         InitializeSingleton();
-        m_lobbyManager = GameObject.Find("LobbyManager").GetComponent<LobbyManager>();
-        m_serverObj = Resources.Load("Server") as GameObject;
-        m_serversObj = GameObject.Find("Servers");
     }
 
     private void InitializeSingleton()
@@ -50,14 +47,26 @@ public class Discovery : NetworkDiscovery
         }
     }
 
-    // Servers emit a data at a broadcastInterval when they are online and stop emitting when they are offline
-    // Servers that did not send data for more than broadcastInterval milliseconds are offlines and need to be removed from the dictionary
+    private void Start()
+    {
+        m_lobbyManager = GameObject.Find("LobbyManager").GetComponent<LobbyManager>();
+        m_serverObj = Resources.Load("Server") as GameObject;
+        m_serversObj = GameObject.Find("Servers");
+
+        Initialize();
+        StartListening();
+    }
+
     public void FixedUpdate()
     {
-        // ToList() is used to avoid concurrent modification error (removing element while iterating)
+        /*
+        Servers emit a data at a broadcast interval when they are online and stop emitting when they are offline.
+        Servers that did not send data for more than broadcast interval milliseconds are offlines and need to be removed from the dictionary.
+        ToList() is used to avoid concurrent modification error (removing element while iterating).
+       */
         foreach (Server server in m_servers.Values.ToList())
         {
-            // The broadcastInterval is multiplied by a factor to add a little margin, avoiding false timeout detection
+            // The broadcast interval is multiplied by a factor to add a little margin, avoiding false timeout detection
             if ((Time.time - server.LastPing) * 1000 > broadcastInterval * 5f)
             {
                 Destroy(server.Prefab);
@@ -66,24 +75,28 @@ public class Discovery : NetworkDiscovery
         }
     }
 
-    public static bool ListenForBroadcast()
+    public static void StartListening()
     {
-        StopBroadcasting();
-        Singleton.Initialize();
+        Stop();
         // An error can be shown if the broadcasting port is already used,
         // probably due to multiple instances of the game running simultaneously
-        return Singleton.StartAsClient();
+        if (!Singleton.StartAsClient())
+        {
+            Singleton.m_lobbyManager.InfoText = "An error occurred while checking online servers.";
+        }
     }
 
-    public static bool StartBroadcasting()
+    public static void StartBroadcasting()
     {
+        Stop();
         Singleton.broadcastData = ProfileMenu.GetUsername();
-        StopBroadcasting();
-        Singleton.Initialize();
-        return Singleton.StartAsServer();
+        if (!Singleton.StartAsServer())
+        {
+            Singleton.m_lobbyManager.InfoText = "An error occurred while starting broadcasting.";
+        }
     }
 
-    public static void StopBroadcasting()
+    public static void Stop()
     {
         if (Singleton.running)
         {
@@ -100,17 +113,18 @@ public class Discovery : NetworkDiscovery
         else
         {
             GameObject serverPrefab = Instantiate(m_serverObj, m_serversObj.transform);
-            serverPrefab.GetComponentInChildren<Button>().onClick.AddListener(() => OnClick(serverIp));
+            serverPrefab.GetComponentInChildren<Button>().onClick.AddListener(() => Join(serverIp));
             serverPrefab.GetComponentInChildren<TextMeshProUGUI>().text = "[" + serverIp + "] " + data;
 
             m_servers.Add(serverIp, new Server(serverPrefab, serverIp, data, Time.time));
         }
     }
 
-    private void OnClick(string serverIp)
+    private void Join(string serverIp)
     {
+        Discovery.Stop();
         m_lobbyManager.SetIPAddress(serverIp);
-        m_lobbyManager.JoinGame();
+        m_lobbyManager.StartClient();
     }
 
 }
