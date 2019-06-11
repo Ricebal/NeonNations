@@ -2,8 +2,8 @@
 
 public class Reflector : MonoBehaviour
 {
-    [SerializeField] private AudioClip m_hitSound;
-    [SerializeField] private float m_hitSoundVolume;
+    [SerializeField] private AudioClip m_hitSound = null;
+    [SerializeField] private float m_hitSoundVolume = 0;
     private AudioSource m_audioSource;
 
     private void Start()

@@ -6,8 +6,8 @@ public class SonarController : NetworkBehaviour
     // Amount of energy a sonar will consume
     public int Cost;
 
-    [SerializeField] private float m_soundVolume;
-    [SerializeField] private AudioClip m_sonarSound;
+    [SerializeField] private float m_soundVolume = 0;
+    [SerializeField] private AudioClip m_sonarSound = null;
     private AudioSource m_audioSource;
     // Prefab representing the sonar
     [SerializeField] private GameObject m_prefab = null;

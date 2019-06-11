@@ -7,8 +7,8 @@ public class DashController : MonoBehaviour
     // Maximum speed multiplier
     public float Multiplier = 7.5f;
 
-    [SerializeField] private float m_soundVolume;
-    [SerializeField] private AudioClip m_dashSound;
+    [SerializeField] private float m_soundVolume = 0;
+    [SerializeField] private AudioClip m_dashSound = null;
     private AudioSource m_audioSource;
     // Dash duration in secondsd
     [SerializeField] private float m_duration = 0.1f;

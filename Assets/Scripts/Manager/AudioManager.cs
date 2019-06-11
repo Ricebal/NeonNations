@@ -8,14 +8,14 @@ using UnityEngine.SceneManagement;
 public class AudioManager : MonoBehaviour
 {
     private AudioSource m_audioSource;
-    [SerializeField] private float m_buttonClickVolume;
-    [SerializeField] private float m_menuMusicVolume;
-    [SerializeField] private float m_gameMusicVolume;
-    [SerializeField] private AudioClip m_buttonClickSound;
-    [SerializeField] private AudioClip m_menuMusic;
-    [SerializeField] private AudioClip m_gameMusic;
-    [Scene] [SerializeField] private List<string> m_menuScenes;
-    [Scene] [SerializeField] private List<string> m_gameScenes;
+    [SerializeField] private float m_buttonClickVolume = 0;
+    [SerializeField] private float m_menuMusicVolume = 0;
+    [SerializeField] private float m_gameMusicVolume = 0;
+    [SerializeField] private AudioClip m_buttonClickSound = null;
+    [SerializeField] private AudioClip m_menuMusic = null;
+    [SerializeField] private AudioClip m_gameMusic = null;
+    [Scene] [SerializeField] private List<string> m_menuScenes = null;
+    [Scene] [SerializeField] private List<string> m_gameScenes = null;
     private string m_lastSceneName;
 
     // Instantiate the AudioManager when the game starts

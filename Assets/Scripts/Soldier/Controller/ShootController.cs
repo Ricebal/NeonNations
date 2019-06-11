@@ -7,15 +7,15 @@ public class ShootController : NetworkBehaviour
     // Amount of energy a bullet will consume
     public int Cost;
 
-    [SerializeField] private float m_soundVolume;
-    [SerializeField] private AudioClip m_shootSound;
-    [SerializeField] private AudioSource m_audioSource;
+    [SerializeField] private float m_soundVolume = 0;
+    [SerializeField] private AudioClip m_shootSound = null;
+    [SerializeField] private AudioSource m_audioSource = null;
     // Prefab representing the bullet
-    [SerializeField] private GameObject m_prefab;
+    [SerializeField] private GameObject m_prefab = null;
     // Transform object representing the bullets' spawn location
-    [SerializeField] private Transform m_spawn;
+    [SerializeField] private Transform m_spawn = null;
     // Fire cooldown in seconds
-    [SerializeField] private float m_cooldown;
+    [SerializeField] private float m_cooldown = 0;
     // The next time the entity will be able to shoot, in seconds
     private float m_next;
 

@@ -6,11 +6,11 @@ public class BreakableWall : NetworkBehaviour
     public delegate void OnWallDestroyedDelegate(Vector2Int coordinates);
     public event OnWallDestroyedDelegate WallDestroyedHandler;
 
-    [SerializeField] protected Stat m_healthStat;
-    [SerializeField] private AudioClip m_hitSound;
-    [SerializeField] private float m_hitSoundVolume;
-    [SerializeField] private AudioClip m_destroySound;
-    [SerializeField] private float m_destroySoundVolume;
+    [SerializeField] protected Stat m_healthStat = null;
+    [SerializeField] private AudioClip m_hitSound = null;
+    [SerializeField] private float m_hitSoundVolume = 0;
+    [SerializeField] private AudioClip m_destroySound = null;
+    [SerializeField] private float m_destroySoundVolume = 0;
     private AudioSource m_audioSource;
 
     private void Start()
