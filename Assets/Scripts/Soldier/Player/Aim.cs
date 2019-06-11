@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class Aim : NetworkBehaviour
 {
-    [SerializeField] private Texture2D m_crosshairImage;
-    [SerializeField] private Transform m_gunPosition;
+    [SerializeField] private Texture2D m_crosshairImage = null;
+    [SerializeField] private Transform m_gunPosition = null;
     public bool CanAim = true;
 
     private void Update()

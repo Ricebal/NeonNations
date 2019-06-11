@@ -5,8 +5,8 @@ public class DebugMode : MonoBehaviour
 {
     public static DebugMode Singleton;
 
-    [SerializeField] private Light m_directionalLight;
-    [SerializeField] private Text m_text;
+    [SerializeField] private Light m_directionalLight = null;
+    [SerializeField] private Text m_text = null;
 
     private void Awake()
     {

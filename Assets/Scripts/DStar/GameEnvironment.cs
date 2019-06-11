@@ -223,7 +223,7 @@ public class GameEnvironment : ScriptableObject
                     range = IMPACT_RANGE;
                     break;
                 default:
-                    
+
                     range = Mathf.Clamp((int)Math.Floor(light.range), 0, DEFAULT_RANGE);
                     break;
             }

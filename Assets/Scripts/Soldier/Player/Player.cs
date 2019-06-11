@@ -26,7 +26,7 @@ public class Player : Soldier
         CmdUsername(Username);
     }
 
-    private void FixedUpdate()
+    private new void FixedUpdate()
     {
         if (!isLocalPlayer)
         {

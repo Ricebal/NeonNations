@@ -2,11 +2,11 @@
 
 public class Sonar : MonoBehaviour
 {
-    [SerializeField] private Light m_lightForMap;
-    [SerializeField] private Light m_lightForSoldiers;
-    [SerializeField] private float m_maxIntensity;
-    [SerializeField] private float m_maxRange;
-    [SerializeField] private float m_maxRangeForSoldierLight;
+    [SerializeField] private Light m_lightForMap = null;
+    [SerializeField] private Light m_lightForSoldiers = null;
+    [SerializeField] private float m_maxIntensity = 0;
+    [SerializeField] private float m_maxRange = 0;
+    [SerializeField] private float m_maxRangeForSoldierLight = 0;
     public const float LIFETIME = 0.85f;
     private bool m_growing;
 

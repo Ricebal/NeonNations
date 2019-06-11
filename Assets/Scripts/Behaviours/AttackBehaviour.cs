@@ -7,7 +7,7 @@ public class AttackBehaviour : BotBehaviour
     public GameEnvironment Environment;
 
     private Vector3 m_lastShotPosition;
-    
+
     // Accuracy handicap
     private const float ACCURACY_MODIFIER = 1.3f;
     // Accuracy between 0 and 1 where 1 is most accurate
