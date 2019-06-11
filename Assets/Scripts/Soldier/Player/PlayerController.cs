@@ -68,7 +68,7 @@ public class PlayerController : NetworkBehaviour
         }
 
         // If dashing, normalize movement vector so you are always at max speed
-        if (m_playerDash.IsDashing())
+        if (m_playerDash.IsDashing)
         {
             movement.Normalize();
         }
