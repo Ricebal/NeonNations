@@ -10,7 +10,7 @@ public class HoldButton : MonoBehaviour, IPointerUpHandler, IPointerDownHandler
     public delegate void ValueChangedDelegate(HoldButton button);
     public event ValueChangedDelegate OnValueChanged;
 
-    [SerializeField] private float m_incrementalCooldown;
+    [SerializeField] private float m_incrementalCooldown = 0;
     private bool m_isPressed;
     private float m_timeElapsed;
 

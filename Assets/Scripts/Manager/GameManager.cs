@@ -27,8 +27,8 @@ public class GameManager : NetworkBehaviour
     [SyncVar][SerializeField] private int m_breakableTunnelChance;
     [SyncVar][SerializeField] private int m_shortcutMinSkipDistance;
     [SyncVar][SerializeField] private int m_reflectorAreaSize;
-    [SyncVar][SerializeField] private int m_outerWallWidth;
-    [SerializeField] private ParticleSystem m_fireworks;
+    [SyncVar][SerializeField] private int m_outerWallWidth = 14;
+    [SerializeField] private ParticleSystem m_fireworks = null;
 
     private GameObject m_endGameTextObject;
     private int m_localPlayersTeamId;
