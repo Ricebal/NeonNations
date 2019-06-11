@@ -6,7 +6,7 @@ public class BreakableWall : NetworkBehaviour
     public delegate void OnWallDestroyedDelegate(Vector2Int coordinates);
     public event OnWallDestroyedDelegate WallDestroyedHandler;
 
-    [SerializeField] protected Stat m_healthStat;
+    private Stat m_healthStat = new Stat(0, 50);
 
     // If the BreakableWall gets hit by a bullet, it will take damage. Will return true if the collider was a Bullet and the BreakableWall took damage.
     protected bool OnTriggerEnter(Collider collider)

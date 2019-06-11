@@ -1,14 +1,16 @@
 ﻿using UnityEngine;
 
-public class Stat : MonoBehaviour
+public class Stat
 {
-    [SerializeField] private int m_minValue = 0;
-    [SerializeField] private int m_maxValue = 0;
-    [SerializeField] private int m_currentValue;
+    private int m_minValue = 0;
+    private int m_maxValue = 0;
+    private int m_currentValue;
 
-    private void Start()
+    public Stat(int minValue, int maxValue)
     {
-        Reset();
+        m_minValue = minValue;
+        m_maxValue = maxValue;
+        m_currentValue = maxValue;
     }
 
     public void Add(int value)
