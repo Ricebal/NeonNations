@@ -12,6 +12,7 @@ public class LobbyManager : NetworkLobbyManager
 
     [SerializeField] private Canvas m_multiplayerMenu = null;
     [SerializeField] private Canvas m_lobbyMenu = null;
+    [SerializeField] private Canvas m_mapConfiguration = null;
     [SerializeField] private Button m_buttonStart = null;
 
     private void OnEnable()
