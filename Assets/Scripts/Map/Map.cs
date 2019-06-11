@@ -93,14 +93,13 @@ public class Map
         return new Vector2Int(-1, -1);
     }
 
-    public Vector2Int GetRandomFloorTileToSpawn(Team team)
+    public Vector2Int GetSpawnPoint(Team team)
     {
         // get all floor tiles and shuffle them
         List<Vector2Int> floorTiles = GetAllFloorTiles();
         Shuffle(floorTiles);
-        // init variables to be used when no floor tile is the right distance away from enemies
-        float maxDistance = 0;
-        Vector2Int bestSpawnPosition = new Vector2Int(-1, -1);
+        // init list to be used when no floor tile is the right distance away from enemies
+        List<KeyValuePair<Vector2Int, float>> possiblePositions = new List<KeyValuePair<Vector2Int, float>>();
 
         for (int i = 0; i < floorTiles.Count; i++)
         {
@@ -115,26 +114,39 @@ public class Map
                 if (distance < m_preferredDistanceFromEnemies)
                 {
                     placeable = false;
-                }
-                else if (distance > currentTileMaxDistance)
-                {
-                    currentTileMaxDistance = distance;
+                    // set the largest possible distance
+                    if (distance > currentTileMaxDistance)
+                    {
+                        currentTileMaxDistance = distance;
+                    }
                 }
             }
 
-            if (placeable)
+            if (ValidSpawnPoint(floorTiles[i]))
             {
-                return floorTiles[i];
-            }
-            else if (currentTileMaxDistance > maxDistance)
-            {
-                maxDistance = currentTileMaxDistance;
-                bestSpawnPosition = floorTiles[i];
+                if (placeable)
+                {
+                    return floorTiles[i];
+                }
+                else
+                {
+                    possiblePositions.Add(new KeyValuePair<Vector2Int, float>(floorTiles[i], currentTileMaxDistance));
+                }
             }
         }
 
-        // returns -1,-1 if no floor tile was found
-        return bestSpawnPosition;
+        // sort possible positions
+        possiblePositions = possiblePositions.OrderByDescending(o => o.Value).ToList();
+        for (int i = 0; i < possiblePositions.Count(); i++)
+        {
+            if (ValidSpawnPoint(possiblePositions[i].Key))
+            {
+                return possiblePositions[i].Key;
+            }
+        }
+
+        // returns -1,-1 if no valid floor tile was found
+        return new Vector2Int(-1,-1);
     }
 
     private List<Vector2Int> GetAllFloorTiles()
@@ -151,17 +163,6 @@ public class Map
             }
         }
         return list;
-    }
-
-    public Vector2Int GetSpawnPoint(Team team)
-    {
-        Vector2Int pos;
-        do
-        {
-            pos = GetRandomFloorTileToSpawn(team);
-        } while (!ValidSpawnPoint(pos));
-
-        return pos;
     }
 
     private bool ValidSpawnPoint(Vector2Int pos)
