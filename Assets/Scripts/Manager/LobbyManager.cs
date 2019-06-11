@@ -12,7 +12,6 @@ public class LobbyManager : NetworkLobbyManager
 
     [SerializeField] private Canvas m_multiplayerMenu = null;
     [SerializeField] private Canvas m_lobbyMenu = null;
-    [SerializeField] private Canvas m_mapConfiguration = null;
     [SerializeField] private Button m_buttonStart = null;
 
     private void OnEnable()
@@ -37,7 +36,6 @@ public class LobbyManager : NetworkLobbyManager
 
         m_multiplayerMenu.gameObject.SetActive(false);
         m_lobbyMenu.gameObject.SetActive(true);
-        m_mapConfiguration.gameObject.SetActive(true);
     }
 
     public override void OnStartServer()
