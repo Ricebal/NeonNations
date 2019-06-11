@@ -5,10 +5,10 @@ using UnityEngine;
 
 public class TeamScoreboard : NetworkBehaviour
 {
-    [SerializeField] private GameObject m_teamScorePrefab;
-    [SerializeField] private GameObject m_teamList;
+    [SerializeField] private GameObject m_teamScorePrefab = null;
+    [SerializeField] private GameObject m_teamList = null;
     private GameMode m_gameMode;
-    [SerializeField] private TextMeshProUGUI m_remainingTime;
+    [SerializeField] private TextMeshProUGUI m_remainingTime = null;
     private Dictionary<int, TeamScoreboardEntry> m_teamScoreboardEntries = new Dictionary<int, TeamScoreboardEntry>();
 
     private void Start()

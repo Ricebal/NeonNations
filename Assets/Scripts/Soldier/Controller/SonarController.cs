@@ -4,9 +4,9 @@ using UnityEngine;
 public class SonarController : NetworkBehaviour
 {
     // Prefab representing the sonar
-    [SerializeField] private GameObject m_prefab;
+    [SerializeField] private GameObject m_prefab = null;
     // Sonar cooldown in seconds
-    [SerializeField] private float m_cooldown;
+    [SerializeField] private float m_cooldown = 0;
     // Amount of energy a sonar will consume
     public int Cost;
     // The next time the entity will be able to use the sonar, in seconds

@@ -9,10 +9,10 @@ public class LobbyManager : NetworkLobbyManager
     private bool m_showStartButton;
     private bool m_isConnecting;
     private string m_connectionText;
-    [SerializeField] private Canvas m_multiplayerMenu;
-    [SerializeField] private Canvas m_lobbyMenu;
-    [SerializeField] private Canvas m_mapConfiguration;
-    [SerializeField] private Button m_buttonStart;
+
+    [SerializeField] private Canvas m_multiplayerMenu = null;
+    [SerializeField] private Canvas m_lobbyMenu = null;
+    [SerializeField] private Button m_buttonStart = null;
 
     private void OnEnable()
     {

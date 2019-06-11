@@ -14,10 +14,9 @@ public abstract class Soldier : NetworkBehaviour
     public Stat EnergyStat;
 
     [SerializeField] protected Stat m_healthStat;
-
+    [SerializeField] protected GameObject m_spotLight;
     protected HeadController m_headController;
     protected Gun m_gun;
-    [SerializeField] protected GameObject m_spotLight;
     protected Renderer m_renderer;
     protected float m_deathTime;
     protected int m_updateCount;
@@ -36,6 +35,15 @@ public abstract class Soldier : NetworkBehaviour
         if (isServer)
         {
             GameManager.RemovePlayer(this);
+        }
+
+        // When a soldier leaves the game, OnCollisionExit is not triggered, this variable has to be reset manually
+        foreach (Soldier soldier in TeamManager.GetAllPlayers())
+        {
+            if (soldier != null)
+            {
+                soldier.gameObject.GetComponent<Rigidbody>().isKinematic = false;
+            }
         }
     }
 
@@ -96,7 +104,7 @@ public abstract class Soldier : NetworkBehaviour
     [Command]
     protected void CmdRespawn()
     {
-        Vector2Int spawnPoint = BoardManager.GetMap().GetSpawnPoint();
+        Vector2Int spawnPoint = BoardManager.GetMap().GetSpawnPoint(Team);
         RpcRespawn(spawnPoint);
     }
 
@@ -176,6 +184,7 @@ public abstract class Soldier : NetworkBehaviour
         {
             RpcAddKill(playerId);
             RpcDead();
+            GetComponent<BotController>()?.DisableScripts();
         }
     }
 
@@ -214,7 +223,7 @@ public abstract class Soldier : NetworkBehaviour
             if (bullet.ShooterId != transform.name) // Don't light up when you're hit by your own bullet.
             {
                 RpcShowSpotLight();
-                if (shooter.Team != this.Team) // Don't take damage from friendly fire.
+                if (shooter.Team != Team) // Don't take damage from friendly fire.
                 {
                     TakeDamage(bullet.Damage, bullet.ShooterId);
                 }

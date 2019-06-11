@@ -32,7 +32,7 @@ public class BreakableWall : NetworkBehaviour
     private void RpcDestroyWall()
     {
         Destroy(gameObject);
-        if(WallDestroyedHandler != null)
+        if (WallDestroyedHandler != null)
         {
             Vector3 position = gameObject.transform.position;
             Vector2Int coordinates = new Vector2Int((int)position.x, (int)position.z);

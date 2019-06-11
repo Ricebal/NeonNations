@@ -2,11 +2,11 @@
 
 public class ExplosionLight : MonoBehaviour
 {
-    [SerializeField] private float m_rangeMultiplier;
-    [SerializeField] private float m_intensityMultiplier;
-    [SerializeField] private float m_maxRangeForSoldierLight;
-    [SerializeField] private Light m_lightForMap;
-    [SerializeField] private Light m_lightForSoldiers;
+    [SerializeField] private float m_rangeMultiplier = 0;
+    [SerializeField] private float m_intensityMultiplier = 0;
+    [SerializeField] private float m_maxRangeForSoldierLight = 0;
+    [SerializeField] private Light m_lightForMap = null;
+    [SerializeField] private Light m_lightForSoldiers = null;
 
     public const float LIFETIME = 0.5f;
 

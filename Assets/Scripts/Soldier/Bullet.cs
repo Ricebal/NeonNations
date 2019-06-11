@@ -8,13 +8,13 @@ public class Bullet : MonoBehaviour
     public string ShooterId;
 
     // Bullet speed
-    [SerializeField] private float Speed;
+    [SerializeField] private float Speed = 0;
     // Time in seconds before the bullet is destroyed
-    [SerializeField] private float LivingTime;
+    [SerializeField] private float LivingTime = 0;
     // The explosion on impact
-    [SerializeField] private GameObject HitPrefab;
+    [SerializeField] private GameObject HitPrefab = null;
     // The impact on a reflector
-    [SerializeField] private GameObject ReflectorImpactPrefab;
+    [SerializeField] private GameObject ReflectorImpactPrefab = null;
 
     // Bullet's radius, used for sphere cast
     private float m_radius;
@@ -151,7 +151,7 @@ public class Bullet : MonoBehaviour
     {
         //instantiate reflector impact
         Quaternion rotation;
-        if(normal == Vector3.zero)
+        if (normal == Vector3.zero)
         {
             rotation = new Quaternion(0, 0, 0, 0);
         }
