@@ -104,7 +104,7 @@ public class Map
         for (int i = 0; i < floorTiles.Count; i++)
         {
             bool placeable = true;
-            float currentTileMaxDistance = 0;
+            float currentTileMinDistance = float.PositiveInfinity;
 
             List<Soldier> enemies = TeamManager.GetAliveEnemiesByTeam(team.Id);
             for (int j = 0; j < enemies.Count; j++)
@@ -114,10 +114,10 @@ public class Map
                 if (distance < m_preferredDistanceFromEnemies)
                 {
                     placeable = false;
-                    // set the largest possible distance
-                    if (distance > currentTileMaxDistance)
+                    // set the minimum possible distance
+                    if (distance < currentTileMinDistance)
                     {
-                        currentTileMaxDistance = distance;
+                        currentTileMinDistance = distance;
                     }
                 }
             }
@@ -130,7 +130,7 @@ public class Map
                 }
                 else
                 {
-                    possiblePositions.Add(new KeyValuePair<Vector2Int, float>(floorTiles[i], currentTileMaxDistance));
+                    possiblePositions.Add(new KeyValuePair<Vector2Int, float>(floorTiles[i], currentTileMinDistance));
                 }
             }
         }
