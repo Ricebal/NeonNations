@@ -80,7 +80,7 @@ public class LobbyManager : NetworkLobbyManager
     public override void OnClientError(NetworkConnection conn, int errorCode)
     {
         UnityEngine.Networking.NetworkError error = (UnityEngine.Networking.NetworkError)errorCode;
-        InfoText = "Connection failed due to error: " + error.ToString(); ;
+        InfoText = "Connection failed due to error: " + error.ToString();
     }
 
     public override void OnLobbyServerPlayersReady()
@@ -93,6 +93,15 @@ public class LobbyManager : NetworkLobbyManager
         else
         {
             m_showStartButton = true;
+        }
+    }
+
+    public override void OnServerDisconnect(NetworkConnection conn)
+    {
+        if (SceneManager.GetActiveScene().name == GameplayScene)
+        {
+            GameManager.RemovePlayer(conn.playerController.gameObject.GetComponent<Soldier>());
+            base.OnServerDisconnect(conn);
         }
     }
 
