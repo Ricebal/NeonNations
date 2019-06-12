@@ -1,5 +1,5 @@
-﻿using Mirror;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Mirror;
 using TMPro;
 using UnityEngine;
 
@@ -32,15 +32,27 @@ public class LobbyConfigMenu : NetworkBehaviour
         // Do not display the configuration if the player is not the host
         if (!isServer)
         {
+            gameObject.SetActive(false);
             return;
         }
 
         gameObject.SetActive(true);
 
         // Dictionary that contains the name of the option to configure associated with its value
-        m_mapOptions = new Dictionary<string, int> { { "Map width", m_mapWidth }, { "Map height", m_mapHeight }, { "Max room amount", m_maxRoomAmount }, { "Max shortcut amount", m_maxShortcutAmount },
-            { "Min room length", m_minRoomLength }, { "Max room length", m_maxRoomLength }, {"Min tunnel length", m_minTunnelLength }, {"Max tunnel length", m_maxTunnelLength },
-            { "Tunnel width", m_tunnelWidth }, {"Breakable tunnel chance", m_breakableTunnelChance }, {"Shortcut min skip distance", m_shortcutMinSkipDistance }, {"Reflector area size", m_reflectorAreaSize } };
+        m_mapOptions = new Dictionary<string, int>
+        { { "Map width", m_mapWidth },
+            { "Map height", m_mapHeight },
+            { "Max room amount", m_maxRoomAmount },
+            { "Max shortcut amount", m_maxShortcutAmount },
+            { "Min room length", m_minRoomLength },
+            { "Max room length", m_maxRoomLength },
+            { "Min tunnel length", m_minTunnelLength },
+            { "Max tunnel length", m_maxTunnelLength },
+            { "Tunnel width", m_tunnelWidth },
+            { "Breakable tunnel chance", m_breakableTunnelChance },
+            { "Shortcut min skip distance", m_shortcutMinSkipDistance },
+            { "Reflector area size", m_reflectorAreaSize }
+        };
 
         foreach (KeyValuePair<string, int> mapOption in m_mapOptions)
         {
