@@ -8,6 +8,7 @@ public class LobbyManager : NetworkLobbyManager
 {
     public string InfoText;
     private bool m_showStartButton;
+
     [SerializeField] private Canvas m_multiplayerMenu = null;
     [SerializeField] private Canvas m_lobbyMenu = null;
     [SerializeField] private Canvas m_loadingScreen = null;

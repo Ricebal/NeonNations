@@ -87,7 +87,7 @@ GameObject:
   - component: {fileID: 471500581238333294}
   - component: {fileID: 471500581238333295}
   - component: {fileID: 471500581238333289}
-  - component: {fileID: 8056311969179406216}
+  - component: {fileID: 8769842627345254687}
   m_Layer: 5
   m_Name: LobbyPlayer
   m_TagString: Untagged
@@ -114,7 +114,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 900, y: 100}
+  m_SizeDelta: {x: 1000, y: 100}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &471500581238333293
 CanvasRenderer:
@@ -187,7 +187,7 @@ MonoBehaviour:
   Index: 0
   m_textUsername: {fileID: 471500581532448232}
   m_imageReady: {fileID: 471500580326855401}
---- !u!114 &8056311969179406216
+--- !u!114 &8769842627345254687
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -203,9 +203,9 @@ MonoBehaviour:
   m_MinWidth: -1
   m_MinHeight: -1
   m_PreferredWidth: -1
-  m_PreferredHeight: 100
-  m_FlexibleWidth: -1
-  m_FlexibleHeight: -1
+  m_PreferredHeight: -1
+  m_FlexibleWidth: 1
+  m_FlexibleHeight: 1
   m_LayoutPriority: 1
 --- !u!1 &471500581532448233
 GameObject:
@@ -242,7 +242,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
   m_AnchoredPosition: {x: 10, y: 0}
-  m_SizeDelta: {x: 890, y: 90}
+  m_SizeDelta: {x: 880, y: 90}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &471500581532448239
 CanvasRenderer:
