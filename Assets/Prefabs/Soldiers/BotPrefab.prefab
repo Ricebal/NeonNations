@@ -5240,7 +5240,7 @@ MonoBehaviour:
   syncInterval: 0.1
   Cost: 50
   m_soundVolume: 1
-  m_sonarSound: {fileID: 8300000, guid: 19c5549a899f1904fb2aa5f8a56030d8, type: 3}
+  m_sonarSound: {fileID: 8300000, guid: 93da9303193bd1448bae1507c1626abb, type: 3}
   m_prefab: {fileID: 4647958490886930736, guid: be7e8cfbb92a8f44b857f951d2f36f60,
     type: 3}
   m_cooldown: 1
