@@ -1,10 +1,11 @@
 ﻿using UnityEngine;
 
+[System.Serializable]
 public class Stat
 {
-    private int m_minValue;
-    private int m_maxValue;
-    private int m_currentValue;
+    [SerializeField] private int m_minValue;
+    [SerializeField] private int m_maxValue;
+    [SerializeField] private int m_currentValue;
 
     public Stat(int minValue, int maxValue)
     {
