@@ -7,12 +7,18 @@ public class BreakableWall : NetworkBehaviour
     public delegate void OnWallDestroyedDelegate(Vector2Int coordinates);
     public event OnWallDestroyedDelegate WallDestroyedHandler;
 
-    [SerializeField] protected Stat m_healthStat = null;
+    [SerializeField] private Stat m_healthStat = null;
     [SerializeField] private AudioClip m_hitSound = null;
     [SerializeField] private float m_hitSoundVolume = 0;
     [SerializeField] private AudioClip m_destroySound = null;
     [SerializeField] private float m_destroySoundVolume = 0;
     [SerializeField] private AudioSource m_audioSource;
+    [SerializeField] private int m_maxHealth = 50;
+
+    private void Awake()
+    {
+        m_healthStat = new Stat(0, m_maxHealth);
+    }
 
     // If the BreakableWall gets hit by a bullet, it will take damage. Will return true if the collider was a Bullet and the BreakableWall took damage.
     protected bool OnTriggerEnter(Collider collider)
@@ -32,14 +38,19 @@ public class BreakableWall : NetworkBehaviour
             }
             else // Play hit-sound.
             {
-                m_audioSource.pitch = Random.Range(0.75f, 1.25f);
-                m_audioSource.PlayOneShot(m_hitSound, m_hitSoundVolume);
+                RpcHitSound();
             }
             return true;
         }
         return false;
     }
 
+    [ClientRpc]
+    private void RpcHitSound()
+    {
+        m_audioSource.pitch = Random.Range(0.75f, 1.25f);
+        m_audioSource.PlayOneShot(m_hitSound, m_hitSoundVolume);
+    }
     [ClientRpc]
     private void RpcDestroyWall()
     {
@@ -67,6 +78,6 @@ public class BreakableWall : NetworkBehaviour
         audioSource.clip = m_destroySound;
         audioSource.volume = m_destroySoundVolume;
         audioSource.Play();
-        Destroy(audioSource, audioSource.clip.length);
+        Destroy(soundObject, audioSource.clip.length);
     }
 }

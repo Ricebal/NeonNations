@@ -5173,8 +5173,6 @@ GameObject:
   - component: {fileID: 878025824821367766}
   - component: {fileID: 1183313429465019345}
   - component: {fileID: 5442535361888930886}
-  - component: {fileID: 18416186091895302}
-  - component: {fileID: 7324937023197695252}
   - component: {fileID: 2656307798546998540}
   - component: {fileID: 8217748938549719913}
   - component: {fileID: 5337140830429242400}
@@ -5184,7 +5182,6 @@ GameObject:
   - component: {fileID: 3748597400768038582}
   - component: {fileID: 3502779857404287779}
   - component: {fileID: 4181552938502541959}
-  - component: {fileID: 4865724638616419167}
   m_Layer: 8
   m_Name: PlayerPrefab
   m_TagString: Player
@@ -5329,7 +5326,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   syncInterval: 0.1
-  m_energyStat: {fileID: 7324937023197695252}
 --- !u!114 &7305227545255766034
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5399,40 +5395,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Cost: 25
   Multiplier: 7.5
+  IsDashing: 0
   m_soundVolume: 0.3
   m_dashSound: {fileID: 8300000, guid: 1734a82c31491f74b9c0c9a28aadae13, type: 3}
   m_duration: 0.1
   m_cooldown: 1
---- !u!114 &18416186091895302
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6654271199680664771}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 85025aa8197f7e548b988dcf2c41a8f3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_minValue: 0
-  m_maxValue: 100
-  m_currentValue: 0
---- !u!114 &7324937023197695252
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6654271199680664771}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 85025aa8197f7e548b988dcf2c41a8f3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_minValue: 0
-  m_maxValue: 100
-  m_currentValue: 0
 --- !u!114 &2656307798546998540
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5445,8 +5412,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc8a6478df242ae45a24293502aefb68, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_healthStat: {fileID: 18416186091895302}
-  m_energyStat: {fileID: 7324937023197695252}
 --- !u!114 &8217748938549719913
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5469,9 +5434,15 @@ MonoBehaviour:
   Username: Unknown
   RespawnTime: 5
   IsDead: 0
-  EnergyStat: {fileID: 7324937023197695252}
+  HealthStat:
+    m_minValue: 0
+    m_maxValue: 100
+    m_currentValue: 100
+  EnergyStat:
+    m_minValue: 0
+    m_maxValue: 100
+    m_currentValue: 100
   m_energyReloadTime: 0.035
-  m_healthStat: {fileID: 18416186091895302}
   m_hitSound: {fileID: 8300000, guid: 271d717f5160150419fdf58ed4606d2f, type: 3}
   m_hitSoundVolume: 0.2
   m_deathSound: {fileID: 8300000, guid: 5e1382c7161098f4596fac9bd690d2c2, type: 3}
@@ -5479,6 +5450,8 @@ MonoBehaviour:
   m_defaultAudioSource: {fileID: 3502779857404287779}
   m_hitAudioSource: {fileID: 4181552938502541959}
   m_spotLight: {fileID: 4902440107425422421}
+  m_maxHealth: 100
+  m_maxEnergy: 100
 --- !u!114 &5337140830429242400
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5753,14 +5726,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!81 &4865724638616419167
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6654271199680664771}
-  m_Enabled: 1
 --- !u!1 &6716781768823966986
 GameObject:
   m_ObjectHideFlags: 0
