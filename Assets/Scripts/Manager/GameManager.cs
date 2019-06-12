@@ -15,23 +15,39 @@ public class GameManager : NetworkBehaviour
     public float WaitingTimeAfterGameEnded; // The time after the game is finished, before it will return to the lobby.
 
     [SyncVar][SerializeField] private string m_seed = "";
-    [SyncVar][SerializeField] private int m_mapWidth = 50;
-    [SyncVar][SerializeField] private int m_mapHeight = 50;
-    [SyncVar][SerializeField] private int m_maxRoomAmount = 100;
-    [SyncVar][SerializeField] private int m_maxShortcutAmount = 10;
-    [SyncVar][SerializeField] private int m_minRoomLength = 6;
-    [SyncVar][SerializeField] private int m_maxRoomLength = 9;
-    [SyncVar][SerializeField] private int m_minTunnelLength = 1;
-    [SyncVar][SerializeField] private int m_maxTunnelLength = 7;
-    [SyncVar][SerializeField] private int m_tunnelWidth = 2;
-    [SyncVar][SerializeField] private int m_breakableTunnelChance = 20;
-    [SyncVar][SerializeField] private int m_shortcutMinSkipDistance = 20;
-    [SyncVar][SerializeField] private int m_reflectorAreaSize = 200;
+    [SyncVar][SerializeField] private int m_mapWidth;
+    [SyncVar][SerializeField] private int m_mapHeight;
+    [SyncVar][SerializeField] private int m_maxRoomAmount;
+    [SyncVar][SerializeField] private int m_maxShortcutAmount;
+    [SyncVar][SerializeField] private int m_minRoomLength;
+    [SyncVar][SerializeField] private int m_maxRoomLength;
+    [SyncVar][SerializeField] private int m_minTunnelLength;
+    [SyncVar][SerializeField] private int m_maxTunnelLength;
+    [SyncVar][SerializeField] private int m_tunnelWidth;
+    [SyncVar][SerializeField] private int m_breakableTunnelChance;
+    [SyncVar][SerializeField] private int m_shortcutMinSkipDistance;
+    [SyncVar][SerializeField] private int m_reflectorAreaSize;
     [SyncVar][SerializeField] private int m_outerWallWidth = 14;
     [SerializeField] private ParticleSystem m_fireworks = null;
 
     private GameObject m_endGameTextObject;
     private int m_localPlayersTeamId;
+
+    private void OnEnable()
+    {
+        m_mapWidth = LobbyConfigMenu.GetOptionValue("Map width");
+        m_mapHeight = LobbyConfigMenu.GetOptionValue("Map height");
+        m_maxRoomAmount = LobbyConfigMenu.GetOptionValue("Max room amount");
+        m_maxShortcutAmount = LobbyConfigMenu.GetOptionValue("Max shortcut amount");
+        m_minRoomLength = LobbyConfigMenu.GetOptionValue("Min room length");
+        m_maxRoomLength = LobbyConfigMenu.GetOptionValue("Max room length");
+        m_minTunnelLength = LobbyConfigMenu.GetOptionValue("Min tunnel length");
+        m_maxTunnelLength = LobbyConfigMenu.GetOptionValue("Max tunnel length");
+        m_tunnelWidth = LobbyConfigMenu.GetOptionValue("Tunnel width");
+        m_breakableTunnelChance = LobbyConfigMenu.GetOptionValue("Breakable tunnel chance");
+        m_shortcutMinSkipDistance = LobbyConfigMenu.GetOptionValue("Shortcut min skip distance");
+        m_reflectorAreaSize = LobbyConfigMenu.GetOptionValue("Reflector area size");
+    }
 
     private void Awake()
     {
