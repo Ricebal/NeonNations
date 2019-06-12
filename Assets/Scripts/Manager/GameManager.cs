@@ -15,18 +15,18 @@ public class GameManager : NetworkBehaviour
     public float WaitingTimeAfterGameEnded; // The time after the game is finished, before it will return to the lobby.
 
     [SyncVar][SerializeField] private string m_seed = "";
-    [SyncVar][SerializeField] private int m_mapWidth;
-    [SyncVar][SerializeField] private int m_mapHeight;
-    [SyncVar][SerializeField] private int m_maxRoomAmount;
-    [SyncVar][SerializeField] private int m_maxShortcutAmount;
-    [SyncVar][SerializeField] private int m_minRoomLength;
-    [SyncVar][SerializeField] private int m_maxRoomLength;
-    [SyncVar][SerializeField] private int m_minTunnelLength;
-    [SyncVar][SerializeField] private int m_maxTunnelLength;
-    [SyncVar][SerializeField] private int m_tunnelWidth;
-    [SyncVar][SerializeField] private int m_breakableTunnelChance;
-    [SyncVar][SerializeField] private int m_shortcutMinSkipDistance;
-    [SyncVar][SerializeField] private int m_reflectorAreaSize;
+    [SyncVar] private int m_mapWidth;
+    [SyncVar] private int m_mapHeight;
+    [SyncVar] private int m_maxRoomAmount;
+    [SyncVar] private int m_maxShortcutAmount;
+    [SyncVar] private int m_minRoomLength;
+    [SyncVar] private int m_maxRoomLength;
+    [SyncVar] private int m_minTunnelLength;
+    [SyncVar] private int m_maxTunnelLength;
+    [SyncVar] private int m_tunnelWidth;
+    [SyncVar] private int m_breakableTunnelChance;
+    [SyncVar] private int m_shortcutMinSkipDistance;
+    [SyncVar] private int m_reflectorAreaSize;
     [SyncVar][SerializeField] private int m_outerWallWidth = 14;
     [SerializeField] private ParticleSystem m_fireworks = null;
 
@@ -35,6 +35,11 @@ public class GameManager : NetworkBehaviour
 
     private void OnEnable()
     {
+        if (!isServer)
+        {
+            return;
+        }
+
         m_mapWidth = LobbyConfigMenu.GetOptionValue("Map width");
         m_mapHeight = LobbyConfigMenu.GetOptionValue("Map height");
         m_maxRoomAmount = LobbyConfigMenu.GetOptionValue("Max room amount");

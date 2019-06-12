@@ -47,8 +47,6 @@ public class LobbyConfigMenu : NetworkBehaviour
             return;
         }
 
-        //enabled = true;
-
         // Dictionary that contains the name of the option to configure associated with its value
         MapOptions = new Dictionary<string, int> { { "Map width", m_mapWidth }, { "Map height", m_mapHeight },
             { "Max room amount", m_maxRoomAmount }, { "Max shortcut amount", m_maxShortcutAmount },
