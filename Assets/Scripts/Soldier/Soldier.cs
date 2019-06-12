@@ -8,18 +8,18 @@ public abstract class Soldier : NetworkBehaviour
     [SyncVar] public Score PlayerScore = new Score();
     public float Speed;
     public string Username;
-    // The respawn time of the soldier
     public float RespawnTime;
     public bool IsDead = false;
     public Stat HealthStat = new Stat(0, 100);
     public Stat EnergyStat = new Stat(0, 100);
 
+    [SerializeField] protected float m_energyReloadTime;
     [SerializeField] protected GameObject m_spotLight;
     protected HeadController m_headController;
     protected Gun m_gun;
     protected Renderer m_renderer;
     protected float m_deathTime;
-    protected int m_updateCount;
+    protected float m_lastEnergyReload;
 
     protected void Start()
     {
@@ -27,7 +27,6 @@ public abstract class Soldier : NetworkBehaviour
         {
             GameManager.AddPlayer(this);
         }
-        m_updateCount = 0;
     }
 
     protected void OnDestroy()
@@ -56,11 +55,11 @@ public abstract class Soldier : NetworkBehaviour
 
     protected void FixedUpdate()
     {
-        if (m_updateCount % 4 == 0)
+        if (Time.time - m_lastEnergyReload >= m_energyReloadTime)
         {
+            m_lastEnergyReload = Time.time;
             EnergyStat.Add(1);
         }
-        m_updateCount++;
     }
 
     protected void Update()
