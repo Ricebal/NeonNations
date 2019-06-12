@@ -10,16 +10,24 @@ public abstract class Soldier : NetworkBehaviour
     public string Username;
     public float RespawnTime;
     public bool IsDead = false;
-    public Stat EnergyStat;
+    public Stat HealthStat = new Stat(0, 100);
+    public Stat EnergyStat = new Stat(0, 100);
 
     [SerializeField] protected float m_energyReloadTime;
-    [SerializeField] protected Stat m_healthStat;
     [SerializeField] protected GameObject m_spotLight;
+    [SerializeField] protected int m_maxHealth = 100;
+    [SerializeField] protected int m_maxEnergy = 100;
     protected HeadController m_headController;
     protected Gun m_gun;
     protected Renderer m_renderer;
     protected float m_deathTime;
     protected float m_lastEnergyReload;
+
+    private void Awake()
+    {
+        HealthStat = new Stat(0, m_maxHealth);
+        EnergyStat = new Stat(0, m_maxEnergy);
+    }
 
     protected void Start()
     {
@@ -120,7 +128,7 @@ public abstract class Soldier : NetworkBehaviour
         m_renderer.material.color = Color;
         m_headController?.SetColor(Color);
         m_gun?.SetColor(Color);
-        m_healthStat.Reset();
+        HealthStat.Reset();
         EnergyStat.Reset();
         IsDead = false;
     }
@@ -179,7 +187,7 @@ public abstract class Soldier : NetworkBehaviour
     {
         RpcTakeDamage(damage);
         // If the soldier has no remaining health and is not dead yet, he will die
-        if (!IsDead && m_healthStat.GetValue() <= 0)
+        if (!IsDead && HealthStat.GetValue() <= 0)
         {
             RpcAddKill(playerId);
             RpcDead();
@@ -190,7 +198,7 @@ public abstract class Soldier : NetworkBehaviour
     [ClientRpc]
     protected void RpcTakeDamage(int damage)
     {
-        m_healthStat.Subtract(damage);
+        HealthStat.Subtract(damage);
     }
 
     [ClientRpc]
