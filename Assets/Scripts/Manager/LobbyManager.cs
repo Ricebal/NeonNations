@@ -101,8 +101,8 @@ public class LobbyManager : NetworkLobbyManager
         if (SceneManager.GetActiveScene().name == GameplayScene)
         {
             GameManager.RemovePlayer(conn.playerController.gameObject.GetComponent<Soldier>());
-            base.OnServerDisconnect(conn);
         }
+        base.OnServerDisconnect(conn);
     }
 
     public override void OnGUI()
