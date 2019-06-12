@@ -10,8 +10,8 @@ public abstract class Soldier : NetworkBehaviour
     public string Username;
     public float RespawnTime;
     public bool IsDead = false;
-    public Stat HealthStat = new Stat(0, 100);
-    public Stat EnergyStat = new Stat(0, 100);
+    public Stat HealthStat;
+    public Stat EnergyStat;
 
     [SerializeField] protected float m_energyReloadTime;
     [SerializeField] protected GameObject m_spotLight;
