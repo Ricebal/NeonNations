@@ -9,7 +9,6 @@ public class LobbyConfigMenu : NetworkBehaviour
 
     [SerializeField] private GameObject m_optionItemPrefab = null;
     [SerializeField] private GameObject m_optionList = null;
-    [SerializeField] private GameObject m_configTitle = null;
 
     private Dictionary<string, int> m_mapOptions;
 
@@ -37,7 +36,6 @@ public class LobbyConfigMenu : NetworkBehaviour
         }
 
         gameObject.SetActive(true);
-        m_configTitle.SetActive(true);
 
         // Dictionary that contains the name of the option to configure associated with its value
         m_mapOptions = new Dictionary<string, int> { { "Map width", m_mapWidth }, { "Map height", m_mapHeight }, { "Max room amount", m_maxRoomAmount }, { "Max shortcut amount", m_maxShortcutAmount },
