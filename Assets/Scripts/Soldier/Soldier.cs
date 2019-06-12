@@ -39,11 +39,6 @@ public abstract class Soldier : NetworkBehaviour
 
     protected void OnDestroy()
     {
-        if (isServer)
-        {
-            GameManager.RemovePlayer(this);
-        }
-
         // When a soldier leaves the game, OnCollisionExit is not triggered, this variable has to be reset manually
         foreach (Soldier soldier in TeamManager.GetAllPlayers())
         {
