@@ -32,17 +32,29 @@ public class LobbyBotsConfig : NetworkBehaviour
 
         if (button.IncrementalValue == 1)
         {
-            GameObject lobbyBot = Instantiate(m_lobbyPlayerPrefab, GameObject.Find("Players").transform);
-            lobbyBot.name = "Bot " + amountOfBots;
-            lobbyBot.GetComponentInChildren<TextMeshProUGUI>().text = "Bot";
-            lobbyBot.transform.Find("ImageReady").gameObject.SetActive(true);
+            RpcAddLobbyBot(amountOfBots);
         }
         else
         {
-            Destroy(GameObject.Find("Bot " + (amountOfBots + 1)));
+            RpcRemoveLobbyBot(amountOfBots + 1);
         }
 
         LobbyConfigMenu.Singleton.AmountOfBots = amountOfBots;
         button.transform.parent.Find("Value").GetComponent<TextMeshProUGUI>().text = amountOfBots.ToString();
+    }
+
+    [ClientRpc]
+    private void RpcAddLobbyBot(int id)
+    {
+        GameObject lobbyBot = Instantiate(m_lobbyPlayerPrefab, GameObject.Find("Players").transform);
+        lobbyBot.name = "Bot " + id;
+        lobbyBot.GetComponentInChildren<TextMeshProUGUI>().text = "Bot";
+        lobbyBot.transform.Find("ImageReady").gameObject.SetActive(true);
+    }
+
+    [ClientRpc]
+    private void RpcRemoveLobbyBot(int id)
+    {
+        Destroy(GameObject.Find("Bot " + id));
     }
 }
