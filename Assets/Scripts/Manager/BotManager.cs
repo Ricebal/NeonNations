@@ -6,7 +6,7 @@ public class BotManager : NetworkBehaviour
     public static BotManager Singleton;
 
     // Prefab representing the bot
-    [SerializeField] private GameObject m_botPrefab;
+    [SerializeField] private GameObject m_botPrefab = null;
 
     private void Awake()
     {

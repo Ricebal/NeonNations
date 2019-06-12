@@ -7,7 +7,7 @@ public class LobbyConfigMenu : NetworkBehaviour
     public static LobbyConfigMenu Singleton;
 
     public Dictionary<string, int> MapOptions;
-    public int AmountOfBots = 0;
+    [SyncVar(hook = nameof(OnAmountOfBots))] public int AmountOfBots = 0;
 
     private int m_mapWidth = 50;
     private int m_mapHeight = 50;
@@ -70,5 +70,21 @@ public class LobbyConfigMenu : NetworkBehaviour
     public static int GetAmountOfBots()
     {
         return Singleton.AmountOfBots;
+    }
+
+    // Called when the amount of bots is changed, used to synchronize lobby bots with all clients
+    private void OnAmountOfBots(int newAmountOfBots)
+    {
+        for (int i = 0; i < Mathf.Abs(AmountOfBots - newAmountOfBots); i++)
+        {
+            if (newAmountOfBots > AmountOfBots)
+            {
+                LobbyBotsConfig.AddLobbyBot();
+            }
+            else
+            {
+                LobbyBotsConfig.RemoveLobbyBot();
+            }
+        }
     }
 }
