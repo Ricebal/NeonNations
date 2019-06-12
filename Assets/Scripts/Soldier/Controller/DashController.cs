@@ -2,6 +2,7 @@
 
 public class DashController : MonoBehaviour
 {
+    public bool IsDashing = false;
     public float Multiplier = 7.5f;
     public int Cost = 20;
     [SerializeField] private float m_duration = 0.1f;
@@ -15,10 +16,23 @@ public class DashController : MonoBehaviour
         m_afterImageController = GetComponent<AfterImageController>();
     }
 
+    private void FixedUpdate()
+    {
+        if (IsDashing)
+        {
+            IsDashing = Time.time <= m_start + m_duration;
+        }
+        else if(m_afterImageController.IsGenerating())
+        {
+            EndDash();
+        }
+    }
+
     // Start the dash, set speed multiplier and afterimages
     public void StartDash()
     {
         m_start = Time.time;
+        IsDashing = true;
         m_currentMultiplier = Multiplier;
         m_afterImageController.StartAfterImages();
     }
@@ -38,18 +52,5 @@ public class DashController : MonoBehaviour
     public float GetMultiplier()
     {
         return m_currentMultiplier;
-    }
-
-    public bool IsDashing()
-    {
-        return !(Time.time > m_start + m_duration);
-    }
-
-    private void FixedUpdate()
-    {
-        if (!IsDashing() && m_afterImageController.IsGenerating())
-        {
-            EndDash();
-        }
     }
 }
