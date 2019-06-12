@@ -35,11 +35,6 @@ public class GameManager : NetworkBehaviour
 
     private void OnEnable()
     {
-        if (!isServer)
-        {
-            return;
-        }
-
         m_mapWidth = LobbyConfigMenu.GetOptionValue("Map width");
         m_mapHeight = LobbyConfigMenu.GetOptionValue("Map height");
         m_maxRoomAmount = LobbyConfigMenu.GetOptionValue("Max room amount");

@@ -8,6 +8,11 @@ public class LobbyMapConfig : NetworkBehaviour
     [SerializeField] private GameObject m_optionItemPrefab = null;
     [SerializeField] private GameObject m_mapOptionList = null;
 
+    private void Awake()
+    {
+        gameObject.SetActive(false);
+    }
+
     private void Start()
     {
         // Do not display the configuration if the player is not the host
