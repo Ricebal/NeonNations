@@ -5056,15 +5056,24 @@ MonoBehaviour:
   Username: Bot
   RespawnTime: 5
   IsDead: 0
-  EnergyStat: {fileID: 8274355627883046309}
+  HealthStat:
+    m_minValue: 0
+    m_maxValue: 100
+    m_currentValue: 100
+  EnergyStat:
+    m_minValue: 0
+    m_maxValue: 100
+    m_currentValue: 100
   m_energyReloadTime: 0.035
   m_hitSound: {fileID: 8300000, guid: 271d717f5160150419fdf58ed4606d2f, type: 3}
   m_hitSoundVolume: 0.2
-  m_deathSound: {fileID: 8300000, guid: 5e1382c7161098f4596fac9bd690d2c2, type: 3}
+  m_deathSound: {fileID: 8300000, guid: 27f362024502ba449a627d3bbff864c7, type: 3}
   m_deathSoundVolume: 0.4
   m_defaultAudioSource: {fileID: 4459743080932989945}
   m_hitAudioSource: {fileID: 509808131393293737}
   m_spotLight: {fileID: 9078111855217853513}
+  m_maxHealth: 100
+  m_maxEnergy: 100
 --- !u!114 &3362813290604796342
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5225,6 +5234,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Cost: 25
   Multiplier: 7.5
+  IsDashing: 0
   m_soundVolume: 0.3
   m_dashSound: {fileID: 8300000, guid: 1734a82c31491f74b9c0c9a28aadae13, type: 3}
   m_duration: 0.5

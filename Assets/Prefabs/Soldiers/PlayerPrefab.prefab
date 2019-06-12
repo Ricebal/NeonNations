@@ -5445,7 +5445,7 @@ MonoBehaviour:
   m_energyReloadTime: 0.035
   m_hitSound: {fileID: 8300000, guid: 271d717f5160150419fdf58ed4606d2f, type: 3}
   m_hitSoundVolume: 0.2
-  m_deathSound: {fileID: 8300000, guid: 5e1382c7161098f4596fac9bd690d2c2, type: 3}
+  m_deathSound: {fileID: 8300000, guid: 27f362024502ba449a627d3bbff864c7, type: 3}
   m_deathSoundVolume: 0.4
   m_defaultAudioSource: {fileID: 3502779857404287779}
   m_hitAudioSource: {fileID: 4181552938502541959}
