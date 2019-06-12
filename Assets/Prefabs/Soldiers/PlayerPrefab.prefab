@@ -5385,6 +5385,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 421888c4585966b489533fd75af27991, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsDashing: 0
   Multiplier: 7.5
   Cost: 25
   m_duration: 0.1
@@ -5423,9 +5424,18 @@ MonoBehaviour:
   Username: Unknown
   RespawnTime: 5
   IsDead: 0
-  EnergyStat: {fileID: 7324937023197695252}
+  HealthStat:
+    m_minValue: 0
+    m_maxValue: 100
+    m_currentValue: 100
+  EnergyStat:
+    m_minValue: 0
+    m_maxValue: 100
+    m_currentValue: 100
   m_energyReloadTime: 0.035
   m_spotLight: {fileID: 4902440107425422421}
+  m_maxHealth: 100
+  m_maxEnergy: 100
 --- !u!114 &5337140830429242400
 MonoBehaviour:
   m_ObjectHideFlags: 0

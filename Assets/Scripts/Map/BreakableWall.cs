@@ -6,7 +6,7 @@ public class BreakableWall : NetworkBehaviour
     public delegate void OnWallDestroyedDelegate(Vector2Int coordinates);
     public event OnWallDestroyedDelegate WallDestroyedHandler;
 
-    [SerializeField] private int m_maxHealth = 50;
+    [SerializeField] private int m_maxHealth = 0;
     private Stat m_healthStat;
 
     private void Awake()
