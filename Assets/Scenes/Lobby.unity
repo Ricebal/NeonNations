@@ -283,6 +283,8 @@ GameObject:
   m_Component:
   - component: {fileID: 223766591}
   - component: {fileID: 223766592}
+  - component: {fileID: 223766594}
+  - component: {fileID: 223766593}
   m_Layer: 5
   m_Name: MapPanel
   m_TagString: Untagged
@@ -319,6 +321,38 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 223766590}
   m_CullTransparentMesh: 0
+--- !u!114 &223766593
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 223766590}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f592e0950db630345bcb331922c00e6f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncInterval: 0.1
+  m_optionItemPrefab: {fileID: 1532991240403960069, guid: 7aaa1fc4cfcab5e44ac0c5da5bce0ca5,
+    type: 3}
+  m_mapOptionList: {fileID: 7322040214021619323}
+--- !u!114 &223766594
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 223766590}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serverOnly: 0
+  localPlayerAuthority: 0
+  m_AssetId: 
+  m_SceneId: 4126447877
 --- !u!1 &460265974
 GameObject:
   m_ObjectHideFlags: 0
@@ -828,7 +862,7 @@ PrefabInstance:
     - target: {fileID: 2194570336782102791, guid: 7aaa1fc4cfcab5e44ac0c5da5bce0ca5,
         type: 3}
       propertyPath: m_incrementalCooldown
-      value: 0.25
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 1532991241023043763, guid: 7aaa1fc4cfcab5e44ac0c5da5bce0ca5,
         type: 3}
@@ -873,7 +907,7 @@ PrefabInstance:
     - target: {fileID: 7032319364288905089, guid: 7aaa1fc4cfcab5e44ac0c5da5bce0ca5,
         type: 3}
       propertyPath: m_incrementalCooldown
-      value: 0.25
+      value: 0.1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7aaa1fc4cfcab5e44ac0c5da5bce0ca5, type: 3}
@@ -1037,7 +1071,7 @@ PrefabInstance:
     - target: {fileID: 4026452184194340987, guid: 8dc18a893d3dd76408cbae082c0509cc,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.0000050348367
+      value: 0.000031607262
       objectReference: {fileID: 0}
     - target: {fileID: 4026452184194340987, guid: 8dc18a893d3dd76408cbae082c0509cc,
         type: 3}
@@ -1404,6 +1438,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1492818575}
   - component: {fileID: 1492818576}
+  - component: {fileID: 1492818578}
+  - component: {fileID: 1492818577}
   m_Layer: 5
   m_Name: BotsPanel
   m_TagString: Untagged
@@ -1440,6 +1476,39 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1492818574}
   m_CullTransparentMesh: 0
+--- !u!114 &1492818577
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1492818574}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a8f1f6b8df92eb742a723701298f4309, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncInterval: 0.1
+  m_botsButtonUp: {fileID: 727589161}
+  m_botsButtonDown: {fileID: 727589160}
+  m_lobbyPlayerPrefab: {fileID: 471500581238333291, guid: e4f395fdbd1e4af45b4c7c4c2a2ec823,
+    type: 3}
+--- !u!114 &1492818578
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1492818574}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serverOnly: 0
+  localPlayerAuthority: 0
+  m_AssetId: 
+  m_SceneId: 1608761097
 --- !u!114 &1525461146
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1453,11 +1522,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   syncInterval: 0.1
-  m_optionItemPrefab: {fileID: 1532991240403960069, guid: 7aaa1fc4cfcab5e44ac0c5da5bce0ca5,
-    type: 3}
-  m_mapOptionList: {fileID: 7322040214021619323}
-  m_botsButtonUp: {fileID: 727589161}
-  m_botsButtonDown: {fileID: 727589160}
+  AmountOfBots: 0
 --- !u!114 &1525461147
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1473,7 +1538,7 @@ MonoBehaviour:
   serverOnly: 0
   localPlayerAuthority: 0
   m_AssetId: 
-  m_SceneId: 3975729217
+  m_SceneId: 492230290
 --- !u!1 &1556254765
 GameObject:
   m_ObjectHideFlags: 0
@@ -1954,7 +2019,7 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
-          m_BoolArgument: 1
+          m_BoolArgument: 0
         m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
@@ -2247,7 +2312,7 @@ MonoBehaviour:
   serverOnly: 0
   localPlayerAuthority: 0
   m_AssetId: 
-  m_SceneId: 3104791275
+  m_SceneId: 922359229
 --- !u!114 &2138997252
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2263,7 +2328,7 @@ MonoBehaviour:
   m_Padding:
     m_Left: 10
     m_Right: 10
-    m_Top: 0
+    m_Top: 10
     m_Bottom: 0
   m_ChildAlignment: 0
   m_Spacing: 0
@@ -2890,7 +2955,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!222 &7322040213798787875
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -3284,7 +3349,7 @@ MonoBehaviour:
   serverOnly: 0
   localPlayerAuthority: 0
   m_AssetId: 
-  m_SceneId: 3543959416
+  m_SceneId: 2970746758
 --- !u!222 &7322040214021619303
 CanvasRenderer:
   m_ObjectHideFlags: 0
