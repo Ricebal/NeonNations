@@ -5470,6 +5470,7 @@ MonoBehaviour:
   RespawnTime: 5
   IsDead: 0
   EnergyStat: {fileID: 7324937023197695252}
+  m_energyReloadTime: 0.035
   m_healthStat: {fileID: 18416186091895302}
   m_hitSound: {fileID: 8300000, guid: 271d717f5160150419fdf58ed4606d2f, type: 3}
   m_hitSoundVolume: 0.2
