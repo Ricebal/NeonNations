@@ -39,7 +39,11 @@ public class Bot : Soldier
             if (Time.time - m_deathTime >= RespawnTime)
             {
                 CmdRespawn();
-                GetComponent<BotController>().EnableScripts();
+                // Only able to respawn if the game isn't finished yet.
+                if (!GameManager.Singleton.GameFinished)
+                {
+                    GetComponent<BotController>().EnableScripts();
+                }
             }
 
         }

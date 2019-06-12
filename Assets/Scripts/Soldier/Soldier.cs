@@ -111,8 +111,12 @@ public abstract class Soldier : NetworkBehaviour
     [Command]
     protected void CmdRespawn()
     {
-        Vector2Int spawnPoint = BoardManager.GetMap().GetSpawnPoint(Team);
-        RpcRespawn(spawnPoint);
+        // Only able to respawn if the game isn't finished yet.
+        if (!GameManager.Singleton.GameFinished)
+        {
+            Vector2Int spawnPoint = BoardManager.GetMap().GetSpawnPoint(Team);
+            RpcRespawn(spawnPoint);
+        }
     }
 
     [ClientRpc]
