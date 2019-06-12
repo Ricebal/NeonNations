@@ -12,12 +12,7 @@ public class BreakableWall : NetworkBehaviour
     [SerializeField] private float m_hitSoundVolume = 0;
     [SerializeField] private AudioClip m_destroySound = null;
     [SerializeField] private float m_destroySoundVolume = 0;
-    private AudioSource m_audioSource;
-
-    private void Start()
-    {
-        m_audioSource = GetComponent<AudioSource>();
-    }
+    [SerializeField] private AudioSource m_audioSource;
 
     // If the BreakableWall gets hit by a bullet, it will take damage. Will return true if the collider was a Bullet and the BreakableWall took damage.
     protected bool OnTriggerEnter(Collider collider)

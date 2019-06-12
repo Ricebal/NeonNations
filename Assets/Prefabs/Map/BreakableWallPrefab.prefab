@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 2261283144201084859}
   - component: {fileID: 7078646403582769646}
   m_Layer: 0
-  m_Name: BreakableWall
+  m_Name: BreakableWallPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -128,6 +128,7 @@ MonoBehaviour:
   m_hitSoundVolume: 1
   m_destroySound: {fileID: 8300000, guid: 36176e5bf96faa843b8bd7ed27498d7d, type: 3}
   m_destroySoundVolume: 1
+  m_audioSource: {fileID: 7078646403582769646}
 --- !u!114 &2261283144201084859
 MonoBehaviour:
   m_ObjectHideFlags: 0

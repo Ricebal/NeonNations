@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 7759782867531507899}
   - component: {fileID: 6422582041169291642}
   m_Layer: 0
-  m_Name: Reflector
+  m_Name: ReflectorPrefab
   m_TagString: Reflector
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -108,6 +108,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_hitSound: {fileID: 8300000, guid: f1142c99b1f960f42b1b1ea6961f13bd, type: 3}
   m_hitSoundVolume: 0.1
+  m_audioSource: {fileID: 6422582041169291642}
 --- !u!82 &6422582041169291642
 AudioSource:
   m_ObjectHideFlags: 0
