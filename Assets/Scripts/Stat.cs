@@ -2,8 +2,8 @@
 
 public class Stat
 {
-    private int m_minValue = 0;
-    private int m_maxValue = 0;
+    private int m_minValue;
+    private int m_maxValue;
     private int m_currentValue;
 
     public Stat(int minValue, int maxValue)
