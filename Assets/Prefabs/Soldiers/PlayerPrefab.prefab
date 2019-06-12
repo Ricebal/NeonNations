@@ -5173,6 +5173,8 @@ GameObject:
   - component: {fileID: 878025824821367766}
   - component: {fileID: 1183313429465019345}
   - component: {fileID: 5442535361888930886}
+  - component: {fileID: 18416186091895302}
+  - component: {fileID: 7324937023197695252}
   - component: {fileID: 2656307798546998540}
   - component: {fileID: 8217748938549719913}
   - component: {fileID: 5337140830429242400}
@@ -5324,6 +5326,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   syncInterval: 0.1
+  m_energyStat: {fileID: 7324937023197695252}
 --- !u!114 &7305227545255766034
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5389,6 +5392,36 @@ MonoBehaviour:
   Cost: 25
   m_duration: 0.1
   m_cooldown: 1
+--- !u!114 &18416186091895302
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6654271199680664771}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85025aa8197f7e548b988dcf2c41a8f3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_minValue: 0
+  m_maxValue: 100
+  m_currentValue: 0
+--- !u!114 &7324937023197695252
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6654271199680664771}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85025aa8197f7e548b988dcf2c41a8f3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_minValue: 0
+  m_maxValue: 100
+  m_currentValue: 0
 --- !u!114 &2656307798546998540
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5401,6 +5434,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc8a6478df242ae45a24293502aefb68, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_healthStat: {fileID: 18416186091895302}
+  m_energyStat: {fileID: 7324937023197695252}
 --- !u!114 &8217748938549719913
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5425,6 +5460,7 @@ MonoBehaviour:
   IsDead: 0
   EnergyStat: {fileID: 7324937023197695252}
   m_energyReloadTime: 0.035
+  m_healthStat: {fileID: 18416186091895302}
   m_spotLight: {fileID: 4902440107425422421}
 --- !u!114 &5337140830429242400
 MonoBehaviour:

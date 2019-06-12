@@ -3,8 +3,8 @@ using UnityEngine.UI;
 
 public class PlayerHUD : MonoBehaviour
 {
-    private Stat m_healthStat;
-    private Stat m_energyStat;
+    [SerializeField] private Stat m_healthStat = null;
+    [SerializeField] private Stat m_energyStat = null;
     private Slider m_healthSlider;
     private Slider m_energySlider;
 
@@ -12,9 +12,6 @@ public class PlayerHUD : MonoBehaviour
     {
         m_healthSlider = GameObject.Find("HealthSlider").GetComponent<Slider>();
         m_energySlider = GameObject.Find("EnergySlider").GetComponent<Slider>();
-        Soldier soldier = GetComponent<Soldier>();
-        m_healthStat = soldier.HealthStat;
-        m_energyStat = soldier.EnergyStat;
     }
 
     public void UpdateHUD()
