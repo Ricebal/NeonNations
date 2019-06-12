@@ -731,6 +731,12 @@ PrefabInstance:
       propertyPath: Teams.Array.data[0].Color.g
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4331448404734817720, guid: 1c80e058baf483248ad0940525f87605,
+        type: 3}
+      propertyPath: m_botPrefab
+      value: 
+      objectReference: {fileID: 6654271199680664771, guid: e2a0c09fe58275743a21d2b5cd539eb5,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1c80e058baf483248ad0940525f87605, type: 3}
 --- !u!1 &1593501448

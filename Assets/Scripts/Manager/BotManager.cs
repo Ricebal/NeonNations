@@ -5,9 +5,8 @@ public class BotManager : NetworkBehaviour
 {
     public static BotManager Singleton;
 
-    private const int AMOUNT_OF_BOTS = 2;
     // Prefab representing the bot
-    public GameObject Bot;
+    [SerializeField] private GameObject m_botPrefab;
 
     private void Awake()
     {
@@ -33,9 +32,9 @@ public class BotManager : NetworkBehaviour
             return;
         }
 
-        for (int i = 0; i < AMOUNT_OF_BOTS; i++)
+        for (int i = 0; i < LobbyConfigMenu.GetAmountOfBots(); i++)
         {
-            GameObject bot = Instantiate(Singleton.Bot, Vector3.zero, Quaternion.identity);
+            GameObject bot = Instantiate(Singleton.m_botPrefab, Vector3.zero, Quaternion.identity);
             NetworkServer.Spawn(bot);
             GameManager.AddPlayer(bot.GetComponent<Soldier>());
         }
