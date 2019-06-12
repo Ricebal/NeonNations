@@ -44,6 +44,7 @@ public class LobbyConfigMenu : NetworkBehaviour
         // Do not display the configuration if the player is not the host
         if (!isServer)
         {
+            gameObject.SetActive(false);
             return;
         }
 
