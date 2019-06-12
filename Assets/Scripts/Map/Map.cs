@@ -100,7 +100,6 @@ public class Map
         Shuffle(floorTiles);
         List<Soldier> enemies = TeamManager.GetAliveEnemiesByTeam(team.Id);
         // init list to be used when no floor tile is the right distance away from enemies
-        //List<KeyValuePair<Vector2Int, float>> possiblePositions = new List<KeyValuePair<Vector2Int, float>>();
         KeyValuePair<Vector2Int, float> bestSpawnPosition = new KeyValuePair<Vector2Int, float>(new Vector2Int(-1,-1), 0);
 
         for (int i = 0; i < floorTiles.Count; i++)
@@ -135,22 +134,9 @@ public class Map
                     {
                         bestSpawnPosition = new KeyValuePair<Vector2Int, float>(floorTiles[i], currentTileMinDistance);
                     }
-                    //possiblePositions.Add(new KeyValuePair<Vector2Int, float>(floorTiles[i], currentTileMinDistance));
                 }
             }
         }
-
-        // sort possible positions
-        //possiblePositions = possiblePositions.OrderByDescending(o => o.Value).ToList();
-        //for (int i = 0; i < possiblePositions.Count(); i++)
-        //{
-        //    if (ValidSpawnPoint(possiblePositions[i].Key))
-        //    {
-        //        return possiblePositions[i].Key;
-        //    }
-        //}
-
-        // returns -1,-1 if no valid floor tile was found
         return bestSpawnPosition.Key;
     }
 
