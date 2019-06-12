@@ -45,7 +45,7 @@ public class MapGenerator
         m_breakableTunnelChance = breakableTunnelChance;
         m_shortcutMinSkipDistance = shortcutMinSkipDistance;
         m_reflectorAreaSize = reflectorAreaSize;
-        m_spawnAreaMinSize = m_tunnelWidth * m_maxTunnelLength;
+        m_spawnAreaMinSize = Math.Min(m_tunnelWidth * m_maxTunnelLength, (int)Math.Pow(Math.Min(mapWidth, mapHeight),2));
     }
 
     /// <summary>

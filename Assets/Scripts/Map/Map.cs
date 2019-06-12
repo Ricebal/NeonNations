@@ -93,48 +93,48 @@ public class Map
         return new Vector2Int(-1, -1);
     }
 
-    public Vector2Int GetRandomFloorTileToSpawn(Team team)
+    public Vector2Int GetSpawnPoint(Team team)
     {
         // get all floor tiles and shuffle them
         List<Vector2Int> floorTiles = GetAllFloorTiles();
         Shuffle(floorTiles);
-        // init variables to be used when no floor tile is the right distance away from enemies
-        float maxDistance = 0;
-        Vector2Int bestSpawnPosition = new Vector2Int(-1, -1);
+        List<Soldier> enemies = TeamManager.GetAliveEnemiesByTeam(team.Id);
+        // init list to be used when no floor tile is the right distance away from enemies
+        KeyValuePair<Vector2Int, float> bestSpawnPosition = new KeyValuePair<Vector2Int, float>(new Vector2Int(-1, -1), 0);
 
         for (int i = 0; i < floorTiles.Count; i++)
         {
             bool placeable = true;
-            float currentTileMaxDistance = 0;
+            float currentTileMinDistance = float.PositiveInfinity;
 
-            List<Soldier> enemies = TeamManager.GetAliveEnemiesByTeam(team.Id);
             for (int j = 0; j < enemies.Count; j++)
             {
                 // check if enough distance from enemy
-                float distance = Vector3.Distance(enemies[j].transform.position, new Vector3(floorTiles[i].x, 0, floorTiles[j].y));
+                float distance = Vector3.Distance(enemies[j].transform.position, new Vector3(floorTiles[i].x, 0, floorTiles[i].y));
                 if (distance < m_preferredDistanceFromEnemies)
                 {
                     placeable = false;
-                }
-                else if (distance > currentTileMaxDistance)
-                {
-                    currentTileMaxDistance = distance;
+                    // set the minimum possible distance
+                    if (distance < currentTileMinDistance)
+                    {
+                        currentTileMinDistance = distance;
+                    }
                 }
             }
 
-            if (placeable)
+            if (ValidSpawnPoint(floorTiles[i]))
             {
-                return floorTiles[i];
-            }
-            else if (currentTileMaxDistance > maxDistance)
-            {
-                maxDistance = currentTileMaxDistance;
-                bestSpawnPosition = floorTiles[i];
+                if (placeable)
+                {
+                    return floorTiles[i];
+                }
+                else if (currentTileMinDistance > bestSpawnPosition.Value)
+                {
+                    bestSpawnPosition = new KeyValuePair<Vector2Int, float>(floorTiles[i], currentTileMinDistance);
+                }
             }
         }
-
-        // returns -1,-1 if no floor tile was found
-        return bestSpawnPosition;
+        return bestSpawnPosition.Key;
     }
 
     private List<Vector2Int> GetAllFloorTiles()
@@ -151,17 +151,6 @@ public class Map
             }
         }
         return list;
-    }
-
-    public Vector2Int GetSpawnPoint(Team team)
-    {
-        Vector2Int pos;
-        do
-        {
-            pos = GetRandomFloorTileToSpawn(team);
-        } while (!ValidSpawnPoint(pos));
-
-        return pos;
     }
 
     private bool ValidSpawnPoint(Vector2Int pos)
