@@ -20,7 +20,7 @@ public class DashController : MonoBehaviour
     {
         if (IsDashing)
         {
-            IsDashing = !(Time.time > m_start + m_duration);
+            IsDashing = Time.time <= m_start + m_duration;
         }
         else if(m_afterImageController.IsGenerating())
         {
