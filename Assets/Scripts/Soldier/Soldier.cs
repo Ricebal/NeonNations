@@ -15,11 +15,19 @@ public abstract class Soldier : NetworkBehaviour
 
     [SerializeField] protected float m_energyReloadTime;
     [SerializeField] protected GameObject m_spotLight;
+    [SerializeField] protected int m_maxHealth = 100;
+    [SerializeField] protected int m_maxEnergy = 100;
     protected HeadController m_headController;
     protected Gun m_gun;
     protected Renderer m_renderer;
     protected float m_deathTime;
     protected float m_lastEnergyReload;
+
+    private void Awake()
+    {
+        HealthStat = new Stat(0, m_maxHealth);
+        EnergyStat = new Stat(0, m_maxEnergy);
+    }
 
     protected void Start()
     {
