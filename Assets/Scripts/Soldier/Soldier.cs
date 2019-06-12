@@ -11,8 +11,8 @@ public abstract class Soldier : NetworkBehaviour
     public string Username;
     public float RespawnTime;
     public bool IsDead = false;
-    public Stat HealthStat = new Stat(0, 100);
-    public Stat EnergyStat = new Stat(0, 100);
+    public Stat HealthStat;
+    public Stat EnergyStat;
 
     [SerializeField] protected float m_energyReloadTime;
     [SerializeField] protected AudioClip m_hitSound;
@@ -119,8 +119,12 @@ public abstract class Soldier : NetworkBehaviour
     [Command]
     protected void CmdRespawn()
     {
-        Vector2Int spawnPoint = BoardManager.GetMap().GetSpawnPoint(Team);
-        RpcRespawn(spawnPoint);
+        // Only able to respawn if the game isn't finished yet.
+        if (!GameManager.Singleton.GameFinished)
+        {
+            Vector2Int spawnPoint = BoardManager.GetMap().GetSpawnPoint(Team);
+            RpcRespawn(spawnPoint);
+        }
     }
 
     [ClientRpc]
