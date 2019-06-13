@@ -1,5 +1,5 @@
 ﻿/**
- * Authors: Chiel
+ * Authors: Chiel, Benji
  */
 
 using System;

@@ -1,5 +1,5 @@
 ﻿/**
- * Authors: Stella, David
+ * Authors: Stella
  */
 
 using System.Collections.Generic;
