@@ -1,5 +1,5 @@
 ﻿/**
- * Authors: Nicander, David
+ * Authors: Nicander, David, Benji
  */
 
 public class Score

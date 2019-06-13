@@ -1,5 +1,5 @@
 ﻿/**
- * Authors: Nicander
+ * Authors: Benji
  */
 
 using UnityEngine;
