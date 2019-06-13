@@ -1,7 +1,8 @@
 {
     "name": "SearchBehaviour",
     "references": [
-        "ScriptsAssembly"
+        "ScriptsAssembly",
+        "Mirror"
     ],
     "optionalUnityReferences": [
         "TestAssemblies"

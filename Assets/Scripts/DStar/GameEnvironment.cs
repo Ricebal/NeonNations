@@ -120,28 +120,28 @@ public class GameEnvironment : ScriptableObject
         return illuminatedCoordinates;
     }
 
-    public Soldier GetClosestIlluminatedEnemy(Bot bot, List<Soldier> enemies)
+    public Soldier GetClosestIlluminatedEnemy(Soldier soldier, List<Soldier> enemies)
     {
-        HashSet<Vector2Int> list = GetIlluminatedCoordinates(ConvertGameObjectToCoordinates(bot.transform));
+        HashSet<Vector2Int> list = GetIlluminatedCoordinates(ConvertGameObjectToCoordinates(soldier.transform));
 
         float minDist = Mathf.Infinity;
-        Soldier soldier = null;
+        Soldier closestEnemy = null;
         enemies.ForEach(enemy =>
         {
-            float dist = Vector3.Distance(bot.transform.position, enemy.transform.position);
+            float dist = Vector3.Distance(soldier.transform.position, enemy.transform.position);
             if (list.Contains(ConvertGameObjectToCoordinates(enemy.transform)) && dist < minDist)
             {
-                soldier = enemy;
+                closestEnemy = enemy;
                 minDist = dist;
             }
         });
 
-        return soldier;
+        return closestEnemy;
     }
 
-    public List<Soldier> GetIlluminatedEnemies(Bot bot, List<Soldier> enemies)
+    public List<Soldier> GetIlluminatedEnemies(Soldier soldier, List<Soldier> enemies)
     {
-        HashSet<Vector2Int> list = GetIlluminatedCoordinates(ConvertGameObjectToCoordinates(bot.transform));
+        HashSet<Vector2Int> list = GetIlluminatedCoordinates(ConvertGameObjectToCoordinates(soldier.transform));
         List<Soldier> result = new List<Soldier>();
         enemies.ForEach(enemy =>
         {

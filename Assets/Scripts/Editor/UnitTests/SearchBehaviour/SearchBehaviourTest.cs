@@ -100,6 +100,58 @@ namespace Tests
         }
 
         [Test]
+        public void GameEnvironmentGetClosestIlluminatedEnemyWithOneEnemyInSight()
+        {
+            InitCorridorMap();
+            environment = GameEnvironment.CreateInstance(completeMap, new List<Tile>() { Tile.Wall });
+            Team myTeam = new Team(1);
+            Team enemyTeam = new Team(2);
+            GameObject myOb = new GameObject();
+            myOb.transform.position = new Vector3(0, 0, 0);
+            Soldier me = myOb.AddComponent<Player>();
+            me.Team = myTeam;
+            GameObject enemy1 = new GameObject();
+            enemy1.transform.position = new Vector3(1, 0, 1);
+            Soldier expectedClosestEnemy = enemy1.AddComponent<Player>();
+            expectedClosestEnemy.Team = enemyTeam;
+            GameObject enemy2 = new GameObject();
+            enemy2.transform.position = new Vector3(2, 0, 2);
+            Soldier otherEnemy = enemy2.AddComponent<Player>();
+            otherEnemy.Team = enemyTeam;
+            List<Soldier> enemies = new List<Soldier>() { expectedClosestEnemy, otherEnemy };
+
+            Soldier actualClosestEnemy = environment.GetClosestIlluminatedEnemy(me, enemies);
+            Assert.AreEqual(expectedClosestEnemy.transform.position.x, actualClosestEnemy.transform.position.x);
+            Assert.AreEqual(expectedClosestEnemy.transform.position.z, actualClosestEnemy.transform.position.z);
+        }
+
+        [Test]
+        public void GameEnvironmentGetClosestIlluminatedEnemyWithtwoEnemyInSight()
+        {
+            InitCorridorMap();
+            environment = GameEnvironment.CreateInstance(completeMap, new List<Tile>() { Tile.Wall });
+            Team myTeam = new Team(1);
+            Team enemyTeam = new Team(2);
+            GameObject myOb = new GameObject();
+            myOb.transform.position = new Vector3(0, 0, 0);
+            Soldier me = myOb.AddComponent<Player>();
+            me.Team = myTeam;
+            GameObject enemy1 = new GameObject();
+            enemy1.transform.position = new Vector3(1, 0, 0);
+            Soldier expectedClosestEnemy = enemy1.AddComponent<Player>();
+            expectedClosestEnemy.Team = enemyTeam;
+            GameObject enemy2 = new GameObject();
+            enemy2.transform.position = new Vector3(1, 0, 1);
+            Soldier otherEnemy = enemy2.AddComponent<Player>();
+            otherEnemy.Team = enemyTeam;
+            List<Soldier> enemies = new List<Soldier>() { expectedClosestEnemy, otherEnemy };
+
+            Soldier actualClosestEnemy = environment.GetClosestIlluminatedEnemy(me, enemies);
+            Assert.AreEqual(expectedClosestEnemy.transform.position.x, actualClosestEnemy.transform.position.x);
+            Assert.AreEqual(expectedClosestEnemy.transform.position.z, actualClosestEnemy.transform.position.z);
+        }
+
+        [Test]
         public void DStarLiteCoordinatesToTraverseWhenKnowingTheMap()
         {
             InitCorridorMap();
