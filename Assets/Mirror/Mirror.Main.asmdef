@@ -1,0 +1,16 @@
+{
+    "name": "Mirror.Main",
+    "references": [
+        "Mirror",
+        "Mirror.Weaver",
+        "Mirror.Editor"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": []
+}

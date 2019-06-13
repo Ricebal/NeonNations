@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿#if (UNITY_EDITOR)
+using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -43,3 +44,4 @@ public class TeamEditor : Editor
     private void AddTeam() => TeamManager.AddTeam();
     private void RemoveTeam(Team team) => TeamManager.RemoveTeam(team);
 }
+#endif

@@ -1,0 +1,21 @@
+{
+    "name": "ScriptsAssembly",
+    "references": [
+        "Unity.Analytics.DataPrivacy",
+        "Unity.CollabProxy.Editor",
+        "Unity.PackageManagerUI.Editor",
+        "Unity.TextMeshPro",
+        "Mirror.Editor",
+        "Mirror",
+        "Mirror.Main",
+        "Mirror.Weaver"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": []
+}
