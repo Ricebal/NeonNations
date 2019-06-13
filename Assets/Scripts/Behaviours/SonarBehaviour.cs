@@ -1,4 +1,8 @@
-﻿using UnityEngine;
+﻿/**
+ * Authors: Chiel
+ */
+
+using UnityEngine;
 
 [RequireComponent(typeof(Bot), typeof(Action))]
 public class SonarBehaviour : BotBehaviour

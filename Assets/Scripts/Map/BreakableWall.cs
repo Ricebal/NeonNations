@@ -1,4 +1,8 @@
-﻿using Mirror;
+﻿/**
+ * Authors: David, Benji, Chiel, Nicander
+ */
+
+using Mirror;
 using UnityEngine;
 
 [RequireComponent(typeof(AudioSource))]

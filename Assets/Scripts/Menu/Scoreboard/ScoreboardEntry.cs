@@ -1,4 +1,8 @@
-﻿using TMPro;
+﻿/**
+ * Authors: Nicander, Benji
+ */
+
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 

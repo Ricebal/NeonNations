@@ -1,3 +1,7 @@
+/**
+ * Authors: Nicander, Benji
+ */
+
 using Mirror;
 using System.Collections.Generic;
 using System.Linq;

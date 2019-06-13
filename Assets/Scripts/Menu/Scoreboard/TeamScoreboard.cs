@@ -1,4 +1,8 @@
-﻿using Mirror;
+﻿/**
+ * Authors: Benji
+ */
+
+using Mirror;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;

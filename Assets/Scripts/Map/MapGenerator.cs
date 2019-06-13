@@ -1,4 +1,8 @@
-﻿using System;
+﻿/**
+ * Authors: Chiel
+ */
+
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 

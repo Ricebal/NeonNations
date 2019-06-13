@@ -1,4 +1,8 @@
-﻿using TMPro;
+﻿/**
+ * Authors: Benji
+ */
+
+using TMPro;
 using UnityEngine;
 
 public class TeamScoreboardEntry : MonoBehaviour

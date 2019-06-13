@@ -1,3 +1,7 @@
+/**
+ * Authors: Stella, David, Nicander, Benji, Chiel
+ */
+
 using Mirror;
 using UnityEngine;
 

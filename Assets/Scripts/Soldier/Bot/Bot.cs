@@ -1,4 +1,8 @@
-﻿using UnityEngine;
+﻿/**
+ * Authors: Benji, Chiel, Nicander
+ */
+
+using UnityEngine;
 
 public class Bot : Soldier
 {

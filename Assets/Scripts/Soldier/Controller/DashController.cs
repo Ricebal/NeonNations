@@ -1,4 +1,8 @@
-﻿using UnityEngine;
+﻿/**
+ * Authors: Nicander, Benji
+ */
+
+using UnityEngine;
 
 [RequireComponent(typeof(AudioSource))]
 public class DashController : MonoBehaviour

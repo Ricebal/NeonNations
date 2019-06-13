@@ -1,3 +1,7 @@
+/**
+ * Authors: David, Stella, Nicander, Chiel
+ */
+
 using Mirror;
 using UnityEngine;
 using UnityEngine.Rendering;

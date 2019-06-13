@@ -1,4 +1,8 @@
-﻿using UnityEngine;
+﻿/**
+ * Authors: David
+ */
+
+using UnityEngine;
 
 public class LoadingScreen : MonoBehaviour
 {

@@ -1,4 +1,8 @@
-﻿using System.Collections.Generic;
+﻿/**
+ * Authors: Chiel, Benji
+ */
+
+using System.Collections.Generic;
 
 public class Node
 {

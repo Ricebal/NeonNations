@@ -1,4 +1,8 @@
-﻿using Mirror;
+﻿/**
+ * Authors: Nicander, Chiel
+ */
+
+using Mirror;
 
 public abstract class BotBehaviour : NetworkBehaviour
 {
