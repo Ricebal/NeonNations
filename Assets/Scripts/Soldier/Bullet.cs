@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 
+[RequireComponent(typeof(CapsuleCollider), typeof(Rigidbody))]
 public class Bullet : MonoBehaviour
 {
     // Damage done to a player on hit
@@ -8,13 +9,13 @@ public class Bullet : MonoBehaviour
     public string ShooterId;
 
     // Bullet speed
-    [SerializeField] private float Speed = 0;
+    [SerializeField] private float m_speed = 0;
     // Time in seconds before the bullet is destroyed
-    [SerializeField] private float LivingTime = 0;
+    [SerializeField] private float m_livingTime = 0;
     // The explosion on impact
-    [SerializeField] private GameObject HitPrefab = null;
+    [SerializeField] private GameObject m_impactPrefab = null;
     // The impact on a reflector
-    [SerializeField] private GameObject ReflectorImpactPrefab = null;
+    [SerializeField] private GameObject m_reflectorImpactPrefab = null;
 
     // Bullet's radius, used for sphere cast
     private float m_radius;
@@ -34,7 +35,7 @@ public class Bullet : MonoBehaviour
         m_rigidbody = GetComponent<Rigidbody>();
 
         // Move the bullet straight ahead with constant speed
-        m_rigidbody.velocity = transform.forward * Speed;
+        m_rigidbody.velocity = transform.forward * m_speed;
 
         m_startingTime = Time.time;
     }
@@ -42,7 +43,7 @@ public class Bullet : MonoBehaviour
     private void FixedUpdate()
     {
         // Destroy the bullet if the living time has been reached
-        if (Time.time - m_startingTime > LivingTime)
+        if (Time.time - m_startingTime > m_livingTime)
         {
             DestroyBullet();
         }
@@ -87,7 +88,7 @@ public class Bullet : MonoBehaviour
             Vector3 newDirection = Vector3.Reflect(currentDirection, contact.normal);
             newDirection.Normalize();
             // Set the velocity to the speed var
-            Vector3 newVelocity = newDirection * Speed;
+            Vector3 newVelocity = newDirection * m_speed;
             m_rigidbody.velocity = newVelocity;
             // Rotate the bullet so it faces the direction it's heading
             transform.rotation = Quaternion.LookRotation(newVelocity);
@@ -139,7 +140,7 @@ public class Bullet : MonoBehaviour
     private void CreateExplosion(Vector3 pos)
     {
         // Instantiate explosion
-        GameObject explosion = Instantiate(HitPrefab, pos, transform.rotation);
+        GameObject explosion = Instantiate(m_impactPrefab, pos, transform.rotation);
 
         // Set explosion light color to the player's color
         Color color = GameObject.Find(ShooterId).GetComponent<Soldier>().Color;
@@ -159,7 +160,7 @@ public class Bullet : MonoBehaviour
         {
             rotation = Quaternion.LookRotation(normal);
         }
-        GameObject impact = Instantiate(ReflectorImpactPrefab, pos, rotation);
+        GameObject impact = Instantiate(m_reflectorImpactPrefab, pos, rotation);
         Destroy(impact, 1);
 
         // Set impact color to the player's color
