@@ -14,47 +14,29 @@ public class GameManager : NetworkBehaviour
     public bool GameFinished;
     public float WaitingTimeAfterGameEnded; // The time after the game is finished, before it will return to the lobby.
 
-    [SyncVar][SerializeField] private string m_seed = "";
-    [SyncVar][SerializeField] private int m_mapWidth;
-    [SyncVar][SerializeField] private int m_mapHeight;
-    [SyncVar][SerializeField] private int m_maxRoomAmount;
-    [SyncVar][SerializeField] private int m_maxShortcutAmount;
-    [SyncVar][SerializeField] private int m_minRoomLength;
-    [SyncVar][SerializeField] private int m_maxRoomLength;
-    [SyncVar][SerializeField] private int m_minTunnelLength;
-    [SyncVar][SerializeField] private int m_maxTunnelLength;
-    [SyncVar][SerializeField] private int m_tunnelWidth;
-    [SyncVar][SerializeField] private int m_breakableTunnelChance;
-    [SyncVar][SerializeField] private int m_shortcutMinSkipDistance;
-    [SyncVar][SerializeField] private int m_reflectorAreaSize;
-    [SyncVar][SerializeField] private int m_outerWallWidth = 14;
+    [SyncVar] [SerializeField] private string m_seed = "";
+    [SyncVar] private int m_mapWidth;
+    [SyncVar] private int m_mapHeight;
+    [SyncVar] private int m_maxRoomAmount;
+    [SyncVar] private int m_maxShortcutAmount;
+    [SyncVar] private int m_minRoomLength;
+    [SyncVar] private int m_maxRoomLength;
+    [SyncVar] private int m_minTunnelLength;
+    [SyncVar] private int m_maxTunnelLength;
+    [SyncVar] private int m_tunnelWidth;
+    [SyncVar] private int m_breakableTunnelChance;
+    [SyncVar] private int m_shortcutMinSkipDistance;
+    [SyncVar] private int m_reflectorAreaSize;
+    [SyncVar] [SerializeField] private int m_outerWallWidth = 14;
+
     [SerializeField] private ParticleSystem m_fireworks = null;
-
-    private GameObject m_endGameTextObject;
+    [SerializeField] private GameObject m_endGameTextObject;
     private int m_localPlayersTeamId;
-
-    private void OnEnable()
-    {
-        if (isServer)
-        {
-            m_mapWidth = LobbyConfigMenu.GetOptionValue("Map width");
-            m_mapHeight = LobbyConfigMenu.GetOptionValue("Map height");
-            m_maxRoomAmount = LobbyConfigMenu.GetOptionValue("Max room amount");
-            m_maxShortcutAmount = LobbyConfigMenu.GetOptionValue("Max shortcut amount");
-            m_minRoomLength = LobbyConfigMenu.GetOptionValue("Min room length");
-            m_maxRoomLength = LobbyConfigMenu.GetOptionValue("Max room length");
-            m_minTunnelLength = LobbyConfigMenu.GetOptionValue("Min tunnel length");
-            m_maxTunnelLength = LobbyConfigMenu.GetOptionValue("Max tunnel length");
-            m_tunnelWidth = LobbyConfigMenu.GetOptionValue("Tunnel width");
-            m_breakableTunnelChance = LobbyConfigMenu.GetOptionValue("Breakable tunnel chance");
-            m_shortcutMinSkipDistance = LobbyConfigMenu.GetOptionValue("Shortcut min skip distance");
-            m_reflectorAreaSize = LobbyConfigMenu.GetOptionValue("Reflector area size");
-        }
-    }
 
     private void Awake()
     {
         InitializeSingleton();
+        InitializeVariables();
         GameMode = gameObject.AddComponent<TeamDeathMatch>(); // Temporary untill we can pick game modes.
         SetTeams();
     }
@@ -69,7 +51,6 @@ public class GameManager : NetworkBehaviour
         {
             Singleton = this;
         }
-        InitializeVariables();
     }
 
     private void InitializeVariables()
@@ -83,10 +64,9 @@ public class GameManager : NetworkBehaviour
     {
         if (isServer)
         {
+            InitMap();
             GameMode.OnGameFinished += FinishGame;
         }
-        GameObject hud = GameObject.FindGameObjectWithTag("HUD");
-        m_endGameTextObject = hud.transform.Find("EndGameText").gameObject;
         GameFinished = false;
         InitGame();
     }
@@ -97,6 +77,7 @@ public class GameManager : NetworkBehaviour
         {
             return;
         }
+
         WaitingTimeAfterGameEnded -= Time.deltaTime;
         if (WaitingTimeAfterGameEnded < 3) // For first 3 seconds show endgame text.
         {
@@ -129,6 +110,22 @@ public class GameManager : NetworkBehaviour
                 TeamManager.AddTeam(new Color(0, 0, 1, 1));
             }
         }
+    }
+
+    private void InitMap()
+    {
+        m_mapWidth = LobbyConfigMenu.GetOptionValue("Map width");
+        m_mapHeight = LobbyConfigMenu.GetOptionValue("Map height");
+        m_maxRoomAmount = LobbyConfigMenu.GetOptionValue("Max room amount");
+        m_maxShortcutAmount = LobbyConfigMenu.GetOptionValue("Max shortcut amount");
+        m_minRoomLength = LobbyConfigMenu.GetOptionValue("Min room length");
+        m_maxRoomLength = LobbyConfigMenu.GetOptionValue("Max room length");
+        m_minTunnelLength = LobbyConfigMenu.GetOptionValue("Min tunnel length");
+        m_maxTunnelLength = LobbyConfigMenu.GetOptionValue("Max tunnel length");
+        m_tunnelWidth = LobbyConfigMenu.GetOptionValue("Tunnel width");
+        m_breakableTunnelChance = LobbyConfigMenu.GetOptionValue("Breakable tunnel chance");
+        m_shortcutMinSkipDistance = LobbyConfigMenu.GetOptionValue("Shortcut min skip distance");
+        m_reflectorAreaSize = LobbyConfigMenu.GetOptionValue("Reflector area size");
     }
 
     private void InitGame()
