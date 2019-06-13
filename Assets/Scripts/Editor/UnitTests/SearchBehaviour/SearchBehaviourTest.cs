@@ -8,13 +8,68 @@ namespace Tests
 {
     public class SearchBehaviourTest
     {
-        // A Test behaves as an ordinary method
-        [Test]
-        public void SearchBehaviourTestSimplePasses()
+        Map completeMap;
+        NavigationGraph navigationGraph;
+        private void InitCornerMap()
         {
-            List<Vector2Int> coordinatesToTraverse = new List<Vector2Int>() { new Vector2Int(0, 0), new Vector2Int(0, 1), new Vector2Int(0, 2), new Vector2Int(1, 2), new Vector2Int(2, 2) };
-            //Vector2Int farthestCoordinate = PathSmoothing.FarthestCoordinateToReach(new Vector2(0, 0), coordinatesToTraverse, m_dStarLite.Map, 0.95f);
-            // Use the Assert class to test conditions
+            completeMap = Map.GenerateEmptyMap(Tile.Wall, 3, 3, 0);
+            completeMap.TileMap[0][0] = Tile.Floor;  // Testmap:
+            completeMap.TileMap[1][0] = Tile.Floor;  // 110
+            completeMap.TileMap[2][0] = Tile.Floor;  // 110
+            completeMap.TileMap[2][1] = Tile.Floor;  // 000
+            completeMap.TileMap[2][2] = Tile.Floor;
+            navigationGraph = new NavigationGraph(completeMap, true, new List<Tile>() { Tile.Wall });
+        }
+      
+        private void InitCorridorMap()
+        {
+            completeMap = Map.GenerateEmptyMap(Tile.Floor, 5, 5, 0);
+            completeMap.TileMap[0][4] = Tile.Wall;  // Testmap:
+            completeMap.TileMap[1][4] = Tile.Wall;  // 11011
+            completeMap.TileMap[3][4] = Tile.Wall;  // 11011
+            completeMap.TileMap[4][4] = Tile.Wall;  // 00000
+            completeMap.TileMap[0][3] = Tile.Wall;  // 00000
+            completeMap.TileMap[1][3] = Tile.Wall;  // 00000
+            completeMap.TileMap[3][3] = Tile.Wall;
+            completeMap.TileMap[4][3] = Tile.Wall;
+            navigationGraph = new NavigationGraph(completeMap, true, new List<Tile>() { Tile.Wall });
+        }
+
+        private void InitOpenMap()
+        {
+            completeMap = Map.GenerateEmptyMap(Tile.Floor, 3, 3, 0);
+            // Testmap:
+            // 110
+            // 110
+            // 000
+            navigationGraph = new NavigationGraph(completeMap, true, new List<Tile>() { Tile.Wall });
+        }
+
+        [Test]
+        public void PathSmoothingAroundCorner()
+        {
+            InitCornerMap();
+            List<Vector2Int> coordinatesToTraverse = new List<Vector2Int>() { new Vector2Int(0, 0), new Vector2Int(1, 0), new Vector2Int(2, 0), new Vector2Int(2, 1), new Vector2Int(2, 2) };
+            Vector2Int farthestCoordinate = PathSmoothing.FarthestCoordinateToReach(new Vector2(0, 0), coordinatesToTraverse, navigationGraph, 0.95f);
+            Assert.AreEqual(new Vector2Int(2, 0), farthestCoordinate);
+        }
+
+        [Test]
+        public void PathSmoothingThroughOpenRoom()
+        {
+            InitOpenMap();
+            List<Vector2Int> coordinatesToTraverse = new List<Vector2Int>() { new Vector2Int(0, 0), new Vector2Int(1, 0), new Vector2Int(2, 0), new Vector2Int(2, 1), new Vector2Int(2, 2) };
+            Vector2Int farthestCoordinate = PathSmoothing.FarthestCoordinateToReach(new Vector2(0, 0), coordinatesToTraverse, navigationGraph, 0.95f);
+            Assert.AreEqual(new Vector2Int(2, 2), farthestCoordinate);
+        }
+
+        [Test]
+        public void PathSmoothingWithCorridor()
+        {
+            InitCorridorMap();
+            List<Vector2Int> coordinatesToTraverse = new List<Vector2Int>() { new Vector2Int(0, 0), new Vector2Int(1, 0), new Vector2Int(2, 0), new Vector2Int(2, 1), new Vector2Int(2, 2), new Vector2Int(2, 3), new Vector2Int(2, 4) };
+            Vector2Int farthestCoordinate = PathSmoothing.FarthestCoordinateToReach(new Vector2(0, 0), coordinatesToTraverse, navigationGraph, 0.95f);
+            Assert.AreEqual(new Vector2Int(2, 2), farthestCoordinate);
         }
 
         // A UnityTest behaves like a coroutine in Play Mode. In Edit Mode you can use
