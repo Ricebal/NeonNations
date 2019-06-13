@@ -7,7 +7,7 @@ public class GameEnvironment : ScriptableObject
 {
     private Map m_map;
     private List<Tile> m_listOfObstacles = new List<Tile>();
-    private const int BOT_RANGE = 3;
+    private const int BOT_RANGE = 2;
     private const int SONAR_RANGE = 7;
     private const int BULLET_RANGE = 1;
     private const int IMPACT_RANGE = 2;
@@ -171,9 +171,9 @@ public class GameEnvironment : ScriptableObject
     /// <param name="coordinatesInRange">The Coordinates that have to be checked</param>
     private HashSet<Vector2Int> GetCoordinatesInRange(Vector2Int objectCoordinates, int range, HashSet<Vector2Int> coordinatesInRange)
     {
-        for (int i = -range; i < range; i++)
+        for (int i = -range; i <= range; i++)
         {
-            for (int j = -range; j < range; j++)
+            for (int j = -range; j <= range; j++)
             {
                 int x = objectCoordinates.x + i;
                 int y = objectCoordinates.y + j;

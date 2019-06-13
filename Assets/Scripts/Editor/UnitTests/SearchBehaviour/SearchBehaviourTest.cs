@@ -21,7 +21,7 @@ namespace Tests
             completeMap.TileMap[2][2] = Tile.Floor;
             navigationGraph = new NavigationGraph(completeMap, true, new List<Tile>() { Tile.Wall });
         }
-      
+
         private void InitCorridorMap()
         {
             completeMap = Map.GenerateEmptyMap(Tile.Floor, 5, 5, 0);
@@ -40,68 +40,86 @@ namespace Tests
         {
             completeMap = Map.GenerateEmptyMap(Tile.Floor, 3, 3, 0);
             // Testmap:
-            // 110
-            // 110
+            // 000
+            // 000
             // 000
             navigationGraph = new NavigationGraph(completeMap, true, new List<Tile>() { Tile.Wall });
         }
 
         [Test]
-        public void PathSmoothingAroundCorner()
+        public void Should_ReturnCornerCoordinates_When_PathsmoothingAroundCorner()
         {
+            // Arrange
             InitCornerMap();
             List<Vector2Int> coordinatesToTraverse = new List<Vector2Int>() { new Vector2Int(0, 0), new Vector2Int(1, 0), new Vector2Int(2, 0), new Vector2Int(2, 1), new Vector2Int(2, 2) };
-            Vector2Int farthestCoordinate = PathSmoothing.FarthestCoordinateToReach(new Vector2(0, 0), coordinatesToTraverse, navigationGraph, 0.95f);
-            Assert.AreEqual(new Vector2Int(2, 0), farthestCoordinate);
+            Vector2Int expected = new Vector2Int(2, 0);
+            // Act
+            Vector2Int actual = PathSmoothing.FarthestCoordinateToReach(new Vector2(0, 0), coordinatesToTraverse, navigationGraph, 0.95f);
+            // Assert
+            Assert.AreEqual(expected, actual);
         }
 
         [Test]
-        public void PathSmoothingThroughOpenRoom()
+        public void Should_ReturnGoalCoordinates_When_PathsmoothingThroughEmptyRoom()
         {
+            // Arrange
             InitOpenMap();
             List<Vector2Int> coordinatesToTraverse = new List<Vector2Int>() { new Vector2Int(0, 0), new Vector2Int(1, 0), new Vector2Int(2, 0), new Vector2Int(2, 1), new Vector2Int(2, 2) };
-            Vector2Int farthestCoordinate = PathSmoothing.FarthestCoordinateToReach(new Vector2(0, 0), coordinatesToTraverse, navigationGraph, 0.95f);
-            Assert.AreEqual(new Vector2Int(2, 2), farthestCoordinate);
+            Vector2Int expected = new Vector2Int(2, 2);
+            // Act
+            Vector2Int actual = PathSmoothing.FarthestCoordinateToReach(new Vector2(0, 0), coordinatesToTraverse, navigationGraph, 0.95f);
+            // Assert
+            Assert.AreEqual(expected, actual);
         }
 
         [Test]
-        public void PathSmoothingWithCorridor()
+        public void Should_ReturnEntranceCoordinates_When_PathsmoothingIntoCorridor()
         {
+            // Arrange
             InitCorridorMap();
             List<Vector2Int> coordinatesToTraverse = new List<Vector2Int>() { new Vector2Int(0, 0), new Vector2Int(1, 0), new Vector2Int(2, 0), new Vector2Int(2, 1), new Vector2Int(2, 2), new Vector2Int(2, 3), new Vector2Int(2, 4) };
-            Vector2Int farthestCoordinate = PathSmoothing.FarthestCoordinateToReach(new Vector2(0, 0), coordinatesToTraverse, navigationGraph, 0.95f);
-            Assert.AreEqual(new Vector2Int(2, 2), farthestCoordinate);
+            Vector2Int expected = new Vector2Int(2, 2);
+            // Act
+            Vector2Int actual = PathSmoothing.FarthestCoordinateToReach(new Vector2(0, 0), coordinatesToTraverse, navigationGraph, 0.95f);
+            // Assert
+            Assert.AreEqual(expected, actual);
         }
 
         [Test]
-        public void GameEnvironmentIlluminatedCoordinates()
+        public void Should_ReturnCoordinatesAroundPositionVector_When_CallingGetIlluminatedCoordinates()
         {
+            // Arrange
             InitCorridorMap();
             environment = GameEnvironment.CreateInstance(completeMap, new List<Tile>() { Tile.Wall });
-            HashSet<Vector2Int> actualCoordinates = environment.GetIlluminatedCoordinates(new Vector2Int(2,3));
-
-            List<Vector2Int> expectedCoordinates = new List<Vector2Int>()
+            Vector2Int position = new Vector2Int(2, 3);
+            List<Vector2Int> expectedCoordinates = new List<Vector2Int>();
+            for (int i = -2; i <= 2; i++) // 2 for the range of the pointlight
             {
-                new Vector2Int(1,2),
-                new Vector2Int(2,2),
-                new Vector2Int(3,2),
-                new Vector2Int(1,3),
-                new Vector2Int(2,3),
-                new Vector2Int(3,3),
-                new Vector2Int(1,4),
-                new Vector2Int(2,4),
-                new Vector2Int(3,4),
-            };
-
-            for(int i = 0; i < expectedCoordinates.Count; i++)
+                for (int j = -2; j <= 2; j++) // 2 for the range of the pointlight
+                {
+                    int x = position.x + i;
+                    int y = position.y + j;
+                    // Check if coordinate is inside the map
+                    if (x < 0 || x >= environment.GetMap().TileMap.Length || y < 0 || y >= environment.GetMap().TileMap[0].Length)
+                    {
+                        continue;
+                    }
+                    expectedCoordinates.Add(new Vector2Int(x, y));
+                }
+            }
+            // Act
+            HashSet<Vector2Int> actualCoordinates = environment.GetIlluminatedCoordinates(position);
+            // Assert
+            for (int i = 0; i < expectedCoordinates.Count; i++)
             {
-                Assert.IsTrue(actualCoordinates.Contains(expectedCoordinates[i]));
+                Assert.IsTrue(actualCoordinates.Contains(expectedCoordinates[i]), "Because there are no lights in the scene, the bot should only be able to see 2 coordinates around itself in any direction");
             }
         }
 
         [Test]
-        public void GameEnvironmentGetClosestIlluminatedEnemyWithOneEnemyInSight()
+        public void Should_ReturnClosestEnemy_When_OnlyOneEnemyInSight()
         {
+            // Arrange
             InitCorridorMap();
             environment = GameEnvironment.CreateInstance(completeMap, new List<Tile>() { Tile.Wall });
             Team myTeam = new Team(1);
@@ -115,19 +133,20 @@ namespace Tests
             Soldier expectedClosestEnemy = enemy1.AddComponent<Player>();
             expectedClosestEnemy.Team = enemyTeam;
             GameObject enemy2 = new GameObject();
-            enemy2.transform.position = new Vector3(2, 0, 2);
+            enemy2.transform.position = new Vector3(3, 0, 3);
             Soldier otherEnemy = enemy2.AddComponent<Player>();
             otherEnemy.Team = enemyTeam;
             List<Soldier> enemies = new List<Soldier>() { expectedClosestEnemy, otherEnemy };
-
+            // Act
             Soldier actualClosestEnemy = environment.GetClosestIlluminatedEnemy(me, enemies);
-            Assert.AreEqual(expectedClosestEnemy.transform.position.x, actualClosestEnemy.transform.position.x);
-            Assert.AreEqual(expectedClosestEnemy.transform.position.z, actualClosestEnemy.transform.position.z);
+            // Assert
+            Assert.AreEqual(expectedClosestEnemy, actualClosestEnemy);
         }
 
         [Test]
-        public void GameEnvironmentGetClosestIlluminatedEnemyWithtwoEnemyInSight()
+        public void Should_ReturnClosestEnemy_When_TwoEnemyInSight()
         {
+            // Arrange
             InitCorridorMap();
             environment = GameEnvironment.CreateInstance(completeMap, new List<Tile>() { Tile.Wall });
             Team myTeam = new Team(1);
@@ -145,23 +164,68 @@ namespace Tests
             Soldier otherEnemy = enemy2.AddComponent<Player>();
             otherEnemy.Team = enemyTeam;
             List<Soldier> enemies = new List<Soldier>() { expectedClosestEnemy, otherEnemy };
-
+            // Act
             Soldier actualClosestEnemy = environment.GetClosestIlluminatedEnemy(me, enemies);
-            Assert.AreEqual(expectedClosestEnemy.transform.position.x, actualClosestEnemy.transform.position.x);
-            Assert.AreEqual(expectedClosestEnemy.transform.position.z, actualClosestEnemy.transform.position.z);
+            // Assert
+            Assert.AreEqual(expectedClosestEnemy, actualClosestEnemy);
         }
 
         [Test]
-        public void DStarLiteCoordinatesToTraverseWhenKnowingTheMap()
+        public void Should_ReturnNull_When_NoEnemiesExcist()
         {
+            // Arrange
             InitCorridorMap();
             environment = GameEnvironment.CreateInstance(completeMap, new List<Tile>() { Tile.Wall });
+            Team myTeam = new Team(1);
+            Team enemyTeam = new Team(2);
+            GameObject myOb = new GameObject();
+            myOb.transform.position = new Vector3(0, 0, 0);
+            Soldier me = myOb.AddComponent<Player>();
+            me.Team = myTeam;
+            List<Soldier> enemies = new List<Soldier>();
+            // Act
+            Soldier actualClosestEnemy = environment.GetClosestIlluminatedEnemy(me, enemies);
+            // Assert
+            Assert.AreEqual(null, actualClosestEnemy);
+        }
 
+        [Test]
+        public void Should_ReturnNull_When_NoEnemiesInSight()
+        {
+            // Arrange
+            InitCorridorMap();
+            environment = GameEnvironment.CreateInstance(completeMap, new List<Tile>() { Tile.Wall });
+            Team myTeam = new Team(1);
+            Team enemyTeam = new Team(2);
+            GameObject myOb = new GameObject();
+            myOb.transform.position = new Vector3(0, 0, 0);
+            Soldier me = myOb.AddComponent<Player>();
+            me.Team = myTeam;
+            GameObject enemy1 = new GameObject();
+            enemy1.transform.position = new Vector3(4, 0, 4);
+            Soldier expectedClosestEnemy = enemy1.AddComponent<Player>();
+            expectedClosestEnemy.Team = enemyTeam;
+            GameObject enemy2 = new GameObject();
+            enemy2.transform.position = new Vector3(4, 0, 4);
+            Soldier otherEnemy = enemy2.AddComponent<Player>();
+            otherEnemy.Team = enemyTeam;
+            List<Soldier> enemies = new List<Soldier>() { expectedClosestEnemy, otherEnemy };
+            // Act
+            Soldier actualClosestEnemy = environment.GetClosestIlluminatedEnemy(me, enemies);
+            // Assert
+            Assert.AreEqual(null, actualClosestEnemy);
+        }
+
+        [Test]
+        public void Should_ReturnTheCorrectPath_When_KnowingTheMap()
+        {
+            // Arrange
+            InitCorridorMap();
+            environment = GameEnvironment.CreateInstance(completeMap, new List<Tile>() { Tile.Wall });
             DStarLite dStarLite = new DStarLite(environment, true);
             Vector2Int startNode = new Vector2Int(0, 0);
             Vector2Int endNode = new Vector2Int(2, 4);
             dStarLite.RunDStarLite(startNode, endNode);
-            List<Vector2Int> actualCoordinates = dStarLite.CoordinatesToTraverse();
             List<Vector2Int> expectedCoordinates = new List<Vector2Int>()
             {
                 new Vector2Int(0, 1),
@@ -171,7 +235,9 @@ namespace Tests
                 new Vector2Int(2, 3),
                 endNode
             };
-
+            // Act
+            List<Vector2Int> actualCoordinates = dStarLite.CoordinatesToTraverse();
+            // Assert
             for (int i = 0; i < actualCoordinates.Count; i++)
             {
                 Assert.AreEqual(expectedCoordinates[i], actualCoordinates[i]);
@@ -179,16 +245,15 @@ namespace Tests
         }
 
         [Test]
-        public void DStarLiteCoordinatesToTraverseWhenNotKnowingTheMap()
+        public void Should_ReturnWrongShortestPath_When_NotKnowingTheMap()
         {
+            // Arrange
             InitCorridorMap();
             environment = GameEnvironment.CreateInstance(completeMap, new List<Tile>() { Tile.Wall });
-
             DStarLite dStarLite = new DStarLite(environment, false);
             Vector2Int startNode = new Vector2Int(0, 0);
             Vector2Int endNode = new Vector2Int(2, 4);
             dStarLite.RunDStarLite(startNode, endNode);
-            List<Vector2Int> actualCoordinates = dStarLite.CoordinatesToTraverse();
             List<Vector2Int> expectedCoordinates = new List<Vector2Int>()
             {
                 new Vector2Int(0, 1),
@@ -198,24 +263,25 @@ namespace Tests
                 new Vector2Int(1, 4),
                 endNode
             };
-
+            // Act
+            List<Vector2Int> actualCoordinates = dStarLite.CoordinatesToTraverse();
+            // Assert
             for (int i = 0; i < actualCoordinates.Count; i++)
             {
-                Assert.AreEqual(expectedCoordinates[i], actualCoordinates[i]);
+                Assert.AreEqual(expectedCoordinates[i], actualCoordinates[i], "Because the bot doesn't know the map, it will think it can go through the walls. (Since it doesn't know there are walls over there)");
             }
         }
 
         [Test]
-        public void DStarLiteCoordinatesToTraverseWhenKnowingTheMapButWithWallsInSight()
+        public void Should_ReturnTheCorrectPath_When_NotKnowingTheMapButBeingAbleToSeeTheWalls()
         {
+            // Arrange
             InitCorridorMap();
             environment = GameEnvironment.CreateInstance(completeMap, new List<Tile>() { Tile.Wall });
-
             DStarLite dStarLite = new DStarLite(environment, true);
             Vector2Int startNode = new Vector2Int(2, 4);
             Vector2Int endNode = new Vector2Int(0, 0);
             dStarLite.RunDStarLite(startNode, endNode);
-            List<Vector2Int> actualCoordinates = dStarLite.CoordinatesToTraverse();
             List<Vector2Int> expectedCoordinates = new List<Vector2Int>()
             {
                 new Vector2Int(2, 3),
@@ -225,29 +291,43 @@ namespace Tests
                 new Vector2Int(0, 1),
                 endNode
             };
-
+            // Act
+            List<Vector2Int> actualCoordinates = dStarLite.CoordinatesToTraverse();
+            // Assert
             for (int i = 0; i < actualCoordinates.Count; i++)
             {
-                Assert.AreEqual(expectedCoordinates[i], actualCoordinates[i]);
+                Assert.AreEqual(expectedCoordinates[i], actualCoordinates[i], "Since the walls are now in range of the bot. The bot can see the walls and plan it's path around them.");
             }
         }
 
         [Test]
-        public void NavigationGraphGetNodeXY()
+        public void Should_ReturnTheCorrectNodeFromTheMap_When_SendingXYCoordinates()
         {
+            // Arrange
             InitCornerMap();
-            Assert.IsFalse(navigationGraph.GetNode(0, 0).IsObstacle());
-            Assert.IsTrue(navigationGraph.GetNode(0, 1).IsObstacle());
-            Assert.AreEqual(navigationGraph.GetNode(-1, -1), default(Node));
+            // Act
+            Node node1 = navigationGraph.GetNode(0, 0);
+            Node node2 = navigationGraph.GetNode(0, 1);
+            Node node3 = navigationGraph.GetNode(-1, -1);
+            // Assert
+            Assert.IsFalse(node1.IsObstacle(), "Because this node contains no obstacle, it should return false");
+            Assert.IsTrue(node2.IsObstacle(), "Because this node contains an obstacle, it should return true");
+            Assert.AreEqual(node3, default(Node), "Because this node falls outside the map, it should return a default node");
         }
 
         [Test]
-        public void NavigationGraphGetNodeVector()
+        public void Should_ReturnTheCorrectNodeFromTheMap_When_SendingAVector()
         {
+            // Arrange
             InitCornerMap();
-            Assert.IsFalse(navigationGraph.GetNode(new Vector2Int(0, 0)).IsObstacle());
-            Assert.IsTrue(navigationGraph.GetNode(new Vector2Int(0, 1)).IsObstacle());
-            Assert.AreEqual(navigationGraph.GetNode(new Vector2Int(-1, -1)), default(Node));
+            // Act
+            Node node1 = navigationGraph.GetNode(new Vector2Int(0, 0));
+            Node node2 = navigationGraph.GetNode(new Vector2Int(0, 1));
+            Node node3 = navigationGraph.GetNode(new Vector2Int(-1, -1));
+            // Assert
+            Assert.IsFalse(node1.IsObstacle(), "Because this node contains no obstacle, it should return false");
+            Assert.IsTrue(node2.IsObstacle(), "Because this node contains an obstacle, it should return true");
+            Assert.AreEqual(node3, default(Node), "Because this node falls outside the map, it should return a default node");
         }
     }
 }
