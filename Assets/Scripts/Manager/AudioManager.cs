@@ -32,7 +32,7 @@ public class AudioManager : MonoBehaviour
     {
         DontDestroyOnLoad(gameObject);
         m_audioSource = GetComponent<AudioSource>();
-        SceneManager.activeSceneChanged += OnSceneChanged;
+        SceneManager.activeSceneChanged += SceneChangedHandler;
     }
 
     private void Update()
@@ -44,7 +44,7 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    private void OnSceneChanged(Scene previousScene, Scene newScene)
+    private void SceneChangedHandler(Scene previousScene, Scene newScene)
     {
         // If the new scene is a menu scene and the previous scene was a game scene or the game just started, play menu music
         if (m_menuScenes.Contains(newScene.name) && m_gameScenes.Contains(m_lastSceneName) || m_lastSceneName == null)
