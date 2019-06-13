@@ -5,7 +5,7 @@ public class Reflector : MonoBehaviour
 {
     [SerializeField] private AudioClip m_hitSound = null;
     [SerializeField] private float m_hitSoundVolume = 0;
-    [SerializeField] private AudioSource m_audioSource;
+    [SerializeField] private AudioSource m_audioSource = null;
 
     private void OnTriggerEnter(Collider other)
     {
