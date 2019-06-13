@@ -269,7 +269,6 @@ GameObject:
   m_Component:
   - component: {fileID: 534669905}
   - component: {fileID: 534669904}
-  - component: {fileID: 534669903}
   - component: {fileID: 534669906}
   - component: {fileID: 534669907}
   m_Layer: 0
@@ -279,14 +278,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!81 &534669903
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 534669902}
-  m_Enabled: 1
 --- !u!20 &534669904
 Camera:
   m_ObjectHideFlags: 0
@@ -691,6 +682,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 3599376716146521321, guid: 27f5446eba1e75c408fdc65871eed296,
         type: 3}
+    - target: {fileID: 4331448404734817701, guid: 1c80e058baf483248ad0940525f87605,
+        type: 3}
+      propertyPath: m_endGameTextObject
+      value: 
+      objectReference: {fileID: 7410166799212767093}
     - target: {fileID: 8033260808568749409, guid: 1c80e058baf483248ad0940525f87605,
         type: 3}
       propertyPath: Teams.Array.size
@@ -4683,3 +4679,9 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a35939fd3a9f2174b89bcd2d87ab3e96, type: 3}
+--- !u!1 &7410166799212767093 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2328500249236287391, guid: a35939fd3a9f2174b89bcd2d87ab3e96,
+    type: 3}
+  m_PrefabInstance: {fileID: 7410166799212767092}
+  m_PrefabAsset: {fileID: 0}

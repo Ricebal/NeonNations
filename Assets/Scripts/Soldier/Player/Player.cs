@@ -15,6 +15,7 @@ public class Player : Soldier
             return;
         }
 
+        gameObject.AddComponent<AudioListener>();
         m_hud = GetComponent<PlayerHUD>();
         m_aim = GetComponent<Aim>();
         m_playerController = GetComponent<PlayerController>();

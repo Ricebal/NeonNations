@@ -1,16 +1,21 @@
 using Mirror;
 using UnityEngine;
 
+[RequireComponent(typeof(AudioSource))]
 public class ShootController : NetworkBehaviour
 {
-    // Prefab representing the bullet
-    public GameObject Prefab;
-    // Transform object representing the bullets' spawn location
-    public Transform Spawn;
     // Amount of energy a bullet will consume
     public int Cost;
+
+    [SerializeField] private float m_soundVolume = 0;
+    [SerializeField] private AudioClip m_shootSound = null;
+    [SerializeField] private AudioSource m_audioSource = null;
+    // Prefab representing the bullet
+    [SerializeField] private GameObject m_prefab = null;
+    // Transform object representing the bullets' spawn location
+    [SerializeField] private Transform m_spawn = null;
     // Fire cooldown in seconds
-    public float Cooldown;
+    [SerializeField] private float m_cooldown = 0;
     // The next time the entity will be able to shoot, in seconds
     private float m_next;
 
@@ -21,7 +26,7 @@ public class ShootController : NetworkBehaviour
 
     public void Fire()
     {
-        m_next = Time.time + Cooldown;
+        m_next = Time.time + m_cooldown;
         CmdShoot(transform.name);
     }
 
@@ -34,10 +39,12 @@ public class ShootController : NetworkBehaviour
     [ClientRpc]
     private void RpcShoot(string shooterId)
     {
-        GameObject prefab = Instantiate(Prefab, Spawn.position, Spawn.rotation);
+        GameObject prefab = Instantiate(m_prefab, m_spawn.position, m_spawn.rotation);
         Bullet bullet = prefab.GetComponent<Bullet>();
         bullet.ShooterId = shooterId;
         bullet.SetBulletColor();
         bullet.GetComponent<Identity>().SetIdentity();
+        m_audioSource.pitch = Random.Range(0.9f, 1f);
+        m_audioSource.PlayOneShot(m_shootSound, m_soundVolume);
     }
 }

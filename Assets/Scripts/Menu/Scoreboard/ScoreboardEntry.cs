@@ -20,7 +20,7 @@ public class ScoreboardEntry : MonoBehaviour
 
     public void SetColor(Color color)
     {
-        m_scoreboardEntryBackground.color = color;
+        m_scoreboardEntryBackground.color = new Color(color.r, color.g, color.b, m_scoreboardEntryBackground.color.a);
     }
 
     public void EnableOutline()

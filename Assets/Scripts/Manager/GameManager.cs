@@ -28,27 +28,16 @@ public class GameManager : NetworkBehaviour
     [SyncVar][SerializeField] private int m_shortcutMinSkipDistance;
     [SyncVar][SerializeField] private int m_reflectorAreaSize;
     [SyncVar][SerializeField] private int m_outerWallWidth = 14;
-    [SerializeField] private ParticleSystem m_fireworks = null;
 
-    private GameObject m_endGameTextObject;
+    [SerializeField] private ParticleSystem m_fireworks = null;
+    [SerializeField] private GameObject m_endGameTextObject = null;
     private int m_localPlayersTeamId;
 
     private void OnEnable()
     {
         if (isServer)
         {
-            m_mapWidth = LobbyConfigMenu.GetOptionValue("Map width");
-            m_mapHeight = LobbyConfigMenu.GetOptionValue("Map height");
-            m_maxRoomAmount = LobbyConfigMenu.GetOptionValue("Max room amount");
-            m_maxShortcutAmount = LobbyConfigMenu.GetOptionValue("Max shortcut amount");
-            m_minRoomLength = LobbyConfigMenu.GetOptionValue("Min room length");
-            m_maxRoomLength = LobbyConfigMenu.GetOptionValue("Max room length");
-            m_minTunnelLength = LobbyConfigMenu.GetOptionValue("Min tunnel length");
-            m_maxTunnelLength = LobbyConfigMenu.GetOptionValue("Max tunnel length");
-            m_tunnelWidth = LobbyConfigMenu.GetOptionValue("Tunnel width");
-            m_breakableTunnelChance = LobbyConfigMenu.GetOptionValue("Breakable tunnel chance");
-            m_shortcutMinSkipDistance = LobbyConfigMenu.GetOptionValue("Shortcut min skip distance");
-            m_reflectorAreaSize = LobbyConfigMenu.GetOptionValue("Reflector area size");
+            InitMap();
         }
     }
 
@@ -85,8 +74,6 @@ public class GameManager : NetworkBehaviour
         {
             GameMode.OnGameFinished += FinishGame;
         }
-        GameObject hud = GameObject.FindGameObjectWithTag("HUD");
-        m_endGameTextObject = hud.transform.Find("EndGameText").gameObject;
         GameFinished = false;
         InitGame();
     }
@@ -129,6 +116,22 @@ public class GameManager : NetworkBehaviour
                 TeamManager.AddTeam(new Color(0, 0, 1, 1));
             }
         }
+    }
+
+    private void InitMap()
+    {
+        m_mapWidth = LobbyConfigMenu.GetOptionValue("Map width");
+        m_mapHeight = LobbyConfigMenu.GetOptionValue("Map height");
+        m_maxRoomAmount = LobbyConfigMenu.GetOptionValue("Max room amount");
+        m_maxShortcutAmount = LobbyConfigMenu.GetOptionValue("Max shortcut amount");
+        m_minRoomLength = LobbyConfigMenu.GetOptionValue("Min room length");
+        m_maxRoomLength = LobbyConfigMenu.GetOptionValue("Max room length");
+        m_minTunnelLength = LobbyConfigMenu.GetOptionValue("Min tunnel length");
+        m_maxTunnelLength = LobbyConfigMenu.GetOptionValue("Max tunnel length");
+        m_tunnelWidth = LobbyConfigMenu.GetOptionValue("Tunnel width");
+        m_breakableTunnelChance = LobbyConfigMenu.GetOptionValue("Breakable tunnel chance");
+        m_shortcutMinSkipDistance = LobbyConfigMenu.GetOptionValue("Shortcut min skip distance");
+        m_reflectorAreaSize = LobbyConfigMenu.GetOptionValue("Reflector area size");
     }
 
     private void InitGame()

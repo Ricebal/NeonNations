@@ -1,6 +1,7 @@
 using Mirror;
 using UnityEngine;
 
+[RequireComponent(typeof(AudioSource))]
 public abstract class Soldier : NetworkBehaviour
 {
     [SyncVar] public Team Team;
@@ -14,6 +15,12 @@ public abstract class Soldier : NetworkBehaviour
     public Stat EnergyStat;
 
     [SerializeField] protected float m_energyReloadTime;
+    [SerializeField] protected AudioClip m_hitSound;
+    [SerializeField] protected float m_hitSoundVolume;
+    [SerializeField] protected AudioClip m_deathSound;
+    [SerializeField] protected float m_deathSoundVolume;
+    [SerializeField] protected AudioSource m_defaultAudioSource;
+    [SerializeField] protected AudioSource m_hitAudioSource;
     [SerializeField] protected GameObject m_spotLight;
     [SerializeField] protected int m_maxHealth = 100;
     [SerializeField] protected int m_maxEnergy = 100;
@@ -39,11 +46,6 @@ public abstract class Soldier : NetworkBehaviour
 
     protected void OnDestroy()
     {
-        if (isServer)
-        {
-            GameManager.RemovePlayer(this);
-        }
-
         // When a soldier leaves the game, OnCollisionExit is not triggered, this variable has to be reset manually
         foreach (Soldier soldier in TeamManager.GetAllPlayers())
         {
@@ -99,6 +101,7 @@ public abstract class Soldier : NetworkBehaviour
 
         DeathExplosion deathExplosion = GetComponentInChildren<DeathExplosion>();
         deathExplosion?.Fire();
+        m_defaultAudioSource.PlayOneShot(m_deathSound, m_deathSoundVolume);
     }
 
     public virtual void StopMovement() { }
@@ -214,10 +217,12 @@ public abstract class Soldier : NetworkBehaviour
     }
 
     [ClientRpc]
-    private void RpcShowSpotLight()
+    private void RpcHitByBullet()
     {
         m_spotLight.SetActive(true); // Show the spotlight of the soldier that was hit by a bullet.
         m_spotLight.GetComponent<SpotLightScript>().SetLifeTime(ExplosionLight.LIFETIME, false);
+        m_hitAudioSource.pitch = Random.Range(0.75f, 1.25f);
+        m_hitAudioSource.PlayOneShot(m_hitSound, m_hitSoundVolume);
     }
 
     protected void OnTriggerEnter(Collider collider)
@@ -233,7 +238,7 @@ public abstract class Soldier : NetworkBehaviour
             Soldier shooter = GameObject.Find(bullet.ShooterId).GetComponent<Soldier>();
             if (bullet.ShooterId != transform.name) // Don't light up when you're hit by your own bullet.
             {
-                RpcShowSpotLight();
+                RpcHitByBullet();
                 if (shooter.Team != Team) // Don't take damage from friendly fire.
                 {
                     TakeDamage(bullet.Damage, bullet.ShooterId);
