@@ -1,4 +1,8 @@
-﻿using System;
+﻿/**
+ * Authors: Chiel
+ */
+
+using System;
 using UnityEngine;
 
 public class CameraController : MonoBehaviour

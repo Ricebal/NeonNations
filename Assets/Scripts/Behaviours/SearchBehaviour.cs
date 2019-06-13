@@ -1,4 +1,8 @@
-﻿using System.Collections.Generic;
+﻿/**
+ * Authors: Chiel, Nicander
+ */
+
+using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 

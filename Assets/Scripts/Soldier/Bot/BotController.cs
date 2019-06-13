@@ -1,4 +1,8 @@
-﻿using System.Collections.Generic;
+﻿/**
+ * Authors: Benji, Chiel, Nicander
+ */
+
+using System.Collections.Generic;
 using UnityEngine;
 
 public class BotController : MonoBehaviour

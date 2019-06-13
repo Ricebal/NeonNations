@@ -1,3 +1,7 @@
+/**
+ * Authors: Chiel, Nicander
+ */
+
 using Mirror;
 using UnityEngine;
 

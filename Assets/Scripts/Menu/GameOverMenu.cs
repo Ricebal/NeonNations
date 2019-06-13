@@ -1,4 +1,8 @@
-﻿using System;
+﻿/**
+ * Authors: David, Stella, Benji, Nicander
+ */
+
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;

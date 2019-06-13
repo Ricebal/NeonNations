@@ -1,4 +1,8 @@
-﻿using UnityEngine;
+﻿/**
+ * Authors: Nicander, Benji
+ */
+
+using UnityEngine;
 
 [System.Serializable]
 public class Team

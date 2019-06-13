@@ -1,4 +1,8 @@
-﻿using UnityEngine;
+﻿/**
+ * Authors: Nicander
+ */
+
+using UnityEngine;
 using UnityEngine.UI;
 
 public class PlayerHUD : MonoBehaviour

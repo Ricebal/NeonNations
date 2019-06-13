@@ -1,4 +1,8 @@
-﻿using UnityEngine;
+﻿/**
+ * Authors: Nicander, David, Benji
+ */
+
+using UnityEngine;
 
 public class Sonar : MonoBehaviour
 {

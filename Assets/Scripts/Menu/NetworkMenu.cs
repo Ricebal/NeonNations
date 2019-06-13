@@ -1,4 +1,8 @@
-﻿using TMPro;
+﻿/**
+ * Authors: Stella, David
+ */
+
+using TMPro;
 using UnityEngine;
 
 public class NetworkMenu : MonoBehaviour

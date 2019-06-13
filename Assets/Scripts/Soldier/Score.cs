@@ -1,4 +1,8 @@
-﻿public class Score
+﻿/**
+ * Authors: Nicander, David
+ */
+
+public class Score
 {
     private string m_username = "Unknown";
     private int m_kills = 0;

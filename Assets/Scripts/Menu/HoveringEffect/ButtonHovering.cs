@@ -1,4 +1,8 @@
-﻿using TMPro;
+﻿/**
+ * Authors: David, Stella
+ */
+
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;

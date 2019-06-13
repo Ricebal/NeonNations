@@ -1,4 +1,8 @@
-﻿using System.Collections.Generic;
+﻿/**
+ * Authors: Nicander, David, Benji, Chiel
+ */
+
+using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Bot), typeof(Action))]

@@ -1,4 +1,8 @@
-﻿using Mirror;
+﻿/**
+ * Authors: David, Stella, Benji, Nicander, Chiel
+ */
+
+using Mirror;
 using System;
 using System.Collections.Generic;
 using System.Text;

@@ -1,4 +1,8 @@
-﻿using UnityEngine;
+﻿/**
+ * Authors: David, Benji
+ */
+
+using UnityEngine;
 
 [RequireComponent(typeof(AudioSource))]
 public class Reflector : MonoBehaviour

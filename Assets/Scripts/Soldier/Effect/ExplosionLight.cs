@@ -1,4 +1,8 @@
-﻿using UnityEngine;
+﻿/**
+ * Authors: Nicander
+ */
+
+using UnityEngine;
 
 public class ExplosionLight : MonoBehaviour
 {

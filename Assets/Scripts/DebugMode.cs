@@ -1,4 +1,8 @@
-﻿using UnityEngine;
+﻿/**
+ * Authors: Nicander, David
+ */
+
+using UnityEngine;
 using UnityEngine.UI;
 
 public class DebugMode : MonoBehaviour

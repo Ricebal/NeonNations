@@ -1,4 +1,8 @@
-﻿using UnityEngine;
+﻿/**
+ * Authors: David
+ */
+
+using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 

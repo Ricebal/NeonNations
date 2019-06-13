@@ -1,3 +1,7 @@
+/**
+ * Authors: David, Benji
+ */
+
 using Mirror;
 using UnityEngine;
 

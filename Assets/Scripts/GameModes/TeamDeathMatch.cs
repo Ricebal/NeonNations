@@ -1,4 +1,8 @@
-﻿public class TeamDeathMatch : GameMode
+﻿/**
+ * Authors: Nicander, Benji
+ */
+
+public class TeamDeathMatch : GameMode
 {
     public TeamDeathMatch() : base(10, 2, 6, 300) { }// 300 = 5 minutes
 

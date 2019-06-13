@@ -1,4 +1,8 @@
-﻿using UnityEngine;
+﻿/**
+ * Authors: Nicander, David
+ */
+
+using UnityEngine;
 
 [System.Serializable]
 public class Stat

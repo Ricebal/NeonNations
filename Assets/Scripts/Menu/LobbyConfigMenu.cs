@@ -1,4 +1,8 @@
-﻿using System.Collections.Generic;
+﻿/**
+ * Authors: Stella, David
+ */
+
+using System.Collections.Generic;
 using Mirror;
 using TMPro;
 using UnityEngine;
