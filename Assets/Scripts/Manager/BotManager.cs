@@ -6,7 +6,7 @@ public class BotManager : NetworkBehaviour
     public static BotManager Singleton;
 
     // Prefab representing the bot
-    [SerializeField] private GameObject m_botPrefab;
+    [SerializeField] private GameObject m_botPrefab = null;
 
     private void Awake()
     {
@@ -32,7 +32,7 @@ public class BotManager : NetworkBehaviour
             return;
         }
 
-        for (int i = 0; i < LobbyConfigMenu.GetAmountOfBots(); i++)
+        for (int i = 0; i < LobbyConfig.GetAmountOfBots(); i++)
         {
             GameObject bot = Instantiate(Singleton.m_botPrefab, Vector3.zero, Quaternion.identity);
             NetworkServer.Spawn(bot);

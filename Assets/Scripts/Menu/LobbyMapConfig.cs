@@ -15,13 +15,12 @@ public class LobbyMapConfig : NetworkBehaviour
 
     private void Start()
     {
-        // Do not display the configuration if the player is not the host
         if (!isServer)
         {
             return;
         }
 
-        foreach (KeyValuePair<string, int> mapOption in LobbyConfigMenu.Singleton.MapOptions)
+        foreach (KeyValuePair<string, int> mapOption in LobbyConfig.Singleton.MapOptions)
         {
             // Create one "Option Item" per element defined in the mapOptions dictionary
             GameObject optionItem = Instantiate(m_optionItemPrefab, m_mapOptionList.transform);
@@ -50,14 +49,14 @@ public class LobbyMapConfig : NetworkBehaviour
     private void OnValueChanged(HoldButton button)
     {
         Transform parent = button.gameObject.transform.parent;
-        int value = LobbyConfigMenu.Singleton.MapOptions[parent.name];
+        int value = LobbyConfig.Singleton.MapOptions[parent.name];
         value += button.IncrementalValue;
         if (value < 0)
         {
             return;
         }
 
-        LobbyConfigMenu.Singleton.MapOptions[parent.name] = value;
+        LobbyConfig.Singleton.MapOptions[parent.name] = value;
         parent.Find("Value").GetComponent<TextMeshProUGUI>().text = value.ToString();
     }
 }

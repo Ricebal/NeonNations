@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LobbyConfigMenu : NetworkBehaviour
+public class LobbyConfig : NetworkBehaviour
 {
-    public static LobbyConfigMenu Singleton;
+    public static LobbyConfig Singleton;
 
     public Dictionary<string, int> MapOptions;
     [SyncVar(hook = nameof(OnAmountOfBots))] public int AmountOfBots = 0;
@@ -36,17 +36,14 @@ public class LobbyConfigMenu : NetworkBehaviour
         else
         {
             Singleton = this;
-            // TODO: Improve this
-            DontDestroyOnLoad(gameObject.transform.parent);
+            DontDestroyOnLoad(gameObject);
         }
     }
 
     private void Start()
     {
-        // Do not display the configuration if the player is not the host
-        if (!isServer)
+        if (isServer)
         {
-            gameObject.SetActive(false);
             return;
         }
 
@@ -64,7 +61,6 @@ public class LobbyConfigMenu : NetworkBehaviour
             { "Breakable tunnel chance", m_breakableTunnelChance },
             { "Shortcut min skip distance", m_shortcutMinSkipDistance },
             { "Reflector area size", m_reflectorAreaSize } };
-
     }
 
     public static int GetOptionValue(string optionName)
@@ -79,7 +75,6 @@ public class LobbyConfigMenu : NetworkBehaviour
 
     public static int GetAmountOfBots()
     {
-        print(Singleton.AmountOfBots);
         return Singleton.AmountOfBots;
     }
 
@@ -100,4 +95,5 @@ public class LobbyConfigMenu : NetworkBehaviour
             }
         }
     }
+
 }

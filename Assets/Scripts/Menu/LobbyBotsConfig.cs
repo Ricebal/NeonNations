@@ -43,24 +43,24 @@ public class LobbyBotsConfig : NetworkBehaviour
     {
         // This function is periodically called to unsure that the number of bots plus the number of players 
         // does not exceed the maximum number of connections
-        int amountOfBots = LobbyConfigMenu.Singleton.AmountOfBots;
+        int amountOfBots = LobbyConfig.Singleton.AmountOfBots;
         if (amountOfBots > GetMaxAmountOfBots())
         {
-            LobbyConfigMenu.Singleton.AmountOfBots = GetMaxAmountOfBots();
+            LobbyConfig.Singleton.AmountOfBots = GetMaxAmountOfBots();
         }
     }
 
     // Called when button up or button down are held down
     private void OnBotsValueChanged(HoldButton button)
     {
-        int amountOfBots = LobbyConfigMenu.Singleton.AmountOfBots;
+        int amountOfBots = LobbyConfig.Singleton.AmountOfBots;
         amountOfBots += button.IncrementalValue;
         if (amountOfBots < 0 || amountOfBots > GetMaxAmountOfBots())
         {
             return;
         }
 
-        LobbyConfigMenu.Singleton.AmountOfBots = amountOfBots;
+        LobbyConfig.Singleton.AmountOfBots = amountOfBots;
     }
 
     // Return the maximum amount of bots between 0 and max connections
@@ -78,7 +78,7 @@ public class LobbyBotsConfig : NetworkBehaviour
 
         if (Singleton.isServer)
         {
-            int amountOfBots = LobbyConfigMenu.Singleton.AmountOfBots + 1;
+            int amountOfBots = LobbyConfig.Singleton.AmountOfBots + 1;
             Singleton.m_botsText.text = amountOfBots.ToString();
         }
     }
@@ -89,7 +89,7 @@ public class LobbyBotsConfig : NetworkBehaviour
 
         if (Singleton.isServer)
         {
-            int amountOfBots = LobbyConfigMenu.Singleton.AmountOfBots - 1;
+            int amountOfBots = LobbyConfig.Singleton.AmountOfBots - 1;
             Singleton.m_botsText.text = amountOfBots.ToString();
         }
     }

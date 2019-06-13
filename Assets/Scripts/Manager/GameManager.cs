@@ -35,18 +35,7 @@ public class GameManager : NetworkBehaviour
 
     private void OnEnable()
     {
-        m_mapWidth = LobbyConfigMenu.GetOptionValue("Map width");
-        m_mapHeight = LobbyConfigMenu.GetOptionValue("Map height");
-        m_maxRoomAmount = LobbyConfigMenu.GetOptionValue("Max room amount");
-        m_maxShortcutAmount = LobbyConfigMenu.GetOptionValue("Max shortcut amount");
-        m_minRoomLength = LobbyConfigMenu.GetOptionValue("Min room length");
-        m_maxRoomLength = LobbyConfigMenu.GetOptionValue("Max room length");
-        m_minTunnelLength = LobbyConfigMenu.GetOptionValue("Min tunnel length");
-        m_maxTunnelLength = LobbyConfigMenu.GetOptionValue("Max tunnel length");
-        m_tunnelWidth = LobbyConfigMenu.GetOptionValue("Tunnel width");
-        m_breakableTunnelChance = LobbyConfigMenu.GetOptionValue("Breakable tunnel chance");
-        m_shortcutMinSkipDistance = LobbyConfigMenu.GetOptionValue("Shortcut min skip distance");
-        m_reflectorAreaSize = LobbyConfigMenu.GetOptionValue("Reflector area size");
+        InitMap();
     }
 
     private void Awake()
@@ -93,6 +82,7 @@ public class GameManager : NetworkBehaviour
         {
             return;
         }
+
         WaitingTimeAfterGameEnded -= Time.deltaTime;
         if (WaitingTimeAfterGameEnded < 3) // For first 3 seconds show endgame text.
         {
@@ -125,6 +115,22 @@ public class GameManager : NetworkBehaviour
                 TeamManager.AddTeam(new Color(0, 0, 1, 1));
             }
         }
+    }
+
+    private void InitMap()
+    {
+        m_mapWidth = LobbyConfig.GetOptionValue("Map width");
+        m_mapHeight = LobbyConfig.GetOptionValue("Map height");
+        m_maxRoomAmount = LobbyConfig.GetOptionValue("Max room amount");
+        m_maxShortcutAmount = LobbyConfig.GetOptionValue("Max shortcut amount");
+        m_minRoomLength = LobbyConfig.GetOptionValue("Min room length");
+        m_maxRoomLength = LobbyConfig.GetOptionValue("Max room length");
+        m_minTunnelLength = LobbyConfig.GetOptionValue("Min tunnel length");
+        m_maxTunnelLength = LobbyConfig.GetOptionValue("Max tunnel length");
+        m_tunnelWidth = LobbyConfig.GetOptionValue("Tunnel width");
+        m_breakableTunnelChance = LobbyConfig.GetOptionValue("Breakable tunnel chance");
+        m_shortcutMinSkipDistance = LobbyConfig.GetOptionValue("Shortcut min skip distance");
+        m_reflectorAreaSize = LobbyConfig.GetOptionValue("Reflector area size");
     }
 
     private void InitGame()
