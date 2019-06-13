@@ -36,7 +36,7 @@ public class GameEnvironment : ScriptableObject
     {
         m_map = map;
 
-        if (BoardManager.Singleton.BreakableWalls != null)
+        if (BoardManager.Singleton != null && BoardManager.Singleton.BreakableWalls != null)
         {
             GameObject wallParent = BoardManager.Singleton.BreakableWalls; // Get all breakable walls.
             for (int i = 0; i < wallParent.transform.childCount; i++)

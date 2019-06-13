@@ -51,7 +51,7 @@ public class NavigationGraph
             return Map[x][y];
         }
         // return default
-        return new Node(null);
+        return default(Node);
     }
 
     /// <summary>
@@ -59,7 +59,13 @@ public class NavigationGraph
     /// </summary>
     public Node GetNode(Vector2Int coordinate)
     {
-        return Map[coordinate.x][coordinate.y];
+        // Out of bounds check
+        if (coordinate.x >= 0 && coordinate.x < Map.Length && coordinate.y >= 0 && coordinate.y < Map[0].Length)
+        {
+            return Map[coordinate.x][coordinate.y];
+        }
+        // return default
+        return default(Node);
     }
 
     /// <summary>

@@ -10,6 +10,7 @@ namespace Tests
     {
         Map completeMap;
         NavigationGraph navigationGraph;
+        GameEnvironment environment;
         private void InitCornerMap()
         {
             completeMap = Map.GenerateEmptyMap(Tile.Wall, 3, 3, 0);
@@ -72,14 +73,129 @@ namespace Tests
             Assert.AreEqual(new Vector2Int(2, 2), farthestCoordinate);
         }
 
-        // A UnityTest behaves like a coroutine in Play Mode. In Edit Mode you can use
-        // `yield return null;` to skip a frame.
-        [UnityTest]
-        public IEnumerator SearchBehaviourTestWithEnumeratorPasses()
+        [Test]
+        public void GameEnvironmentIlluminatedCoordinates()
         {
-            // Use the Assert class to test conditions.
-            // Use yield to skip a frame.
-            yield return true;
+            InitCorridorMap();
+            environment = GameEnvironment.CreateInstance(completeMap, new List<Tile>() { Tile.Wall });
+            HashSet<Vector2Int> actualCoordinates = environment.GetIlluminatedCoordinates(new Vector2Int(2,3));
+
+            List<Vector2Int> expectedCoordinates = new List<Vector2Int>()
+            {
+                new Vector2Int(1,2),
+                new Vector2Int(2,2),
+                new Vector2Int(3,2),
+                new Vector2Int(1,3),
+                new Vector2Int(2,3),
+                new Vector2Int(3,3),
+                new Vector2Int(1,4),
+                new Vector2Int(2,4),
+                new Vector2Int(3,4),
+            };
+
+            for(int i = 0; i < expectedCoordinates.Count; i++)
+            {
+                Assert.IsTrue(actualCoordinates.Contains(expectedCoordinates[i]));
+            }
+        }
+
+        [Test]
+        public void DStarLiteCoordinatesToTraverseWhenKnowingTheMap()
+        {
+            InitCorridorMap();
+            environment = GameEnvironment.CreateInstance(completeMap, new List<Tile>() { Tile.Wall });
+
+            DStarLite dStarLite = new DStarLite(environment, true);
+            Vector2Int startNode = new Vector2Int(0, 0);
+            Vector2Int endNode = new Vector2Int(2, 4);
+            dStarLite.RunDStarLite(startNode, endNode);
+            List<Vector2Int> actualCoordinates = dStarLite.CoordinatesToTraverse();
+            List<Vector2Int> expectedCoordinates = new List<Vector2Int>()
+            {
+                new Vector2Int(0, 1),
+                new Vector2Int(0, 2),
+                new Vector2Int(1, 2),
+                new Vector2Int(2, 2),
+                new Vector2Int(2, 3),
+                endNode
+            };
+
+            for (int i = 0; i < actualCoordinates.Count; i++)
+            {
+                Assert.AreEqual(expectedCoordinates[i], actualCoordinates[i]);
+            }
+        }
+
+        [Test]
+        public void DStarLiteCoordinatesToTraverseWhenNotKnowingTheMap()
+        {
+            InitCorridorMap();
+            environment = GameEnvironment.CreateInstance(completeMap, new List<Tile>() { Tile.Wall });
+
+            DStarLite dStarLite = new DStarLite(environment, false);
+            Vector2Int startNode = new Vector2Int(0, 0);
+            Vector2Int endNode = new Vector2Int(2, 4);
+            dStarLite.RunDStarLite(startNode, endNode);
+            List<Vector2Int> actualCoordinates = dStarLite.CoordinatesToTraverse();
+            List<Vector2Int> expectedCoordinates = new List<Vector2Int>()
+            {
+                new Vector2Int(0, 1),
+                new Vector2Int(0, 2),
+                new Vector2Int(0, 3),
+                new Vector2Int(0, 4),
+                new Vector2Int(1, 4),
+                endNode
+            };
+
+            for (int i = 0; i < actualCoordinates.Count; i++)
+            {
+                Assert.AreEqual(expectedCoordinates[i], actualCoordinates[i]);
+            }
+        }
+
+        [Test]
+        public void DStarLiteCoordinatesToTraverseWhenKnowingTheMapButWithWallsInSight()
+        {
+            InitCorridorMap();
+            environment = GameEnvironment.CreateInstance(completeMap, new List<Tile>() { Tile.Wall });
+
+            DStarLite dStarLite = new DStarLite(environment, true);
+            Vector2Int startNode = new Vector2Int(2, 4);
+            Vector2Int endNode = new Vector2Int(0, 0);
+            dStarLite.RunDStarLite(startNode, endNode);
+            List<Vector2Int> actualCoordinates = dStarLite.CoordinatesToTraverse();
+            List<Vector2Int> expectedCoordinates = new List<Vector2Int>()
+            {
+                new Vector2Int(2, 3),
+                new Vector2Int(2, 2),
+                new Vector2Int(1, 2),
+                new Vector2Int(0, 2),
+                new Vector2Int(0, 1),
+                endNode
+            };
+
+            for (int i = 0; i < actualCoordinates.Count; i++)
+            {
+                Assert.AreEqual(expectedCoordinates[i], actualCoordinates[i]);
+            }
+        }
+
+        [Test]
+        public void NavigationGraphGetNodeXY()
+        {
+            InitCornerMap();
+            Assert.IsFalse(navigationGraph.GetNode(0, 0).IsObstacle());
+            Assert.IsTrue(navigationGraph.GetNode(0, 1).IsObstacle());
+            Assert.AreEqual(navigationGraph.GetNode(-1, -1), default(Node));
+        }
+
+        [Test]
+        public void NavigationGraphGetNodeVector()
+        {
+            InitCornerMap();
+            Assert.IsFalse(navigationGraph.GetNode(new Vector2Int(0, 0)).IsObstacle());
+            Assert.IsTrue(navigationGraph.GetNode(new Vector2Int(0, 1)).IsObstacle());
+            Assert.AreEqual(navigationGraph.GetNode(new Vector2Int(-1, -1)), default(Node));
         }
     }
 }
