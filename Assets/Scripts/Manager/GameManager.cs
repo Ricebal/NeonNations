@@ -30,7 +30,7 @@ public class GameManager : NetworkBehaviour
     [SyncVar] [SerializeField] private int m_outerWallWidth = 14;
 
     [SerializeField] private ParticleSystem m_fireworks = null;
-    [SerializeField] private GameObject m_endGameTextObject;
+    [SerializeField] private GameObject m_endGameTextObject = null;
     private int m_localPlayersTeamId;
 
     private void Awake()
