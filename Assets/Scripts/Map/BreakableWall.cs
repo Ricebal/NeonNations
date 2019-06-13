@@ -13,7 +13,7 @@ public class BreakableWall : NetworkBehaviour
     [SerializeField] private AudioClip m_destroySound = null;
     [SerializeField] private float m_destroySoundVolume = 0;
     [SerializeField] private AudioSource m_audioSource = null;
-    [SerializeField] private int m_maxHealth = 50;
+    [SerializeField] private int m_maxHealth = 0;
 
     private void Awake()
     {

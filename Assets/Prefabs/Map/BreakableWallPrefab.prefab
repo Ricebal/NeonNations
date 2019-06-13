@@ -107,11 +107,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   syncInterval: 0.1
+  m_healthStat:
+    m_minValue: 0
+    m_maxValue: 0
+    m_currentValue: 0
   m_hitSound: {fileID: 8300000, guid: d0fa97553ed7fd246954305558d544e3, type: 3}
   m_hitSoundVolume: 1
   m_destroySound: {fileID: 8300000, guid: 36176e5bf96faa843b8bd7ed27498d7d, type: 3}
   m_destroySoundVolume: 1
   m_audioSource: {fileID: 7078646403582769646}
+  m_maxHealth: 25
 --- !u!114 &2261283144201084859
 MonoBehaviour:
   m_ObjectHideFlags: 0
