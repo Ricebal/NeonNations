@@ -177,8 +177,8 @@ public class Map
                 Vector2Int nextToCurrent = current + Directions[i];
 
                 // if the tile hasn't been checked and is not in the list to be checked, and it's a floor, add to check list
-                if (!positionsChecked.Contains(nextToCurrent) && !positionsToCheck.Contains(nextToCurrent)
-                    && TileMap[nextToCurrent.x][nextToCurrent.y] == Tile.Floor)
+                if (!positionsChecked.Contains(nextToCurrent) && !positionsToCheck.Contains(nextToCurrent) &&
+                    TileMap[nextToCurrent.x][nextToCurrent.y] == Tile.Floor)
                 {
                     positionsToCheck.Enqueue(nextToCurrent);
                 }
@@ -189,7 +189,6 @@ public class Map
 
         return false;
     }
-
 
     /// <summary>
     /// Adds a tunnel to a given room
@@ -239,8 +238,6 @@ public class Map
         // return new map
         return newMap;
     }
-
-
 
     /// <summary>
     /// Gets a random wall tile based on a direction
@@ -297,8 +294,8 @@ public class Map
         for (int i = 0; i < tunnelWidth; i++)
         {
             Vector2Int wallTile = new Vector2Int(randomTile.x + i * Math.Abs(direction.y), randomTile.y + i * Math.Abs(direction.x));
-            if (!(TileMap[wallTile.x][wallTile.y] == Tile.Wall
-                    && TileMap[wallTile.x - direction.x][wallTile.y - direction.y] == Tile.Floor))
+            if (!(TileMap[wallTile.x][wallTile.y] == Tile.Wall &&
+                    TileMap[wallTile.x - direction.x][wallTile.y - direction.y] == Tile.Floor))
             {
                 return false;
             }

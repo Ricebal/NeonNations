@@ -2,9 +2,9 @@
  * Authors: Chiel
  */
 
-using Mirror;
 using System;
 using System.Collections.Generic;
+using Mirror;
 using UnityEngine;
 
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
@@ -24,6 +24,7 @@ public class BoardManager : NetworkBehaviour
         Down = 4, // 000100
         Left = 8 // 001000
     }
+
     [SerializeField] private GameObject m_mapPrefab = null;
     [SerializeField] private GameObject m_wallPrefab = null;
     [SerializeField] private GameObject m_floorPrefab = null;
@@ -383,7 +384,7 @@ public class BoardManager : NetworkBehaviour
         newMesh.CombineMeshes(meshDataList.ToArray());
 
         // create new map object to hold part of the map
-        GameObject mapPart = Instantiate(m_mapPrefab, Vector3.zero, Quaternion.identity) as GameObject;
+        GameObject mapPart = Instantiate(m_mapPrefab, Vector3.zero, Quaternion.identity)as GameObject;
 
         // handle new map object
         mapPart.transform.GetComponent<MeshFilter>().sharedMesh = newMesh;

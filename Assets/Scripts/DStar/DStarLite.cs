@@ -102,7 +102,7 @@ public class DStarLite
     /// </summary>
     public List<Vector2Int> CoordinatesToTraverse()
     {
-        if (Map.GetNode(Start).IsObstacle())  // Prevent from crashing when bot is inside a wall
+        if (Map.GetNode(Start).IsObstacle()) // Prevent from crashing when bot is inside a wall
         {
             return new List<Vector2Int>();
         }
@@ -204,7 +204,7 @@ public class DStarLite
         {
             node.Rhs = MinCost(coordinates);
         }
-        if (m_heap.Contains(coordinates))   // To prevent any copies
+        if (m_heap.Contains(coordinates)) // To prevent any copies
         {
             m_heap.Remove(coordinates);
         }
@@ -227,7 +227,7 @@ public class DStarLite
         foreach (Vector2Int surroundingCoordinates in Map.GetSurroundingOpenSpaces(coordinates))
         {
             Node node = Map.GetNode(surroundingCoordinates);
-            double val = 1 + node.CostFromStartingPoint;    // Adds 1 to the CostFromStartingPoint since it is one more move to reach this point from a point next to it.
+            double val = 1 + node.CostFromStartingPoint; // Adds 1 to the CostFromStartingPoint since it is one more move to reach this point from a point next to it.
             if (val <= min)
             {
                 min = val;
@@ -289,17 +289,17 @@ public class DStarLite
             }
             else if (node.CostFromStartingPoint > node.Rhs) // The g-value wasn't optimally calculated
             {
-                node.CostFromStartingPoint = node.Rhs;      // Set the g-value to the calculated Rhs-value
-                foreach (Vector2Int surroundingCoordinates in Map.GetSurroundingOpenSpaces(coordinates))    // Update the Rhs-value of the surrounding nodes
+                node.CostFromStartingPoint = node.Rhs; // Set the g-value to the calculated Rhs-value
+                foreach (Vector2Int surroundingCoordinates in Map.GetSurroundingOpenSpaces(coordinates)) // Update the Rhs-value of the surrounding nodes
                 {
                     UpdateVertex(surroundingCoordinates);
                 }
             }
-            else  // Re-calculate the Rhs-value of the current node and its surrounding nodes
+            else // Re-calculate the Rhs-value of the current node and its surrounding nodes
             {
                 node.CostFromStartingPoint = double.PositiveInfinity;
                 UpdateVertex(coordinates);
-                foreach (Vector2Int surroundingNodes in Map.GetSurroundingOpenSpaces(coordinates))  // Update the Rhs-value of the surrounding nodes
+                foreach (Vector2Int surroundingNodes in Map.GetSurroundingOpenSpaces(coordinates)) // Update the Rhs-value of the surrounding nodes
                 {
                     UpdateVertex(surroundingNodes);
                 }

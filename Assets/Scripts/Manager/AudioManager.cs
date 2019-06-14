@@ -2,8 +2,8 @@
  * Authors: David
  */
 
-using Mirror;
 using System.Collections.Generic;
+using Mirror;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
@@ -18,8 +18,8 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioClip m_buttonClickSound = null;
     [SerializeField] private AudioClip m_menuMusic = null;
     [SerializeField] private AudioClip m_gameMusic = null;
-    [Scene] [SerializeField] private List<string> m_menuScenes = null;
-    [Scene] [SerializeField] private List<string> m_gameScenes = null;
+    [Scene][SerializeField] private List<string> m_menuScenes = null;
+    [Scene][SerializeField] private List<string> m_gameScenes = null;
     private string m_lastSceneName;
 
     // Instantiate the AudioManager when the game starts
@@ -27,7 +27,7 @@ public class AudioManager : MonoBehaviour
     private static void OnGameStart()
     {
         Object obj = Resources.Load("AudioManager");
-        GameObject audioManager = Instantiate(obj) as GameObject;
+        GameObject audioManager = Instantiate(obj)as GameObject;
         // Rename AudioManager(Clone) to AudioManager
         audioManager.name = obj.name;
     }

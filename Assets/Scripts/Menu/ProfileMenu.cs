@@ -13,18 +13,18 @@ public class ProfileMenu : MonoBehaviour
     private const string USERNAME_KEY = "username";
 
     private static List<string> s_randomUsernames = new List<string>()
-        {
-            "Tharemar",
-            "Viang",
-            "Onomanyth",
-            "Sulian",
-            "Gwareron",
-            "Asorerwen",
-            "Rendannon",
-            "Doidien",
-            "Ocireric",
-            "Unaunna"
-        };
+    {
+        "Tharemar",
+        "Viang",
+        "Onomanyth",
+        "Sulian",
+        "Gwareron",
+        "Asorerwen",
+        "Rendannon",
+        "Doidien",
+        "Ocireric",
+        "Unaunna"
+    };
 
     [SerializeField] private InputField m_usernameField = null;
     [SerializeField] private TextMeshProUGUI m_savingText = null;

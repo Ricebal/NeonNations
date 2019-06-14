@@ -2,8 +2,8 @@
  * Authors: Benji
  */
 
-using Mirror;
 using System.Collections.Generic;
+using Mirror;
 using TMPro;
 using UnityEngine;
 
@@ -48,7 +48,7 @@ public class TeamScoreboard : NetworkBehaviour
         Team team = TeamManager.Singleton.Teams[teamId - 1];
 
         // Make a new entry on the scoreboard
-        GameObject scorePanel = Instantiate(m_teamScorePrefab) as GameObject;
+        GameObject scorePanel = Instantiate(m_teamScorePrefab)as GameObject;
         scorePanel.transform.SetParent(m_teamList.transform, false);
 
         // Set the score

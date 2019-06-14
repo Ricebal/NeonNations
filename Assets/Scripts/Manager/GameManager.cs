@@ -2,10 +2,10 @@
  * Authors: David, Stella, Benji, Nicander, Chiel
  */
 
-using Mirror;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Mirror;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -18,7 +18,7 @@ public class GameManager : NetworkBehaviour
     public bool GameFinished;
     public float WaitingTimeAfterGameEnded; // The time after the game is finished, before it will return to the lobby.
 
-    [SyncVar] [SerializeField] private string m_seed = "";
+    [SyncVar][SerializeField] private string m_seed = "";
     [SyncVar] private int m_mapWidth;
     [SyncVar] private int m_mapHeight;
     [SyncVar] private int m_maxRoomAmount;
@@ -31,7 +31,7 @@ public class GameManager : NetworkBehaviour
     [SyncVar] private int m_breakableTunnelChance;
     [SyncVar] private int m_shortcutMinSkipDistance;
     [SyncVar] private int m_reflectorAreaSize;
-    [SyncVar] [SerializeField] private int m_outerWallWidth = 14;
+    [SyncVar][SerializeField] private int m_outerWallWidth = 14;
 
     [SerializeField] private ParticleSystem m_fireworks = null;
     [SerializeField] private GameObject m_endGameTextObject = null;
@@ -41,7 +41,7 @@ public class GameManager : NetworkBehaviour
     {
         InitializeSingleton();
         InitializeVariables();
-        GameMode = gameObject.AddComponent<TeamDeathMatch>(); // Temporary untill we can pick game modes.
+        GameMode = gameObject.AddComponent<TeamDeathMatch>(); // Temporary until we can pick game modes.
         SetTeams();
     }
 

@@ -10,13 +10,13 @@ public abstract class Soldier : NetworkBehaviour
 {
     [SyncVar] public Team Team;
     [SyncVar] public Color Color;
-    [SyncVar] public Score PlayerScore = new Score();
+    [SyncVar] public Score Score = new Score();
     public float Speed;
     public string Username;
     public float RespawnTime;
     public bool IsDead = false;
-    public Stat HealthStat;
-    public Stat EnergyStat;
+    public Stat Health;
+    public Stat Energy;
 
     [SerializeField] protected float m_energyReloadTime;
     [SerializeField] protected AudioClip m_hitSound;
@@ -36,8 +36,8 @@ public abstract class Soldier : NetworkBehaviour
 
     private void Awake()
     {
-        HealthStat = new Stat(0, m_maxHealth);
-        EnergyStat = new Stat(0, m_maxEnergy);
+        Health = new Stat(0, m_maxHealth);
+        Energy = new Stat(0, m_maxEnergy);
     }
 
     protected void Start()
@@ -72,7 +72,7 @@ public abstract class Soldier : NetworkBehaviour
         if (Time.time - m_lastEnergyReload >= m_energyReloadTime)
         {
             m_lastEnergyReload = Time.time;
-            EnergyStat.Add(1);
+            Energy.Add(1);
         }
     }
 
@@ -100,7 +100,7 @@ public abstract class Soldier : NetworkBehaviour
         IsDead = true;
         gameObject.layer = 9; // DeadPlayers layer;
         m_deathTime = Time.time;
-        PlayerScore.Deaths++;
+        Score.Deaths++;
         Team.AddDeath();
 
         DeathExplosion deathExplosion = GetComponentInChildren<DeathExplosion>();
@@ -139,22 +139,22 @@ public abstract class Soldier : NetworkBehaviour
         m_renderer.material.color = Color;
         m_headController?.SetColor(Color);
         m_gun?.SetColor(Color);
-        HealthStat.Reset();
-        EnergyStat.Reset();
+        Health.Reset();
+        Energy.Reset();
         IsDead = false;
     }
 
     public void SyncScore()
     {
-        RpcSetScore(PlayerScore.Username, PlayerScore.Kills, PlayerScore.Deaths);
+        RpcSetScore(Score.Username, Score.Kills, Score.Deaths);
     }
 
     [ClientRpc]
     private void RpcSetScore(string username, int kills, int deaths)
     {
-        PlayerScore.Username = username;
-        PlayerScore.Kills = kills;
-        PlayerScore.Deaths = deaths;
+        Score.Username = username;
+        Score.Kills = kills;
+        Score.Deaths = deaths;
     }
 
     public void SetInitialColor(Color color)
@@ -191,14 +191,14 @@ public abstract class Soldier : NetworkBehaviour
     protected void RpcUsername(string username)
     {
         Username = username;
-        PlayerScore.Username = username;
+        Score.Username = username;
     }
 
     protected void TakeDamage(int damage, string playerId)
     {
         RpcTakeDamage(damage);
         // If the soldier has no remaining health and is not dead yet, he will die
-        if (!IsDead && HealthStat.GetValue() <= 0)
+        if (!IsDead && Health.GetValue() <= 0)
         {
             RpcAddKill(playerId);
             RpcDead();
@@ -209,14 +209,14 @@ public abstract class Soldier : NetworkBehaviour
     [ClientRpc]
     protected void RpcTakeDamage(int damage)
     {
-        HealthStat.Subtract(damage);
+        Health.Subtract(damage);
     }
 
     [ClientRpc]
     protected void RpcAddKill(string playerId)
     {
         Soldier otherSoldier = GameObject.Find(playerId).GetComponent<Soldier>();
-        otherSoldier.PlayerScore.Kills++;
+        otherSoldier.Score.Kills++;
         otherSoldier.Team.AddKill();
     }
 

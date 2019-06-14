@@ -2,9 +2,9 @@
  * Authors: Nicander, Benji
  */
 
-using Mirror;
 using System.Collections.Generic;
 using System.Linq;
+using Mirror;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -90,9 +90,9 @@ public class Scoreboard : NetworkBehaviour
         {
             scorePanels.Add(m_playerList.transform.GetChild(i));
         }
-        scorePanels = scorePanels.OrderByDescending(entry => entry.gameObject.GetComponent<ScoreboardEntry>().Score.Kills)  // Sort by kills,
-                  .ThenBy(entry => entry.gameObject.GetComponent<ScoreboardEntry>().Score.Deaths)                           // Then by lowest deaths.
-                  .ToList();
+        scorePanels = scorePanels.OrderByDescending(entry => entry.gameObject.GetComponent<ScoreboardEntry>().Score.Kills) // Sort by kills,
+            .ThenBy(entry => entry.gameObject.GetComponent<ScoreboardEntry>().Score.Deaths) // Then by lowest deaths.
+            .ToList();
         VerticalLayoutGroup layoutGroup = m_playerList.GetComponent<VerticalLayoutGroup>();
         for (int i = 0; i < amountOfScorePanels; i++)
         {
@@ -105,7 +105,7 @@ public class Scoreboard : NetworkBehaviour
     private void RpcAddPlayer(string playerId)
     {
         // Make a new entry on the scoreboard
-        GameObject scorePanel = Instantiate(m_playerScorePrefab) as GameObject;
+        GameObject scorePanel = Instantiate(m_playerScorePrefab)as GameObject;
         scorePanel.transform.SetParent(m_playerList.transform, false);
         ScoreboardEntry scoreboardEntry = scorePanel.GetComponent<ScoreboardEntry>();
         // Try to add the player to the scoreboard, if it fails add it to the list of outdated players
@@ -129,7 +129,7 @@ public class Scoreboard : NetworkBehaviour
         Color scoreboardColor = playerScript.Color;
         scoreboardColor.a = 100f / 255f; // Set alpha to 100. Color.a works with a value between 0 and 1.
         scoreboardEntry.SetColor(scoreboardColor);
-        scoreboardEntry.SetScore(playerScript.PlayerScore);
+        scoreboardEntry.SetScore(playerScript.Score);
         scoreboardEntry.Score.OnScoreChange += RpcSortPlayerList;
         if (playerScript.isLocalPlayer)
         {
