@@ -2,9 +2,9 @@
  * Authors: Benji
  */
 
-using Mirror;
 using System;
 using System.Collections.Generic;
+using Mirror;
 using UnityEngine;
 
 public abstract class GameMode : NetworkBehaviour

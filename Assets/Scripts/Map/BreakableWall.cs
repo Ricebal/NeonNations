@@ -55,6 +55,7 @@ public class BreakableWall : NetworkBehaviour
         m_audioSource.pitch = Random.Range(0.75f, 1.25f);
         m_audioSource.PlayOneShot(m_hitSound, m_hitSoundVolume);
     }
+
     [ClientRpc]
     private void RpcDestroyWall()
     {

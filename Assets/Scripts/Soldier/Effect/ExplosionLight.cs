@@ -52,7 +52,8 @@ public class ExplosionLight : MonoBehaviour
     public void SetColor(Color color)
     {
         m_lightForMap.color = color;
-        GetComponentsInChildren<ParticleSystemRenderer>()[0].trailMaterial.SetColor("_EmissionColor", color * 3); ParticleSystemRenderer[] particleSystemRenderers = GetComponentsInChildren<ParticleSystemRenderer>();
+        GetComponentsInChildren<ParticleSystemRenderer>()[0].trailMaterial.SetColor("_EmissionColor", color * 3);
+        ParticleSystemRenderer[] particleSystemRenderers = GetComponentsInChildren<ParticleSystemRenderer>();
 
         // Make new material.
         Material mat;

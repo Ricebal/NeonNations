@@ -2,9 +2,9 @@
  * Authors: Benji, Nicander
  */
 
-using Mirror;
 using System.Collections.Generic;
 using System.Linq;
+using Mirror;
 using UnityEngine;
 
 public class TeamManager : NetworkBehaviour
@@ -166,7 +166,7 @@ public class TeamManager : NetworkBehaviour
     private void RpcSyncTeamScore(int teamId, int kills, int deaths)
     {
         // Sync the score for all the teams.
-        if (Singleton.isServer)   // Except for the server since that is the correct score.
+        if (Singleton.isServer) // Except for the server since that is the correct score.
         {
             return;
         }

@@ -49,7 +49,7 @@ public class MapGenerator
         m_breakableTunnelChance = breakableTunnelChance;
         m_shortcutMinSkipDistance = shortcutMinSkipDistance;
         m_reflectorAreaSize = reflectorAreaSize;
-        m_spawnAreaMinSize = Math.Min(m_tunnelWidth * m_maxTunnelLength, (int)Math.Pow(Math.Min(mapWidth, mapHeight),2));
+        m_spawnAreaMinSize = Math.Min(m_tunnelWidth * m_maxTunnelLength, (int)Math.Pow(Math.Min(mapWidth, mapHeight), 2));
     }
 
     /// <summary>
@@ -64,28 +64,29 @@ public class MapGenerator
         {
             for (int y = 0; y < m_mapHeight; y++)
             {
-                if (// rooms
-                    x == 0 && y == 0
-                    || x >= 0 && x <= 9 && y >= 16 && y <= 21
-                    || x >= 1 && x <= 7 && y >= 0 && y <= 5
-                    || x >= 11 && x <= 15 && y >= 4 && y <= 10
-                    || x >= 16 && x <= 20 && y >= 13 && y <= 18
-                    || x >= 23 && x <= 29 && y >= 3 && y <= 10
-                    || x >= 24 && x <= 27 && y >= 17 && y <= 21
+                if ( // rooms
+                    x == 0 && y == 0 ||
+                    x >= 0 && x <= 9 && y >= 16 && y <= 21 ||
+                    x >= 1 && x <= 7 && y >= 0 && y <= 5 ||
+                    x >= 11 && x <= 15 && y >= 4 && y <= 10 ||
+                    x >= 16 && x <= 20 && y >= 13 && y <= 18 ||
+                    x >= 23 && x <= 29 && y >= 3 && y <= 10 ||
+                    x >= 24 && x <= 27 && y >= 17 && y <= 21
                     // corridors
-                    || x >= 1 && x <= 2 && y >= 12 && y <= 15
-                    || x >= 3 && x <= 6 && y >= 12 && y <= 13
-                    || x >= 5 && x <= 6 && y >= 6 && y <= 13
-                    || x >= 7 && x <= 10 && y >= 8 && y <= 9
-                    || x >= 8 && x <= 24 && y >= 0 && y <= 1
-                    || x >= 10 && x <= 15 && y >= 17 && y <= 18
-                    || x >= 13 && x <= 14 && y >= 2 && y <= 3
-                    || x >= 16 && x <= 22 && y >= 8 && y <= 9
-                    || x >= 17 && x <= 18 && y >= 19 && y <= 21
-                    || x >= 17 && x <= 18 && y >= 10 && y <= 12
-                    || x >= 19 && x <= 25 && y >= 20 && y <= 21
-                    || x >= 23 && x <= 24 && y == 2
-                    || x >= 25 && x <= 26 && y >= 11 && y <= 16)
+                    ||
+                    x >= 1 && x <= 2 && y >= 12 && y <= 15 ||
+                    x >= 3 && x <= 6 && y >= 12 && y <= 13 ||
+                    x >= 5 && x <= 6 && y >= 6 && y <= 13 ||
+                    x >= 7 && x <= 10 && y >= 8 && y <= 9 ||
+                    x >= 8 && x <= 24 && y >= 0 && y <= 1 ||
+                    x >= 10 && x <= 15 && y >= 17 && y <= 18 ||
+                    x >= 13 && x <= 14 && y >= 2 && y <= 3 ||
+                    x >= 16 && x <= 22 && y >= 8 && y <= 9 ||
+                    x >= 17 && x <= 18 && y >= 19 && y <= 21 ||
+                    x >= 17 && x <= 18 && y >= 10 && y <= 12 ||
+                    x >= 19 && x <= 25 && y >= 20 && y <= 21 ||
+                    x >= 23 && x <= 24 && y == 2 ||
+                    x >= 25 && x <= 26 && y >= 11 && y <= 16)
                 {
                     m_map.TileMap[x][y] = Tile.Floor;
                 }
@@ -288,22 +289,22 @@ public class MapGenerator
             {
                 if (map.TileMap[x][y] == Tile.Floor && // check if position in room is a floor tile
                     (!entranceTiles.Contains(new Vector2Int(x, y)) && // if the tile isn't an entrance
-                    (m_map.TileMap[x + map.Pos.x][y + map.Pos.y] != Tile.Wall || // if so, check if the same position on map isn't a wall
-                    m_map.TileMap[x + map.Pos.x][y + map.Pos.y + 1] != Tile.Wall || // and check all tiles around the position on the map, starting with north
-                    m_map.TileMap[x + map.Pos.x + 1][y + map.Pos.y + 1] != Tile.Wall || // northeast
-                    m_map.TileMap[x + map.Pos.x + 1][y + map.Pos.y] != Tile.Wall || // east
-                    m_map.TileMap[x + map.Pos.x + 1][y + map.Pos.y - 1] != Tile.Wall || // southeast
-                    m_map.TileMap[x + map.Pos.x][y + map.Pos.y - 1] != Tile.Wall || // south
-                    m_map.TileMap[x + map.Pos.x - 1][y + map.Pos.y - 1] != Tile.Wall || // southwest
-                    m_map.TileMap[x + map.Pos.x - 1][y + map.Pos.y] != Tile.Wall || // west
-                    m_map.TileMap[x + map.Pos.x - 1][y + map.Pos.y + 1] != Tile.Wall // northwest
-                    )) ||
+                        (m_map.TileMap[x + map.Pos.x][y + map.Pos.y] != Tile.Wall || // if so, check if the same position on map isn't a wall
+                            m_map.TileMap[x + map.Pos.x][y + map.Pos.y + 1] != Tile.Wall || // and check all tiles around the position on the map, starting with north
+                            m_map.TileMap[x + map.Pos.x + 1][y + map.Pos.y + 1] != Tile.Wall || // northeast
+                            m_map.TileMap[x + map.Pos.x + 1][y + map.Pos.y] != Tile.Wall || // east
+                            m_map.TileMap[x + map.Pos.x + 1][y + map.Pos.y - 1] != Tile.Wall || // southeast
+                            m_map.TileMap[x + map.Pos.x][y + map.Pos.y - 1] != Tile.Wall || // south
+                            m_map.TileMap[x + map.Pos.x - 1][y + map.Pos.y - 1] != Tile.Wall || // southwest
+                            m_map.TileMap[x + map.Pos.x - 1][y + map.Pos.y] != Tile.Wall || // west
+                            m_map.TileMap[x + map.Pos.x - 1][y + map.Pos.y + 1] != Tile.Wall // northwest
+                        )) ||
                     (entranceTiles.Contains(new Vector2Int(x, y)) && // if the tile is an entrance
-                    (m_map.TileMap[x + map.Pos.x][y + map.Pos.y] != Tile.Wall || // if so, check if the same position on map isn't a wall
-                    (Math.Abs(direction.x) == 1 && m_map.TileMap[x + map.Pos.x][y + map.Pos.y + 1] != Tile.Wall) || // and check certain tiles around the position on the map, based on direction, starting with north
-                    (Math.Abs(direction.y) == 1 && m_map.TileMap[x + map.Pos.x + 1][y + map.Pos.y] != Tile.Wall) || // east
-                    (Math.Abs(direction.x) == 1 && m_map.TileMap[x + map.Pos.x][y + map.Pos.y - 1] != Tile.Wall) || // south
-                    (Math.Abs(direction.y) == 1 && m_map.TileMap[x + map.Pos.x - 1][y + map.Pos.y] != Tile.Wall)))) // west
+                        (m_map.TileMap[x + map.Pos.x][y + map.Pos.y] != Tile.Wall || // if so, check if the same position on map isn't a wall
+                            (Math.Abs(direction.x) == 1 && m_map.TileMap[x + map.Pos.x][y + map.Pos.y + 1] != Tile.Wall) || // and check certain tiles around the position on the map, based on direction, starting with north
+                            (Math.Abs(direction.y) == 1 && m_map.TileMap[x + map.Pos.x + 1][y + map.Pos.y] != Tile.Wall) || // east
+                            (Math.Abs(direction.x) == 1 && m_map.TileMap[x + map.Pos.x][y + map.Pos.y - 1] != Tile.Wall) || // south
+                            (Math.Abs(direction.y) == 1 && m_map.TileMap[x + map.Pos.x - 1][y + map.Pos.y] != Tile.Wall)))) // west
                 {
                     return false;
                 }
@@ -334,8 +335,8 @@ public class MapGenerator
                 for (int j = m_minTunnelLength - 1; j < m_maxTunnelLength - 1; j++)
                 {
                     otherWallTile = new Vector2Int(wallTile.x + direction.x * (j - 1), (wallTile.y + direction.y * (j - 1)));
-                    if (!(otherWallTile.x <= 1 || otherWallTile.x >= m_mapWidth - 1 || otherWallTile.y <= 1 || otherWallTile.y >= m_mapHeight - 1)
-                        && m_map.CheckWallTile(otherWallTile, new Vector2Int(direction.x * -1, direction.y * -1), m_tunnelWidth))
+                    if (!(otherWallTile.x <= 1 || otherWallTile.x >= m_mapWidth - 1 || otherWallTile.y <= 1 || otherWallTile.y >= m_mapHeight - 1) &&
+                        m_map.CheckWallTile(otherWallTile, new Vector2Int(direction.x * -1, direction.y * -1), m_tunnelWidth))
                     {
                         // generate tunnel
                         Map tunnel = new Map(new Tile[(m_tunnelWidth * Math.Abs(direction.y) + j * Math.Abs(direction.x))][], m_spawnAreaMinSize);
@@ -468,8 +469,8 @@ public class MapGenerator
                 }
 
                 // if the tile hasn't been checked and is not in the list to be checked, and it's either a floor or breakable wall, add to check list
-                if (!positionsChecked.Contains(nextToCurrent) && !positionsToCheck.Contains(nextToCurrent)
-                    && (m_map.TileMap[nextToCurrent.x][nextToCurrent.y] == Tile.Floor || m_map.TileMap[nextToCurrent.x][nextToCurrent.y] == Tile.BreakableWall))
+                if (!positionsChecked.Contains(nextToCurrent) && !positionsToCheck.Contains(nextToCurrent) &&
+                    (m_map.TileMap[nextToCurrent.x][nextToCurrent.y] == Tile.Floor || m_map.TileMap[nextToCurrent.x][nextToCurrent.y] == Tile.BreakableWall))
                 {
                     positionsToCheck.Enqueue(nextToCurrent);
                 }

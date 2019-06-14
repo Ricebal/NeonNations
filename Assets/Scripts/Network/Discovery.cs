@@ -54,7 +54,7 @@ public class Discovery : NetworkDiscovery
     private void Start()
     {
         m_lobbyManager = GameObject.Find("LobbyManager").GetComponent<LobbyManager>();
-        m_serverObj = Resources.Load("Server") as GameObject;
+        m_serverObj = Resources.Load("Server")as GameObject;
         m_serversObj = GameObject.Find("Servers");
 
         Initialize();
