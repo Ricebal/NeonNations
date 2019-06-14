@@ -51,7 +51,7 @@ namespace Tests
         }
 
         [Test]
-        public void Should_ReturnCornerCoordinates_When_PathsmoothingAroundCorner()
+        public void Should_ReturnCornerCoordinates_When_PathSmoothingAroundCorner()
         {
             // Arrange
             InitCornerMap();
@@ -64,7 +64,7 @@ namespace Tests
         }
 
         [Test]
-        public void Should_ReturnGoalCoordinates_When_PathsmoothingThroughEmptyRoom()
+        public void Should_ReturnGoalCoordinates_When_PathSmoothingThroughEmptyRoom()
         {
             // Arrange
             InitOpenMap();
@@ -77,7 +77,7 @@ namespace Tests
         }
 
         [Test]
-        public void Should_ReturnEntranceCoordinates_When_PathsmoothingIntoCorridor()
+        public void Should_ReturnEntranceCoordinates_When_PathSmoothingIntoCorridor()
         {
             // Arrange
             InitCorridorMap();
