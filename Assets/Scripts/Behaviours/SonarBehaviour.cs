@@ -10,7 +10,7 @@ public class SonarBehaviour : BotBehaviour
 
     private void FixedUpdate()
     {
-        if (m_bot.EnergyStat.GetValue() == m_bot.EnergyStat.GetMaxValue() && Random.Range(1, 101) <= 1)
+        if (m_bot.Energy.GetValue() == m_bot.Energy.GetMaxValue() && Random.Range(1, 101) <= 1)
         {
             m_action.Sonar();
         }

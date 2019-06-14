@@ -7,8 +7,8 @@ using UnityEngine.UI;
 
 public class PlayerHUD : MonoBehaviour
 {
-    private Stat m_healthStat;
-    private Stat m_energyStat;
+    private Stat m_health;
+    private Stat m_energy;
     private Slider m_healthSlider;
     private Slider m_energySlider;
 
@@ -17,13 +17,13 @@ public class PlayerHUD : MonoBehaviour
         m_healthSlider = GameObject.Find("HealthSlider").GetComponent<Slider>();
         m_energySlider = GameObject.Find("EnergySlider").GetComponent<Slider>();
         Soldier soldier = GetComponent<Soldier>();
-        m_healthStat = soldier.HealthStat;
-        m_energyStat = soldier.EnergyStat;
+        m_health = soldier.Health;
+        m_energy = soldier.Energy;
     }
 
     public void UpdateHUD()
     {
-        m_healthSlider.value = m_healthStat.GetValue();
-        m_energySlider.value = m_energyStat.GetValue();
+        m_healthSlider.value = m_health.GetValue();
+        m_energySlider.value = m_energy.GetValue();
     }
 }
