@@ -81,12 +81,9 @@ public static class PathSmoothing
         float lowerSideFromEntity = -(yOffset / 2);
 
         // If there is an obstacle on this line, return false since it's not possible to move here.
-        if (CheckIfNodeContainsObstacle(Traverse(currentPosition.x, currentPosition.y + upperSideFromEntity, newPosition.x, newPosition.y + upperSideFromEntity), map) // Top of entity
-            ||
-            CheckIfNodeContainsObstacle(Traverse(currentPosition.x + leftSideFromEntity, currentPosition.y, newPosition.x + leftSideFromEntity, newPosition.y), map) // Left of entity
-            ||
-            CheckIfNodeContainsObstacle(Traverse(currentPosition.x + rightSideFromEntity, currentPosition.y, newPosition.x + rightSideFromEntity, newPosition.y), map) // Right of entity
-            ||
+        if (CheckIfNodeContainsObstacle(Traverse(currentPosition.x, currentPosition.y + upperSideFromEntity, newPosition.x, newPosition.y + upperSideFromEntity), map) || // Top of entity
+            CheckIfNodeContainsObstacle(Traverse(currentPosition.x + leftSideFromEntity, currentPosition.y, newPosition.x + leftSideFromEntity, newPosition.y), map) || // Left of entity
+            CheckIfNodeContainsObstacle(Traverse(currentPosition.x + rightSideFromEntity, currentPosition.y, newPosition.x + rightSideFromEntity, newPosition.y), map) || // Right of entity
             CheckIfNodeContainsObstacle(Traverse(currentPosition.x, currentPosition.y + lowerSideFromEntity, newPosition.x, newPosition.y + lowerSideFromEntity), map)) // Bottom of entity
         {
             return false;
