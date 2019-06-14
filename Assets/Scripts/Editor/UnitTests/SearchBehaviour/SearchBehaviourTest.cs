@@ -144,7 +144,7 @@ namespace Tests
         }
 
         [Test]
-        public void Should_ReturnClosestEnemy_When_TwoEnemyInSight()
+        public void Should_ReturnClosestEnemy_When_TwoEnemiesInSight()
         {
             // Arrange
             InitCorridorMap();
@@ -171,7 +171,7 @@ namespace Tests
         }
 
         [Test]
-        public void Should_ReturnNull_When_NoEnemiesExcist()
+        public void Should_ReturnNull_When_NoEnemiesExist()
         {
             // Arrange
             InitCorridorMap();
@@ -186,7 +186,7 @@ namespace Tests
             // Act
             Soldier actualClosestEnemy = environment.GetClosestIlluminatedEnemy(me, enemies);
             // Assert
-            Assert.AreEqual(null, actualClosestEnemy);
+            Assert.IsNull(actualClosestEnemy);
         }
 
         [Test]
@@ -213,7 +213,7 @@ namespace Tests
             // Act
             Soldier actualClosestEnemy = environment.GetClosestIlluminatedEnemy(me, enemies);
             // Assert
-            Assert.AreEqual(null, actualClosestEnemy);
+            Assert.IsNull(actualClosestEnemy);
         }
 
         [Test]
@@ -301,33 +301,69 @@ namespace Tests
         }
 
         [Test]
-        public void Should_ReturnTheCorrectNodeFromTheMap_When_SendingXYCoordinates()
+        public void Should_ReturnTrue_When_GettingNodeWithObstacleThroughXY()
         {
             // Arrange
             InitCornerMap();
             // Act
-            Node node1 = navigationGraph.GetNode(0, 0);
-            Node node2 = navigationGraph.GetNode(0, 1);
-            Node node3 = navigationGraph.GetNode(-1, -1);
+            Node node = navigationGraph.GetNode(0, 1);
             // Assert
-            Assert.IsFalse(node1.IsObstacle(), "Because this node contains no obstacle, it should return false");
-            Assert.IsTrue(node2.IsObstacle(), "Because this node contains an obstacle, it should return true");
-            Assert.AreEqual(node3, default(Node), "Because this node falls outside the map, it should return a default node");
+            Assert.IsTrue(node.IsObstacle(), "Because this node contains an obstacle, it should return true");
         }
 
         [Test]
-        public void Should_ReturnTheCorrectNodeFromTheMap_When_SendingAVector()
+        public void Should_ReturnFalse_When_GettingNodeWithoutObstacleThroughXY()
         {
             // Arrange
             InitCornerMap();
             // Act
-            Node node1 = navigationGraph.GetNode(new Vector2Int(0, 0));
-            Node node2 = navigationGraph.GetNode(new Vector2Int(0, 1));
-            Node node3 = navigationGraph.GetNode(new Vector2Int(-1, -1));
+            Node node = navigationGraph.GetNode(0, 0);
             // Assert
-            Assert.IsFalse(node1.IsObstacle(), "Because this node contains no obstacle, it should return false");
-            Assert.IsTrue(node2.IsObstacle(), "Because this node contains an obstacle, it should return true");
-            Assert.AreEqual(node3, default(Node), "Because this node falls outside the map, it should return a default node");
+            Assert.IsFalse(node.IsObstacle(), "Because this node contains no obstacle, it should return false");
+        }
+
+        [Test]
+        public void Should_ReturnDefaultNode_When_TryGettingNodeOutsideMapThroughXY()
+        {
+            // Arrange
+            InitCornerMap();
+            // Act
+            Node node = navigationGraph.GetNode(-1, -1);
+            // Assert
+            Assert.AreEqual(node, default(Node), "Because this node falls outside the map, it should return a default node");
+        }
+
+        [Test]
+        public void Should_ReturnTrue_When_GettingNodeWithObstacleThroughVector()
+        {
+            // Arrange
+            InitCornerMap();
+            // Act
+            Node node = navigationGraph.GetNode(new Vector2Int(0, 1));
+            // Assert
+            Assert.IsTrue(node.IsObstacle(), "Because this node contains an obstacle, it should return true");
+        }
+
+        [Test]
+        public void Should_ReturnFalse_When_GettingNodeWithoutObstacleThroughVector()
+        {
+            // Arrange
+            InitCornerMap();
+            // Act
+            Node node = navigationGraph.GetNode(new Vector2Int(0, 0));
+            // Assert
+            Assert.IsFalse(node.IsObstacle(), "Because this node contains no obstacle, it should return false");
+        }
+
+        [Test]
+        public void Should_ReturnDefaultNode_When_TryGettingNodeOutsideMapThroughVector()
+        {
+            // Arrange
+            InitCornerMap();
+            // Act
+            Node node = navigationGraph.GetNode(new Vector2Int(-1, -1));
+            // Assert
+            Assert.AreEqual(node, default(Node), "Because this node falls outside the map, it should return a default node");
         }
     }
 }
