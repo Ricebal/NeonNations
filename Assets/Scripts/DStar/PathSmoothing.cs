@@ -1,4 +1,8 @@
-﻿using System;
+﻿/**
+ * Authors: Benji, Chiel
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using UnityEngine;
@@ -17,8 +21,13 @@ public static class PathSmoothing
     /// <param name="coordinatesToTraverse">A list containing all the coordinates the entity should traverse to reach its goal.</param>
     /// <param name="map">The map the entity knows so far.</param>
     /// <param name="entityWidth">The with of the entity.</param>
-    public static Vector2Int FarthestCoordinateToReach(PointF currentPosition, List<Vector2Int> coordinatesToTraverse, NavigationGraph map, float entityWidth)
+    public static Vector2Int FarthestCoordinateToReach(Vector2 currentPosition, List<Vector2Int> coordinatesToTraverse, NavigationGraph map, float entityWidth)
     {
+        if (coordinatesToTraverse.Count == 0)
+        {
+            return new Vector2Int();
+        }
+
         int nextNode = 0;
         int previousNextNode = nextNode;
         int goalNode = coordinatesToTraverse.Count - 1;
@@ -31,14 +40,20 @@ public static class PathSmoothing
             previousNextNode = nextNode;
             // Get new point that is closer to the destination.
             nextNode++;
+            // For if the path does not lead to the goalNode (Goalnode is unreachable)
+            // Take the last node in the list of CoordinatesToTraverse
+            if (coordinatesToTraverse.Count == nextNode)
+            {
+                continue;
+            }
             // Skip this node if it's on the same row or column as the current position.
             // In this case we won't have to recalculate if it's possible to move somewhere since the straight paths are already calculated by the D* algorithm.
-            if (coordinatesToTraverse[nextNode].x == currentPosition.X || coordinatesToTraverse[nextNode].y == currentPosition.Y)
+            if (coordinatesToTraverse[nextNode].x == currentPosition.x || coordinatesToTraverse[nextNode].y == currentPosition.y)
             {
                 continue;
             }
             // Check if it is possible to move to the next position.
-            possibleToMoveHere = PossibleToMoveBetween(currentPosition, new PointF(coordinatesToTraverse[nextNode].x, coordinatesToTraverse[nextNode].y), map, entityWidth, entityWidth);
+            possibleToMoveHere = PossibleToMoveBetween(currentPosition, coordinatesToTraverse[nextNode], map, entityWidth, entityWidth);
         }
 
         // If it is not possible to move to the next position.
@@ -58,37 +73,22 @@ public static class PathSmoothing
     /// <param name="newPosition">The end-position on the map to check</param>
     /// <param name="map">The map on which to check the positions</param>
     /// <returns></returns>
-    private static bool PossibleToMoveBetween(PointF currentPosition, PointF newPosition, NavigationGraph map, float xOffset, float yOffset)
+    private static bool PossibleToMoveBetween(Vector2 currentPosition, Vector2 newPosition, NavigationGraph map, float xOffset, float yOffset)
     {
         float leftSideFromEntity = -(xOffset / 2);
         float rightSideFromEntity = +(xOffset / 2);
         float upperSideFromEntity = +(yOffset / 2);
         float lowerSideFromEntity = -(yOffset / 2);
 
-        // Top of entity
         // If there is an obstacle on this line, return false since it's not possible to move here.
-        if (CheckIfNodeContainsObstacle(Traverse(currentPosition.X, currentPosition.Y + upperSideFromEntity, newPosition.X, newPosition.Y + upperSideFromEntity), map))
+        if (CheckIfNodeContainsObstacle(Traverse(currentPosition.x, currentPosition.y + upperSideFromEntity, newPosition.x, newPosition.y + upperSideFromEntity), map) || // Top of entity
+            CheckIfNodeContainsObstacle(Traverse(currentPosition.x + leftSideFromEntity, currentPosition.y, newPosition.x + leftSideFromEntity, newPosition.y), map) || // Left of entity
+            CheckIfNodeContainsObstacle(Traverse(currentPosition.x + rightSideFromEntity, currentPosition.y, newPosition.x + rightSideFromEntity, newPosition.y), map) || // Right of entity
+            CheckIfNodeContainsObstacle(Traverse(currentPosition.x, currentPosition.y + lowerSideFromEntity, newPosition.x, newPosition.y + lowerSideFromEntity), map)) // Bottom of entity
         {
             return false;
         }
-        // Left of entity
-        // If there is an obstacle on this line, return false since it's not possible to move here.
-        if (CheckIfNodeContainsObstacle(Traverse(currentPosition.X + leftSideFromEntity, currentPosition.Y, newPosition.X + leftSideFromEntity, newPosition.Y), map))
-        {
-            return false;
-        }
-        // Right of entity
-        // If there is an obstacle on this line, return false since it's not possible to move here.
-        if (CheckIfNodeContainsObstacle(Traverse(currentPosition.X + rightSideFromEntity, currentPosition.Y, newPosition.X + rightSideFromEntity, newPosition.Y), map))
-        {
-            return false;
-        }
-        // Bottom of entity
-        // If there is an obstacle on this line, return false since it's not possible to move here.
-        if (CheckIfNodeContainsObstacle(Traverse(currentPosition.X, currentPosition.Y + lowerSideFromEntity, newPosition.X, newPosition.Y + lowerSideFromEntity), map))
-        {
-            return false;
-        }
+
         // No obstacles have been seen.
         return true;
     }

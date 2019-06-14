@@ -172,7 +172,7 @@ GameObject:
   - component: {fileID: 5749749998984370648}
   - component: {fileID: 5950138729186079414}
   m_Layer: 5
-  m_Name: PlayerName
+  m_Name: PlayerUsername
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -291,7 +291,7 @@ MonoBehaviour:
   m_firstVisibleCharacter: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 137.85191, w: 0}
+  m_margin: {x: 0, y: 0, z: -0.98968506, w: 0}
   m_textInfo:
     textComponent: {fileID: 5950138729186079414}
     characterCount: 7
@@ -333,7 +333,7 @@ GameObject:
   - component: {fileID: 5498904180268347201}
   - component: {fileID: 5792890443730796063}
   - component: {fileID: 79892402908393659}
-  - component: {fileID: 8818356840016602227}
+  - component: {fileID: 4022151322274133280}
   - component: {fileID: 5071989448941147343}
   m_Layer: 5
   m_Name: PlayerScore
@@ -385,7 +385,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.392}
+  m_Color: {r: 0.9433962, g: 0, b: 0, a: 0.392}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -433,11 +433,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a23e37617a3ce8e45a012b26a4d28e35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_name: {fileID: 5950138729186079414}
+  m_scoreboardEntryBackground: {fileID: 5498904180268347201}
+  m_username: {fileID: 5950138729186079414}
   m_kills: {fileID: 363167116775533465}
   m_deaths: {fileID: 1952919762941324894}
   m_outline: {fileID: 5071989448941147343}
---- !u!114 &8818356840016602227
+--- !u!114 &4022151322274133280
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

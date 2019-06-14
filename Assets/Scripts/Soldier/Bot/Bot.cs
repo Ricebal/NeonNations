@@ -1,17 +1,28 @@
-﻿using UnityEngine;
+﻿/**
+ * Authors: Benji, Chiel, Nicander
+ */
+
+using UnityEngine;
 
 public class Bot : Soldier
 {
     private Rigidbody m_rigidbody;
 
-    private void Start()
+    protected new void Start()
     {
         if (!isServer)
         {
+            GetComponent<BotController>().DisableScripts();
             return;
         }
 
         m_rigidbody = GetComponent<Rigidbody>();
+
+        Vector2Int spawnPoint = BoardManager.GetMap().GetSpawnPoint(Team);
+        transform.position = new Vector3(spawnPoint.x, 0, spawnPoint.y);
+
+        Username = ProfileMenu.GetRandomName() + " (Bot)";
+        CmdUsername(Username);
     }
 
     protected new void Update()
@@ -23,57 +34,59 @@ public class Bot : Soldier
             return;
         }
 
-        // if the bot is dead, set its velocity to 0
         if (IsDead)
         {
+            // Set the bot velocity to 0 while it's dead
             m_rigidbody.velocity = Vector3.zero;
+
+            // Respawn the bot if it's able to respawn
+            if (Time.time - m_deathTime >= RespawnTime)
+            {
+                CmdRespawn();
+                // Only able to respawn if the game isn't finished yet.
+                if (!GameManager.Singleton.GameFinished)
+                {
+                    GetComponent<BotController>().EnableScripts();
+                }
+            }
+
         }
     }
 
-    private void FixedUpdate()
+    private new void FixedUpdate()
     {
         if (!isServer)
         {
             return;
         }
-
-        m_stats.AddEnergy(1);
+        base.FixedUpdate();
     }
 
     // Should be called from the script that will control the bot
     public void Move(float horizontal, float vertical)
     {
-        if (!isServer)
-        {
-            return;
-        }
+        Vector3 movement = new Vector3(horizontal, 0.0f, vertical);
+        m_rigidbody.velocity = movement * Speed;
+    }
 
-        if (!IsDead)
-        {
-            Vector3 movement = new Vector3(horizontal, 0.0f, vertical);
-            m_rigidbody.velocity = movement * Speed;
-        }
+    public void AimAtMoveDirection()
+    {
+        LocalAim(new Vector2(m_rigidbody.velocity.x, m_rigidbody.velocity.z));
     }
 
     // Aims the bot at the input vector in world space
     public void WorldAim(Vector2 position)
     {
-        if (!isServer)
-        {
-            return;
-        }
-
         Vector3 target = new Vector3(position.x, 0, position.y);
         Vector3 direction = target - transform.position;
         float rotation = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(0, rotation, 0);
-
     }
 
     // Aims the bot at the input vector in local space
     public void LocalAim(Vector2 position)
     {
-        if (!isServer)
+        if (position == Vector2.zero)
         {
             return;
         }
@@ -83,4 +96,11 @@ public class Bot : Soldier
         transform.rotation = Quaternion.LookRotation(newDirection);
     }
 
+    public override void StopMovement()
+    {
+        if (isServer)
+        {
+            m_rigidbody.velocity = Vector3.zero;
+        }
+    }
 }

@@ -1,41 +1,58 @@
-﻿using System.Collections.Generic;
-using System.Drawing;
+﻿/**
+ * Authors: Benji, Chiel, Nicander
+ */
+
+using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 
 [RequireComponent(typeof(Bot))]
 public class SearchBehaviour : BotBehaviour
 {
+    public GameEnvironment Environment;
+
     private const float OFFSET_FOR_LINE_CALCULATION = .95f; // A little less than 1. This will prevent the bot from thinking it will collide with an obstacle directly next to it when moving parallel to ithat obstacle.
     private Vector2Int m_goalCoordinates = Vector2Int.zero;
     private Vector2Int m_previousFarthestNode = Vector2Int.zero;
-    private GameEnvironment m_environment;
     private DStarLite m_dStarLite;
-    private Bot m_bot;
 
-    void Start()
+    protected new void Start()
     {
-        m_environment = GameEnvironment.CreateInstance(GameObject.Find("GameManager").GetComponent<BoardManager>().GetTileMap(), new List<Tile>() { Tile.Wall, Tile.BreakableWall });
-        m_dStarLite = new DStarLite(m_environment, false);
-        Vector2Int startCoordinates = m_environment.ConvertGameObjectToCoordinates(gameObject.transform);
+        base.Start();
+        m_dStarLite = new DStarLite(Environment, false);
+        Vector2Int startCoordinates = Environment.ConvertGameObjectToCoordinates(gameObject.transform);
         GenerateNewDestination(startCoordinates);
-        m_bot = GetComponent<Bot>();
     }
 
-    void FixedUpdate()
+    private void FixedUpdate()
     {
-        if (!m_active)
+        Soldier closestEnemy = Environment.GetClosestIlluminatedEnemy(m_bot, TeamManager.GetAliveEnemiesByTeam(m_bot.Team.Id));
+        Vector2Int currentCoordinates = Environment.ConvertGameObjectToCoordinates(gameObject.transform);
+
+        // check if bot can see closestPos
+        if (closestEnemy != null)
         {
-            return;
+            Vector3 closestPos = closestEnemy.transform.position;
+            Vector2Int lastGoalCoordinates = m_goalCoordinates;
+            m_goalCoordinates = new Vector2Int((int)closestPos.x, (int)closestPos.z);
+
+            if (lastGoalCoordinates != m_goalCoordinates)
+            {
+                m_dStarLite.RunDStarLite(currentCoordinates, m_goalCoordinates);
+            }
         }
-        Vector2Int currentCoordinates = m_environment.ConvertGameObjectToCoordinates(gameObject.transform);
+
         // If the goal hasn't been reached
         if (currentCoordinates.x != m_goalCoordinates.x || currentCoordinates.y != m_goalCoordinates.y)
         {
-            NextMove();
+            NextMove(currentCoordinates);
         }
         else
         {
+            if (GetComponent<SonarBehaviour>().enabled)
+            {
+                m_action.Sonar();
+            }
             GenerateNewDestination(currentCoordinates);
         }
     }
@@ -43,19 +60,24 @@ public class SearchBehaviour : BotBehaviour
     /// <summary>
     /// Makes the DStarLite calculate where the bot should move next and than moves the bot in that direction.
     /// </summary>
-    private void NextMove()
+    private void NextMove(Vector2Int currentCoordinates)
     {
-        Vector2Int botCoordinate = m_environment.ConvertGameObjectToCoordinates(gameObject.transform);
+        // if the calculated distance between start and goal is infinite the goal is unreachable, generate new goal and return
+        if (float.IsInfinity((float)m_dStarLite.Map.GetNode(m_dStarLite.Start.x, m_dStarLite.Start.y).CostFromStartingPoint))
+        {
+            GenerateNewDestination(currentCoordinates);
+            return;
+        }
         List<Vector2Int> coordinatesToTraverse = m_dStarLite.CoordinatesToTraverse();
 
         Vector2Int farthestReachableNode = m_previousFarthestNode;
-        if (m_dStarLite.CoordinatesToTraverseChanged || botCoordinate.Equals(m_previousFarthestNode)) // Perform pathsmoothing if either the path has changed, or if the bot is on the same position as the old farthest node.
+        if (m_dStarLite.CoordinatesToTraverseChanged || currentCoordinates.Equals(m_previousFarthestNode)) // Perform pathsmoothing if either the path has changed, or if the bot is on the same position as the old farthest node.
         {
-            farthestReachableNode = PathSmoothing.FarthestCoordinateToReach(new PointF(gameObject.transform.position.x, gameObject.transform.position.z), coordinatesToTraverse, m_dStarLite.Map, OFFSET_FOR_LINE_CALCULATION);
+            farthestReachableNode = PathSmoothing.FarthestCoordinateToReach(new Vector2(gameObject.transform.position.x, gameObject.transform.position.z), coordinatesToTraverse, m_dStarLite.Map, OFFSET_FOR_LINE_CALCULATION);
         }
         m_previousFarthestNode = farthestReachableNode;
         MoveTo(farthestReachableNode);
-        m_dStarLite.SyncBotPosition(botCoordinate);
+        m_dStarLite.SyncBotPosition(currentCoordinates);
     }
 
     /// <summary>
@@ -64,7 +86,7 @@ public class SearchBehaviour : BotBehaviour
     /// <param name="currentPos">The current position of the entity</param>
     private void GenerateNewDestination(Vector2Int currentPos)
     {
-        m_goalCoordinates = GameObject.Find("GameManager").GetComponent<BoardManager>().GetRandomFloorTile();
+        m_goalCoordinates = BoardManager.GetMap().GetRandomFloorTile();
         m_dStarLite.RunDStarLite(currentPos, m_goalCoordinates);
     }
 
@@ -85,7 +107,7 @@ public class SearchBehaviour : BotBehaviour
 #if (UNITY_EDITOR)
     private void DebugMap(NavigationGraph map, Vector2Int nodeToReach, List<Vector2Int> coordinatesToTraverse)
     {
-        Vector2Int botCoordinates = m_environment.ConvertGameObjectToCoordinates(gameObject.transform);
+        Vector2Int botCoordinates = Environment.ConvertGameObjectToCoordinates(gameObject.transform);
         StringBuilder builder = new StringBuilder();
         builder.Append('\n');
         for (int y = map.Map[0].Length - 1; y >= 0; y--)

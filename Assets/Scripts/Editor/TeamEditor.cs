@@ -1,30 +1,25 @@
 ﻿using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 [CustomEditor(typeof(TeamManager))]
 public class TeamEditor : Editor
 {
-    TeamManager tm;
-
-    private void OnEnable()
-    {
-        tm = (TeamManager)target;
-    }
-
     public override void OnInspectorGUI()
     {
         serializedObject.Update();
 
         GUILayout.BeginVertical("Box");
         GUILayout.BeginHorizontal();
-        GUILayout.Label("Team count: " + tm.Teams.Count);
+        GUILayout.Label("Team count: " + TeamManager.Singleton.Teams.Count);
         if (GUILayout.Button("Add team"))
         {
             AddTeam();
         }
         GUILayout.EndHorizontal();
 
-        tm.Teams.ForEach(e =>
+        TeamManager.Singleton.Teams.ForEach(e =>
         {
             GUILayout.BeginHorizontal();
 
@@ -41,10 +36,10 @@ public class TeamEditor : Editor
         GUILayout.EndVertical();
 
         EditorUtility.SetDirty(target);
-        EditorApplication.MarkSceneDirty();
+        EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
         serializedObject.ApplyModifiedProperties();
     }
 
-    private void AddTeam() => tm.AddTeam();
-    private void RemoveTeam(Team team) => tm.RemoveTeam(team);
+    private void AddTeam() => TeamManager.AddTeam();
+    private void RemoveTeam(Team team) => TeamManager.RemoveTeam(team);
 }

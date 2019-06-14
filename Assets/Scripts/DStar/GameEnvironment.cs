@@ -1,15 +1,21 @@
-﻿using System;
+﻿/**
+ * Authors: Chiel, Benji
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 public class GameEnvironment : ScriptableObject
 {
-    private Tile[][] m_map;
+    private Map m_map;
     private List<Tile> m_listOfObstacles = new List<Tile>();
-    private const int SONAR_RANGE = 5;
+    private const int BOT_RANGE = 3;
+    private const int SONAR_RANGE = 7;
     private const int BULLET_RANGE = 1;
     private const int IMPACT_RANGE = 2;
+    private const int DEFAULT_RANGE = 5;
 
     /// <summary>
     /// Acts as a constructor for GameEnvironment, since it's real constructor can't be used because it's a ScriptableObject
@@ -18,7 +24,7 @@ public class GameEnvironment : ScriptableObject
     /// <param name="map">Map to set</param>
     /// <param name="list">List to set</param>
     /// <returns>A new GameEnvironment with the set values</returns>
-    public static GameEnvironment CreateInstance(Tile[][] map, List<Tile> list)
+    public static GameEnvironment CreateInstance(Map map, List<Tile> list)
     {
         var data = CreateInstance<GameEnvironment>();
         data.Init(map, list);
@@ -30,17 +36,33 @@ public class GameEnvironment : ScriptableObject
     /// </summary>
     /// <param name="map">Map to set</param>
     /// <param name="list">List to set</param>
-    private void Init(Tile[][] map, List<Tile> list)
+    private void Init(Map map, List<Tile> list)
     {
         m_map = map;
+
+        if (BoardManager.Singleton.BreakableWalls != null)
+        {
+            GameObject wallParent = BoardManager.Singleton.BreakableWalls; // Get all breakable walls.
+            for (int i = 0; i < wallParent.transform.childCount; i++)
+            {
+                GameObject wall = wallParent.transform.GetChild(i).gameObject;
+                wall.GetComponent<BreakableWall>().WallDestroyedHandler += UpdateMap;
+            }
+        }
+
         m_listOfObstacles = list;
+    }
+
+    public void UpdateMap(Vector2Int coordinates)
+    {
+        m_map.UpdateMap(coordinates);
     }
 
     /// <summary>
     /// Gives the current map
     /// </summary>
-    /// <returns>Tile[][] Map</returns>
-    public Tile[][] GetMap()
+    /// <returns>Map Map</returns>
+    public Map GetMap()
     {
         return m_map;
     }
@@ -61,7 +83,7 @@ public class GameEnvironment : ScriptableObject
     /// <returns>Tile enum containing the type of tile</returns>
     public Tile GetNode(Vector2Int pos)
     {
-        return m_map[pos.x][pos.y];
+        return m_map.TileMap[pos.x][pos.y];
     }
 
     /// <summary>
@@ -74,13 +96,13 @@ public class GameEnvironment : ScriptableObject
         foreach (Vector2Int coordinate in coordinates)
         {
             // If the coordinates are outside the map they shouldn't be checked (to prevent out of index exception)
-            if (coordinate.x < 0 || coordinate.y < 0 || coordinate.x >= m_map.Length || coordinate.y >= m_map[0].Length)
+            if (coordinate.x < 0 || coordinate.y < 0 || coordinate.x >= m_map.TileMap.Length || coordinate.y >= m_map.TileMap[0].Length)
             {
                 coordinatesToDelete.AddLast(coordinate);
                 continue;
             }
             // If the coordinates are inside the map, check if the coordinate contains an obstacle
-            if (!m_listOfObstacles.Contains(m_map[coordinate.x][coordinate.y]))
+            if (!m_listOfObstacles.Contains(m_map.TileMap[coordinate.x][coordinate.y]))
             {
                 coordinatesToDelete.AddLast(coordinate);
             }
@@ -95,20 +117,54 @@ public class GameEnvironment : ScriptableObject
     /// <summary>
     /// Get all Coordinates that are illuminated by light on the bot's screen
     /// </summary>
-    public LinkedList<Vector2Int> GetIlluminatedCoordinates(Vector2Int botCoordinates)
+    public HashSet<Vector2Int> GetIlluminatedCoordinates(Vector2Int botCoordinates)
     {
-        LinkedList<Vector2Int> illuminatedCoordinates = GetCoordinatesAroundBot(botCoordinates); // Because of the spotlight around the bot
+        HashSet<Vector2Int> illuminatedCoordinates = GetCoordinatesAroundBot(botCoordinates); // Because of the spotlight around the bot
         GetCoordinatesAroundLights(ref illuminatedCoordinates, botCoordinates); // All other lights visible on screen
         return illuminatedCoordinates;
+    }
+
+    public Soldier GetClosestIlluminatedEnemy(Bot bot, List<Soldier> enemies)
+    {
+        HashSet<Vector2Int> list = GetIlluminatedCoordinates(ConvertGameObjectToCoordinates(bot.transform));
+
+        float minDist = Mathf.Infinity;
+        Soldier soldier = null;
+        enemies.ForEach(enemy =>
+        {
+            float dist = Vector3.Distance(bot.transform.position, enemy.transform.position);
+            if (list.Contains(ConvertGameObjectToCoordinates(enemy.transform)) && dist < minDist)
+            {
+                soldier = enemy;
+                minDist = dist;
+            }
+        });
+
+        return soldier;
+    }
+
+    public List<Soldier> GetIlluminatedEnemies(Bot bot, List<Soldier> enemies)
+    {
+        HashSet<Vector2Int> list = GetIlluminatedCoordinates(ConvertGameObjectToCoordinates(bot.transform));
+        List<Soldier> result = new List<Soldier>();
+        enemies.ForEach(enemy =>
+        {
+            if (list.Contains(ConvertGameObjectToCoordinates(enemy.transform)))
+            {
+                result.Add(enemy);
+            }
+        });
+
+        return result;
     }
 
     /// <summary>
     /// Get the Coordinates that are illuminated by the spotlight on the bot
     /// </summary>
-    private LinkedList<Vector2Int> GetCoordinatesAroundBot(Vector2Int botCoordinates)
+    private HashSet<Vector2Int> GetCoordinatesAroundBot(Vector2Int botCoordinates)
     {
-        LinkedList<Vector2Int> currentCoordinatesInSight = new LinkedList<Vector2Int>();
-        return GetCoordinatesInRange(botCoordinates, 2, currentCoordinatesInSight);
+        HashSet<Vector2Int> currentCoordinatesInSight = new HashSet<Vector2Int>();
+        return GetCoordinatesInRange(botCoordinates, BOT_RANGE, currentCoordinatesInSight);
     }
 
     /// <summary>
@@ -117,9 +173,8 @@ public class GameEnvironment : ScriptableObject
     /// <param name="objectCoordinates">The Coordinates of the object you want to check the light from</param>
     /// <param name="range">The range of the light that's emitted by the object</param>
     /// <param name="coordinatesInRange">The Coordinates that have to be checked</param>
-    private LinkedList<Vector2Int> GetCoordinatesInRange(Vector2Int objectCoordinates, int range, LinkedList<Vector2Int> coordinatesInRange)
+    private HashSet<Vector2Int> GetCoordinatesInRange(Vector2Int objectCoordinates, int range, HashSet<Vector2Int> coordinatesInRange)
     {
-        range = Mathf.Clamp(range, 0, 5);
         for (int i = -range; i < range; i++)
         {
             for (int j = -range; j < range; j++)
@@ -128,15 +183,11 @@ public class GameEnvironment : ScriptableObject
                 int y = objectCoordinates.y + j;
 
                 // Check if coordinate is inside the map
-                if (x < 0 || x >= m_map.Length || y < 0 || y >= m_map[0].Length)
+                if (x < 0 || x >= m_map.TileMap.Length || y < 0 || y >= m_map.TileMap[0].Length)
                 {
                     continue;
                 }
-                // Check if coordinate is already added to the list
-                if (!coordinatesInRange.Any(coordinate => coordinate.x == x && coordinate.y == y))
-                {
-                    coordinatesInRange.AddLast(new Vector2Int(x, y));
-                }
+                coordinatesInRange.Add(new Vector2Int(x, y));
             }
         }
         return coordinatesInRange;
@@ -146,7 +197,7 @@ public class GameEnvironment : ScriptableObject
     /// Get coordinates that are illuminated by lights
     /// </summary>
     /// <param name="illuminatedCoordinates">LinkedListist to which the illuminated Coordinates should be added</param>
-    private void GetCoordinatesAroundLights(ref LinkedList<Vector2Int> illuminatedCoordinates, Vector2Int botCoordinates)
+    private void GetCoordinatesAroundLights(ref HashSet<Vector2Int> illuminatedCoordinates, Vector2Int botCoordinates)
     {
         // Get all lights in sight of the bot
         List<Light> lightsInSight = GetLights(botCoordinates);
@@ -172,7 +223,8 @@ public class GameEnvironment : ScriptableObject
                     range = IMPACT_RANGE;
                     break;
                 default:
-                    range = (int)Math.Floor(light.range);
+
+                    range = Mathf.Clamp((int)Math.Floor(light.range), 0, DEFAULT_RANGE);
                     break;
             }
             GetCoordinatesInRange(ConvertGameObjectToCoordinates(light.transform), range, illuminatedCoordinates);
@@ -198,8 +250,8 @@ public class GameEnvironment : ScriptableObject
     /// <param name="position">The position you want to check</param>
     private bool CheckIfPositionIsInsideView(Vector3 position, Vector2Int botCoordinates)
     {
-        int screenWidth = 11;
-        int screenHeight = 5;
+        int screenWidth = 12;
+        int screenHeight = 7;
         float viewLeft = botCoordinates.x - screenWidth;
         float viewUp = botCoordinates.y + screenHeight;
         float viewRight = viewLeft + screenWidth * 2;

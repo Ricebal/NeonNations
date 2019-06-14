@@ -1,85 +1,113 @@
-﻿using UnityEngine;
+﻿/**
+ * Authors: Stella, David, Nicander, Chiel, Benji
+ */
+
+using UnityEngine;
 
 public class Player : Soldier
 {
     private PlayerController m_playerController;
-    private CameraController m_cameraController;
-    private EscapeMenu m_escapeMenu;
-    private GameOverMenu m_gameOverMenu;
     private PlayerHUD m_hud;
+    private Aim m_aim;
 
-    private void Start()
+    protected new void Start()
     {
+        base.Start();
+
         if (!isLocalPlayer)
         {
             return;
         }
 
-        m_playerController = GetComponent<PlayerController>();
-        m_cameraController = Camera.main.GetComponent<CameraController>();
-        m_cameraController.SetTarget(this.transform);
-        m_escapeMenu = GameObject.Find("EscapeMenu").GetComponent<EscapeMenu>();
-        m_escapeMenu.EventPauseToggled += PauseToggled;
-        m_gameOverMenu = GameObject.Find("GameOverMenu").GetComponent<GameOverMenu>();
+        gameObject.AddComponent<AudioListener>();
         m_hud = GetComponent<PlayerHUD>();
+        m_aim = GetComponent<Aim>();
+        m_playerController = GetComponent<PlayerController>();
+        CameraController.SetTarget(transform);
+        EscapeMenu.Singleton.OnPauseToggled += PauseToggled;
+        GameOverMenu.Singleton.OnRespawnClick += Respawn;
+
+        Username = ProfileMenu.GetUsername();
+        CmdUsername(Username);
+
+        // The player has been loaded, remove loading screen
+        Destroy(LoadingScreen.Singleton.gameObject);
     }
 
-    private void OnDisable()
+    private new void FixedUpdate()
     {
         if (!isLocalPlayer)
         {
             return;
         }
+        base.FixedUpdate();
 
-        m_escapeMenu.EventPauseToggled -= PauseToggled;
-    }
-
-    private void FixedUpdate()
-    {
-        if (!isLocalPlayer)
-        {
-            return;
-        }
-
-        m_stats.AddEnergy(1);
+        Cursor.visible = GameOverMenu.IsActive() || EscapeMenu.IsActive();
         m_hud.UpdateHUD();
+        if (GameManager.Singleton.GameFinished && GameOverMenu.IsActive())
+        {
+            GameOverMenu.Deactivate();
+        }
     }
 
     private void PauseToggled()
     {
-        m_playerController.enabled = !m_playerController.enabled;
+        // Activate player controller if the player is alive and the escape menu is not activated and the game has not yet finished.
+        if (!IsDead && !GameManager.Singleton.GameFinished)
+        {
+            m_playerController.enabled = !EscapeMenu.IsActive();
+        }
     }
 
     protected override void Die()
     {
         if (isLocalPlayer)
         {
-            m_gameOverMenu.Activate(RespawnTime);
+            if (!GameManager.Singleton.GameFinished)
+            {
+                GameOverMenu.Activate(RespawnTime);
+            }
             m_playerController.enabled = false;
+            m_aim.CanAim = false;
         }
-
         base.Die();
     }
 
-    protected override void Respawn(Vector2 respawnPoint)
+    public override void StopMovement()
     {
         if (isLocalPlayer)
         {
-            m_gameOverMenu.Deactivate();
-            m_playerController.enabled = true;
+            m_playerController.enabled = false;
         }
+    }
 
+    protected override void Respawn(Vector2Int respawnPoint)
+    {
+        if (isLocalPlayer)
+        {
+            GameOverMenu.Deactivate();
+            // Activate player controller if the escape menu is not activated
+            if (!EscapeMenu.IsActive())
+            {
+                m_playerController.enabled = true;
+            }
+            m_aim.CanAim = true;
+        }
         base.Respawn(respawnPoint);
     }
 
-    private void OnDestroy()
+    protected new void OnDestroy()
     {
+        base.OnDestroy();
+
         if (!isLocalPlayer)
         {
             return;
         }
 
-        m_cameraController.SetInactive();
-        m_cameraController.PlayerTransform = null;
+        CameraController.SetInactive();
+        CameraController.Singleton.PlayerTransform = null;
+        EscapeMenu.Singleton.OnPauseToggled -= PauseToggled;
+        GameOverMenu.Singleton.OnRespawnClick -= Respawn;
     }
 }

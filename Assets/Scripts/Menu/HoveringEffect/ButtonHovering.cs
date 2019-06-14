@@ -1,14 +1,19 @@
-﻿using TMPro;
+﻿/**
+ * Authors: David, Stella
+ */
+
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
+[RequireComponent(typeof(Button))]
 public class ButtonHovering : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
 
     private Button m_button;
 
-    void Start()
+    private void Start()
     {
         m_button = GetComponent<Button>();
     }

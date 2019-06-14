@@ -1,16 +1,30 @@
+/**
+ * Authors: Benji, David, Nicander
+ */
+
 using Mirror;
 using UnityEngine;
 
+[RequireComponent(typeof(AudioSource))]
 public class SonarController : NetworkBehaviour
 {
-    // Prefab representing the sonar
-    [SerializeField] private GameObject m_prefab;
-    // Sonar cooldown in seconds
-    [SerializeField] private float m_cooldown;
     // Amount of energy a sonar will consume
     public int Cost;
+
+    [SerializeField] private float m_soundVolume = 0;
+    [SerializeField] private AudioClip m_sonarSound = null;
+    private AudioSource m_audioSource;
+    // Prefab representing the sonar
+    [SerializeField] private GameObject m_prefab = null;
+    // Sonar cooldown in seconds
+    [SerializeField] private float m_cooldown = 0;
     // The next time the entity will be able to use the sonar, in seconds
     private float m_next;
+
+    private void Start()
+    {
+        m_audioSource = GetComponent<AudioSource>();
+    }
 
     public bool CanSonar(int energy)
     {
@@ -32,10 +46,15 @@ public class SonarController : NetworkBehaviour
     [ClientRpc]
     private void RpcSonar()
     {
-        GameObject prefab = Instantiate(m_prefab, transform.position, Quaternion.identity);
+        GameObject sonarPrefab = Instantiate(m_prefab, transform.position, Quaternion.identity);
 
-        Sonar script = prefab.GetComponent<Sonar>();
+        GameObject spotLight = transform.Find("Spot_Light_For_Other_Players").gameObject;
+        spotLight.SetActive(true); // Show the spotlight of the soldier that uses the sonar.
+        spotLight.GetComponent<SpotLightScript>().SetLifeTime(Sonar.LIFETIME, true);
+
+        Sonar sonarScript = sonarPrefab.GetComponent<Sonar>();
         Soldier soldier = GetComponent<Soldier>();
-        script.SetColor(soldier.InitialColor);
+        sonarScript.SetColor(soldier.Color);
+        m_audioSource.PlayOneShot(m_sonarSound, m_soundVolume);
     }
 }

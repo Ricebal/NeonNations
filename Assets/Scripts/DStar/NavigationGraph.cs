@@ -1,4 +1,8 @@
-﻿using System;
+﻿/**
+ * Authors: Chiel, Benji
+ */
+
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,18 +10,18 @@ public class NavigationGraph
 {
     public Node[][] Map;
 
-    public NavigationGraph(Tile[][] completeMap, bool knowMap, List<Tile> listOfObstacles)
+    public NavigationGraph(Map completeMap, bool knowMap, List<Tile> listOfObstacles)
     {
-        Map = new Node[completeMap.Length][];
+        Map = new Node[completeMap.TileMap.Length][];
         for (int i = 0; i < Map.Length; i++)
         {
-            Map[i] = new Node[completeMap[0].Length];
+            Map[i] = new Node[completeMap.TileMap[0].Length];
             for (int j = 0; j < Map[0].Length; j++)
             {
                 Map[i][j] = new Node(listOfObstacles);
                 if (knowMap)
                 {
-                    Map[i][j].Content = completeMap[i][j];
+                    Map[i][j].Content = completeMap.TileMap[i][j];
                 }
             }
         }
@@ -39,7 +43,6 @@ public class NavigationGraph
             }
         }
     }
-
 
     /// <summary>
     /// Returns the Node that corresponds to a specific x- and y-value.

@@ -1,4 +1,8 @@
-﻿using System;
+﻿/**
+ * Authors: Benji
+ */
+
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -33,8 +37,9 @@ public class MinHeap
     /// <returns>Vector2Int</returns>
     public Vector2Int Pop()
     {
-        if (m_count == 0)
+        if (m_count <= 0)
         {
+            m_count = 0;
             return new Vector2Int();
         }
         Vector2Int coordinates = m_heap[1].Coordinates;
@@ -42,7 +47,7 @@ public class MinHeap
         m_hash[m_heap[1].Coordinates] = 1;
         m_hash[coordinates] = 0;
         m_count--;
-        moveDown(1);
+        MoveDown(1);
         return coordinates;
     }
 
@@ -56,10 +61,10 @@ public class MinHeap
         m_hash[coordinates] = m_count;
         if (m_count == m_heap.Length)
         {
-            increaseCap();
+            IncreaseCap();
         }
         m_heap[m_count] = e;
-        moveUp(m_count);
+        MoveUp(m_count);
     }
 
     /// <summary>
@@ -73,11 +78,16 @@ public class MinHeap
         {
             return;
         }
+        if (m_count <= 0)
+        {
+            m_count = 0;
+            return;
+        }
         m_hash[coordinates] = 0;
         m_heap[i] = m_heap[m_count];
         m_hash[m_heap[i].Coordinates] = i;
         m_count--;
-        moveDown(i);
+        MoveDown(i);
     }
 
     /// <summary>
@@ -94,7 +104,7 @@ public class MinHeap
         return i != 0;
     }
 
-    private void moveDown(int i)
+    private void MoveDown(int i)
     {
         int childL = i * 2;
         if (childL > m_count)
@@ -117,12 +127,12 @@ public class MinHeap
         }
         if (m_heap[i].Key.CompareTo(m_heap[smallerChild].Key) > 0)
         {
-            swap(i, smallerChild);
-            moveDown(smallerChild);
+            Swap(i, smallerChild);
+            MoveDown(smallerChild);
         }
     }
 
-    private void moveUp(int i)
+    private void MoveUp(int i)
     {
         if (i == 1)
         {
@@ -131,12 +141,12 @@ public class MinHeap
         int parent = i / 2;
         if (m_heap[parent].Key.CompareTo(m_heap[i].Key) > 0)
         {
-            swap(parent, i);
-            moveUp(parent);
+            Swap(parent, i);
+            MoveUp(parent);
         }
     }
 
-    private void swap(int i, int j)
+    private void Swap(int i, int j)
     {
         HeapElement temp = m_heap[i];
         m_heap[i] = m_heap[j];
@@ -145,7 +155,7 @@ public class MinHeap
         m_hash[temp.Coordinates] = j;
     }
 
-    private void increaseCap()
+    private void IncreaseCap()
     {
         Array.Resize<HeapElement>(ref m_heap, m_heap.Length * 2);
     }

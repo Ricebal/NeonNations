@@ -1,23 +1,19 @@
+/**
+ * Authors: Nicander
+ */
+
 using Mirror;
 using UnityEngine;
 
 public class Aim : NetworkBehaviour
 {
-    public Texture2D CrosshairImage;
+    [SerializeField] private Texture2D m_crosshairImage = null;
+    [SerializeField] private Transform m_gunPosition = null;
+    public bool CanAim = true;
 
-    private void Start()
+    private void Update()
     {
-        Cursor.visible = false;
-    }
-
-    private void OnDisable()
-    {
-        Cursor.visible = true;
-    }
-
-    void Update()
-    {
-        if (!isLocalPlayer)
+        if (!isLocalPlayer || !CanAim)
         {
             return;
         }
@@ -27,11 +23,20 @@ public class Aim : NetworkBehaviour
         float distance;
         if (plane.Raycast(ray, out distance))
         {
+            // Player
             Vector3 target = ray.GetPoint(distance);
-            Vector3 direction = target - transform.position;
-            float rotation = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
-            transform.rotation = Quaternion.Euler(0, rotation, 0);
+            RotateTransform(target - transform.position, transform);
+
+            // Gun
+            RotateTransform(target - m_gunPosition.position, transform);
         }
+    }
+
+    private void RotateTransform(Vector3 direction, Transform toChange)
+    {
+
+        float rotation = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
+        toChange.rotation = Quaternion.Euler(0, rotation, 0);
     }
 
     private void OnGUI()
@@ -43,8 +48,16 @@ public class Aim : NetworkBehaviour
         }
 
         // draw on current mouse position
-        float xMin = Input.mousePosition.x - (CrosshairImage.width / 2);
-        float yMin = (Screen.height - Input.mousePosition.y) - (CrosshairImage.height / 2);
-        GUI.DrawTexture(new Rect(xMin, yMin, CrosshairImage.width, CrosshairImage.height), CrosshairImage);
+        float xMin = Input.mousePosition.x - (m_crosshairImage.width / 2);
+        float yMin = (Screen.height - Input.mousePosition.y) - (m_crosshairImage.height / 2);
+        GUI.DrawTexture(new Rect(xMin, yMin, m_crosshairImage.width, m_crosshairImage.height), m_crosshairImage);
+    }
+
+    private void OnDestroy()
+    {
+        if (isLocalPlayer)
+        {
+            Cursor.visible = true;
+        }
     }
 }

@@ -1,4 +1,8 @@
-﻿using System.Collections;
+﻿/**
+ * Authors: Stella
+ */
+
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -6,22 +10,18 @@ using UnityEngine.UI;
 
 public class DisplayMenu : MonoBehaviour
 {
-    [SerializeField]
-    private Dropdown m_resolutionDropdown;
-    [SerializeField]
-    private Toggle m_fullScreenToggle;
-    [SerializeField]
-    private Dropdown m_qualityDropdown;
+    [SerializeField] private Dropdown m_resolutionDropdown = null;
+    [SerializeField] private Toggle m_fullScreenToggle = null;
+    [SerializeField] private Dropdown m_qualityDropdown = null;
     // Text displayed when the settings are saved
-    [SerializeField]
-    private TextMeshProUGUI m_savingText;
+    [SerializeField] private TextMeshProUGUI m_savingText = null;
 
     // List of resolutions
-    private Resolution[] m_resolutions;
+    private List<Resolution> m_resolutions = new List<Resolution>();
 
     private int m_isFullScreen;
 
-    void Start()
+    private void Start()
     {
         // List of resolutions converted to string in order to add them to the dropdown
         List<string> options = new List<string>();
@@ -29,12 +29,19 @@ public class DisplayMenu : MonoBehaviour
         int currentResolutionIndex = 0;
 
         // Resolutions available for the screen
-        m_resolutions = Screen.resolutions;
+        Resolution[] unityResolutions = Screen.resolutions;
+        for (int i = 0; i < unityResolutions.Length; i++)
+        {
+            if (unityResolutions[i].width >= 800 && unityResolutions[i].height >= 600)
+            {
+                m_resolutions.Add(unityResolutions[i]);
+            }
+        }
 
         m_resolutionDropdown.ClearOptions();
 
         // Convert resolutions into strings and add them to the options list
-        for (int i = 0; i < m_resolutions.Length; i++)
+        for (int i = 0; i < m_resolutions.Count; i++)
         {
             options.Add(m_resolutions[i].width + " x " + m_resolutions[i].height);
 

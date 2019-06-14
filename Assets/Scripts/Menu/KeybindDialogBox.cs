@@ -1,4 +1,8 @@
-﻿using System;
+﻿/**
+ * Authors: Stella
+ */
+
+using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -6,16 +10,13 @@ using UnityEngine.UI;
 
 public class KeybindDialogBox : MonoBehaviour
 {
-    [SerializeField]
-    private GameObject m_keyItemPrefab;
-    [SerializeField]
-    private GameObject m_keyList;
+    [SerializeField] private GameObject m_keyItemPrefab = null;
+    [SerializeField] private GameObject m_keyList = null;
 
     private string m_keyToRebind = null;
     private Dictionary<string, TextMeshProUGUI> m_keyToLabel;
 
-    // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         string[] actionNames = InputManager.GetActionNames();
         m_keyToLabel = new Dictionary<string, TextMeshProUGUI>();
@@ -44,8 +45,7 @@ public class KeybindDialogBox : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
         // If the user wants to rebind a key and if a key was pressed down
         if (m_keyToRebind != null && Input.anyKeyDown)
@@ -74,7 +74,7 @@ public class KeybindDialogBox : MonoBehaviour
         }
     }
 
-    void StartRebind(string actionName)
+    private void StartRebind(string actionName)
     {
         Debug.Log(actionName);
         m_keyToRebind = actionName;

@@ -1,114 +1,117 @@
-﻿using System.Collections.Generic;
+﻿/**
+ * Authors: Nicander, David, Benji, Chiel
+ */
+
+using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Bot), typeof(Action))]
 public class AttackBehaviour : BotBehaviour
 {
-    private Action m_action;
-    private Bot m_bot;
-    private TeamManager m_teamManager;
+    public GameEnvironment Environment;
+
     private Vector3 m_lastShotPosition;
-    private float m_accuracy = 1f;
 
-    // How far the bot can see
-    private const float VISION_RANGE = 7.5f;
-    // Accuracy to reset to
-    private const float INITIAL_ACCURACY = 2f;
-    // Amount of accuracy gained per update
-    private const float ACCURACY_MODIFIER = 0.01f;
-    // Threshold if the target moved
-    private const float MOVE_THRESHOLD = 0.02f;
-
-    private void Start()
-    {
-        m_action = GetComponent<Action>();
-        m_bot = GetComponent<Bot>();
-        m_teamManager = GameObject.Find("GameManager").GetComponent<TeamManager>();
-    }
+    // Accuracy handicap
+    private const float ACCURACY_MODIFIER = 1.3f;
+    // Accuracy between 0 and 1 where 1 is most accurate
+    private const float ACCURACY = 0.75f;
+    // How far the player has to move before readjusting bot aim
+    private const float AIM_THRESHOLD = 3f;
 
     private void FixedUpdate()
     {
-        if (!m_active || m_bot.IsDead)
-        {
-            return;
-        }
         FireAtClosestEnemy();
     }
 
     private void FireAtClosestEnemy()
     {
         // Get all players that aren't on the bot's team
-        List<Soldier> enemies = m_teamManager.GetEnemiesByTeam(m_bot.Team);
-        Vector3 aimTarget;
-        Vector3 targetPosition = FindClosestEnemyPosition(enemies);
-        // Worldspace -> localspace
-        Vector3 rayCastTarget = targetPosition - transform.position;
-        // Raycast to the target
-        RaycastHit[] hits = Physics.RaycastAll(transform.position, rayCastTarget, VISION_RANGE);
-        RaycastHit closestHit = new RaycastHit();
-        float minDist = Mathf.Infinity;
-        foreach (RaycastHit hit in hits)
+        List<Soldier> enemies = TeamManager.GetAliveEnemiesByTeam(m_bot.Team.Id);
+        enemies = Environment.GetIlluminatedEnemies(m_bot, enemies);
+
+        // If the closest enemy is in line of sight, shoot at it
+        if (FindClosestEnemy(enemies, out Soldier closestEnemy))
         {
-            float dist = Vector3.Distance(transform.position, hit.point);
-            if (dist < minDist)
+            Vector3 targetPosition = closestEnemy.transform.position;
+
+            // Make bot less accurate to make it more fair for players
+            Vector3 aimTarget = JitterAim(targetPosition);
+
+            // If it fired successfully set last shot position to aimtarget
+            if (FireAtPosition(aimTarget))
             {
-                closestHit = hit;
-                minDist = dist;
+                m_lastShotPosition = aimTarget;
             }
         }
-
-        // If the closest raycast object is not a player return
-        if (closestHit.collider == null || closestHit.collider.tag != "Player")
+        else
         {
-            return;
+            // If there is nothing to fire at aim at movement direction
+            m_bot.AimAtMoveDirection();
         }
-
-        // Make bot less accurate to make it more fair for players
-        aimTarget = JitterAim(targetPosition);
-        FireAtPosition(aimTarget);
-        m_lastShotPosition = targetPosition;
     }
 
     private Vector3 JitterAim(Vector3 position)
     {
-        if (m_lastShotPosition != null)
+        Vector3 result;
+        // If the last position is not set or the player has moved in worldspace and in localspace shoot at target with an offset based on distance
+        if (m_lastShotPosition == null || (Vector3.Distance(m_lastShotPosition, position) > AIM_THRESHOLD && Vector3.Distance(m_lastShotPosition - transform.position, position - transform.position) > AIM_THRESHOLD))
         {
-            // Set the accuracy based on last aimed at position
-            float movedDistance = Vector3.Distance(m_lastShotPosition, position);
-            if (movedDistance > MOVE_THRESHOLD || movedDistance < -MOVE_THRESHOLD)
-            {
-                m_accuracy = INITIAL_ACCURACY;
-            }
-            else
-            {
-                m_accuracy = Mathf.Max(0, m_accuracy - ACCURACY_MODIFIER);
-            }
+            float distance = Vector3.Distance(position, transform.position);
+            result = Quaternion.Euler(0, Random.Range(-distance * ACCURACY_MODIFIER, distance * ACCURACY_MODIFIER), 0) * position;
         }
-        return new Vector3(position.x + Random.Range(-m_accuracy, m_accuracy), position.y, position.z + Random.Range(-m_accuracy, m_accuracy));
+        else
+        {
+            // Lerp between last and current position based on accuracy between 0-1 where 1 is the most accurate and 0 is the least
+            result = Vector3.Lerp(m_lastShotPosition, position, ACCURACY);
+            // Make bot predict movement
+            result = PredictMovement(result);
+        }
+
+        return result;
     }
 
-    private void FireAtPosition(Vector3 position)
+    private Vector3 PredictMovement(Vector3 position)
+    {
+        Vector3 prediction = position - m_lastShotPosition;
+
+        return position + prediction;
+    }
+
+    private bool FireAtPosition(Vector3 position)
     {
         m_bot.WorldAim(new Vector2(position.x, position.z));
-        m_action.Shoot();
+        return m_action.Shoot();
     }
 
-    private Vector3 FindClosestEnemyPosition(List<Soldier> enemies)
+    private bool FindClosestEnemy(List<Soldier> enemies, out Soldier closestEnemy)
     {
         Vector3 currentPosition = transform.position;
         float minDist = Mathf.Infinity;
-        Vector3 closestEnemyPosition = Vector3.zero;
+        bool found = false;
+        Soldier enemyFound = null;
+        // Loop through the enemies and find the closest one in line of sight
         enemies.ForEach(enemy =>
         {
             float dist = Vector3.Distance(currentPosition, enemy.transform.position);
             if (dist < minDist)
             {
-                closestEnemyPosition = enemy.transform.position;
-                minDist = dist;
-
+                // Worldspace -> localspace
+                Vector3 rayCastTarget = enemy.transform.position - transform.position;
+                // Raycast to the target
+                Physics.Raycast(transform.position, rayCastTarget, out RaycastHit closestHit);
+                // If the closest raycast object is a player and is not on the same team as the bot make the closest enemy the current enemy
+                if (closestHit.collider != null && closestHit.collider.tag == "Player")
+                {
+                    enemyFound = enemy;
+                    minDist = dist;
+                    found = true;
+                }
             }
         });
 
-        return closestEnemyPosition;
+        closestEnemy = enemyFound;
+
+        return found;
     }
 }
