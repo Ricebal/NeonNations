@@ -1,4 +1,8 @@
-﻿using UnityEngine;
+﻿/**
+ * Authors: Nicander
+ */
+
+using UnityEngine;
 
 [RequireComponent(typeof(ParticleSystem))]
 public class DeathExplosion : MonoBehaviour

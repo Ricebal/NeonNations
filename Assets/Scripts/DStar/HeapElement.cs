@@ -1,4 +1,8 @@
-﻿using UnityEngine;
+﻿/**
+ * Authors: Benji
+ */
+
+using UnityEngine;
 
 public struct HeapElement
 {

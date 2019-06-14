@@ -1,3 +1,7 @@
+/**
+ * Authors: David, Nicander, Stella
+ */
+
 using Mirror;
 using UnityEngine;
 using UnityEngine.SceneManagement;

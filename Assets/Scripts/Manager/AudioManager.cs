@@ -1,4 +1,8 @@
-﻿using Mirror;
+﻿/**
+ * Authors: David
+ */
+
+using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;

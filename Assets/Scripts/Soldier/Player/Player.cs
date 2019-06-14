@@ -1,4 +1,8 @@
-﻿using UnityEngine;
+﻿/**
+ * Authors: Stella, David, Nicander, Chiel, Benji
+ */
+
+using UnityEngine;
 
 public class Player : Soldier
 {
@@ -40,12 +44,9 @@ public class Player : Soldier
 
         Cursor.visible = GameOverMenu.IsActive() || EscapeMenu.IsActive();
         m_hud.UpdateHUD();
-        if (GameManager.Singleton.GameFinished)
+        if (GameManager.Singleton.GameFinished && GameOverMenu.IsActive())
         {
-            if (GameOverMenu.IsActive())
-            {
-                GameOverMenu.Deactivate();
-            }
+            GameOverMenu.Deactivate();
         }
     }
 

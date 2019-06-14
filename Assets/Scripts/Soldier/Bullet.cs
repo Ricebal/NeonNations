@@ -1,4 +1,8 @@
-﻿using UnityEngine;
+﻿/**
+ * Authors: Nicander, David, Benji, Chiel
+ */
+
+using UnityEngine;
 
 [RequireComponent(typeof(CapsuleCollider), typeof(Rigidbody))]
 public class Bullet : MonoBehaviour

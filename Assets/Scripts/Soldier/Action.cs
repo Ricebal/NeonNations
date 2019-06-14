@@ -1,3 +1,7 @@
+/**
+ * Authors: Nicander
+ */
+
 using Mirror;
 using UnityEngine;
 

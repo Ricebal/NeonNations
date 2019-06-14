@@ -1,3 +1,7 @@
+/**
+ * Authors: Benji, Chiel, Nicander
+ */
+
 using Mirror;
 using UnityEngine;
 
@@ -5,7 +9,7 @@ public class BotManager : NetworkBehaviour
 {
     public static BotManager Singleton;
 
-    private const int AMOUNT_OF_BOTS = 2;
+    private const int AMOUNT_OF_BOTS = 4;
     // Prefab representing the bot
     public GameObject Bot;
 

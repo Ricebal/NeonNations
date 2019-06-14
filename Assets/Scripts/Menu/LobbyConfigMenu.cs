@@ -1,4 +1,8 @@
-﻿using System.Collections.Generic;
+﻿/**
+ * Authors: Stella, David
+ */
+
+using System.Collections.Generic;
 using Mirror;
 using TMPro;
 using UnityEngine;
@@ -25,19 +29,25 @@ public class LobbyConfigMenu : NetworkBehaviour
     private int m_shortcutMinSkipDistance = 20;
     private int m_reflectorAreaSize = 200;
 
-    private void Start()
+    private void Awake()
     {
         InitializeSingleton();
+    }
 
-        // Do not display the configuration if the player is not the host
-        if (!isServer)
+    private void InitializeSingleton()
+    {
+        if (Singleton != null && Singleton != this)
         {
-            gameObject.SetActive(false);
-            return;
+            Destroy(this);
         }
+        else
+        {
+            Singleton = this;
+        }
+    }
 
-        gameObject.SetActive(true);
-
+    private void Start()
+    {
         // Dictionary that contains the name of the option to configure associated with its value
         m_mapOptions = new Dictionary<string, int>
         { { "Map width", m_mapWidth },
@@ -76,18 +86,6 @@ public class LobbyConfigMenu : NetworkBehaviour
             // Add the possibility to decrease the value of the option
             HoldButton buttonDown = optionItem.transform.Find("ButtonDown").GetComponent<HoldButton>();
             buttonDown.OnValueChanged += OnValueChanged;
-        }
-    }
-
-    private void InitializeSingleton()
-    {
-        if (Singleton != null && Singleton != this)
-        {
-            Destroy(this);
-        }
-        else
-        {
-            Singleton = this;
         }
     }
 
