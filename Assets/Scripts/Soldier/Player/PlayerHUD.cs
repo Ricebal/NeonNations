@@ -1,5 +1,5 @@
 ﻿/**
- * Authors: Nicander
+ * Authors: Nicander, Stella
  */
 
 using UnityEngine;
